@@ -1,0 +1,608 @@
+/**
+ * 科室管理页面样式
+ * 包含科室列表、表格、筛选、分页等组件样式
+ */
+
+/* 科室管理容器 */
+.department-management {
+    padding: 24px;
+    background: #f5f7fa;
+    min-height: 100vh;
+}
+
+/* 页面头部 */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.header-left h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1d2129;
+    margin: 0 0 8px 0;
+}
+
+.header-left .page-description {
+    color: #86909c;
+    font-size: 14px;
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+/* 搜索筛选区域 */
+.search-filters {
+    background: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 16px;
+}
+
+.filter-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+.filter-group label {
+    font-size: 14px;
+    color: #1d2129;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.filter-group input,
+.filter-group select {
+    height: 36px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    border-color: #165dff;
+    box-shadow: 0 0 0 2px rgba(22, 93, 255, 0.1);
+    outline: none;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+/* 数据表格 */
+.data-table-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th {
+    background: #f7f8fa;
+    padding: 16px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #1d2129;
+    font-size: 14px;
+    border-bottom: 1px solid #e5e6eb;
+}
+
+.data-table td {
+    padding: 16px 12px;
+    border-bottom: 1px solid #f2f3f5;
+    font-size: 14px;
+    color: #4e5969;
+    vertical-align: middle;
+}
+
+.data-table tbody tr:hover {
+    background: #f7f8fa;
+}
+
+/* 科室信息 */
+.department-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.department-name {
+    font-weight: 500;
+    color: #1d2129;
+    font-size: 14px;
+}
+
+.department-desc {
+    font-size: 12px;
+    color: #86909c;
+    line-height: 1.4;
+}
+
+.department-code {
+    font-family: 'Monaco', 'Menlo', monospace;
+    background: #f2f3f5;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #4e5969;
+}
+
+/* 负责人信息 */
+.director-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.director-name {
+    font-weight: 500;
+    color: #1d2129;
+}
+
+.director-title {
+    font-size: 12px;
+    color: #86909c;
+}
+
+/* 联系方式 */
+.contact-phone {
+    font-family: 'Monaco', 'Menlo', monospace;
+    color: #4e5969;
+}
+
+/* 床位数 */
+.bed-count {
+    font-weight: 500;
+    color: #1d2129;
+}
+
+/* 类型标签 */
+.type-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 60px;
+}
+
+.type-tag.clinical {
+    background: #e8f4ff;
+    color: #165dff;
+    border: 1px solid #b7d4ff;
+}
+
+.type-tag.medical {
+    background: #fff7e6;
+    color: #ff7d00;
+    border: 1px solid #ffcf8b;
+}
+
+.type-tag.administrative {
+    background: #f2f8f2;
+    color: #00b42a;
+    border: 1px solid #7bc67b;
+}
+
+/* 状态标签 */
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 50px;
+}
+
+.status-badge.active {
+    background: #f0f9ff;
+    color: #0e7a0d;
+    border: 1px solid #52c41a;
+}
+
+.status-badge.inactive {
+    background: #fff2f0;
+    color: #cf1322;
+    border: 1px solid #ffccc7;
+}
+
+/* 创建时间 */
+.create-time {
+    font-family: 'Monaco', 'Menlo', monospace;
+    color: #86909c;
+    font-size: 13px;
+}
+
+/* 操作按钮 */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.btn-action:hover {
+    transform: translateY(-1px);
+}
+
+.btn-edit {
+    background: #e8f4ff;
+    color: #165dff;
+}
+
+.btn-edit:hover {
+    background: #bedaff;
+}
+
+.btn-view {
+    background: #f2f8f2;
+    color: #00b42a;
+}
+
+.btn-view:hover {
+    background: #d1f2d1;
+}
+
+.btn-toggle {
+    background: #fff7e6;
+    color: #ff7d00;
+}
+
+.btn-toggle:hover {
+    background: #ffe7ba;
+}
+
+/* 批量操作面板 */
+.batch-operations {
+    display: none;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 24px;
+    background: #f0f9ff;
+    border-top: 1px solid #e5e6eb;
+    border-bottom: 1px solid #e5e6eb;
+}
+
+.batch-info {
+    color: #4e5969;
+    font-size: 14px;
+}
+
+.batch-info .selected-count {
+    font-weight: 600;
+    color: #165dff;
+}
+
+.batch-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* 分页 */
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: #fff;
+    border-top: 1px solid #f2f3f5;
+}
+
+.pagination-info {
+    color: #86909c;
+    font-size: 14px;
+}
+
+.pagination {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.page-btn {
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid #d9d9d9;
+    background: #fff;
+    color: #4e5969;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+    border-color: #165dff;
+    color: #165dff;
+}
+
+.page-btn.active {
+    background: #165dff;
+    border-color: #165dff;
+    color: #fff;
+}
+
+.page-btn:disabled {
+    background: #f7f8fa;
+    border-color: #e5e6eb;
+    color: #c9cdd4;
+    cursor: not-allowed;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 4px;
+}
+
+/* 空状态 */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.empty-content .icon-empty {
+    font-size: 48px;
+    color: #c9cdd4;
+}
+
+.empty-content p {
+    color: #86909c;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* 科室详情模态框 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f2f3f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1d2129;
+}
+
+.modal-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #86909c;
+    font-size: 18px;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: #f2f3f5;
+    color: #4e5969;
+}
+
+.modal-body {
+    padding: 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* 科室详情 */
+.department-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.detail-section {
+    border-bottom: 1px solid #f2f3f5;
+    padding-bottom: 20px;
+}
+
+.detail-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.detail-section h4 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1d2129;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.detail-item label {
+    font-size: 14px;
+    color: #86909c;
+    font-weight: 500;
+}
+
+.detail-item span {
+    font-size: 14px;
+    color: #1d2129;
+    word-break: break-all;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-group {
+        min-width: auto;
+    }
+    
+    .filter-actions {
+        margin-left: 0;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .department-management {
+        padding: 16px;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .header-actions {
+        justify-content: flex-start;
+    }
+    
+    .data-table-container {
+        overflow-x: auto;
+    }
+    
+    .data-table {
+        min-width: 800px;
+    }
+    
+    .pagination-container {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+    
+    .pagination {
+        justify-content: center;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header {
+        padding: 16px;
+    }
+    
+    .search-filters {
+        padding: 16px;
+    }
+    
+    .batch-operations {
+        padding: 12px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    
+    .batch-actions {
+        justify-content: center;
+    }
+    
+    .pagination-container {
+        padding: 12px 16px;
+    }
+    
+    .page-btn {
+        height: 36px;
+        min-width: 36px;
+    }
+}

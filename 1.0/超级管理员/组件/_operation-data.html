@@ -1,0 +1,394 @@
+<!-- 运营数据 -->
+<div class="operation-data">
+    <div class="data-header">
+        <h3>运营数据</h3>
+        <div class="data-period-selector">
+            <button class="period-btn active" onclick="switchDataPeriod('today', this)">今日</button>
+            <button class="period-btn" onclick="switchDataPeriod('week', this)">本周</button>
+            <button class="period-btn" onclick="switchDataPeriod('month', this)">本月</button>
+        </div>
+    </div>
+    <div class="data-grid">
+        <div class="data-table">
+            <div class="table-header">
+                <h4>Top 10 活跃租户</h4>
+                <div class="table-controls">
+                    <select class="form-select" id="tenantFilterType" onchange="filterActiveTenantsBy(this.value)">
+                        <option value="activity">按活跃度</option>
+                        <option value="revenue">按收入</option>
+                        <option value="growth">按增长率</option>
+                    </select>
+                </div>
+            </div>
+            <table class="top-tenants-table">
+                <thead>
+                    <tr>
+                        <th>排名</th>
+                        <th>租户名称</th>
+                        <th>类型</th>
+                        <th>月审核量</th>
+                        <th>月收入</th>
+                        <th>活跃度</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody class="active-tenants-list">
+                    <tr class="rank-1">
+                        <td><span class="rank-badge gold">1</span></td>
+                        <td>
+                            <div class="tenant-cell">
+                                <div class="tenant-name">北京协和医院</div>
+                                <div class="tenant-id">T-001</div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-3">三甲医院</span></td>
+                        <td><span class="audit-count high">156,789</span></td>
+                        <td><span class="revenue">¥89,500</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 95%;"></div>
+                                </div>
+                                <span class="activity-value">95%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge active">活跃</span></td>
+                    </tr>
+                    <tr class="rank-2">
+                        <td><span class="rank-badge silver">2</span></td>
+                        <td>
+                            <div class="tenant-cell">
+                                <div class="tenant-name">上海华山医院</div>
+                                <div class="tenant-id">T-002</div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-3">三甲医院</span></td>
+                        <td><span class="audit-count high">134,567</span></td>
+                        <td><span class="revenue">¥76,800</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 92%;"></div>
+                                </div>
+                                <span class="activity-value">92%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge active">活跃</span></td>
+                    </tr>
+                    <tr class="rank-3">
+                        <td><span class="rank-badge bronze">3</span></td>
+                        <td>
+                            <div class="tenant-cell">
+                                <div class="tenant-name">广州中山医院</div>
+                                <div class="tenant-id">T-003</div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-3">三甲医院</span></td>
+                        <td><span class="audit-count medium">98,234</span></td>
+                        <td><span class="revenue">¥65,200</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 88%;"></div>
+                                </div>
+                                <span class="activity-value">88%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge active">活跃</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank-badge">4</span></td>
+                        <td>
+                            <div class="tenant-cell">
+                                <div class="tenant-name">深圳市人民医院</div>
+                                <div class="tenant-id">T-004</div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-2">二甲医院</span></td>
+                        <td><span class="audit-count medium">87,456</span></td>
+                        <td><span class="revenue">¥52,300</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 85%;"></div>
+                                </div>
+                                <span class="activity-value">85%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge active">活跃</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank-badge">5</span></td>
+                        <td>
+                            <div class="tenant-cell">
+                                <div class="tenant-name">杭州市医保局</div>
+                                <div class="tenant-id">T-005</div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag insurance">医保机构</span></td>
+                        <td><span class="audit-count medium">76,123</span></td>
+                        <td><span class="revenue">¥48,900</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 82%;"></div>
+                                </div>
+                                <span class="activity-value">82%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge active">活跃</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank-badge">6</span></td>
+                        <td>
+                            <div class="tenant-cell">
+                                <div class="tenant-name">成都华西医院</div>
+                                <div class="tenant-id">T-006</div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-3">三甲医院</span></td>
+                        <td><span class="audit-count medium">68,945</span></td>
+                        <td><span class="revenue">¥42,600</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 78%;"></div>
+                                </div>
+                                <span class="activity-value">78%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge active">活跃</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank-badge">7</span></td>
+                        <td>
+                            <div class="tenant-cell">
+                                <div class="tenant-name">武汉同济医院</div>
+                                <div class="tenant-id">T-007</div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-3">三甲医院</span></td>
+                        <td><span class="audit-count medium">59,234</span></td>
+                        <td><span class="revenue">¥38,900</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 75%;"></div>
+                                </div>
+                                <span class="activity-value">75%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge active">活跃</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank-badge">8</span></td>
+                        <td>
+                            <div class="tenant-cell">
+                                <div class="tenant-name">西安交大一附院</div>
+                                <div class="tenant-id">T-008</div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-3">三甲医院</span></td>
+                        <td><span class="audit-count low">52,678</span></td>
+                        <td><span class="revenue">¥34,500</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 72%;"></div>
+                                </div>
+                                <span class="activity-value">72%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge active">活跃</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank-badge">9</span></td>
+                        <td>
+                            <div class="tenant-cell">
+                                <div class="tenant-name">南京鼓楼医院</div>
+                                <div class="tenant-id">T-009</div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-2">二甲医院</span></td>
+                        <td><span class="audit-count low">45,123</span></td>
+                        <td><span class="revenue">¥29,800</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 68%;"></div>
+                                </div>
+                                <span class="activity-value">68%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge active">活跃</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="rank-badge">10</span></td>
+                        <td>
+                            <div class="tenant-cell">
+                                <div class="tenant-name">天津医科大学总医院</div>
+                                <div class="tenant-id">T-010</div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-3">三甲医院</span></td>
+                        <td><span class="audit-count low">38,567</span></td>
+                        <td><span class="revenue">¥25,200</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 65%;"></div>
+                                </div>
+                                <span class="activity-value">65%</span>
+                            </div>
+                        </td>
+                        <td><span class="status-badge active">活跃</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="quick-stats">
+            <div class="stats-header">
+                <h4>快速统计</h4>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon new-tenant">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                            <path d="m19 8 2 2-2 2" stroke="currentColor" stroke-width="2"/>
+                            <path d="m21 10-7.5 0" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    
+
+
+
+
+                    <div class="stat-content">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">新增租户</div>
+                        <div class="stat-trend positive">
+                            <span class="trend-icon">↗</span>
+                            <span class="trend-value">+33.3%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon churn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+                            <path d="m17 11 2-2-2-2" stroke="currentColor" stroke-width="2"/>
+                            <path d="m19 9-7.5 0" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">流失租户</div>
+                        <div class="stat-trend negative">
+                            <span class="trend-icon">↘</span>
+                            <span class="trend-value">-25.0%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon upgrade">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="2"/>
+                            <path d="m2 17 10 5 10-5" stroke="currentColor" stroke-width="2"/>
+                            <path d="m2 12 10 5 10-5" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">套餐升级</div>
+                        <div class="stat-trend positive">
+                            <span class="trend-icon">↗</span>
+                            <span class="trend-value">+60.0%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon support">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M14 9V5a3 3 0 0 0-6 0v4" stroke="currentColor" stroke-width="2"/>
+                            <rect x="2" y="9" width="20" height="12" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="15" r="1" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">23</div>
+                        <div class="stat-label">技术支持工单</div>
+                        <div class="stat-trend neutral">
+                            <span class="trend-icon">→</span>
+                            <span class="trend-value">持平</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon satisfaction">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">4.8</div>
+                        <div class="stat-label">客户满意度</div>
+                        <div class="stat-trend positive">
+                            <span class="trend-icon">↗</span>
+                            <span class="trend-value">+0.2</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon revenue">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">¥1.2M</div>
+                        <div class="stat-label">月度总收入</div>
+                        <div class="stat-trend positive">
+                            <span class="trend-icon">↗</span>
+                            <span class="trend-value">+15.8%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon audit">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 11H3v8h6m0 0l5-5 5 5M9 19v-8a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v8" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">2.3M</div>
+                        <div class="stat-label">月度审核量</div>
+                        <div class="stat-trend positive">
+                            <span class="trend-icon">↗</span>
+                            <span class="trend-value">+8.5%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon efficiency">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">96.5%</div>
+                        <div class="stat-label">系统可用性</div>
+                        <div class="stat-trend positive">
+                            <span class="trend-icon">↗</span>
+                            <span class="trend-value">+0.3%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

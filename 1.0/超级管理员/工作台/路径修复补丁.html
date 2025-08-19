@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>路径修复补丁</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #4CAF50;
+            margin-top: 20px;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ffe9;
+            border-radius: 4px;
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .test-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .log {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>路径修复补丁</h1>
+        <p>本页面提供了一个简单直接的修复方案，用于解决二级菜单导航中的路径重复问题。</p>
+        
+        <div class="status">
+            <h2>修复状态</h2>
+            <p id="fixStatus">等待应用修复...</p>
+        </div>
+        
+        <div class="button-group">
+            <button id="applyFixBtn">应用修复</button>
+            <button id="testFixBtn">测试修复</button>
+            <button id="resetFixBtn">重置修复</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>测试结果</h2>
+            <div class="log" id="testLog"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>使用说明</h2>
+            <ol>
+                <li>点击"应用修复"按钮来启用路径修复功能</li>
+                <li>点击"测试修复"按钮来验证修复是否生效</li>
+                <li>修复应用后，尝试在工作台中点击二级菜单，应该能正确加载页面</li>
+                <li>如果需要，可以点击"重置修复"按钮来恢复原始行为</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // 全局日志数组
+        let log = [];
+        let isFixApplied = false;
+        
+        // 工具函数: 记录日志
+        function addToLog(message, isError = false) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            log.push(logEntry);
+            
+            console.log(`[路径修复补丁] ${message}`);
+            
+            // 更新日志显示
+            updateLogDisplay();
+        }
+        
+        // 更新日志显示
+        function updateLogDisplay() {
+            const logElement = document.getElementById('testLog');
+            logElement.innerHTML = '';
+            
+            log.forEach(entry => {
+                const logLine = document.createElement('div');
+                
+                // 检查是否包含错误信息
+                if (entry.toLowerCase().includes('error') || entry.toLowerCase().includes('失败')) {
+                    logLine.className = 'error';
+                } else if (entry.toLowerCase().includes('success') || entry.toLowerCase().includes('成功')) {
+                    logLine.className = 'success';
+                }
+                
+                logLine.textContent = entry;
+                logElement.appendChild(logLine);
+            });
+            
+            // 滚动到最新日志
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        // 清理URL中的重复目录
+        function cleanUrl(url) {
+            // 记录原始URL
+            addToLog(`清理前: ${url}`);
+            
+            // 1. 统一路径分隔符（将\转换为/）
+            let cleanedUrl = url.replace(/\\/g, '/');
+            
+            // 2. 移除重复的慢病管理目录
+            const慢病管理Regex = /慢病管理\/慢病管理/g;
+            cleanedUrl = cleanedUrl.replace(慢病管理Regex, '慢病管理');
+            
+            // 3. 确保是完整的URL
+            if (!cleanedUrl.startsWith('http://') && !cleanedUrl.startsWith('https://')) {
+                // 处理相对路径
+                if (!cleanedUrl.startsWith('/')) {
+                    // 从当前路径构建完整路径
+                    const currentPath = window.location.pathname.split('/').slice(0, -1).join('/');
+                    cleanedUrl = currentPath + '/' + cleanedUrl;
+                }
+                
+                // 添加协议和域名
+                cleanedUrl = window.location.origin + cleanedUrl;
+            }
+            
+            // 4. 最后一次清理重复目录
+            cleanedUrl = cleanedUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+            
+            addToLog(`清理后: ${cleanedUrl}`);
+            return cleanedUrl;
+        }
+        
+        // 应用修复
+        function applyFix() {
+            if (isFixApplied) {
+                addToLog('修复已经应用，无需重复操作');
+                return;
+            }
+            
+            addToLog('开始应用路径修复...');
+            
+            // 1. 保存原始的querySelector和querySelectorAll方法
+            window.originalQuerySelector = document.querySelector;
+            window.originalQuerySelectorAll = document.querySelectorAll;
+            
+            // 2. 重写querySelector方法来拦截所有选择器调用
+            document.querySelector = function(selector) {
+                const element = window.originalQuerySelector.call(this, selector);
+                
+                // 如果是.nav-item元素，检查并修复href属性
+                if (element && selector.includes('.nav-item')) {
+                    const href = element.getAttribute('href');
+                    if (href && href.includes('慢病管理') && href.includes('慢病管理')) {
+                        const cleanedHref = href.replace(/慢病管理\\慢病管理/g, '慢病管理').replace(/慢病管理\/慢病管理/g, '慢病管理');
+                        element.setAttribute('href', cleanedHref);
+                        addToLog(`修复元素href: ${href} -> ${cleanedHref}`);
+                    }
+                }
+                
+                return element;
+            };
+            
+            // 3. 重写querySelectorAll方法来拦截所有选择器调用
+            document.querySelectorAll = function(selector) {
+                const elements = window.originalQuerySelectorAll.call(this, selector);
+                
+                // 如果是.nav-item元素，检查并修复href属性
+                if (selector.includes('.nav-item')) {
+                    elements.forEach(element => {
+                        const href = element.getAttribute('href');
+                        if (href && href.includes('慢病管理') && href.includes('慢病管理')) {
+                            const cleanedHref = href.replace(/慢病管理\\慢病管理/g, '慢病管理').replace(/慢病管理\/慢病管理/g, '慢病管理');
+                            element.setAttribute('href', cleanedHref);
+                            addToLog(`修复元素href: ${href} -> ${cleanedHref}`);
+                        }
+                    });
+                }
+                
+                return elements;
+            };
+            
+            // 4. 全局替换所有链接中的重复目录
+            const allLinks = document.querySelectorAll('a[href*="慢病管理/慢病管理"], a[href*="慢病管理\\慢病管理"]');
+            allLinks.forEach(link => {
+                const originalHref = link.getAttribute('href');
+                const cleanedHref = cleanUrl(originalHref);
+                link.setAttribute('href', cleanedHref);
+                addToLog(`修复链接: ${originalHref} -> ${cleanedHref}`);
+            });
+            
+            // 5. 监听DOM变化，自动修复新添加的元素
+            const observer = new MutationObserver(mutations => {
+                mutations.forEach(mutation => {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(node => {
+                            if (node.nodeType === 1) { // 元素节点
+                                // 检查并修复添加的元素及其子元素
+                                const navItems = node.querySelectorAll('.nav-item[href*="慢病管理/慢病管理"], .nav-item[href*="慢病管理\\慢病管理"]');
+                                navItems.forEach(item => {
+                                    const originalHref = item.getAttribute('href');
+                                    const cleanedHref = cleanUrl(originalHref);
+                                    item.setAttribute('href', cleanedHref);
+                                    addToLog(`动态修复链接: ${originalHref} -> ${cleanedHref}`);
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // 开始观察DOM变化
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+            
+            // 保存observer引用以便后续清理
+            window.pathFixObserver = observer;
+            
+            isFixApplied = true;
+            document.getElementById('fixStatus').innerHTML = '<span class="success">✓ 修复已成功应用</span>';
+            addToLog('路径修复应用成功！');
+        }
+        
+        // 测试修复
+        function testFix() {
+            addToLog('开始测试修复...');
+            
+            // 测试1: 清理重复目录的URL
+            const testUrl1 = '.\\1.0\\超级管理员\\慢病管理\\慢病管理\\慢病资格评审\\index.html';
+            const result1 = cleanUrl(testUrl1);
+            const isSuccess1 = !result1.includes('慢病管理/慢病管理');
+            addToLog(`测试1 ${isSuccess1 ? '通过' : '失败'}: ${result1}`);
+            
+            // 测试2: 清理Web风格的重复目录
+            const testUrl2 = '/1.0/超级管理员/慢病管理/慢病管理/慢病资格评审/index.html';
+            const result2 = cleanUrl(testUrl2);
+            const isSuccess2 = !result2.includes('慢病管理/慢病管理');
+            addToLog(`测试2 ${isSuccess2 ? '通过' : '失败'}: ${result2}`);
+            
+            // 测试3: 包含协议的完整URL
+            const testUrl3 = 'http://localhost:8000/1.0/超级管理员/慢病管理/慢病管理/慢病资格评审/index.html';
+            const result3 = cleanUrl(testUrl3);
+            const isSuccess3 = !result3.includes('慢病管理/慢病管理');
+            addToLog(`测试3 ${isSuccess3 ? '通过' : '失败'}: ${result3}`);
+            
+            // 总体结果
+            if (isSuccess1 && isSuccess2 && isSuccess3) {
+                addToLog('✓ 所有测试通过！修复功能正常工作。');
+            } else {
+                addToLog('✗ 测试未全部通过，请检查问题。', true);
+            }
+        }
+        
+        // 重置修复
+        function resetFix() {
+            if (!isFixApplied) {
+                addToLog('修复未应用，无需重置');
+                return;
+            }
+            
+            addToLog('开始重置修复...');
+            
+            // 1. 恢复原始的querySelector和querySelectorAll方法
+            if (window.originalQuerySelector) {
+                document.querySelector = window.originalQuerySelector;
+                document.querySelectorAll = window.originalQuerySelectorAll;
+                addToLog('恢复了原始的查询方法');
+            }
+            
+            // 2. 停止DOM变化观察
+            if (window.pathFixObserver) {
+                window.pathFixObserver.disconnect();
+                delete window.pathFixObserver;
+                addToLog('停止了DOM变化观察');
+            }
+            
+            isFixApplied = false;
+            document.getElementById('fixStatus').textContent = '等待应用修复...';
+            addToLog('修复已重置！');
+        }
+        
+        // 设置按钮事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('applyFixBtn').addEventListener('click', applyFix);
+            document.getElementById('testFixBtn').addEventListener('click', testFix);
+            document.getElementById('resetFixBtn').addEventListener('click', resetFix);
+            
+            // 自动测试功能
+            addToLog('页面加载完成，准备就绪。');
+        });
+    </script>
+</body>
+</html>

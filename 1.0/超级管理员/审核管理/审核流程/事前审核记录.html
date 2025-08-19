@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事前审核记录</title>
+    <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    </head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="audit-records-container">
+        <div class="page-header">
+            <h2>事前审核记录</h2>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="exportRecords()">导出记录</button>
+                <button class="btn btn-secondary" onclick="refreshRecords()">刷新</button>
+            </div>
+        </div>
+
+        <!-- 搜索筛选区域 -->
+        <div class="search-section">
+            <div class="search-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>患者姓名</label>
+                        <input type="text" class="form-control" id="patientName" placeholder="请输入患者姓名">
+                    </div>
+                    <div class="form-group">
+                        <label>患者ID</label>
+                        <input type="text" class="form-control" id="patientId" placeholder="请输入患者ID">
+                    </div>
+                    <div class="form-group">
+                        <label>科室</label>
+                        <select class="form-select" id="department">
+                            <option value="">全部科室</option>
+                            <option value="internal">内科</option>
+                            <option value="surgery">外科</option>
+                            <option value="pediatrics">儿科</option>
+                            <option value="obstetrics">妇产科</option>
+                            <option value="emergency">急诊科</option>
+                            <option value="icu">ICU</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>审核结果</label>
+                        <select class="form-select" id="auditResult">
+                            <option value="">全部结果</option>
+                            <option value="passed">通过</option>
+                            <option value="rejected">拒绝</option>
+                            <option value="warning">警告</option>
+                            <option value="pending">待审核</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>审核类型</label>
+                        <select class="form-select" id="auditType">
+                            <option value="">全部类型</option>
+                            <option value="prescription">处方审核</option>
+                            <option value="examination">检查审核</option>
+                            <option value="treatment">治疗审核</option>
+                            <option value="surgery">手术审核</option>
+                            <option value="material">耗材审核</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>审核时间</label>
+                        <div class="date-range">
+                            <input type="date" class="form-control" id="startDate">
+                            <span class="date-separator">至</span>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>审核员</label>
+                        <select class="form-select" id="auditor">
+                            <option value="">全部审核员</option>
+                            <option value="zhang">张医师</option>
+                            <option value="li">李医师</option>
+                            <option value="wang">王医师</option>
+                            <option value="zhao">赵医师</option>
+                        </select>
+                    </div>
+                    <div class="form-group search-actions">
+                        <button class="btn btn-primary" onclick="searchRecords()">搜索</button>
+                        <button class="btn btn-secondary" onclick="resetSearch()">重置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-value">1,234</div>
+                <div class="stat-label">总记录数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">1,156</div>
+                <div class="stat-label">通过</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">45</div>
+                <div class="stat-label">拒绝</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">33</div>
+                <div class="stat-label">警告</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">93.7%</div>
+                <div class="stat-label">通过率</div>
+            </div>
+        </div>
+
+        <!-- 记录列表 -->
+        <div class="records-section">
+            <div class="records-header">
+                <div class="records-title">
+                    <h3>审核记录列表</h3>
+                    <span class="records-count">共找到 1,234 条记录</span>
+                </div>
+                <div class="records-actions">
+                    <div class="view-mode">
+                        <button class="view-btn active" data-view="table">表格视图</button>
+                        <button class="view-btn" data-view="card">卡片视图</button>
+                    </div>
+                    <div class="page-size">
+                        <label>每页显示</label>
+                        <select class="form-select" id="pageSize">
+                            <option value="20">20条</option>
+                            <option value="50">50条</option>
+                            <option value="100">100条</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 表格视图 -->
+            <div class="records-table-view" id="tableView">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll"></th>
+                            <th>审核时间</th>
+                            <th>患者信息</th>
+                            <th>科室</th>
+                            <th>审核类型</th>
+                            <th>审核内容</th>
+                            <th>金额</th>
+                            <th>审核结果</th>
+                            <th>审核员</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" class="record-checkbox" data-id="1"></td>
+                            <td>2024-01-15 14:30</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">李某某</div>
+                                    <div class="patient-id">ID: P20240115001</div>
+                                </div>
+                            </td>
+                            <td>内科</td>
+                            <td>处方审核</td>
+                            <td>
+                                <div class="audit-content">
+                                    <div class="content-title">感冒药物处方</div>
+                                    <div class="content-desc">阿莫西林胶囊 + 感冒灵颗粒</div>
+                                </div>
+                            </td>
+                            <td>¥156.80</td>
+                            <td><span class="status-tag passed">通过</span></td>
+                            <td>张医师</td>
+                            <td>
+                                <button class="btn btn-xs btn-info" onclick="viewDetails(1)">详情</button>
+                                <button class="btn btn-xs btn-secondary" onclick="printRecord(1)">打印</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="record-checkbox" data-id="2"></td>
+                            <td>2024-01-15 14:25</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">王某某</div>
+                                    <div class="patient-id">ID: P20240115002</div>
+                                </div>
+                            </td>
+                            <td>外科</td>
+                            <td>手术审核</td>
+                            <td>
+                                <div class="audit-content">
+                                    <div class="content-title">阑尾切除术</div>
+                                    <div class="content-desc">腹腔镜阑尾切除术</div>
+                                </div>
+                            </td>
+                            <td>¥8,500.00</td>
+                            <td><span class="status-tag rejected">拒绝</span></td>
+                            <td>李医师</td>
+                            <td>
+                                <button class="btn btn-xs btn-info" onclick="viewDetails(2)">详情</button>
+                                <button class="btn btn-xs btn-warning" onclick="reaudit(2)">重审</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="record-checkbox" data-id="3"></td>
+                            <td>2024-01-15 14:20</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">赵某某</div>
+                                    <div class="patient-id">ID: P20240115003</div>
+                                </div>
+                            </td>
+                            <td>儿科</td>
+                            <td>检查审核</td>
+                            <td>
+                                <div class="audit-content">
+                                    <div class="content-title">胸部CT检查</div>
+                                    <div class="content-desc">儿童肺炎诊断</div>
+                                </div>
+                            </td>
+                            <td>¥320.00</td>
+                            <td><span class="status-tag warning">警告</span></td>
+                            <td>王医师</td>
+                            <td>
+                                <button class="btn btn-xs btn-info" onclick="viewDetails(3)">详情</button>
+                                <button class="btn btn-xs btn-secondary" onclick="printRecord(3)">打印</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="record-checkbox" data-id="4"></td>
+                            <td>2024-01-15 14:15</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">陈某某</div>
+                                    <div class="patient-id">ID: P20240115004</div>
+                                </div>
+                            </td>
+                            <td>妇产科</td>
+                            <td>治疗审核</td>
+                            <td>
+                                <div class="audit-content">
+                                    <div class="content-title">产前检查</div>
+                                    <div class="content-desc">孕期常规检查项目</div>
+                                </div>
+                            </td>
+                            <td>¥450.00</td>
+                            <td><span class="status-tag passed">通过</span></td>
+                            <td>赵医师</td>
+                            <td>
+                                <button class="btn btn-xs btn-info" onclick="viewDetails(4)">详情</button>
+                                <button class="btn btn-xs btn-secondary" onclick="printRecord(4)">打印</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="record-checkbox" data-id="5"></td>
+                            <td>2024-01-15 14:10</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">刘某某</div>
+                                    <div class="patient-id">ID: P20240115005</div>
+                                </div>
+                            </td>
+                            <td>急诊科</td>
+                            <td>耗材审核</td>
+                            <td>
+                                <div class="audit-content">
+                                    <div class="content-title">心脏支架植入</div>
+                                    <div class="content-desc">冠状动脉支架1枚</div>
+                                </div>
+                            </td>
+                            <td>¥25,000.00</td>
+                            <td><span class="status-tag pending">待审核</span></td>
+                            <td>-</td>
+                            <td>
+                                <button class="btn btn-xs btn-primary" onclick="processAudit(5)">审核</button>
+                                <button class="btn btn-xs btn-info" onclick="viewDetails(5)">详情</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 卡片视图 -->
+            <div class="records-card-view" id="cardView" style="display: none;">
+                <div class="record-cards">
+                    <div class="record-card">
+                        <div class="card-header">
+                            <div class="card-time">2024-01-15 14:30</div>
+                            <div class="card-status passed">通过</div>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-patient">
+                                <h4>李某某 (ID: P20240115001)</h4>
+                                <span class="card-department">内科</span>
+                            </div>
+                            <div class="card-audit">
+                                <div class="audit-type">处方审核</div>
+                                <div class="audit-title">感冒药物处方</div>
+                                <div class="audit-desc">阿莫西林胶囊 + 感冒灵颗粒</div>
+                                <div class="audit-amount">¥156.80</div>
+                            </div>
+                            <div class="card-auditor">审核员：张医师</div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-xs btn-info">详情</button>
+                            <button class="btn btn-xs btn-secondary">打印</button>
+                        </div>
+                    </div>
+                    <!-- 更多卡片... -->
+                </div>
+            </div>
+
+            <!-- 批量操作 -->
+            <div class="batch-actions">
+                <div class="batch-info">
+                    <span id="selectedCount">已选择 0 条记录</span>
+                </div>
+                <div class="batch-buttons">
+                    <button class="btn btn-secondary" onclick="batchExport()" disabled>批量导出</button>
+                    <button class="btn btn-secondary" onclick="batchPrint()" disabled>批量打印</button>
+                    <button class="btn btn-danger" onclick="batchDelete()" disabled>批量删除</button>
+                </div>
+            </div>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 1-20 条，共 1,234 条记录
+                </div>
+                <div class="pagination-controls">
+                    <button class="btn btn-sm btn-secondary" disabled>上一页</button>
+                    <div class="page-numbers">
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">4</button>
+                        <button class="page-btn">5</button>
+                        <span class="page-ellipsis">...</span>
+                        <button class="page-btn">62</button>
+                    </div>
+                    <button class="btn btn-sm btn-secondary">下一页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 审核详情弹窗 -->
+    <div class="modal" id="detailModal" style="display: none;">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>审核详情</h3>
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-content" id="detailContent">
+                    <!-- 详情内容将动态加载 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDetailModal()">关闭</button>
+                <button class="btn btn-primary" onclick="printDetail()">打印详情</button>
+            </div>
+        </div>
+    </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/pre-audit-records.js"></script>
+    
+    <!-- 加载统一菜单 -->
+<script>
+    // 加载统一菜单组件
+    fetch('../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+</body>
+</html>

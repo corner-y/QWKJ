@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>慢病数据看板</title>
+    <!-- <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css"> -->
+        <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* 慢病数据看板页面样式 - 主容器样式 */
+        .dashboard-container {
+            padding: 20px;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden; /* 禁止水平滚动 */
+            box-sizing: border-box;
+        }
+
+        /* KPI卡片容器样式 - 关键绩效指标卡片网格布局 */
+        .kpi-cards {
+            display: grid; /* 使用grid布局 */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 自动适应列数，最小宽度250px */
+            gap: 20px; /* 卡片间距 */
+            margin-bottom: 20px; /* 底部边距，与下方内容分隔 */
+            width: 100%; /* 宽度100%，填满父容器 */
+        }
+
+        /* 图表区域样式 - 确保图表容器占满空间 */
+        .chart-section {
+            background-color: var(--bg-primary); /* 使用主题背景色 */
+            border-radius: var(--radius-medium); /* 使用主题中等圆角 */
+            box-shadow: var(--shadow-light); /* 使用主题轻微阴影 */
+            padding: 20px; /* 内边距 */
+            margin-bottom: 20px; /* 底部边距，与下方内容分隔 */
+            width: 100%; /* 宽度100%，填满父容器 */
+        }
+
+        /* 图表容器样式 - 用于Chart.js图表的容器 */
+        .chart-container {
+            position: relative; /* 相对定位，为子元素提供定位基准 */
+            height: 300px; /* 固定高度，确保图表显示正常 */
+            width: 100%; /* 宽度100%，填满父容器 */
+        }
+        
+        /* 页面头部样式 - 标题和筛选器区域 */
+        .page-header {
+            display: flex; /* 使用flex布局 */
+            justify-content: space-between; /* 两端对齐 */
+            align-items: center; /* 垂直居中 */
+            margin-bottom: 20px; /* 底部边距，与下方内容分隔 */
+        }
+        
+        .page-header h2 {
+            margin: 0; /* 重置默认margin */
+            color: var(--text-primary); /* 使用主题主文本颜色 */
+        }
+        
+        /* 日期筛选器样式 - 日期选择区域 */
+        .date-filter {
+            display: flex; /* 使用flex布局 */
+            align-items: center; /* 垂直居中 */
+            gap: 16px; /* 元素间距 */
+        }
+        
+        /* 日期选择器样式 - 单个日期选择组件 */
+        .date-selector {
+            display: flex; /* 使用flex布局 */
+            align-items: center; /* 垂直居中 */
+            gap: 8px; /* 元素间距 */
+        }
+        
+        .date-selector label {
+            color: var(--text-secondary); /* 使用主题次要文本颜色 */
+            font-size: var(--font-size-sm); /* 使用主题小字体 */
+        }
+        
+        .date-selector select {
+            padding: 4px 8px; /* 内边距 */
+            border: 1px solid var(--border-color); /* 使用主题边框颜色 */
+            border-radius: var(--radius-small); /* 使用主题小圆角 */
+            background-color: var(--bg-primary); /* 使用主题背景色 */
+            color: var(--text-primary); /* 使用主题主文本颜色 */
+        }
+        
+        /* KPI卡片样式 - 单个关键绩效指标卡片 */
+        .kpi-card {
+            background-color: var(--bg-primary); /* 使用主题背景色 */
+            border-radius: var(--radius-medium); /* 使用主题中等圆角 */
+            box-shadow: var(--shadow-light); /* 使用主题轻微阴影 */
+            padding: 20px; /* 内边距 */
+            display: flex; /* 使用flex布局 */
+            align-items: center; /* 垂直居中 */
+            gap: 16px; /* 元素间距 */
+            border-left: 4px solid var(--primary-color); /* 左侧边框，区分不同类型的卡片 */
+        }
+        
+        .kpi-card.total {
+            border-left-color: var(--primary-color); /* 总数卡片使用主题主要颜色 */
+        }
+        
+        .kpi-card.pending {
+            border-left-color: var(--warning-color); /* 待处理卡片使用主题警告颜色 */
+        }
+        
+        .kpi-card.pass-rate {
+            border-left-color: var(--success-color); /* 通过率卡片使用主题成功颜色 */
+        }
+        
+        .kpi-card.average-time {
+            border-left-color: var(--info-color); /* 平均时间卡片使用主题信息颜色 */
+        }
+        
+        /* KPI图标样式 - 卡片内的图标容器 */
+        .kpi-icon {
+            width: 48px; /* 固定宽度 */
+            height: 48px; /* 固定高度 */
+            border-radius: 50%; /* 圆形图标 */
+            display: flex; /* 使用flex布局 */
+            align-items: center; /* 垂直居中 */
+            justify-content: center; /* 水平居中 */
+            font-size: 24px; /* 图标字体大小 */
+            background-color: var(--primary-light); /* 使用主题主要浅色背景 */
+            color: var(--primary-color); /* 使用主题主要颜色 */
+        }
+        
+        /* 不同类型KPI卡片的图标颜色 */
+        .kpi-card.pending .kpi-icon {
+            background-color: var(--warning-light); /* 待处理卡片图标使用主题警告浅色背景 */
+            color: var(--warning-color); /* 待处理卡片图标使用主题警告颜色 */
+        }
+        
+        .kpi-card.pass-rate .kpi-icon {
+            background-color: var(--success-light); /* 通过率卡片图标使用主题成功浅色背景 */
+            color: var(--success-color); /* 通过率卡片图标使用主题成功颜色 */
+        }
+        
+        .kpi-card.average-time .kpi-icon {
+            background-color: var(--info-light); /* 平均时间卡片图标使用主题信息浅色背景 */
+            color: var(--info-color); /* 平均时间卡片图标使用主题信息颜色 */
+        }
+        
+        /* KPI内容区域样式 */
+        .kpi-content {
+            flex: 1; /* 灵活占据剩余空间 */
+        }
+        
+        .kpi-label {
+            font-size: var(--font-size-sm); /* 使用主题小字体 */
+            color: var(--text-secondary); /* 使用主题次要文本颜色 */
+            margin-bottom: 4px; /* 底部边距，与数值分隔 */
+        }
+        
+        .kpi-value {
+            font-size: var(--font-size-2xl); /* 使用主题超大字体 */
+            font-weight: var(--font-weight-bold); /* 使用主题粗体字重 */
+            color: var(--text-primary); /* 使用主题主文本颜色 */
+        }
+        
+        .kpi-change {
+            font-size: var(--font-size-xs); /* 使用主题超小字体 */
+            color: var(--text-tertiary); /* 使用主题次要文本颜色 */
+            margin-top: 4px; /* 顶部边距，与数值分隔 */
+        }
+        
+        /* 图表容器样式 - 多个图表的网格布局 */
+        .charts-container {
+            display: grid; /* 使用grid布局 */
+            grid-template-columns: 2fr 1fr; /* 两列布局，比例2:1 */
+            gap: 20px; /* 图表间距 */
+            margin-bottom: 20px; /* 底部边距，与下方内容分隔 */
+        }
+        
+        /* 图表卡片样式 - 单个图表的容器 */
+        .chart-card {
+            background-color: var(--bg-primary); /* 使用主题背景色 */
+            border-radius: var(--radius-medium); /* 使用主题中等圆角 */
+            box-shadow: var(--shadow-light); /* 使用主题轻微阴影 */
+            padding: 20px; /* 内边距 */
+        }
+        
+        /* 图表头部样式 - 图表标题和操作按钮区域 */
+        .chart-header {
+            display: flex; /* 使用flex布局 */
+            justify-content: space-between; /* 两端对齐 */
+            align-items: center; /* 垂直居中 */
+            margin-bottom: 20px; /* 底部边距，与图表内容分隔 */
+        }
+        
+        .chart-title {
+            font-size: var(--font-size-lg); /* 使用主题大字体 */
+            font-weight: var(--font-weight-semibold); /* 使用主题半粗体字重 */
+            color: var(--text-primary); /* 使用主题主文本颜色 */
+        }
+        
+        /* 图表操作按钮组样式 */
+        .chart-actions {
+            display: flex; /* 使用flex布局 */
+            gap: 8px; /* 按钮间距 */
+        }
+        
+        /* 图表周期切换按钮样式 */
+        .chart-period-btn {
+            padding: 4px 12px; /* 内边距 */
+            border: 1px solid var(--border-color); /* 使用主题边框颜色 */
+            background-color: var(--bg-primary); /* 使用主题背景色 */
+            color: var(--text-secondary); /* 使用主题次要文本颜色 */
+            border-radius: var(--radius-small);
+            font-size: var(--font-size-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .chart-period-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .chart-period-btn:hover:not(.active) {
+            background-color: var(--bg-secondary);
+        }
+        
+        .chart-body {
+            position: relative;
+            height: 300px;
+        }
+        
+        .bottom-charts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+        
+        .review-process-chart .chart-body {
+            height: 350px;
+        }
+        
+        .hospital-ranking-chart .chart-body {
+            height: 350px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="page-header">
+                <h2>慢病数据看板</h2>
+                <div class="date-filter">
+                    <div class="date-selector">
+                        <label for="dateRange">时间范围：</label>
+                        <select id="dateRange" onchange="updateDashboard()">
+                            <option value="30">近30天</option>
+                            <option value="90">近90天</option>
+                            <option value="180">近半年</option>
+                            <option value="365">近一年</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="refreshDashboard()">
+                        🚀 刷新
+                    </button>
+                </div>
+            </div>
+
+            <!-- 核心指标卡片 -->
+            <div class="kpi-cards">
+                <div class="kpi-card total">
+                    <div class="kpi-icon">📋</div>
+                    <div class="kpi-content">
+                        <div class="kpi-label">总申请量</div>
+                        <div class="kpi-value" id="totalApplications">1,284</div>
+                        <div class="kpi-change">较上月 <span style="color: var(--success-color);">+12.5%</span></div>
+                    </div>
+                </div>
+                <div class="kpi-card pending">
+                    <div class="kpi-icon">⏳</div>
+                    <div class="kpi-content">
+                        <div class="kpi-label">待评审量</div>
+                        <div class="kpi-value" id="pendingApplications">98</div>
+                        <div class="kpi-change">较上月 <span style="color: var(--error-color);">-8.2%</span></div>
+                    </div>
+                </div>
+                <div class="kpi-card pass-rate">
+                    <div class="kpi-icon">✅</div>
+                    <div class="kpi-content">
+                        <div class="kpi-label">通过率</div>
+                        <div class="kpi-value" id="passRate">76.8%</div>
+                        <div class="kpi-change">较上月 <span style="color: var(--success-color);">+2.3%</span></div>
+                    </div>
+                </div>
+                <div class="kpi-card average-time">
+                    <div class="kpi-icon">⌛</div>
+                    <div class="kpi-content">
+                        <div class="kpi-label">平均评审时长</div>
+                        <div class="kpi-value" id="averageReviewTime">3.2 天</div>
+                        <div class="kpi-change">较上月 <span style="color: var(--success-color);">-0.3 天</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主要图表区域 -->
+            <div class="charts-container">
+                <!-- 申报趋势图表 -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">申报趋势</div>
+                        <div class="chart-actions">
+                            <button class="chart-period-btn active" onclick="changeTrendPeriod(7)">近7天</button>
+                            <button class="chart-period-btn" onclick="changeTrendPeriod(30)">近30天</button>
+                            <button class="chart-period-btn" onclick="changeTrendPeriod(90)">近90天</button>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- 病种分布图表 -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">病种分布</div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="diseaseDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部图表区域 -->
+            <div class="bottom-charts">
+                <!-- 评审流程效率图表 -->
+                <div class="chart-card review-process-chart">
+                    <div class="chart-header">
+                        <div class="chart-title">评审流程效率</div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="reviewProcessChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- 医院申报排名图表 -->
+                <div class="chart-card hospital-ranking-chart">
+                    <div class="chart-header">
+                        <div class="chart-title">医院申报排名</div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="hospitalRankingChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载统一菜单组件脚本 -->
+    <script>
+    // 加载统一菜单组件
+    fetch('../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+
+    <script>
+        // 生成日期数组
+        function generateDates(days) {
+            const dates = [];
+            const today = new Date();
+            
+            for (let i = days - 1; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                dates.push(date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }));
+            }
+            
+            return dates;
+        }
+
+        // 生成随机数据
+        function generateRandomData(count, min, max) {
+            return Array.from({ length: count }, () => Math.floor(Math.random() * (max - min + 1)) + min);
+        }
+
+        // 申报趋势图表
+        let trendChart;
+        function initTrendChart(days = 30) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            const dates = generateDates(days);
+            const submittedData = generateRandomData(days, 20, 60);
+            const approvedData = submittedData.map(val => Math.floor(val * 0.7));
+            
+            if (trendChart) {
+                trendChart.destroy();
+            }
+            
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: '提交数量',
+                            data: submittedData,
+                            borderColor: 'var(--primary-color)',
+                            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        },
+                        {
+                            label: '通过数量',
+                            data: approvedData,
+                            borderColor: 'var(--success-color)',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'var(--bg-primary)',
+                            titleColor: 'var(--text-primary)',
+                            bodyColor: 'var(--text-secondary)',
+                            borderColor: 'var(--border-color)',
+                            borderWidth: 1,
+                            padding: 12,
+                            boxPadding: 6
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'var(--border-color-light)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'var(--text-tertiary)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'var(--text-tertiary)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 病种分布图表
+        let diseaseDistributionChart;
+        function initDiseaseDistributionChart() {
+            const ctx = document.getElementById('diseaseDistributionChart').getContext('2d');
+            
+            const diseaseData = {
+                labels: ['高血压并发症', '2型糖尿病', '冠心病', '脑卒中后遗症', '慢性肾脏病'],
+                data: [42, 28, 15, 10, 5]
+            };
+            
+            const colors = [
+                'var(--primary-color)',
+                'var(--warning-color)',
+                'var(--success-color)',
+                'var(--info-color)',
+                'var(--error-color)'
+            ];
+            
+            if (diseaseDistributionChart) {
+                diseaseDistributionChart.destroy();
+            }
+            
+            diseaseDistributionChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: diseaseData.labels,
+                    datasets: [{
+                        data: diseaseData.data,
+                        backgroundColor: colors,
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: 'var(--text-secondary)',
+                                padding: 15,
+                                boxWidth: 12
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'var(--bg-primary)',
+                            titleColor: 'var(--text-primary)',
+                            bodyColor: 'var(--text-secondary)',
+                            borderColor: 'var(--border-color)',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 评审流程效率图表
+        let reviewProcessChart;
+        function initReviewProcessChart() {
+            const ctx = document.getElementById('reviewProcessChart').getContext('2d');
+            
+            const stages = ['提交申请', '初审', '专家评审', '结果公示', '资格确认'];
+            const currentMonth = [3.5, 1.2, 4.1, 2.0, 0.8];
+            const previousMonth = [3.8, 1.5, 4.5, 2.2, 0.9];
+            
+            if (reviewProcessChart) {
+                reviewProcessChart.destroy();
+            }
+            
+            reviewProcessChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: stages,
+                    datasets: [
+                        {
+                            label: '本月平均时长(天)',
+                            data: currentMonth,
+                            backgroundColor: 'var(--primary-color)',
+                            borderRadius: 4
+                        },
+                        {
+                            label: '上月平均时长(天)',
+                            data: previousMonth,
+                            backgroundColor: 'var(--border-color)',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            backgroundColor: 'var(--bg-primary)',
+                            titleColor: 'var(--text-primary)',
+                            bodyColor: 'var(--text-secondary)',
+                            borderColor: 'var(--border-color)',
+                            borderWidth: 1,
+                            padding: 12
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'var(--border-color-light)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'var(--text-tertiary)'
+                            },
+                            title: {
+                                display: true,
+                                text: '平均时长(天)',
+                                color: 'var(--text-secondary)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'var(--text-tertiary)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 医院申报排名图表
+        let hospitalRankingChart;
+        function initHospitalRankingChart() {
+            const ctx = document.getElementById('hospitalRankingChart').getContext('2d');
+            
+            const hospitals = ['北京协和医院', '北京天坛医院', '北京中日友好医院', '北京医院', '北京安贞医院'];
+            const applications = [325, 285, 248, 203, 187];
+            const passRates = [82, 78, 75, 79, 81];
+            
+            if (hospitalRankingChart) {
+                hospitalRankingChart.destroy();
+            }
+            
+            hospitalRankingChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: hospitals,
+                    datasets: [
+                        {
+                            label: '申报数量',
+                            data: applications,
+                            backgroundColor: 'var(--primary-light)',
+                            borderColor: 'var(--primary-color)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '通过率(%)',
+                            data: passRates,
+                            backgroundColor: 'transparent',
+                            borderColor: 'var(--success-color)',
+                            borderWidth: 2,
+                            pointBackgroundColor: 'var(--success-color)',
+                            pointRadius: 4,
+                            type: 'line',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            backgroundColor: 'var(--bg-primary)',
+                            titleColor: 'var(--text-primary)',
+                            bodyColor: 'var(--text-secondary)',
+                            borderColor: 'var(--border-color)',
+                            borderWidth: 1,
+                            padding: 12
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'var(--border-color-light)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: 'var(--text-tertiary)'
+                            },
+                            title: {
+                                display: true,
+                                text: '申报数量',
+                                color: 'var(--text-secondary)'
+                            }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            max: 100,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'var(--text-tertiary)',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: '通过率(%)',
+                                color: 'var(--text-secondary)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'var(--text-tertiary)',
+                                maxRotation: 45,
+                                minRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 更新申报趋势图表周期
+        function changeTrendPeriod(days) {
+            // 更新按钮状态
+            document.querySelectorAll('.chart-period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 重新初始化图表
+            initTrendChart(days);
+        }
+
+        // 更新整个仪表盘
+        function updateDashboard() {
+            const dateRange = document.getElementById('dateRange').value;
+            // 这里可以根据日期范围更新所有数据
+            
+            // 模拟数据更新效果
+            refreshDashboard();
+        }
+
+        // 刷新仪表盘数据
+        function refreshDashboard() {
+            // 模拟加载效果
+            const kpiValues = document.querySelectorAll('.kpi-value');
+            kpiValues.forEach(element => {
+                const originalValue = element.textContent;
+                element.textContent = '加载中...';
+                
+                setTimeout(() => {
+                    element.textContent = originalValue;
+                }, 500);
+            });
+            
+            // 重新初始化所有图表
+            initTrendChart();
+            initDiseaseDistributionChart();
+            initReviewProcessChart();
+            initHospitalRankingChart();
+        }
+
+        // 页面加载完成后初始化仪表盘
+        document.addEventListener('DOMContentLoaded', function() {
+            initTrendChart();
+            initDiseaseDistributionChart();
+            initReviewProcessChart();
+            initHospitalRankingChart();
+        });
+    </script>
+</body>
+</html>

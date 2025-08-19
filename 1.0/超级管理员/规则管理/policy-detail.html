@@ -1,0 +1,3674 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政策规则详情 - 医保审核规则管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* 面包屑导航 */
+        .breadcrumb {
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #2196f3;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .policy-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .policy-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .policy-code {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .policy-level {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .policy-level.national {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .policy-level.provincial {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+
+        .policy-level.municipal {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .policy-status {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .policy-status.active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .policy-status.inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .policy-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-outline {
+            background: #fff;
+            color: #2196f3;
+            border: 1px solid #2196f3;
+        }
+
+        .btn-outline:hover {
+            background: #2196f3;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        /* 详情容器 */
+        .detail-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* 主标签页导航 */
+        .main-tab-navigation {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .main-tab-item {
+            flex: 1;
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .main-tab-item:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .main-tab-item.active {
+            background: #fff;
+            color: #2196f3;
+            border-bottom-color: #2196f3;
+        }
+
+        /* 主标签页内容 */
+        .main-tab-contents {
+            padding: 24px;
+        }
+
+        .main-tab-content {
+            display: none;
+        }
+
+        .main-tab-content.active {
+            display: block;
+        }
+
+        /* 信息卡片 */
+        .info-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .rules-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            background: #f8f9fa;
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        /* 信息网格 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .info-item label {
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .info-item span {
+            color: #333;
+            font-size: 16px;
+        }
+
+        /* 统计栏 */
+        .stats-bar {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 24px;
+            font-weight: 600;
+            color: #2196f3;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 管理头部 */
+        .management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .management-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .management-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-primary {
+            background: #2196f3;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #1976d2;
+        }
+
+        /* 筛选器 */
+        .filters {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* 规则布局 */
+        .rules-layout {
+            display: flex;
+            gap: 24px;
+            min-height: 500px;
+        }
+
+        .vertical-tab-navigation {
+            min-width: 200px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        .vertical-tab-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .vertical-tab-item:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .vertical-tab-item.active {
+            background: #2196f3;
+            color: white;
+        }
+
+        .rules-content {
+            flex: 1;
+            padding: 24px;
+        }
+
+        .vertical-tab-contents {
+            height: 100%;
+        }
+
+        .vertical-tab-content {
+            display: none;
+        }
+
+        .vertical-tab-content.active {
+            display: block;
+        }
+
+        .tab-count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .vertical-tab-item.active .tab-count {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Policy Layout */
+        .policy-layout {
+            display: flex;
+            gap: 24px;
+            height: 600px;
+        }
+
+        .policy-sidebar {
+            width: 280px;
+            background: #fafafa;
+            border: 1px solid #f0f0f0;
+            border-radius: 6px;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .policy-search {
+            margin-bottom: 16px;
+        }
+
+        .policy-search input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .policy-search input:focus {
+            border-color: #1890ff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+
+        .policy-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .policy-item {
+            padding: 12px 16px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .policy-item:hover {
+            background: #f0f8ff;
+        }
+
+        .policy-item.active {
+            background: #1890ff;
+            color: white;
+        }
+
+        .policy-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .policy-meta {
+            font-size: 12px;
+            color: #999;
+            line-height: 1.3;
+        }
+
+        .policy-item.active .policy-meta {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .policy-content {
+            flex: 1;
+            background: white;
+            border-radius: 6px;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .policy-content-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .policy-content-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 12px;
+        }
+
+        .policy-content-meta {
+            display: flex;
+            gap: 24px;
+            font-size: 13px;
+            color: #8c8c8c;
+        }
+
+        .policy-content-meta span {
+            margin-right: 0;
+        }
+
+        .policy-content-body {
+            line-height: 1.6;
+        }
+
+        .rule-section {
+            margin-bottom: 24px;
+        }
+
+        .rule-section h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 12px;
+        }
+
+        .rule-section p {
+            font-size: 14px;
+            color: #595959;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .rule-section ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        .rule-section li {
+            font-size: 14px;
+            color: #595959;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .risk-level {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .risk-level.high {
+            background: #fff2f0;
+            color: #ff4d4f;
+            border: 1px solid #ffccc7;
+        }
+
+        .risk-level.medium {
+            background: #fff7e6;
+            color: #fa8c16;
+            border: 1px solid #ffd591;
+        }
+
+        .risk-level.low {
+            background: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+
+        
+
+
+        /* 文档卡片样式 */
+        .document-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .document-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            background: #f8f9fa;
+        }
+
+        .document-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .document-type {
+            font-weight: 600;
+            color: #2196f3;
+            font-size: 16px;
+        }
+
+        .document-number,
+        .publish-date,
+        .publish-org {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .document-content {
+            padding: 24px;
+        }
+
+        .document-section {
+            margin-bottom: 24px;
+        }
+
+        .document-section h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .document-section p {
+            line-height: 1.8;
+            color: #34495e;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .document-list {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .document-list li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+            color: #34495e;
+        }
+
+        /* 规则列表 */
+        .rules-list {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .rules-header {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            display: grid;
+            grid-template-columns: 1fr 120px 100px 100px 120px;
+            gap: 16px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .rule-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .rule-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .rule-item:last-child {
+            border-bottom: none;
+        }
+
+        .rule-info {
+            flex: 1;
+        }
+
+        .rule-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .rule-name:hover {
+            color: #667eea;
+        }
+
+        .rule-desc {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .rule-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .rule-priority {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .rule-priority.priority-high {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .rule-priority.priority-medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .rule-priority.priority-low {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .rule-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .rule-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .rule-section h4 {
+            margin: 0 0 12px 0;
+            color: #1f2937;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .rule-section p {
+            margin: 0;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+
+        .rule-section ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #4b5563;
+        }
+
+        .rule-section li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .risk-level {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .risk-level.high {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .risk-level.medium {
+            background: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fed7aa;
+        }
+
+        .risk-level.low {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .rule-type {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .rule-type.interpretation {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .rule-type.execution {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+
+        .rule-type.supervision {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .rule-type.compliance {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .rule-type.risk {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .rule-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .rule-status.active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .rule-status.inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .rule-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: #fff;
+            color: #333;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination button:hover {
+            background: #f8f9fa;
+        }
+
+        .pagination button.active {
+            background: #2196f3;
+            color: #fff;
+            border-color: #2196f3;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: #999;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .main-tab-navigation {
+                flex-direction: column;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .rules-header,
+            .rule-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .management-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+        }
+
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 20px 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px 20px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .policy-content {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .policy-content-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .policy-content-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .policy-content-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .policy-content-body {
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .policy-content-body h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+            color: #333;
+        }
+
+        .policy-content-body p {
+            margin-bottom: 16px;
+        }
+
+        .policy-content-body ul {
+            margin-bottom: 16px;
+            padding-left: 20px;
+        }
+
+        .policy-content-body li {
+            margin-bottom: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+        }
+
+        .rule-detail {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #007bff;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .file-name:hover {
+            text-decoration: underline;
+        }
+
+        .file-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 面包屑导航 -->
+        <div class="breadcrumb">
+            <a href="index.html">首页</a> > 
+            <a href="index.html#policy">相关政策规则库</a> > 
+            <span id="breadcrumbPolicy">政策名称</span>
+        </div>
+
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="policy-title">
+                    <h1 id="policyTitle">政策名称</h1>
+                    <span class="policy-code" id="policyCode">-</span>
+                    <span class="policy-level national" id="policyLevel">国家级</span>
+                    <span class="policy-status active" id="policyStatus">生效</span>
+                </div>
+                <div class="policy-actions">
+                    <button class="btn btn-outline" onclick="editPolicy()">编辑政策</button>
+                    <button class="btn btn-secondary" onclick="togglePolicyStatus()">停用</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-container">
+            <div class="main-tab-navigation">
+                <button class="main-tab-item active" onclick="switchMainTab('basic')">基本信息</button>
+                <button class="main-tab-item" onclick="switchMainTab('interpretation')">政策解读</button>
+                <button class="main-tab-item" onclick="switchMainTab('execution')">执行标准</button>
+                <button class="main-tab-item" onclick="switchMainTab('supervision')">监管要求</button>
+                <button class="main-tab-item" onclick="switchMainTab('compliance')">合规检查</button>
+                <button class="main-tab-item" onclick="switchMainTab('risk')">风险评估</button>
+            </div>
+
+            <div class="main-tab-contents">
+                <!-- 基本信息Tab -->
+                <div id="basic-tab" class="main-tab-content active">
+                    <div class="info-card">
+                        <div class="card-header">
+                            <h3>基本信息</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-grid" id="policyInfoGrid">
+                                <div class="info-item">
+                                    <label>政策编号</label>
+                                    <span id="basicPolicyCode">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>发布机构</label>
+                                    <span id="basicPolicyOrg">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>政策级别</label>
+                                    <span id="basicPolicyLevel">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>发布日期</label>
+                                    <span id="basicPublishDate">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>生效日期</label>
+                                    <span id="basicEffectiveDate">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>失效日期</label>
+                                    <span id="basicExpiryDate">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>总规则数</label>
+                                    <span id="basicTotalRules">0</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>最后更新</label>
+                                    <span id="basicLastUpdate">-</span>
+                                </div>
+                                <div class="info-item full-width">
+                                    <label>政策摘要</label>
+                                    <span id="basicPolicySummary">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-bar">
+                        <div class="stats-grid" id="statsGrid">
+                            <div class="stat-item">
+                                <span class="stat-number" id="statInterpretationRules">0</span>
+                                <span class="stat-label">政策解读规则</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="statExecutionRules">0</span>
+                                <span class="stat-label">执行标准规则</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="statSupervisionRules">0</span>
+                                <span class="stat-label">监管要求规则</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="statComplianceRules">0</span>
+                                <span class="stat-label">合规检查规则</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="statRiskRules">0</span>
+                                <span class="stat-label">风险评估规则</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 政策解读Tab -->
+                <div id="interpretation-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" placeholder="搜索政策解读..." id="interpretationSearchInput" oninput="filterInterpretationPolicies()">
+                            </div>
+                            <ul class="policy-list" id="interpretationPolicyList">
+                                <!-- 动态加载政策列表 -->
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="interpretationPolicyContent">
+                            <!-- 动态加载政策内容 -->
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 执行标准Tab -->
+                <div id="execution-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" id="executionSearchInput" onkeyup="filterExecutionPolicies()" placeholder="搜索规范...">
+                            </div>
+                            <ul id="executionPolicyList" class="policy-list">
+                                <!-- 执行标准列表将由JS动态加载 -->
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="executionPolicyContent">
+                            <!-- 执行标准内容将由JS动态加载 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 监管要求Tab -->
+                <div id="supervision-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" id="supervisionSearchInput" onkeyup="filterSupervisionPolicies()" placeholder="搜索要求...">
+                            </div>
+                            <ul id="supervisionPolicyList" class="policy-list">
+                                <!-- 监管要求列表将由JS动态加载 -->
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="supervisionPolicyContent">
+                            <!-- 监管要求内容将由JS动态加载 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 合规检查Tab -->
+                <div id="compliance-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" id="complianceSearchInput" onkeyup="filterCompliancePolicies()" placeholder="搜索检查...">
+                            </div>
+                            <ul id="compliancePolicyList" class="policy-list">
+                                <!-- 合规检查列表将由JS动态加载 -->
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="compliancePolicyContent">
+                            <!-- 合规检查内容将由JS动态加载 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 风险评估Tab -->
+                <div id="risk-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" id="riskSearchInput" onkeyup="filterRiskPolicies()" placeholder="搜索风险...">
+                            </div>
+                            <ul id="riskPolicyList" class="policy-list">
+                                <!-- 风险评估列表将由JS动态加载 -->
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="riskPolicyContent">
+                            <!-- 风险评估内容将由JS动态加载 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+        const supervisionPolicies = [
+            { 
+                id: 'sup_background', 
+                title: '医保基金监管体系建设要求', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-005', 
+                date: '2023-04-01',
+                description: '建立健全医保基金监管体系，完善监管制度机制，提升监管能力和水平。',
+                conditions: [
+                    '监管体系不完善',
+                    '监管制度缺失或滞后',
+                    '监管能力不足',
+                    '监管手段单一'
+                ],
+                action: '建立多层次监管体系，完善制度建设，加强能力建设，创新监管方式。',
+                riskLevel: 'high'
+            },
+            { 
+                id: 'sup_purpose', 
+                title: '定点医疗机构监管要求', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-006', 
+                date: '2023-04-05',
+                description: '加强对定点医疗机构的监管，规范医疗服务行为，确保医保基金安全。',
+                conditions: [
+                    '违规收费行为',
+                    '过度医疗服务',
+                    '虚假医疗记录',
+                    '套取医保基金'
+                ],
+                action: '建立常态化监管机制，加强现场检查，严肃查处违规行为，完善退出机制。',
+                riskLevel: 'high'
+            },
+            { 
+                id: 'sup_scope', 
+                title: '医保基金使用监督检查', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-007', 
+                date: '2023-04-10',
+                description: '对医保基金使用情况进行全面监督检查，防范基金使用风险。',
+                conditions: [
+                    '基金使用不规范',
+                    '资金流向不明',
+                    '违规支付情况',
+                    '监督检查不到位'
+                ],
+                action: '建立全覆盖监督检查体系，加强资金流向监控，严格违规处罚，完善监督机制。',
+                riskLevel: 'medium'
+            }
+        ];
+
+        // 加载监管要求列表
+        function loadSupervisionPolicies(policies) {
+            const policyList = document.getElementById('supervisionPolicyList');
+            if (policyList) {
+                policyList.innerHTML = policies.map(policy => `
+                    <li class="policy-item" data-id="${policy.id}" onclick="showSupervisionContent('${policy.id}')">
+                        <div class="policy-title">${policy.title}</div>
+                        <div class="policy-meta">${policy.agency} • ${policy.docNumber}</div>
+                    </li>
+                `).join('');
+            }
+        }
+
+        // 显示选定的监管要求内容
+        function showSupervisionContent(policyId) {
+            const policy = supervisionPolicies.find(p => p.id === policyId);
+            const contentContainer = document.getElementById('supervisionPolicyContent');
+            
+            if (policy && contentContainer) {
+                contentContainer.innerHTML = `
+                    <div class="policy-content-header">
+                        <div class="policy-content-title">${policy.title}</div>
+                        <div class="policy-content-meta">
+                            <span>发布机构：${policy.agency}</span>
+                            <span>发布文号：${policy.docNumber}</span>
+                            <span>发布日期：${policy.date}</span>
+                        </div>
+                    </div>
+                    <div class="policy-content-body">
+                        <div class="rule-section">
+                            <h4>规则描述</h4>
+                            <p>${policy.description}</p>
+                        </div>
+                        <div class="rule-section">
+                            <h4>检查条件</h4>
+                            <ul>
+                                ${policy.conditions.map(condition => `<li>${condition}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="rule-section">
+                            <h4>处理方式</h4>
+                            <p>${policy.action}</p>
+                        </div>
+                        <div class="rule-section">
+                            <h4>风险等级</h4>
+                            <span class="risk-level ${policy.riskLevel}">${policy.riskLevel === 'high' ? '高风险' : policy.riskLevel === 'medium' ? '中风险' : '低风险'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                const policyListItems = document.querySelectorAll('#supervisionPolicyList .policy-item');
+                policyListItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-id') === policyId) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // 筛选监管要求
+        function filterSupervisionPolicies() {
+            const searchTerm = document.getElementById('supervisionSearchInput').value.toLowerCase();
+            const filteredPolicies = supervisionPolicies.filter(policy => 
+                policy.title.toLowerCase().includes(searchTerm) || 
+                policy.agency.toLowerCase().includes(searchTerm)
+            );
+            loadSupervisionPolicies(filteredPolicies);
+        }
+
+        // 合规检查 mock data
+        const compliancePolicies = [
+            { 
+                id: 'comp_1', 
+                title: '医疗服务合规性检查', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-008', 
+                date: '2023-05-01',
+                description: '对医疗服务提供过程中的合规性进行全面检查，确保医疗服务符合相关规定。',
+                conditions: [
+                    '医疗服务项目超范围',
+                    '收费标准不符合规定',
+                    '医疗记录不完整',
+                    '服务质量不达标'
+                ],
+                action: '责令整改，暂停相关服务项目，情节严重的取消定点资格。',
+                riskLevel: 'high'
+            },
+            { 
+                id: 'comp_2', 
+                title: '药品使用合规检查', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-009', 
+                date: '2023-05-05',
+                description: '检查药品采购、存储、使用等环节的合规性，防范药品使用风险。',
+                conditions: [
+                    '药品采购渠道不合规',
+                    '药品存储条件不达标',
+                    '用药不合理',
+                    '药品价格虚高'
+                ],
+                action: '加强药品管理，规范采购流程，建立用药监控机制。',
+                riskLevel: 'medium'
+            },
+            { 
+                id: 'comp_3', 
+                title: '医保基金使用合规审查', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-010', 
+                date: '2023-05-10',
+                description: '审查医保基金使用的合规性，确保基金使用符合政策规定。',
+                conditions: [
+                    '基金使用超范围',
+                    '虚假申报费用',
+                    '重复报销',
+                    '挪用医保基金'
+                ],
+                action: '追回违规资金，依法处罚，建立黑名单制度。',
+                riskLevel: 'high'
+            }
+        ];
+
+        // 加载合规检查列表
+        function loadCompliancePolicies(policies) {
+            const policyList = document.getElementById('compliancePolicyList');
+            if (policyList) {
+                policyList.innerHTML = policies.map(policy => `
+                    <li class="policy-item" data-id="${policy.id}" onclick="showComplianceContent('${policy.id}')">
+                        <div class="policy-title">${policy.title}</div>
+                        <div class="policy-meta">${policy.agency} • ${policy.docNumber}</div>
+                    </li>
+                `).join('');
+            }
+        }
+
+        // 显示选定的合规检查内容
+        function showComplianceContent(policyId) {
+            const policy = compliancePolicies.find(p => p.id === policyId);
+            const contentDiv = document.getElementById('compliancePolicyContent');
+            if (policy) {
+                contentDiv.innerHTML = `
+                    <h2>${policy.title}</h2>
+                    <p>${policy.content}</p>
+                `;
+            }
+            
+            const policyListItems = document.querySelectorAll('#compliancePolicyList li');
+            if (policyListItems) {
+                policyListItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-id') === policyId) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // 筛选合规检查
+        function filterCompliancePolicies() {
+            const searchTerm = document.getElementById('complianceSearchInput').value.toLowerCase();
+            const filteredPolicies = compliancePolicies.filter(policy => 
+                policy.title.toLowerCase().includes(searchTerm)
+            );
+            loadCompliancePolicies(filteredPolicies);
+        }
+
+        // 风险评估 mock data
+        const riskPolicies = [
+            { 
+                id: 'risk_1', 
+                title: '医保基金风险预警机制', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-011', 
+                date: '2023-06-01',
+                description: '建立医保基金风险预警和防控机制，及时识别和化解基金运行风险。',
+                conditions: [
+                    '基金收支不平衡',
+                    '异常医疗费用增长',
+                    '欺诈骗保行为频发',
+                    '监管漏洞和盲区'
+                ],
+                action: '建立风险预警指标体系，完善监测预警机制，加强风险评估和应对，确保基金安全运行。',
+                riskLevel: 'high'
+            },
+            { 
+                id: 'risk_2', 
+                title: '定点医疗机构风险评估', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-012', 
+                date: '2023-06-15',
+                description: '对定点医疗机构进行风险等级评估，实施分级分类监管。',
+                conditions: [
+                    '医疗服务行为异常',
+                    '费用增长过快',
+                    '违规行为记录',
+                    '内控制度不完善'
+                ],
+                action: '建立风险评估模型，定期开展风险评估，根据风险等级实施差异化监管措施。',
+                riskLevel: 'medium'
+            }
+        ];
+
+        // 加载风险评估列表
+        function loadRiskPolicies(policies) {
+            const policyList = document.getElementById('riskPolicyList');
+            if (policyList) {
+                policyList.innerHTML = policies.map(policy => `
+                    <li class="policy-item" data-id="${policy.id}" onclick="showRiskContent('${policy.id}')">
+                        <div class="policy-title">${policy.title}</div>
+                        <div class="policy-meta">${policy.agency} • ${policy.docNumber}</div>
+                    </li>
+                `).join('');
+            }
+        }
+
+        // 显示选定的风险评估内容
+        function showRiskContent(policyId) {
+            const policy = riskPolicies.find(p => p.id === policyId);
+            const contentDiv = document.getElementById('riskPolicyContent');
+            if (policy) {
+                contentDiv.innerHTML = `
+                    <h2>${policy.title}</h2>
+                    <p>${policy.content}</p>
+                `;
+            }
+            
+            const policyListItems = document.querySelectorAll('#riskPolicyList li');
+            if (policyListItems) {
+                policyListItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-id') === policyId) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // 筛选风险评估
+        function filterRiskPolicies() {
+            const searchTerm = document.getElementById('riskSearchInput').value.toLowerCase();
+            const filteredPolicies = riskPolicies.filter(policy => 
+                policy.title.toLowerCase().includes(searchTerm)
+            );
+            loadRiskPolicies(filteredPolicies);
+        }
+
+        const executionPolicies = [
+            { 
+                id: 'exec_background', 
+                title: '医保基金监管执行程序', 
+                agency: '国家医疗保障局', 
+                docNumber: '医保发〔2023〕1号', 
+                date: '2023-01-15',
+                description: '建立完善的医保基金监管执行程序，确保监管工作规范化、标准化、制度化。',
+                conditions: [
+                    '发现医保基金使用异常情况',
+                    '接到举报投诉线索',
+                    '定期检查发现问题',
+                    '上级部门要求专项检查'
+                ],
+                action: '按照规定程序启动调查，收集证据材料，形成调查报告，依法依规处理。',
+                riskLevel: 'high'
+            },
+            { 
+                id: 'exec_purpose', 
+                title: '监管标准和指标体系', 
+                agency: '国家医疗保障局', 
+                docNumber: '医保发〔2023〕2号', 
+                date: '2023-02-20',
+                description: '建立科学合理的监管标准和指标体系，为医保基金监管提供量化依据。',
+                conditions: [
+                    '医疗费用增长率超过预警线',
+                    '药品使用结构异常',
+                    '医疗服务频次异常',
+                    '患者就诊模式异常'
+                ],
+                action: '启动数据分析，进行风险评估，制定针对性监管措施，加强重点监控。',
+                riskLevel: 'medium'
+            },
+            { 
+                id: 'exec_scope', 
+                title: '各部门责任分工', 
+                agency: '国家医疗保障局', 
+                docNumber: '医保发〔2023〕3号', 
+                date: '2023-03-10',
+                description: '明确各级医保部门、卫生健康部门、市场监管部门等在医保基金监管中的职责分工。',
+                conditions: [
+                    '跨部门协调配合不到位',
+                    '监管职责边界不清',
+                    '信息共享机制不完善',
+                    '联合执法效率低下'
+                ],
+                action: '建立部门协调机制，明确责任清单，完善信息共享平台，提高协同监管效能。',
+                riskLevel: 'medium'
+            }
+        ];
+
+        // 加载执行标准列表
+        function loadExecutionPolicies(policies) {
+            const policyList = document.getElementById('executionPolicyList');
+            if (policyList) {
+                policyList.innerHTML = policies.map(policy => `
+                    <li class="policy-item" data-id="${policy.id}" onclick="showExecutionContent('${policy.id}')">
+                        <div class="policy-title">${policy.title}</div>
+                        <div class="policy-meta">${policy.agency} • ${policy.docNumber}</div>
+                    </li>
+                `).join('');
+            }
+        }
+
+        // 显示选定的执行标准内容
+        function showExecutionContent(policyId) {
+            const policy = executionPolicies.find(p => p.id === policyId);
+            const contentContainer = document.getElementById('executionPolicyContent');
+            
+            if (policy && contentContainer) {
+                contentContainer.innerHTML = `
+                    <div class="policy-content-header">
+                        <div class="policy-content-title">${policy.title}</div>
+                        <div class="policy-content-meta">
+                            <span>发布机构：${policy.agency}</span>
+                            <span>发布文号：${policy.docNumber}</span>
+                            <span>发布日期：${policy.date}</span>
+                        </div>
+                    </div>
+                    <div class="policy-content-body">
+                        <div class="rule-section">
+                            <h4>规则描述</h4>
+                            <p>${policy.description}</p>
+                        </div>
+                        <div class="rule-section">
+                            <h4>检查条件</h4>
+                            <ul>
+                                ${policy.conditions.map(condition => `<li>${condition}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="rule-section">
+                            <h4>处理方式</h4>
+                            <p>${policy.action}</p>
+                        </div>
+                        <div class="rule-section">
+                            <h4>风险等级</h4>
+                            <span class="risk-level ${policy.riskLevel}">${policy.riskLevel === 'high' ? '高风险' : policy.riskLevel === 'medium' ? '中风险' : '低风险'}</span>
+                        </div>
+                    </div>
+                `;
+                
+                const policyListItems = document.querySelectorAll('#executionPolicyList li');
+                policyListItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-id') === policyId) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // 筛选执行标准
+        function filterExecutionPolicies() {
+            const searchTerm = document.getElementById('executionSearchInput').value.toLowerCase();
+            const filteredPolicies = executionPolicies.filter(policy => 
+                policy.title.toLowerCase().includes(searchTerm) || 
+                policy.agency.toLowerCase().includes(searchTerm)
+            );
+            loadExecutionPolicies(filteredPolicies);
+        }
+
+        // 模拟政策解读数据
+        const interpretationPolicies = [
+            { 
+                id: 'background', 
+                title: '医保基金监管政策背景解读', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-001', 
+                date: '2023-01-15',
+                description: '为加强医疗保障基金监管，规范医疗保障基金使用，保障参保人员合法权益，根据《中华人民共和国社会保险法》等法律法规制定的监管办法。',
+                conditions: [
+                    '医疗机构存在违规使用医保基金行为',
+                    '参保人员涉嫌欺诈骗保',
+                    '医保基金支出异常增长',
+                    '定点机构服务质量下降'
+                ],
+                action: '立即启动专项检查，暂停相关医疗机构医保结算，对违规行为进行处罚，追回违规资金。',
+                riskLevel: 'high'
+            },
+            { 
+                id: 'purpose', 
+                title: '基金使用范围政策解读', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-002', 
+                date: '2023-02-01',
+                description: '明确医疗保障基金的使用范围和支付标准，确保基金合理使用，防止浪费和滥用。',
+                conditions: [
+                    '超出医保目录范围的医疗服务',
+                    '不符合临床路径的治疗方案',
+                    '重复检查和过度医疗',
+                    '虚假医疗服务项目'
+                ],
+                action: '拒绝支付超范围费用，要求医疗机构整改，建立长效监管机制。',
+                riskLevel: 'medium'
+            },
+            { 
+                id: 'scope', 
+                title: '监管适用范围解读', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-003', 
+                date: '2023-02-15',
+                description: '界定医保基金监管的适用范围，包括定点医疗机构、定点零售药店、参保人员等各类主体。',
+                conditions: [
+                    '定点医疗机构违规行为',
+                    '定点药店销售非医保药品',
+                    '参保人员违规使用医保卡',
+                    '第三方机构协助违规'
+                ],
+                action: '根据违规程度采取警告、暂停服务、解除协议等措施，情节严重的移交司法机关。',
+                riskLevel: 'high'
+            },
+            { 
+                id: 'key_points', 
+                title: '重点监管内容解读', 
+                agency: '国家医疗保障局', 
+                docNumber: 'NHSA-2023-004', 
+                date: '2023-03-01',
+                description: '重点监管医疗服务行为、医疗费用、药品使用等关键环节，防范系统性风险。',
+                conditions: [
+                    '医疗费用异常增长',
+                    '高值医用耗材使用异常',
+                    '药品配送和使用不规范',
+                    '医疗服务质量问题'
+                ],
+                action: '加强日常监管，建立预警机制，定期开展专项检查，严肃查处违规行为。',
+                riskLevel: 'high'
+            }
+        ];
+
+        // 加载政策解读列表
+        function loadInterpretationPolicies(policies) {
+            const policyList = document.getElementById('interpretationPolicyList');
+            policyList.innerHTML = policies.map(policy => `
+                <li class="policy-item" data-id="${policy.id}" onclick="showInterpretationContent('${policy.id}')">
+                    <div class="policy-title">${policy.title}</div>
+                    <div class="policy-meta">${policy.agency} • ${policy.docNumber}</div>
+                </li>
+            `).join('');
+        }
+
+        // 显示选定的政策解读内容
+        function showInterpretationContent(policyId) {
+            const policy = interpretationPolicies.find(p => p.id === policyId);
+            const contentArea = document.getElementById('interpretationPolicyContent');
+            if (policy) {
+                contentArea.innerHTML = `
+                    <div class="policy-content-header">
+                        <div class="policy-content-title">${policy.title}</div>
+                        <div class="policy-content-meta">
+                            <span>发布机构：${policy.agency}</span>
+                            <span>发布文号：${policy.docNumber}</span>
+                            <span>发布日期：${policy.date}</span>
+                        </div>
+                    </div>
+                    <div class="policy-content-body">
+                        <div class="rule-section">
+                            <h4>规则描述</h4>
+                            <p>${policy.description}</p>
+                        </div>
+                        <div class="rule-section">
+                            <h4>检查条件</h4>
+                            <ul>
+                                ${policy.conditions.map(condition => `<li>${condition}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="rule-section">
+                            <h4>处理方式</h4>
+                            <p>${policy.action}</p>
+                        </div>
+                        <div class="rule-section">
+                            <h4>风险等级</h4>
+                            <span class="risk-level ${policy.riskLevel}">${policy.riskLevel === 'high' ? '高风险' : policy.riskLevel === 'medium' ? '中风险' : '低风险'}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 更新激活状态
+            const policyItems = document.querySelectorAll('#interpretationPolicyList .policy-item');
+            policyItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-id') === policyId) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // 筛选政策解读列表
+        function filterInterpretationPolicies() {
+            const searchTerm = document.getElementById('interpretationSearchInput').value.toLowerCase();
+            const filteredPolicies = interpretationPolicies.filter(p => p.title.toLowerCase().includes(searchTerm));
+            loadInterpretationPolicies(filteredPolicies);
+        }
+        // 全局变量
+        let currentMainTab = 'basic';
+        let currentInterpretationPage = 1;
+        let currentExecutionPage = 1;
+        let currentSupervisionPage = 1;
+        let currentCompliancePage = 1;
+        let currentRiskPage = 1;
+        const pageSize = 10;
+
+        // 模拟政策数据
+        const policyData = {
+            id: 'POL001',
+            name: '国家医保基金监管办法',
+            code: 'NHSA-2023-001',
+            level: 'national',
+            status: 'active',
+            organization: '国家医疗保障局',
+            publishDate: '2023-01-15',
+            effectiveDate: '2023-03-01',
+            expiryDate: '2025-12-31',
+            lastUpdate: '2023-12-01',
+            summary: '为加强医疗保障基金监管，规范医疗保障基金使用，保障参保人员合法权益，根据《中华人民共和国社会保险法》等法律法规，制定本办法。'
+        };
+
+        // 模拟规则数据
+        const interpretationRules = [
+            { id: 'INT001', name: '医保基金监管政策背景解读', type: 'background', priority: 'high', status: 'active', createTime: '2023-03-01' },
+            { id: 'INT002', name: '基金使用范围政策解读', type: 'scope', priority: 'high', status: 'active', createTime: '2023-03-02' },
+            { id: 'INT003', name: '监管目标和原则解读', type: 'purpose', priority: 'medium', status: 'active', createTime: '2023-03-03' },
+            { id: 'INT004', name: '重点监管内容解读', type: 'key_points', priority: 'high', status: 'active', createTime: '2023-03-04' },
+            { id: 'INT005', name: '法律责任条款解读', type: 'key_points', priority: 'medium', status: 'inactive', createTime: '2023-03-05' }
+        ];
+
+        const executionRules = [
+            { id: 'EXE001', name: '医保基金监管执行程序', type: 'procedure', priority: 'high', status: 'active', createTime: '2023-03-01' },
+            { id: 'EXE002', name: '监管标准和指标体系', type: 'criteria', priority: 'high', status: 'active', createTime: '2023-03-02' },
+            { id: 'EXE003', name: '监管时间节点要求', type: 'timeline', priority: 'medium', status: 'active', createTime: '2023-03-03' },
+            { id: 'EXE004', name: '各部门责任分工', type: 'responsibility', priority: 'high', status: 'active', createTime: '2023-03-04' },
+            { id: 'EXE005', name: '执行效果评估标准', type: 'criteria', priority: 'medium', status: 'active', createTime: '2023-03-05' }
+        ];
+
+        const supervisionRules = [
+            { id: 'SUP001', name: '定期监管报告要求', type: 'reporting', priority: 'high', status: 'active', createTime: '2023-03-01' },
+            { id: 'SUP002', name: '现场检查实施规范', type: 'inspection', priority: 'high', status: 'active', createTime: '2023-03-02' },
+            { id: 'SUP003', name: '监管档案管理要求', type: 'documentation', priority: 'medium', status: 'active', createTime: '2023-03-03' },
+            { id: 'SUP004', name: '第三方审计监督', type: 'audit', priority: 'medium', status: 'active', createTime: '2023-03-04' },
+            { id: 'SUP005', name: '社会监督机制', type: 'inspection', priority: 'low', status: 'inactive', createTime: '2023-03-05' }
+        ];
+
+        const complianceRules = [
+            { id: 'COM001', name: '自动合规性检查规则', type: 'automatic', priority: 'high', status: 'active', createTime: '2023-03-01' },
+            { id: 'COM002', name: '人工合规审核流程', type: 'manual', priority: 'high', status: 'active', createTime: '2023-03-02' },
+            { id: 'COM003', name: '季度合规检查计划', type: 'periodic', priority: 'medium', status: 'active', createTime: '2023-03-03' },
+            { id: 'COM004', name: '异常触发检查机制', type: 'triggered', priority: 'high', status: 'active', createTime: '2023-03-04' },
+            { id: 'COM005', name: '合规整改跟踪', type: 'manual', priority: 'medium', status: 'active', createTime: '2023-03-05' }
+        ];
+
+        const riskRules = [
+            { id: 'RSK001', name: '基金财务风险评估', type: 'financial', level: 'high', status: 'active', createTime: '2023-03-01' },
+            { id: 'RSK002', name: '操作流程风险识别', type: 'operational', level: 'medium', status: 'active', createTime: '2023-03-02' },
+            { id: 'RSK003', name: '政策合规风险评估', type: 'compliance', level: 'high', status: 'active', createTime: '2023-03-03' },
+            { id: 'RSK004', name: '声誉风险预警机制', type: 'reputation', level: 'medium', status: 'active', createTime: '2023-03-04' },
+            { id: 'RSK005', name: '系统性风险监测', type: 'operational', level: 'high', status: 'inactive', createTime: '2023-03-05' }
+        ];
+
+        // 过滤后的规则数组
+        let filteredInterpretationRules = [...interpretationRules];
+        let filteredExecutionRules = [...executionRules];
+        let filteredSupervisionRules = [...supervisionRules];
+        let filteredComplianceRules = [...complianceRules];
+        let filteredRiskRules = [...riskRules];
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPolicyInfo();
+            switchMainTab('basic');
+            updateTabCounts();
+
+            // 初始化政策解读模块
+            loadInterpretationPolicies(interpretationPolicies);
+            if (interpretationPolicies.length > 0) {
+                showInterpretationContent(interpretationPolicies[0].id);
+            }
+
+            // 初始化执行标准模块
+            loadExecutionPolicies(executionPolicies);
+            if (executionPolicies.length > 0) {
+                showExecutionContent(executionPolicies[0].id);
+            }
+
+            // 初始化监管要求模块
+            loadSupervisionPolicies(supervisionPolicies);
+            if (supervisionPolicies.length > 0) {
+                showSupervisionContent(supervisionPolicies[0].id);
+            }
+
+            // 初始化合规检查模块
+            loadCompliancePolicies(compliancePolicies);
+            if (compliancePolicies.length > 0) {
+                showComplianceContent(compliancePolicies[0].id);
+            }
+
+            // 初始化风险评估模块
+            loadRiskPolicies(riskPolicies);
+            if (riskPolicies.length > 0) {
+                showRiskContent(riskPolicies[0].id);
+            }
+
+            // 防止PDF内容复制
+            document.addEventListener('selectstart', function(e) {
+                if (e.target.closest('#pdfViewer')) {
+                    e.preventDefault();
+                }
+            });
+            
+            document.addEventListener('contextmenu', function(e) {
+                if (e.target.closest('#pdfViewer')) {
+                    e.preventDefault();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.target.closest('#pdfViewer') && (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'a' || e.key === 's')) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // 加载政策信息
+        function loadPolicyInfo() {
+            document.getElementById('policyTitle').textContent = policyData.name;
+            document.getElementById('policyCode').textContent = policyData.code;
+            document.getElementById('breadcrumbPolicy').textContent = policyData.name + ' 详情';
+            
+            // 设置政策级别
+            const levelElement = document.getElementById('policyLevel');
+            const levelText = {
+                'national': '国家级',
+                'provincial': '省级',
+                'municipal': '市级'
+            };
+            levelElement.textContent = levelText[policyData.level] || '未知';
+            levelElement.className = `policy-level ${policyData.level}`;
+            
+            // 设置状态
+            const statusElement = document.getElementById('policyStatus');
+            statusElement.textContent = policyData.status === 'active' ? '生效' : '失效';
+            statusElement.className = `policy-status ${policyData.status}`;
+            
+            // 基本信息区域
+            document.getElementById('basicPolicyCode').textContent = policyData.code;
+            document.getElementById('basicPolicyOrg').textContent = policyData.organization;
+            document.getElementById('basicPolicyLevel').textContent = levelText[policyData.level] || '未知';
+            document.getElementById('basicPublishDate').textContent = policyData.publishDate;
+            document.getElementById('basicEffectiveDate').textContent = policyData.effectiveDate;
+            document.getElementById('basicExpiryDate').textContent = policyData.expiryDate;
+            document.getElementById('basicLastUpdate').textContent = policyData.lastUpdate;
+            document.getElementById('basicPolicySummary').textContent = policyData.summary;
+            
+            // 计算总规则数
+            const totalRules = interpretationRules.length + executionRules.length + supervisionRules.length + complianceRules.length + riskRules.length;
+            document.getElementById('basicTotalRules').textContent = totalRules;
+        }
+
+        // 主标签页切换
+        function switchMainTab(tabName) {
+            // 更新标签按钮状态
+            document.querySelectorAll('.main-tab-item').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[onclick="switchMainTab('${tabName}')"]`).classList.add('active');
+            
+            // 更新标签页内容
+            document.querySelectorAll('.main-tab-content').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            currentMainTab = tabName;
+            
+            // 加载对应的数据
+            if (tabName === 'interpretation') {
+                loadInterpretationRules();
+            } else if (tabName === 'execution') {
+                loadExecutionRules();
+            } else if (tabName === 'supervision') {
+                loadSupervisionRules();
+            } else if (tabName === 'compliance') {
+                loadComplianceRules();
+            } else if (tabName === 'risk') {
+                loadRiskRules();
+            }
+        }
+
+        // 更新标签页计数
+        function updateTabCounts() {
+            // 更新基本信息tab的统计数据
+            document.getElementById('statInterpretationRules').textContent = filteredInterpretationRules.length;
+            document.getElementById('statExecutionRules').textContent = filteredExecutionRules.length;
+            document.getElementById('statSupervisionRules').textContent = filteredSupervisionRules.length;
+            document.getElementById('statComplianceRules').textContent = filteredComplianceRules.length;
+            document.getElementById('statRiskRules').textContent = filteredRiskRules.length;
+        }
+
+        // 加载政策解读规则
+        function loadInterpretationRules(page = 1) {
+            currentInterpretationPage = page;
+            const container = document.getElementById('interpretationRulesList');
+            const paginationContainer = document.getElementById('interpretationPagination');
+
+            if (!container || !paginationContainer) return;
+            
+            if (filteredInterpretationRules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>暂无规则</h3><p>该政策暂无解读规则数据</p></div>';
+                paginationContainer.innerHTML = '';
+                return;
+            }
+            
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageRules = filteredInterpretationRules.slice(startIndex, endIndex);
+            
+            const rulesHtml = pageRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name" onclick="showPdfPreview('${rule.id}', '${rule.name}')">${rule.name}</div>
+                        <div class="rule-desc">政策解读规则 - ${getInterpretationTypeText(rule.type)}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${getPriorityText(rule.priority)}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createTime}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="showPdfPreview('${rule.id}', '${rule.name}')">预览</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule('${rule.id}')">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus('${rule.id}')">${rule.status === 'active' ? '停用' : '启用'}</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = rulesHtml;
+            
+            // 生成分页
+            generatePagination('interpretationPagination', filteredInterpretationRules.length, page, loadInterpretationRules);
+        }
+
+        // 加载执行标准规则
+        function loadExecutionRules(page = 1) {
+            currentExecutionPage = page;
+            const container = document.getElementById('executionRulesList');
+            const paginationContainer = document.getElementById('executionPagination');
+
+            if (!container || !paginationContainer) return;
+
+            if (filteredExecutionRules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>暂无规则</h3><p>该政策暂无执行标准规则数据</p></div>';
+                paginationContainer.innerHTML = '';
+                return;
+            }
+            
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageRules = filteredExecutionRules.slice(startIndex, endIndex);
+            
+            const rulesHtml = pageRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name" onclick="showPdfPreview('${rule.id}', '${rule.name}')">${rule.name}</div>
+                        <div class="rule-desc">执行标准规则 - ${getExecutionTypeText(rule.type)}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${getPriorityText(rule.priority)}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createTime}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="showPdfPreview('${rule.id}', '${rule.name}')">预览</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule('${rule.id}')">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus('${rule.id}')">${rule.status === 'active' ? '停用' : '启用'}</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = rulesHtml;
+            
+            // 生成分页
+            generatePagination('executionPagination', filteredExecutionRules.length, page, loadExecutionRules);
+        }
+
+        // 加载监管要求规则
+        function loadSupervisionRules(page = 1) {
+            currentSupervisionPage = page;
+            const container = document.getElementById('supervisionRulesList');
+            const paginationContainer = document.getElementById('supervisionPagination');
+
+            if (!container || !paginationContainer) return;
+
+            if (filteredSupervisionRules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>暂无规则</h3><p>该政策暂无监管要求规则数据</p></div>';
+                paginationContainer.innerHTML = '';
+                return;
+            }
+            
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageRules = filteredSupervisionRules.slice(startIndex, endIndex);
+            
+            const rulesHtml = pageRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name" onclick="showPdfPreview('${rule.id}', '${rule.name}')">${rule.name}</div>
+                        <div class="rule-desc">监管要求规则 - ${getSupervisionTypeText(rule.type)}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${getPriorityText(rule.priority)}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createTime}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="showPdfPreview('${rule.id}', '${rule.name}')">预览</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule('${rule.id}')">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus('${rule.id}')">${rule.status === 'active' ? '停用' : '启用'}</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = rulesHtml;
+            
+            // 生成分页
+            generatePagination('supervisionPagination', filteredSupervisionRules.length, page, loadSupervisionRules);
+        }
+
+        // 加载合规检查规则
+        function loadComplianceRules(page = 1) {
+            currentCompliancePage = page;
+            const container = document.getElementById('complianceRulesList');
+            const paginationContainer = document.getElementById('compliancePagination');
+
+            if (!container || !paginationContainer) return;
+
+            if (filteredComplianceRules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>暂无规则</h3><p>该政策暂无合规检查规则数据</p></div>';
+                paginationContainer.innerHTML = '';
+                return;
+            }
+            
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageRules = filteredComplianceRules.slice(startIndex, endIndex);
+            
+            const rulesHtml = pageRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name" onclick="showPdfPreview('${rule.id}', '${rule.name}')">${rule.name}</div>
+                        <div class="rule-desc">合规检查规则 - ${getComplianceTypeText(rule.type)}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${getPriorityText(rule.priority)}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createTime}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="showPdfPreview('${rule.id}', '${rule.name}')">预览</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule('${rule.id}')">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus('${rule.id}')">${rule.status === 'active' ? '停用' : '启用'}</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = rulesHtml;
+            
+            // 生成分页
+            generatePagination('compliancePagination', filteredComplianceRules.length, page, loadComplianceRules);
+        }
+
+        // 加载风险评估规则
+        function loadRiskRules(page = 1) {
+            currentRiskPage = page;
+            const container = document.getElementById('riskRulesList');
+            const paginationContainer = document.getElementById('riskPagination');
+
+            if (!container || !paginationContainer) return;
+
+            if (filteredRiskRules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>暂无规则</h3><p>该政策暂无风险评估规则数据</p></div>';
+                paginationContainer.innerHTML = '';
+                return;
+            }
+            
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageRules = filteredRiskRules.slice(startIndex, endIndex);
+            
+            const rulesHtml = pageRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name" onclick="showPdfPreview('${rule.id}', '${rule.name}')">${rule.name}</div>
+                        <div class="rule-desc">风险评估规则 - ${getRiskTypeText(rule.type)}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.level}">${getRiskLevelText(rule.level)}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createTime}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="showPdfPreview('${rule.id}', '${rule.name}')">预览</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule('${rule.id}')">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus('${rule.id}')">${rule.status === 'active' ? '停用' : '启用'}</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = rulesHtml;
+            
+            // 生成分页
+            generatePagination('riskPagination', filteredRiskRules.length, page, loadRiskRules);
+        }
+
+        // 筛选政策解读规则
+        function filterInterpretationRules() {
+            const searchTerm = document.getElementById('interpretationSearch').value.toLowerCase();
+            const typeFilter = document.getElementById('interpretationTypeFilter').value;
+            const statusFilter = document.getElementById('interpretationStatusFilter').value;
+            
+            filteredInterpretationRules = interpretationRules.filter(rule => {
+                const matchesSearch = rule.name.toLowerCase().includes(searchTerm);
+                const matchesType = !typeFilter || rule.type === typeFilter;
+                const matchesStatus = !statusFilter || rule.status === statusFilter;
+                return matchesSearch && matchesType && matchesStatus;
+            });
+            
+            loadInterpretationRules(1);
+        }
+
+        // 重置政策解读筛选
+        function resetInterpretationFilters() {
+            document.getElementById('interpretationSearch').value = '';
+            document.getElementById('interpretationTypeFilter').value = '';
+            document.getElementById('interpretationStatusFilter').value = '';
+            filteredInterpretationRules = [...interpretationRules];
+            loadInterpretationRules(1);
+        }
+
+        // 筛选执行标准规则
+        function filterExecutionRules() {
+            const searchTerm = document.getElementById('executionSearch').value.toLowerCase();
+            const typeFilter = document.getElementById('executionTypeFilter').value;
+            const statusFilter = document.getElementById('executionStatusFilter').value;
+            
+            filteredExecutionRules = executionRules.filter(rule => {
+                const matchesSearch = rule.name.toLowerCase().includes(searchTerm);
+                const matchesType = !typeFilter || rule.type === typeFilter;
+                const matchesStatus = !statusFilter || rule.status === statusFilter;
+                return matchesSearch && matchesType && matchesStatus;
+            });
+            
+            loadExecutionRules(1);
+        }
+
+        // 重置执行标准筛选
+        function resetExecutionFilters() {
+            document.getElementById('executionSearch').value = '';
+            document.getElementById('executionTypeFilter').value = '';
+            document.getElementById('executionStatusFilter').value = '';
+            filteredExecutionRules = [...executionRules];
+            loadExecutionRules(1);
+        }
+
+        // 筛选监管要求规则
+        function filterSupervisionRules() {
+            const searchTerm = document.getElementById('supervisionSearch').value.toLowerCase();
+            const typeFilter = document.getElementById('supervisionTypeFilter').value;
+            const statusFilter = document.getElementById('supervisionStatusFilter').value;
+            
+            filteredSupervisionRules = supervisionRules.filter(rule => {
+                const matchesSearch = rule.name.toLowerCase().includes(searchTerm);
+                const matchesType = !typeFilter || rule.type === typeFilter;
+                const matchesStatus = !statusFilter || rule.status === statusFilter;
+                return matchesSearch && matchesType && matchesStatus;
+            });
+            
+            loadSupervisionRules(1);
+        }
+
+        // 重置监管要求筛选
+        function resetSupervisionFilters() {
+            document.getElementById('supervisionSearch').value = '';
+            document.getElementById('supervisionTypeFilter').value = '';
+            document.getElementById('supervisionStatusFilter').value = '';
+            filteredSupervisionRules = [...supervisionRules];
+            loadSupervisionRules(1);
+        }
+
+        // 筛选合规检查规则
+        function filterComplianceRules() {
+            const searchTerm = document.getElementById('complianceSearch').value.toLowerCase();
+            const typeFilter = document.getElementById('complianceTypeFilter').value;
+            const statusFilter = document.getElementById('complianceStatusFilter').value;
+            
+            filteredComplianceRules = complianceRules.filter(rule => {
+                const matchesSearch = rule.name.toLowerCase().includes(searchTerm);
+                const matchesType = !typeFilter || rule.type === typeFilter;
+                const matchesStatus = !statusFilter || rule.status === statusFilter;
+                return matchesSearch && matchesType && matchesStatus;
+            });
+            
+            loadComplianceRules(1);
+        }
+
+        // 重置合规检查筛选
+        function resetComplianceFilters() {
+            document.getElementById('complianceSearch').value = '';
+            document.getElementById('complianceTypeFilter').value = '';
+            document.getElementById('complianceStatusFilter').value = '';
+            filteredComplianceRules = [...complianceRules];
+            loadComplianceRules(1);
+        }
+
+        // 筛选风险评估规则
+        function filterRiskRules() {
+            const searchTerm = document.getElementById('riskSearch').value.toLowerCase();
+            const typeFilter = document.getElementById('riskTypeFilter').value;
+            const levelFilter = document.getElementById('riskLevelFilter').value;
+            const statusFilter = document.getElementById('riskStatusFilter').value;
+            
+            filteredRiskRules = riskRules.filter(rule => {
+                const matchesSearch = rule.name.toLowerCase().includes(searchTerm);
+                const matchesType = !typeFilter || rule.type === typeFilter;
+                const matchesLevel = !levelFilter || rule.level === levelFilter;
+                const matchesStatus = !statusFilter || rule.status === statusFilter;
+                return matchesSearch && matchesType && matchesLevel && matchesStatus;
+            });
+            
+            loadRiskRules(1);
+        }
+
+        // 重置风险评估筛选
+        function resetRiskFilters() {
+            document.getElementById('riskSearch').value = '';
+            document.getElementById('riskTypeFilter').value = '';
+            document.getElementById('riskLevelFilter').value = '';
+            document.getElementById('riskStatusFilter').value = '';
+            filteredRiskRules = [...riskRules];
+            loadRiskRules(1);
+        }
+
+        // 工具函数：获取解读类型文本
+        function getInterpretationTypeText(type) {
+            const typeMap = {
+                'background': '政策背景',
+                'purpose': '政策目的',
+                'scope': '适用范围',
+                'key_points': '重点内容'
+            };
+            return typeMap[type] || type;
+        }
+
+        // 工具函数：获取执行类型文本
+        function getExecutionTypeText(type) {
+            const typeMap = {
+                'procedure': '执行程序',
+                'criteria': '执行标准',
+                'timeline': '时间要求',
+                'responsibility': '责任分工'
+            };
+            return typeMap[type] || type;
+        }
+
+        // 工具函数：获取监管类型文本
+        function getSupervisionTypeText(type) {
+            const typeMap = {
+                'reporting': '报告要求',
+                'inspection': '检查要求',
+                'documentation': '文档要求',
+                'audit': '审计要求'
+            };
+            return typeMap[type] || type;
+        }
+
+        // 工具函数：获取合规类型文本
+        function getComplianceTypeText(type) {
+            const typeMap = {
+                'automatic': '自动检查',
+                'manual': '人工检查',
+                'periodic': '定期检查',
+                'triggered': '触发检查'
+            };
+            return typeMap[type] || type;
+        }
+
+        // 工具函数：获取风险类型文本
+        function getRiskTypeText(type) {
+            const typeMap = {
+                'financial': '财务风险',
+                'operational': '操作风险',
+                'compliance': '合规风险',
+                'reputation': '声誉风险'
+            };
+            return typeMap[type] || type;
+        }
+
+        // 工具函数：获取优先级文本
+        function getPriorityText(priority) {
+            const priorityMap = {
+                'high': '高',
+                'medium': '中',
+                'low': '低'
+            };
+            return priorityMap[priority] || priority;
+        }
+
+        // 工具函数：获取风险等级文本
+        function getRiskLevelText(level) {
+            const levelMap = {
+                'high': '高风险',
+                'medium': '中风险',
+                'low': '低风险'
+            };
+            return levelMap[level] || level;
+        }
+
+        // 生成分页
+        function generatePagination(containerId, totalItems, currentPage, loadFunction) {
+            const totalPages = Math.ceil(totalItems / pageSize);
+            const container = document.getElementById(containerId);
+            
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let paginationHtml = '';
+            
+            // 上一页按钮
+            paginationHtml += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="${loadFunction.name}(${currentPage - 1})">上一页</button>`;
+            
+            // 页码按钮
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            if (startPage > 1) {
+                paginationHtml += `<button onclick="${loadFunction.name}(1)">1</button>`;
+                if (startPage > 2) {
+                    paginationHtml += '<span>...</span>';
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHtml += `<button class="${i === currentPage ? 'active' : ''}" onclick="${loadFunction.name}(${i})">${i}</button>`;
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHtml += '<span>...</span>';
+                }
+                paginationHtml += `<button onclick="${loadFunction.name}(${totalPages})">${totalPages}</button>`;
+            }
+            
+            // 下一页按钮
+             paginationHtml += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="${loadFunction.name}(${currentPage + 1})">下一页</button>`;
+             
+             container.innerHTML = paginationHtml;
+         }
+
+        // 规则操作函数
+        function viewRule(ruleId) {
+            // 查找规则数据
+            let ruleData = null;
+            let ruleType = '';
+            
+            // 在政策解读规则中查找
+            const interpretationRule = interpretationRules.find(r => r.id === ruleId);
+            if (interpretationRule) {
+                ruleData = interpretationRule;
+                ruleType = '政策解读规则';
+            }
+            
+            // 在执行标准规则中查找
+            if (!ruleData) {
+                const executionRule = executionRules.find(r => r.id === ruleId);
+                if (executionRule) {
+                    ruleData = executionRule;
+                    ruleType = '执行标准规则';
+                }
+            }
+            
+            // 在监管要求规则中查找
+            if (!ruleData) {
+                const supervisionRule = supervisionRules.find(r => r.id === ruleId);
+                if (supervisionRule) {
+                    ruleData = supervisionRule;
+                    ruleType = '监管要求规则';
+                }
+            }
+            
+            // 在合规检查规则中查找
+            if (!ruleData) {
+                const complianceRule = complianceRules.find(r => r.id === ruleId);
+                if (complianceRule) {
+                    ruleData = complianceRule;
+                    ruleType = '合规检查规则';
+                }
+            }
+            
+            // 在风险评估规则中查找
+            if (!ruleData) {
+                const riskRule = riskRules.find(r => r.id === ruleId);
+                if (riskRule) {
+                    ruleData = riskRule;
+                    ruleType = '风险评估规则';
+                }
+            }
+            
+            if (!ruleData) {
+                alert('未找到规则信息');
+                return;
+            }
+            
+            // 创建查看规则模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h3>查看${ruleType}</h3>
+                        <button class="modal-close" onclick="closeRuleModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="rule-detail">
+                            <div class="detail-row">
+                                <label>规则名称：</label>
+                                <span>${ruleData.name}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>规则描述：</label>
+                                <span>${ruleData.description || '无'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>规则级别：</label>
+                                <span>${ruleData.level || ruleData.priority}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>创建日期：</label>
+                                <span>${ruleData.createdAt || ruleData.createTime}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>状态：</label>
+                                <span class="status ${ruleData.status}">${ruleData.status === 'active' ? '启用' : '停用'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeRuleModal()">关闭</button>
+                        <button class="btn btn-primary" onclick="closeRuleModal(); editRule(${ruleId})">编辑</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function editRule(ruleId) {
+            // 查找规则数据
+            let ruleData = null;
+            let ruleType = '';
+            
+            // 在各个规则数组中查找
+            const allRules = [
+                ...interpretationRules.map(r => ({...r, type: 'interpretation'})),
+                ...executionRules.map(r => ({...r, type: 'execution'})),
+                ...supervisionRules.map(r => ({...r, type: 'supervision'})),
+                ...complianceRules.map(r => ({...r, type: 'compliance'})),
+                ...riskRules.map(r => ({...r, type: 'risk'}))
+            ];
+            
+            ruleData = allRules.find(r => r.id === ruleId);
+            
+            if (!ruleData) {
+                alert('未找到规则信息');
+                return;
+            }
+            
+            const typeNames = {
+                'interpretation': '政策解读规则',
+                'execution': '执行标准规则',
+                'supervision': '监管要求规则',
+                'compliance': '合规检查规则',
+                'risk': '风险评估规则'
+            };
+            
+            ruleType = typeNames[ruleData.type];
+            
+            // 创建编辑规则模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h3>编辑${ruleType}</h3>
+                        <button class="modal-close" onclick="closeRuleModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editRuleForm">
+                            <div class="form-group">
+                                <label for="editRuleName">规则名称 *</label>
+                                <input type="text" id="editRuleName" required value="${ruleData.name}">
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleDescription">规则描述 *</label>
+                                <textarea id="editRuleDescription" rows="4" required placeholder="请输入规则的详细描述">${ruleData.description || ''}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleLevel">规则级别 *</label>
+                                <select id="editRuleLevel" required>
+                                    <option value="强制" ${(ruleData.level || ruleData.priority) === '强制' ? 'selected' : ''}>强制</option>
+                                    <option value="警告" ${(ruleData.level || ruleData.priority) === '警告' ? 'selected' : ''}>警告</option>
+                                    <option value="提示" ${(ruleData.level || ruleData.priority) === '提示' ? 'selected' : ''}>提示</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleStatus">状态 *</label>
+                                <select id="editRuleStatus" required>
+                                    <option value="active" ${ruleData.status === 'active' ? 'selected' : ''}>启用</option>
+                                    <option value="inactive" ${ruleData.status === 'inactive' ? 'selected' : ''}>停用</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeRuleModal()">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="saveEditRule(${ruleId}, '${ruleData.type}')">保存</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function toggleRuleStatus(ruleId) {
+            // 在各个规则数组中查找并更新状态
+            let rule = interpretationRules.find(r => r.id === ruleId);
+            if (rule) {
+                const newStatus = rule.status === 'active' ? 'inactive' : 'active';
+                const actionText = newStatus === 'active' ? '启用' : '停用';
+                
+                if (confirm(`确定要${actionText}这条规则吗？`)) {
+                    rule.status = newStatus;
+                    loadInterpretationRules(1);
+                    alert(`规则已${actionText}`);
+                }
+                return;
+            }
+            
+            rule = executionRules.find(r => r.id === ruleId);
+            if (rule) {
+                const newStatus = rule.status === 'active' ? 'inactive' : 'active';
+                const actionText = newStatus === 'active' ? '启用' : '停用';
+                
+                if (confirm(`确定要${actionText}这条规则吗？`)) {
+                    rule.status = newStatus;
+                    loadExecutionRules(1);
+                    alert(`规则已${actionText}`);
+                }
+                return;
+            }
+            
+            rule = supervisionRules.find(r => r.id === ruleId);
+            if (rule) {
+                const newStatus = rule.status === 'active' ? 'inactive' : 'active';
+                const actionText = newStatus === 'active' ? '启用' : '停用';
+                
+                if (confirm(`确定要${actionText}这条规则吗？`)) {
+                    rule.status = newStatus;
+                    loadSupervisionRules(1);
+                    alert(`规则已${actionText}`);
+                }
+                return;
+            }
+            
+            rule = complianceRules.find(r => r.id === ruleId);
+            if (rule) {
+                const newStatus = rule.status === 'active' ? 'inactive' : 'active';
+                const actionText = newStatus === 'active' ? '启用' : '停用';
+                
+                if (confirm(`确定要${actionText}这条规则吗？`)) {
+                    rule.status = newStatus;
+                    loadComplianceRules(1);
+                    alert(`规则已${actionText}`);
+                }
+                return;
+            }
+            
+            rule = riskRules.find(r => r.id === ruleId);
+            if (rule) {
+                const newStatus = rule.status === 'active' ? 'inactive' : 'active';
+                const actionText = newStatus === 'active' ? '启用' : '停用';
+                
+                if (confirm(`确定要${actionText}这条规则吗？`)) {
+                    rule.status = newStatus;
+                    loadRiskRules(1);
+                    alert(`规则已${actionText}`);
+                }
+                return;
+            }
+        }
+
+        // 政策操作函数
+        function editPolicy() {
+            alert('编辑政策功能');
+            // 这里可以实现政策编辑功能
+        }
+
+        function togglePolicyStatus() {
+            alert('切换政策状态功能');
+            // 这里可以实现政策状态切换功能
+        }
+
+        // 规则管理函数
+        function createInterpretationRule() {
+            alert('创建政策解读规则');
+        }
+
+        function downloadInterpretationTemplate() {
+            alert('下载政策解读规则模板');
+        }
+
+        function importInterpretationRules() {
+            alert('导入政策解读规则');
+        }
+
+        function createExecutionRule() {
+            alert('创建执行标准规则');
+        }
+
+        function downloadExecutionTemplate() {
+            alert('下载执行标准规则模板');
+        }
+
+        function importExecutionRules() {
+            alert('导入执行标准规则');
+        }
+
+        function createSupervisionRule() {
+            alert('创建监管要求规则');
+        }
+
+        function downloadSupervisionTemplate() {
+            alert('下载监管要求规则模板');
+        }
+
+        function importSupervisionRules() {
+            alert('导入监管要求规则');
+        }
+
+        function createComplianceRule() {
+            alert('创建合规检查规则');
+        }
+
+        function downloadComplianceTemplate() {
+            alert('下载合规检查规则模板');
+        }
+
+        function importComplianceRules() {
+            alert('导入合规检查规则');
+        }
+
+        function createRiskRule() {
+            alert('创建风险评估规则');
+        }
+
+        function downloadRiskTemplate() {
+            alert('下载风险评估规则模板');
+        }
+
+        function importRiskRules() {
+            alert('导入风险评估规则');
+        }
+
+        // 关闭规则模态框
+        function closeRuleModal() {
+            const modals = document.querySelectorAll('.modal-overlay');
+            modals.forEach(modal => {
+                if (modal.parentNode) {
+                    modal.parentNode.removeChild(modal);
+                }
+            });
+        }
+
+        // 保存编辑规则
+        function saveEditRule(ruleId, ruleType) {
+            const form = document.getElementById('editRuleForm');
+            if (!form) {
+                alert('表单未找到');
+                return;
+            }
+
+            const formData = {
+                name: document.getElementById('editRuleName').value,
+                description: document.getElementById('editRuleDescription').value,
+                level: document.getElementById('editRuleLevel').value,
+                status: document.getElementById('editRuleStatus').value,
+                updatedAt: new Date().toISOString().split('T')[0]
+            };
+
+            // 验证表单
+            if (!formData.name || !formData.description || !formData.level || !formData.status) {
+                alert('请填写所有必填字段');
+                return;
+            }
+
+            // 根据规则类型更新对应的规则数组
+            let updated = false;
+            
+            if (ruleType === 'interpretation') {
+                const ruleIndex = interpretationRules.findIndex(r => r.id === ruleId);
+                if (ruleIndex !== -1) {
+                    interpretationRules[ruleIndex] = {
+                        ...interpretationRules[ruleIndex],
+                        ...formData
+                    };
+                    loadInterpretationRules(1);
+                    updated = true;
+                }
+            } else if (ruleType === 'execution') {
+                const ruleIndex = executionRules.findIndex(r => r.id === ruleId);
+                if (ruleIndex !== -1) {
+                    executionRules[ruleIndex] = {
+                        ...executionRules[ruleIndex],
+                        ...formData
+                    };
+                    loadExecutionRules(1);
+                    updated = true;
+                }
+            } else if (ruleType === 'supervision') {
+                const ruleIndex = supervisionRules.findIndex(r => r.id === ruleId);
+                if (ruleIndex !== -1) {
+                    supervisionRules[ruleIndex] = {
+                        ...supervisionRules[ruleIndex],
+                        ...formData
+                    };
+                    loadSupervisionRules(1);
+                    updated = true;
+                }
+            } else if (ruleType === 'compliance') {
+                const ruleIndex = complianceRules.findIndex(r => r.id === ruleId);
+                if (ruleIndex !== -1) {
+                    complianceRules[ruleIndex] = {
+                        ...complianceRules[ruleIndex],
+                        ...formData
+                    };
+                    loadComplianceRules(1);
+                    updated = true;
+                }
+            } else if (ruleType === 'risk') {
+                const ruleIndex = riskRules.findIndex(r => r.id === ruleId);
+                if (ruleIndex !== -1) {
+                    riskRules[ruleIndex] = {
+                        ...riskRules[ruleIndex],
+                        ...formData
+                    };
+                    loadRiskRules(1);
+                    updated = true;
+                }
+            }
+
+            if (updated) {
+                alert('规则更新成功');
+                closeRuleModal();
+            } else {
+                alert('规则更新失败，未找到对应规则');
+            }
+        }
+
+        // 模态框相关函数
+        function showPolicyEditModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h3>编辑政策信息</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>政策名称 *</label>
+                                <input type="text" class="form-input" id="policyName" value="${document.getElementById('policyTitle').textContent}" placeholder="请输入政策名称">
+                            </div>
+                            <div class="form-group">
+                                <label>政策编码 *</label>
+                                <input type="text" class="form-input" id="policyCodeInput" value="${document.getElementById('policyCode').textContent}" placeholder="请输入政策编码">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>政策级别</label>
+                                <select class="form-select" id="policyLevelSelect">
+                                    <option value="national">国家级</option>
+                                    <option value="provincial">省级</option>
+                                    <option value="municipal">市级</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>政策状态</label>
+                                <select class="form-select" id="policyStatusSelect">
+                                    <option value="active">生效</option>
+                                    <option value="inactive">失效</option>
+                                    <option value="draft">草案</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>政策描述</label>
+                            <textarea class="form-textarea" id="policyDescription" rows="4" placeholder="请输入政策描述"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>生效日期</label>
+                                <input type="date" class="form-input" id="policyEffectiveDate">
+                            </div>
+                            <div class="form-group">
+                                <label>失效日期</label>
+                                <input type="date" class="form-input" id="policyExpiryDate">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn btn-primary" onclick="savePolicyEdit()">保存</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function showRuleModal(ruleId = null, ruleType = 'interpretation') {
+            const rule = ruleId ? getAllRules().find(r => r.id === ruleId) : null;
+            const isEdit = !!rule;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h3>${isEdit ? '编辑' : '新增'}${getRuleTypeDisplayName(ruleType)}规则</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>规则名称 *</label>
+                                <input type="text" class="form-input" id="ruleName" value="${rule ? rule.name : ''}" placeholder="请输入规则名称">
+                            </div>
+                            <div class="form-group">
+                                <label>规则编码 *</label>
+                                <input type="text" class="form-input" id="ruleCode" value="${rule ? rule.code : ''}" placeholder="请输入规则编码">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>规则类型</label>
+                                <select class="form-select" id="ruleTypeSelect">
+                                    ${getRuleTypeOptions(ruleType, rule)}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>状态</label>
+                                <select class="form-select" id="ruleStatus">
+                                    <option value="active" ${rule && rule.status === 'active' ? 'selected' : ''}>启用</option>
+                                    <option value="inactive" ${rule && rule.status === 'inactive' ? 'selected' : ''}>禁用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>规则描述</label>
+                            <textarea class="form-textarea" id="ruleDescription" rows="4" placeholder="请输入规则描述">${rule ? rule.description : ''}</textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>生效日期</label>
+                                <input type="date" class="form-input" id="ruleEffectiveDate" value="${rule ? rule.effectiveDate : ''}">
+                            </div>
+                            <div class="form-group">
+                                <label>失效日期</label>
+                                <input type="date" class="form-input" id="ruleExpiryDate" value="${rule ? rule.expiryDate || '' : ''}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn btn-primary" onclick="saveRule(${ruleId}, '${ruleType}')">${isEdit ? '保存' : '创建'}</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function showRuleDetailModal(ruleId) {
+            const rule = getAllRules().find(r => r.id === ruleId);
+            if (!rule) return;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3>规则详情</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="margin-bottom: 16px;">
+                            <strong>规则名称：</strong>${rule.name}
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>规则编码：</strong>${rule.code}
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>规则类型：</strong><span class="rule-type ${rule.type}">${rule.typeText}</span>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>状态：</strong><span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '禁用'}</span>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>规则描述：</strong><br>${rule.description}
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>生效日期：</strong>${rule.effectiveDate}
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>创建时间：</strong>${rule.createTime}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeModal()">关闭</button>
+                        <button class="btn btn-primary" onclick="closeModal(); editRule(${ruleId})">编辑</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function getRuleTypeDisplayName(type) {
+            const typeNames = {
+                'interpretation': '政策解读',
+                'execution': '执行标准',
+                'supervision': '监管要求',
+                'compliance': '合规检查',
+                'risk': '风险评估'
+            };
+            return typeNames[type] || '';
+        }
+
+        function getRuleTypeOptions(currentType, rule) {
+            const options = {
+                'interpretation': [
+                    { value: 'policy', text: '政策解读' },
+                    { value: 'guidance', text: '指导意见' },
+                    { value: 'notice', text: '通知公告' }
+                ],
+                'execution': [
+                    { value: 'standard', text: '执行标准' },
+                    { value: 'procedure', text: '操作流程' },
+                    { value: 'requirement', text: '技术要求' }
+                ],
+                'supervision': [
+                    { value: 'audit', text: '审计要求' },
+                    { value: 'inspection', text: '检查标准' },
+                    { value: 'reporting', text: '报告要求' }
+                ],
+                'compliance': [
+                    { value: 'check', text: '合规检查' },
+                    { value: 'validation', text: '合规验证' },
+                    { value: 'assessment', text: '合规评估' }
+                ],
+                'risk': [
+                    { value: 'financial', text: '财务风险' },
+                    { value: 'operational', text: '操作风险' },
+                    { value: 'compliance', text: '合规风险' },
+                    { value: 'reputation', text: '声誉风险' }
+                ]
+            };
+            
+            const typeOptions = options[currentType] || [];
+            return typeOptions.map(option => 
+                `<option value="${option.value}" ${rule && rule.type === option.value ? 'selected' : ''}>${option.text}</option>`
+            ).join('');
+        }
+
+        function getAllRules() {
+            return [...interpretationRules, ...executionRules, ...supervisionRules, ...complianceRules, ...riskRules];
+        }
+
+        function saveRule(ruleId, ruleType) {
+            const name = document.getElementById('ruleName').value;
+            const code = document.getElementById('ruleCode').value;
+            const type = document.getElementById('ruleTypeSelect').value;
+            const status = document.getElementById('ruleStatus').value;
+            const description = document.getElementById('ruleDescription').value;
+            const effectiveDate = document.getElementById('ruleEffectiveDate').value;
+            const expiryDate = document.getElementById('ruleExpiryDate').value;
+            
+            if (!name || !code) {
+                alert('请填写必填字段');
+                return;
+            }
+            
+            const ruleData = {
+                name,
+                code,
+                type,
+                status,
+                description,
+                effectiveDate,
+                expiryDate: expiryDate || null,
+                updateTime: new Date().toLocaleString()
+            };
+            
+            if (ruleId) {
+                // 编辑规则
+                const rule = getAllRules().find(r => r.id === ruleId);
+                if (rule) {
+                    Object.assign(rule, ruleData);
+                }
+            } else {
+                // 新增规则
+                const newRule = {
+                    id: Date.now(),
+                    ...ruleData,
+                    createTime: new Date().toLocaleString()
+                };
+                
+                switch (ruleType) {
+                    case 'interpretation':
+                        interpretationRules.push(newRule);
+                        break;
+                    case 'execution':
+                        executionRules.push(newRule);
+                        break;
+                    case 'supervision':
+                        supervisionRules.push(newRule);
+                        break;
+                    case 'compliance':
+                        complianceRules.push(newRule);
+                        break;
+                    case 'risk':
+                        riskRules.push(newRule);
+                        break;
+                }
+            }
+            
+            // 刷新对应的规则列表
+            switch (ruleType) {
+                case 'interpretation':
+                    filterInterpretationRules();
+                    break;
+                case 'execution':
+                    filterExecutionRules();
+                    break;
+                case 'supervision':
+                    filterSupervisionRules();
+                    break;
+                case 'compliance':
+                    filterComplianceRules();
+                    break;
+                case 'risk':
+                    filterRiskRules();
+                    break;
+            }
+            
+            updateTabCounts();
+            closeModal();
+        }
+
+        function savePolicyEdit() {
+            const name = document.getElementById('policyName').value;
+            const code = document.getElementById('policyCodeInput').value;
+            const level = document.getElementById('policyLevelSelect').value;
+            const status = document.getElementById('policyStatusSelect').value;
+            const description = document.getElementById('policyDescription').value;
+            
+            if (!name || !code) {
+                alert('请填写必填字段');
+                return;
+            }
+            
+            // 更新页面显示
+            document.getElementById('policyTitle').textContent = name;
+            document.getElementById('policyCode').textContent = code;
+            document.getElementById('policyLevel').textContent = level === 'national' ? '国家级' : level === 'provincial' ? '省级' : '市级';
+            document.getElementById('policyStatus').textContent = status === 'active' ? '生效' : status === 'inactive' ? '失效' : '草案';
+            document.getElementById('breadcrumbPolicy').textContent = name;
+            
+            closeModal();
+            alert('政策信息已更新');
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // 重写原有的函数，使用模态框
+        function viewRule(ruleId) {
+            showRuleDetailModal(ruleId);
+        }
+
+        function editRule(ruleId) {
+            const rule = getAllRules().find(r => r.id === ruleId);
+            if (rule) {
+                let ruleType = 'interpretation';
+                if (executionRules.find(r => r.id === ruleId)) ruleType = 'execution';
+                else if (supervisionRules.find(r => r.id === ruleId)) ruleType = 'supervision';
+                else if (complianceRules.find(r => r.id === ruleId)) ruleType = 'compliance';
+                else if (riskRules.find(r => r.id === ruleId)) ruleType = 'risk';
+                
+                showRuleModal(ruleId, ruleType);
+            }
+        }
+
+        function editPolicy() {
+            showPolicyEditModal();
+        }
+
+        // 重写创建规则函数
+        function createInterpretationRule() {
+            showRuleModal(null, 'interpretation');
+        }
+
+        function createExecutionRule() {
+            showRuleModal(null, 'execution');
+        }
+
+        function createSupervisionRule() {
+            showRuleModal(null, 'supervision');
+        }
+
+        function createComplianceRule() {
+            showRuleModal(null, 'compliance');
+        }
+
+        function createRiskRule() {
+            showRuleModal(null, 'risk');
+        }
+
+        // 政策解读Tab切换
+        function switchInterpretationTab(tabName) {
+            // 移除所有tab的active类
+            document.querySelectorAll('#interpretation-tab .vertical-tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            // 移除所有内容的active类
+            document.querySelectorAll('#interpretation-tab .vertical-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // 为点击的tab添加active类
+            event.target.classList.add('active');
+            // 显示对应的内容
+            document.getElementById(tabName + '-interpretation').classList.add('active');
+        }
+
+
+
+        // PDF预览功能
+        function showPdfPreview(ruleId, ruleName) {
+            const modal = document.getElementById('pdfPreviewModal');
+            const title = document.getElementById('pdfPreviewTitle');
+            const viewer = document.getElementById('pdfViewer');
+            
+            title.textContent = ruleName;
+            
+            // 模拟PDF内容
+            viewer.innerHTML = `
+                <div class="pdf-page">
+                    <h2>${ruleName}</h2>
+                    <div class="pdf-content">
+                        <h3>规则概述</h3>
+                        <p>这是${ruleName}的详细内容。本规则用于指导相关政策的执行和监管。</p>
+                        
+                        <h3>适用范围</h3>
+                        <p>本规则适用于所有相关的政策执行场景，包括但不限于日常监管、合规检查、风险评估等。</p>
+                        
+                        <h3>执行标准</h3>
+                        <p>1. 严格按照规定的流程执行</p>
+                        <p>2. 确保所有相关文档完整</p>
+                        <p>3. 定期进行合规性检查</p>
+                        
+                        <h3>注意事项</h3>
+                        <p>在执行过程中需要特别注意相关法规的变化，及时更新执行标准。</p>
+                        
+                        <div class="watermark">仅供内部使用 - 禁止复制</div>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closePdfPreview() {
+            document.getElementById('pdfPreviewModal').style.display = 'none';
+        }
+
+
+
+        // Search content handlers for policy-layout
+        function searchInterpretationContent() {
+            const input = document.getElementById('interpretationSearchInput');
+            if (input && typeof filterInterpretationRules === 'function') {
+                // Create hidden search field that existing filter uses
+                let hiddenSearch = document.getElementById('interpretationSearch');
+                if (!hiddenSearch) {
+                    hiddenSearch = document.createElement('input');
+                    hiddenSearch.id = 'interpretationSearch';
+                    hiddenSearch.type = 'hidden';
+                    document.body.appendChild(hiddenSearch);
+                }
+                hiddenSearch.value = input.value;
+                filterInterpretationRules();
+            }
+        }
+
+        function searchExecutionContent() {
+            const input = document.getElementById('executionSearchInput');
+            if (input && typeof filterExecutionRules === 'function') {
+                let hiddenSearch = document.getElementById('executionSearch');
+                if (!hiddenSearch) {
+                    hiddenSearch = document.createElement('input');
+                    hiddenSearch.id = 'executionSearch';
+                    hiddenSearch.type = 'hidden';
+                    document.body.appendChild(hiddenSearch);
+                }
+                hiddenSearch.value = input.value;
+                filterExecutionRules();
+            }
+        }
+
+        function searchSupervisionContent() {
+            const input = document.getElementById('supervisionSearchInput');
+            if (input && typeof filterSupervisionRules === 'function') {
+                let hiddenSearch = document.getElementById('supervisionSearch');
+                if (!hiddenSearch) {
+                    hiddenSearch = document.createElement('input');
+                    hiddenSearch.id = 'supervisionSearch';
+                    hiddenSearch.type = 'hidden';
+                    document.body.appendChild(hiddenSearch);
+                }
+                hiddenSearch.value = input.value;
+                filterSupervisionRules();
+            }
+        }
+
+        function searchComplianceContent() {
+            const input = document.getElementById('complianceSearchInput');
+            if (input && typeof filterComplianceRules === 'function') {
+                let hiddenSearch = document.getElementById('complianceSearch');
+                if (!hiddenSearch) {
+                    hiddenSearch = document.createElement('input');
+                    hiddenSearch.id = 'complianceSearch';
+                    hiddenSearch.type = 'hidden';
+                    document.body.appendChild(hiddenSearch);
+                }
+                hiddenSearch.value = input.value;
+                filterComplianceRules();
+            }
+        }
+
+        function searchRiskContent() {
+            const input = document.getElementById('riskSearchInput');
+            if (input && typeof filterRiskRules === 'function') {
+                let hiddenSearch = document.getElementById('riskSearch');
+                if (!hiddenSearch) {
+                    hiddenSearch = document.createElement('input');
+                    hiddenSearch.id = 'riskSearch';
+                    hiddenSearch.type = 'hidden';
+                    document.body.appendChild(hiddenSearch);
+                }
+                hiddenSearch.value = input.value;
+                filterRiskRules();
+            }
+        }
+
+        // Content switchers for sidebar navigation
+
+
+
+
+
+
+        function showComplianceContent(policyId) {
+            const policy = compliancePolicies.find(p => p.id === policyId);
+            const contentContainer = document.getElementById('compliancePolicyContent');
+            
+            if (policy && contentContainer) {
+                contentContainer.innerHTML = `
+                    <div class="policy-content-header">
+                        <div class="policy-content-title">${policy.title}</div>
+                        <div class="policy-content-meta">
+                            <span>发布机构：${policy.agency}</span>
+                            <span>发布文号：${policy.docNumber}</span>
+                            <span>发布日期：${policy.date}</span>
+                        </div>
+                    </div>
+                    <div class="policy-content-body">
+                        <div class="rule-section">
+                            <h4>规则描述</h4>
+                            <p>${policy.description}</p>
+                        </div>
+                        <div class="rule-section">
+                            <h4>检查条件</h4>
+                            <ul>
+                                ${policy.conditions.map(condition => `<li>${condition}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="rule-section">
+                            <h4>处理方式</h4>
+                            <p>${policy.action}</p>
+                        </div>
+                        <div class="rule-section">
+                            <h4>风险等级</h4>
+                            <div class="risk-level risk-${policy.riskLevel}">
+                                ${policy.riskLevel === 'high' ? '高风险' : policy.riskLevel === 'medium' ? '中风险' : '低风险'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                const policyListItems = document.querySelectorAll('#compliancePolicyList li');
+                policyListItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-id') === policyId) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        function showRiskContent(policyId) {
+            const policy = riskPolicies.find(p => p.id === policyId);
+            const contentContainer = document.getElementById('riskPolicyContent');
+            
+            if (policy && contentContainer) {
+                contentContainer.innerHTML = `
+                    <div class="policy-content-header">
+                        <div class="policy-content-title">${policy.title}</div>
+                        <div class="policy-content-meta">
+                            <span>发布机构：${policy.agency}</span>
+                            <span>发布文号：${policy.docNumber}</span>
+                            <span>发布日期：${policy.date}</span>
+                        </div>
+                    </div>
+                    <div class="policy-content-body">
+                        <div class="rule-section">
+                            <h4>规则描述</h4>
+                            <p>${policy.description}</p>
+                        </div>
+                        <div class="rule-section">
+                            <h4>检查条件</h4>
+                            <ul>
+                                ${policy.conditions.map(condition => `<li>${condition}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="rule-section">
+                            <h4>处理方式</h4>
+                            <p>${policy.action}</p>
+                        </div>
+                        <div class="rule-section">
+                            <h4>风险等级</h4>
+                            <div class="risk-level risk-${policy.riskLevel}">
+                                ${policy.riskLevel === 'high' ? '高风险' : policy.riskLevel === 'medium' ? '中风险' : '低风险'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                const policyListItems = document.querySelectorAll('#riskPolicyList li');
+                policyListItems.forEach(item => {
+                    item.classList.remove('active');
+                    if (item.getAttribute('data-id') === policyId) {
+                        item.classList.add('active');
+                    }
+                });
+            }
+        }
+    </script>
+
+    <!-- PDF预览模态框 -->
+    <div id="pdfPreviewModal" class="pdf-preview-layout" style="display: none;">
+        <div class="pdf-sidebar">
+            <div class="pdf-toolbar">
+                <h3 id="pdfPreviewTitle">规则预览</h3>
+                <button class="pdf-close-btn" onclick="closePdfPreview()">&times;</button>
+            </div>
+            <div class="pdf-navigation">
+                <div class="pdf-nav-item active">第1页</div>
+            </div>
+        </div>
+        <div class="pdf-content">
+            <div class="pdf-controls">
+                <div class="pdf-zoom-controls">
+                    <button class="btn btn-outline btn-small">-</button>
+                    <span class="pdf-zoom-level">100%</span>
+                    <button class="btn btn-outline btn-small">+</button>
+                </div>
+                <div class="pdf-page-info">
+                    <span>第 1 页，共 1 页</span>
+                </div>
+            </div>
+            <div id="pdfViewer" class="pdf-viewer">
+                <!-- PDF内容将在这里动态加载 -->
+            </div>
+        </div>
+    </div>
+
+
+</body>
+</html>

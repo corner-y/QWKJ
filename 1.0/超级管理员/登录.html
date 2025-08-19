@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 | 医保智能审核系统</title>
+    <link rel="stylesheet" href="/1.0/样式文件/通用样式.css">
+        <style>
+        body {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+        }
+        
+        .login-container {
+            background: var(--bg-primary);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            width: 100%;
+            max-width: 400px;
+            padding: var(--spacing-2xl);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--primary-color);
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-lg);
+            color: var(--bg-primary);
+            font-size: var(--font-size-2xl);
+            font-weight: var(--font-weight-bold);
+        }
+        
+        .logo-text {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .logo-subtitle {
+            font-size: var(--font-size-sm);
+            color: var(--text-secondary);
+            margin-top: var(--spacing-xs);
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        
+        .form-label {
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-primary);
+        }
+        
+        .form-input {
+            padding: var(--spacing-lg);
+            border: 2px solid var(--border-primary);
+            border-radius: var(--radius-large);
+            font-size: var(--font-size-md);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-primary);
+        }
+        
+        .form-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(22, 93, 255, 0.1);
+            outline: none;
+        }
+        
+        .login-btn {
+            background: var(--primary-color);
+            color: var(--bg-primary);
+            border: none;
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-large);
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-semibold);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: var(--spacing-sm);
+        }
+        
+        .login-btn:hover {
+            background: var(--primary-active);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .error-message {
+            background: var(--error-light);
+            color: var(--error-color);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-large);
+            font-size: var(--font-size-sm);
+            text-align: center;
+            display: none;
+        }
+        
+        .footer-text {
+            text-align: center;
+            margin-top: var(--spacing-xl);
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+        
+        @media (max-width: 480px) {
+            .login-container {
+                padding: var(--spacing-xl);
+                margin: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <div class="logo-icon">医</div>
+            <h1 class="logo-text">医保智审</h1>
+            <p class="logo-subtitle">智能审核系统</p>
+        </div>
+        
+        <form class="login-form" id="loginForm">
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="form-group">
+                <label class="form-label" for="username">用户名</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    class="form-input" 
+                    placeholder="请输入用户名"
+                    required
+                >
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="password">密码</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="请输入密码"
+                    required
+                >
+            </div>
+            
+            <button type="submit" class="login-btn">登录</button>
+        </form>
+        
+        <p class="footer-text">© 2024 医保智能审核系统</p>
+    </div>
+    
+    <script src="/1.0/超级管理员/脚本文件/login.js?v=3"></script>
+</body>
+</html>

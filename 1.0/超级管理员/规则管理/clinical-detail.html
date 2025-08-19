@@ -1,0 +1,3972 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>诊疗规则详情 - 医保审核系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .disease-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .disease-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .disease-code {
+            font-size: 14px;
+            color: #666;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .disease-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .disease-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .breadcrumb {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #1f2937;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            color: #6b7280;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .modal-close:hover {
+            color: #374151;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+
+        .breadcrumb span {
+            margin: 0 10px;
+            color: #999;
+        }
+
+        .disease-info {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .disease-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .disease-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .department-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+        }
+
+        .type-tag {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .type-outpatient {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .type-inpatient {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .tabs {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .tab-nav {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            background: white;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #667eea;
+        }
+
+        .tab-content {
+            padding: 30px;
+            min-height: 500px;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .rules-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .rules-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .rules-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .detail-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .main-tab-navigation {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .main-tab-item {
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .main-tab-item:hover {
+            color: #007bff;
+            background: #e9ecef;
+        }
+
+        .main-tab-item.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            background: white;
+        }
+
+        .main-tab-contents {
+            padding: 24px;
+        }
+
+        .main-tab-content {
+            display: none;
+        }
+
+        .main-tab-content.active {
+            display: block;
+        }
+
+        /* 医保规则垂直Tab样式 */
+        .rules-layout {
+            display: flex;
+            gap: 24px;
+            min-height: 500px;
+        }
+
+        .vertical-tab-navigation {
+            min-width: 200px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        .vertical-tab-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .vertical-tab-item:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .vertical-tab-item.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .rules-content {
+            flex: 1;
+            background: white;
+            border-radius: 6px;
+            padding: 24px;
+        }
+
+        .vertical-tab-contents {
+            height: 100%;
+        }
+
+        .vertical-tab-content {
+            display: none;
+        }
+
+        .vertical-tab-content.active {
+            display: block;
+        }
+
+        .tab-count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .vertical-tab-item.active .tab-count {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .rules-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .rules-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .rules-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .rules-list {
+            margin-top: 20px;
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .rule-item:hover {
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+        }
+
+        .rule-info {
+            flex: 1;
+        }
+
+        .rule-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        .rule-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .rule-meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .rule-priority {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .rule-priority.priority-high {
+            background: #fee;
+            color: #c53030;
+        }
+
+        .rule-priority.priority-medium {
+            background: #fef5e7;
+            color: #d69e2e;
+        }
+
+        .rule-priority.priority-low {
+            background: #f0fff4;
+            color: #38a169;
+        }
+
+        .rule-status {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .rule-status.active {
+            background: #f0fff4;
+            color: #38a169;
+        }
+
+        .rule-status.inactive {
+            background: #f7fafc;
+            color: #718096;
+        }
+
+        .rule-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .file-item.active {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+
+        .file-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            background: #007bff;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .file-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .file-preview-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .file-preview-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-preview-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .file-preview-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .file-preview-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .file-preview-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #666;
+        }
+
+        .file-preview-empty .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .vertical-tab-navigation {
+            display: none;
+        }
+
+        .vertical-tab-item {
+            display: none;
+        }
+
+        .rules-content {
+            display: none;
+        }
+
+        .vertical-tab-contents {
+            display: none;
+        }
+
+        .vertical-tab-content {
+            display: none;
+        }
+
+        .info-card, .rules-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #eee;
+            background: #f8f9fa;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .info-item label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item span {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .stats-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #007bff;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .filters {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .filter-input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            min-width: 150px;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .rules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .rule-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rule-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .rule-info {
+            flex: 1;
+        }
+
+        .rule-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .rule-name:hover {
+            color: #667eea;
+        }
+
+        .rule-desc {
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .rule-meta {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .rule-priority {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .priority-high {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .priority-medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .priority-low {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .rule-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .rule-status.active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .rule-status.inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .rule-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* PDF预览相关样式 */
+        .pdf-preview-layout {
+            display: flex;
+            height: 600px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        .pdf-sidebar {
+            width: 300px;
+            border-right: 1px solid #e0e0e0;
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        .pdf-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+        }
+
+        .pdf-toolbar {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pdf-viewer {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .pdf-page {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            max-width: 100%;
+            border-radius: 4px;
+        }
+
+        .pdf-navigation {
+            padding: 16px;
+        }
+
+        .pdf-nav-item {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .pdf-nav-item:hover {
+            background: #e9ecef;
+        }
+
+        .pdf-nav-item.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .pdf-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .pdf-zoom-controls {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .pdf-page-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .page-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .disease-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-nav {
+                flex-direction: column;
+            }
+
+            .rules-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .rules-actions {
+                justify-content: center;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .rule-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+
+            .rule-actions {
+                justify-content: center;
+            }
+        }
+
+        /* 基本信息Tab样式 */
+        .info-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .info-item label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            margin: 0;
+        }
+
+        .info-item span {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .stats-bar {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #007bff;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* 政策文献布局样式 */
+        .policy-layout {
+            display: flex;
+            gap: 24px;
+            height: 600px;
+        }
+
+        .policy-sidebar {
+            width: 300px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .policy-search {
+            margin-bottom: 16px;
+        }
+
+        .policy-search input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .file-list-header {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 16px;
+        }
+
+        .file-list-header h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .file-count {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .policy-file-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .policy-file-item {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .policy-file-item:hover {
+            background: #e9ecef;
+        }
+
+        .policy-file-item.active {
+            background: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+
+        .file-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .policy-file-item .file-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .policy-file-item.active .file-meta {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .policy-content {
+            flex: 1;
+            background: white;
+            border-radius: 6px;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .file-detail {
+            height: 100%;
+        }
+
+        .file-detail-header {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .file-detail-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .file-detail-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: #666;
+            flex-wrap: wrap;
+        }
+
+        .file-detail-meta span {
+            padding: 4px 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .file-detail-actions {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .file-detail-content {
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .content-section {
+            margin-bottom: 24px;
+        }
+
+        .content-section h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .content-section p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .content-section ul {
+            margin-bottom: 16px;
+            padding-left: 20px;
+        }
+
+        .content-section li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 面包屑导航 -->
+        <div class="breadcrumb">
+            <a href="index.html">首页</a> > 
+            <a href="index.html#clinical">诊疗规则库</a> > 
+            <span id="breadcrumbDisease">疾病名称</span>
+        </div>
+
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="disease-title">
+                    <h1 id="diseaseTitle">疾病名称</h1>
+                    <span class="disease-code" id="diseaseCode">-</span>
+                    <span class="type-tag type-outpatient" id="diseaseType">门诊</span>
+                    <span class="disease-status status-active" id="diseaseStatus">启用</span>
+                </div>
+                <div class="disease-actions">
+                    <button class="btn btn-outline" onclick="editDisease()">编辑疾病</button>
+                    <button class="btn btn-secondary" onclick="toggleDiseaseStatus()">停用</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-container">
+            <div class="main-tab-navigation">
+                <button class="main-tab-item active" onclick="switchMainTab('basic', this)">基本信息</button>
+                <button class="main-tab-item" onclick="switchMainTab('insurance', this)">医保规则</button>
+                <button class="main-tab-item" onclick="switchMainTab('clinical', this)">临床路径规则</button>
+                <button class="main-tab-item" onclick="switchMainTab('diagnosis', this)">诊断标准</button>
+                <button class="main-tab-item" onclick="switchMainTab('treatment', this)">治疗方案</button>
+                <button class="main-tab-item" onclick="switchMainTab('policy', this)">相关政策</button>
+            </div>
+
+            <div class="main-tab-contents">
+                <!-- 基本信息Tab -->
+                <div id="basic-tab" class="main-tab-content active">
+                    <div class="info-card">
+                        <div class="card-header">
+                            <h3>基本信息</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-grid" id="diseaseInfoGrid">
+                                <div class="info-item">
+                                    <label>疾病编码</label>
+                                    <span id="basicDiseaseCode">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>所属科室</label>
+                                    <span id="basicDiseaseDepartment">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>诊疗类型</label>
+                                    <span id="basicDiseaseType">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>总规则数</label>
+                                    <span id="basicTotalRules">0</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>最后更新</label>
+                                    <span id="basicLastUpdate">-</span>
+                                </div>
+                                <div class="info-item full-width">
+                                    <label>疾病描述</label>
+                                    <span id="basicDiseaseDesc">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-bar">
+                        <div class="stats-grid" id="statsGrid">
+                            <div class="stat-item">
+                                <span class="stat-number" id="statInsuranceRules">0</span>
+                                <span class="stat-label">医保规则</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="statClinicalRules">0</span>
+                                <span class="stat-label">临床路径规则</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="statDiagnosisRules">0</span>
+                                <span class="stat-label">诊断标准</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="statTreatmentRules">0</span>
+                                <span class="stat-label">治疗方案</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 医保规则Tab -->
+                <div id="insurance-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" placeholder="搜索医保规则..." id="insuranceSearchInput" oninput="searchInsuranceRules()">
+                            </div>
+
+                            <ul class="policy-file-list" id="insuranceList">
+                                <li class="policy-file-item active" onclick="showInsuranceContent('limit')">
+                                    <div class="file-title">门诊费用限额检查</div>
+                                    <div class="file-meta">医保规则 • 高优先级 • 启用</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showInsuranceContent('catalog')">
+                                    <div class="file-title">医保目录药品检查</div>
+                                    <div class="file-meta">医保规则 • 高优先级 • 启用</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showInsuranceContent('special')">
+                                    <div class="file-title">特殊检查项目审核</div>
+                                    <div class="file-meta">医保规则 • 中优先级 • 启用</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="insuranceContent">
+                            <div class="file-detail" id="insuranceDetail">
+                                <div class="file-detail-header">
+                                    <div class="file-detail-title">门诊费用限额检查</div>
+                                    <div class="file-detail-meta">
+                                        <span>类型：医保规则</span>
+                                        <span>优先级：高</span>
+                                        <span>状态：启用</span>
+                                    </div>
+                                </div>
+                                <div class="file-detail-content">
+                                    <div class="content-section">
+                                        <h4>规则描述</h4>
+                                        <p>检查门诊单次费用是否超过医保限额标准，确保医保基金合理使用。</p>
+                                    </div>
+                                    
+                                    <div class="content-section">
+                                        <h4>检查条件</h4>
+                                        <ul>
+                                            <li>门诊单次费用超过500元</li>
+                                            <li>特殊病种门诊费用超过1000元</li>
+                                            <li>慢性病门诊费用超过800元</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="content-section">
+                                        <h4>处理方式</h4>
+                                        <p>当检测到费用超限时，系统将自动标记为需要人工审核，并生成预警提示。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 临床路径规则Tab -->
+                <div id="clinical-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" placeholder="搜索临床路径..." id="clinicalSearchInput" oninput="searchClinicalRules()">
+                            </div>
+
+                            <ul class="policy-file-list" id="clinicalList">
+                                <li class="policy-file-item active" onclick="showClinicalContent('standard')">
+                                    <div class="file-title">标准诊疗路径</div>
+                                    <div class="file-meta">临床路径 • 高优先级 • 启用</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showClinicalContent('emergency')">
+                                    <div class="file-title">急诊处理流程</div>
+                                    <div class="file-meta">临床路径 • 高优先级 • 启用</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showClinicalContent('followup')">
+                                    <div class="file-title">随访管理规范</div>
+                                    <div class="file-meta">临床路径 • 中优先级 • 启用</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="clinicalContent">
+                            <div class="file-detail" id="clinicalDetail">
+                                <div class="file-detail-header">
+                                    <div class="file-detail-title">标准诊疗路径</div>
+                                    <div class="file-detail-meta">
+                                        <span>类型：临床路径</span>
+                                        <span>优先级：高</span>
+                                        <span>状态：启用</span>
+                                    </div>
+                                </div>
+                                <div class="file-detail-content">
+                                    <div class="content-section">
+                                        <h4>路径概述</h4>
+                                        <p>规范化的诊疗流程，确保患者获得标准化、高质量的医疗服务。</p>
+                                    </div>
+                                    
+                                    <div class="content-section">
+                                        <h4>诊疗步骤</h4>
+                                        <ul>
+                                            <li>初诊评估：病史采集、体格检查、初步诊断</li>
+                                            <li>辅助检查：必要的实验室检查和影像学检查</li>
+                                            <li>诊断确认：综合分析检查结果，确定最终诊断</li>
+                                            <li>治疗方案：制定个性化治疗计划</li>
+                                            <li>疗效评估：定期评估治疗效果并调整方案</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="content-section">
+                                        <h4>质量指标</h4>
+                                        <p>诊断准确率≥95%，治疗有效率≥90%，患者满意度≥95%。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 诊断标准Tab -->
+                <div id="diagnosis-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" placeholder="搜索诊断标准..." id="diagnosisSearchInput" oninput="searchDiagnosis()">
+                            </div>
+
+                            <ul class="policy-file-list" id="diagnosisList">
+                                <li class="policy-file-item active" onclick="showDiagnosisContent('primary')">
+                                    <div class="file-title">主要诊断标准</div>
+                                    <div class="file-meta">诊断标准 • 高优先级 • 启用</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showDiagnosisContent('differential')">
+                                    <div class="file-title">鉴别诊断要点</div>
+                                    <div class="file-meta">诊断标准 • 高优先级 • 启用</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showDiagnosisContent('laboratory')">
+                                    <div class="file-title">实验室检查标准</div>
+                                    <div class="file-meta">诊断标准 • 中优先级 • 启用</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="diagnosisContent">
+                            <div class="file-detail" id="diagnosisDetail">
+                                <div class="file-detail-header">
+                                    <div class="file-detail-title">主要诊断标准</div>
+                                    <div class="file-detail-meta">
+                                        <span>类型：诊断标准</span>
+                                        <span>优先级：高</span>
+                                        <span>状态：启用</span>
+                                    </div>
+                                </div>
+                                <div class="file-detail-content">
+                                    <div class="content-section">
+                                        <h4>诊断依据</h4>
+                                        <p>基于国际疾病分类标准和临床诊疗指南制定的诊断标准。</p>
+                                    </div>
+                                    
+                                    <div class="content-section">
+                                        <h4>主要症状</h4>
+                                        <ul>
+                                            <li>典型临床表现：相关症状和体征</li>
+                                            <li>病史特点：发病时间、诱发因素、既往史</li>
+                                            <li>体格检查：阳性体征和异常发现</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="content-section">
+                                        <h4>诊断标准</h4>
+                                        <ul>
+                                            <li>必备条件：必须满足的核心诊断要素</li>
+                                            <li>辅助条件：支持诊断的补充要素</li>
+                                            <li>排除条件：需要排除的其他疾病</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="content-section">
+                                        <h4>诊断流程</h4>
+                                        <p>按照标准化流程进行诊断，确保诊断的准确性和一致性。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 治疗方案Tab -->
+                <div id="treatment-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" placeholder="搜索治疗方案..." id="treatmentSearchInput" oninput="searchTreatment()">
+                            </div>
+
+                            <ul class="policy-file-list" id="treatmentList">
+                                <li class="policy-file-item active" onclick="showTreatmentContent('standard')">
+                                    <div class="file-title">标准治疗方案</div>
+                                    <div class="file-meta">治疗方案 • 高优先级 • 启用</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showTreatmentContent('medication')">
+                                    <div class="file-title">药物治疗方案</div>
+                                    <div class="file-meta">治疗方案 • 高优先级 • 启用</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showTreatmentContent('nursing')">
+                                    <div class="file-title">护理治疗方案</div>
+                                    <div class="file-meta">治疗方案 • 中优先级 • 启用</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="treatmentContent">
+                            <div class="file-detail" id="treatmentDetail">
+                                <div class="file-detail-header">
+                                    <div class="file-detail-title">标准治疗方案</div>
+                                    <div class="file-detail-meta">
+                                        <span>类型：治疗方案</span>
+                                        <span>优先级：高</span>
+                                        <span>状态：启用</span>
+                                    </div>
+                                </div>
+                                <div class="file-detail-content">
+                                    <div class="content-section">
+                                        <h4>治疗原则</h4>
+                                        <p>基于循证医学证据和临床实践指南制定的标准化治疗方案。</p>
+                                    </div>
+                                    
+                                    <div class="content-section">
+                                        <h4>治疗目标</h4>
+                                        <ul>
+                                            <li>缓解症状：快速控制主要临床症状</li>
+                                            <li>病因治疗：针对病因进行根本性治疗</li>
+                                            <li>预防并发症：降低并发症发生风险</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="content-section">
+                                        <h4>治疗方案</h4>
+                                        <ul>
+                                            <li>一线治疗：首选治疗方案和用药指导</li>
+                                            <li>二线治疗：替代治疗方案和适应症</li>
+                                            <li>支持治疗：辅助治疗措施和护理要点</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="content-section">
+                                        <h4>疗效评估</h4>
+                                        <p>定期评估治疗效果，根据患者反应调整治疗方案。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 相关政策Tab -->
+                <div id="policy-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" placeholder="搜索文件..." id="policySearchInput" oninput="searchPolicyFiles()">
+                            </div>
+
+                            <ul class="policy-file-list" id="policyFileList">
+                                <li class="policy-file-item active" onclick="showFileDetail('policy1')">
+                                    <div class="file-title">国家医保局关于糖尿病门诊用药政策解读</div>
+                                    <div class="file-meta">医保发〔2024〕15号 • 2024-03-15</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showFileDetail('policy2')">
+                                    <div class="file-title">慢性病医保支付政策解读</div>
+                                    <div class="file-meta">医保发〔2024〕08号 • 2024-02-20</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showFileDetail('policy3')">
+                                    <div class="file-title">医保基金监管条例实施细则</div>
+                                    <div class="file-meta">医保发〔2024〕12号 • 2024-03-10</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showFileDetail('policy4')">
+                                    <div class="file-title">门诊特殊慢性病管理办法</div>
+                                    <div class="file-meta">医保发〔2024〕06号 • 2024-02-15</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showFileDetail('policy5')">
+                                    <div class="file-title">医保药品目录调整工作方案</div>
+                                    <div class="file-meta">医保发〔2024〕03号 • 2024-01-20</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showFileDetail('policy6')">
+                                    <div class="file-title">定点医疗机构协议管理办法</div>
+                                    <div class="file-meta">医保发〔2023〕45号 • 2023-12-25</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showFileDetail('policy7')">
+                                    <div class="file-title">医保支付方式改革指导意见</div>
+                                    <div class="file-meta">医保发〔2023〕42号 • 2023-12-10</div>
+                                </li>
+                                <li class="policy-file-item" onclick="showFileDetail('policy8')">
+                                    <div class="file-title">异地就医直接结算管理规定</div>
+                                    <div class="file-meta">医保发〔2023〕38号 • 2023-11-30</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="policyContent">
+                            <div class="file-detail" id="fileDetail">
+                                <div class="file-detail-header">
+                                    <div class="file-detail-title">国家医保局关于糖尿病门诊用药政策解读</div>
+                                    <div class="file-detail-meta">
+                                        <span class="file-number">医保发〔2024〕15号</span>
+                                        <span class="file-date">2024-03-15</span>
+                                        <span class="file-dept">国家医保局</span>
+                                        <span class="file-type">政策解读</span>
+                                    </div>
+                                </div>
+
+                                <div class="file-detail-content">
+                                    <div class="content-section">
+                                        <h4>文件摘要</h4>
+                                        <p>本文件明确了糖尿病门诊特殊病种的待遇标准，规范了用药范围和报销比例，为糖尿病患者提供更好的医保保障。</p>
+                                    </div>
+                                    <div class="content-section">
+                                        <h4>主要内容</h4>
+                                        <ul>
+                                            <li><strong>适用范围：</strong>全国各级医保经办机构和定点医疗机构</li>
+                                            <li><strong>执行时间：</strong>2024年4月1日起执行</li>
+                                            <li><strong>政策要点：</strong>明确糖尿病门诊特殊病种待遇标准，规范用药范围和报销比例</li>
+                                            <li><strong>报销比例：</strong>门诊费用报销比例不低于50%</li>
+                                            <li><strong>用药范围：</strong>包括胰岛素及其类似物、口服降糖药等</li>
+                                        </ul>
+                                    </div>
+                                    <div class="content-section">
+                                        <h4>相关规定</h4>
+                                        <p>1. 参保人员在定点医疗机构门诊治疗糖尿病发生的医疗费用，符合基本医疗保险药品目录、诊疗项目和医疗服务设施标准的，纳入基本医疗保险基金支付范围。</p>
+                                        <p>2. 建立糖尿病门诊用药保障机制，减轻患者用药负担。</p>
+                                        <p>3. 加强糖尿病门诊用药管理，规范医疗行为。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentMainTab = 'info';
+        let currentInsurancePage = 1;
+        let currentClinicalPage = 1;
+        let currentDiagnosisPage = 1;
+        let currentTreatmentPage = 1;
+        const itemsPerPage = 10;
+        
+        // 模拟数据
+        let diseaseData = {
+            id: 1,
+            name: '高血压',
+            code: 'I10.x00',
+            department: '内科',
+            type: 'outpatient',
+            status: 'active',
+            description: '原发性高血压，不伴有心脏病',
+            lastUpdate: '2024-01-15'
+        };
+        
+        let insuranceRules = [
+            {
+                id: 1,
+                name: '门诊费用限额检查',
+                description: '检查门诊单次费用是否超过医保限额标准',
+                priority: 'high',
+                status: 'active',
+                type: 'insurance',
+                createTime: '2024-01-15'
+            },
+            {
+                id: 2,
+                name: '医保目录药品检查',
+                description: '验证处方药品是否在医保目录范围内',
+                priority: 'high',
+                status: 'active',
+                type: 'insurance',
+                createTime: '2024-01-10'
+            },
+            {
+                id: 3,
+                name: '特殊检查项目审核',
+                description: '对特殊检查项目进行医保资格审核',
+                priority: 'medium',
+                status: 'active',
+                type: 'insurance',
+                createTime: '2024-01-08'
+            }
+        ];
+        
+        let diagnosisRules = [
+            {
+                id: 4,
+                name: '血压测量标准',
+                description: '高血压诊断的血压测量标准和方法',
+                priority: 'high',
+                status: 'active',
+                type: 'primary',
+                createTime: '2024-01-12'
+            },
+            {
+                id: 5,
+                name: '继发性高血压排除',
+                description: '排除继发性高血压的诊断标准',
+                priority: 'medium',
+                status: 'active',
+                type: 'differential',
+                createTime: '2024-01-11'
+            }
+        ];
+        
+        let treatmentRules = [
+            {
+                id: 6,
+                name: '降压药物治疗方案',
+                description: '高血压患者的药物治疗方案和用药指导',
+                priority: 'high',
+                status: 'active',
+                type: 'medication',
+                createTime: '2024-01-13'
+            },
+            {
+                id: 7,
+                name: '生活方式干预方案',
+                description: '高血压患者的生活方式干预和健康管理',
+                priority: 'medium',
+                status: 'active',
+                type: 'conservative',
+                createTime: '2024-01-10'
+            }
+        ];
+        
+        let clinicalRules = [
+            {
+                id: 8,
+                name: '高血压标准诊疗路径',
+                description: '高血压患者的标准诊疗流程和规范',
+                priority: 'high',
+                status: 'active',
+                type: 'standard',
+                createTime: '2024-01-14'
+            }
+        ];
+        
+        let filteredInsuranceRules = [...insuranceRules];
+        let filteredDiagnosisRules = [...diagnosisRules];
+        let filteredTreatmentRules = [...treatmentRules];
+        let filteredClinicalRules = [...clinicalRules];
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 从URL参数获取疾病信息
+            const urlParams = new URLSearchParams(window.location.search);
+            const diseaseId = urlParams.get('id');
+            const diseaseName = urlParams.get('name');
+            const department = urlParams.get('department');
+            const type = urlParams.get('type');
+            
+            if (diseaseName) {
+                diseaseData.name = diseaseName;
+            }
+            if (department) {
+                diseaseData.department = department;
+            }
+            if (type) {
+                diseaseData.type = type;
+            }
+            
+            loadDiseaseInfo();
+            switchMainTab('insurance');
+            updateTabCounts();
+            
+            // 初始化各个子tab的默认状态
+            // 医保规则、临床路径规则、诊断标准、治疗方案Tab已改为左右分栏布局，无需初始化
+            // 相关政策Tab已改为左右分栏布局，无需初始化
+            
+            // 初始化文件列表点击事件
+            // 医保规则Tab已使用policy-layout布局，无需额外初始化
+        });
+
+        // 加载疾病信息
+        function loadDiseaseInfo() {
+            document.getElementById('diseaseTitle').textContent = diseaseData.name;
+            document.getElementById('diseaseCode').textContent = diseaseData.code;
+            document.getElementById('breadcrumbDisease').textContent = diseaseData.name + ' 规则详情';
+            
+            // 设置诊疗类型
+            const typeElement = document.getElementById('diseaseType');
+            typeElement.textContent = diseaseData.type === 'outpatient' ? '门诊' : '住院';
+            typeElement.className = `type-tag type-${diseaseData.type}`;
+            
+            // 设置状态
+            const statusElement = document.getElementById('diseaseStatus');
+            statusElement.textContent = diseaseData.status === 'active' ? '启用' : '停用';
+            statusElement.className = `rule-status ${diseaseData.status}`;
+            
+            // 基本信息区域
+            document.getElementById('basicDiseaseCode').textContent = diseaseData.code;
+            document.getElementById('basicDiseaseDepartment').textContent = diseaseData.department;
+            document.getElementById('basicDiseaseType').textContent = diseaseData.type === 'outpatient' ? '门诊' : '住院';
+            document.getElementById('basicLastUpdate').textContent = diseaseData.lastUpdate;
+            document.getElementById('basicDiseaseDesc').textContent = diseaseData.description || '暂无描述';
+            
+            // 计算总规则数
+            const totalRules = insuranceRules.length + diagnosisRules.length + treatmentRules.length + clinicalRules.length;
+            document.getElementById('basicTotalRules').textContent = totalRules;
+        }
+
+        // 主标签页切换
+        function switchMainTab(tabName) {
+            // 更新标签按钮状态
+            document.querySelectorAll('.main-tab-item').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[onclick="switchMainTab('${tabName}')"]`).classList.add('active');
+            
+            // 更新标签页内容
+            document.querySelectorAll('.main-tab-content').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            currentMainTab = tabName;
+        }
+
+        // 更新标签页计数
+        function updateTabCounts() {
+            // 更新基本信息tab的统计数据
+            document.getElementById('statInsuranceRules').textContent = filteredInsuranceRules.length;
+            document.getElementById('statDiagnosisRules').textContent = filteredDiagnosisRules.length;
+            document.getElementById('statTreatmentRules').textContent = filteredTreatmentRules.length;
+            document.getElementById('statClinicalRules').textContent = filteredClinicalRules.length;
+        }
+
+        // 加载医保规则
+        function loadInsuranceRules(page = 1) {
+            currentInsurancePage = page;
+            const container = document.getElementById('insuranceRulesList');
+            
+            if (filteredInsuranceRules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>暂无规则</h3><p>该疾病暂无医保规则数据</p></div>';
+                document.getElementById('insurancePagination').innerHTML = '';
+                return;
+            }
+            
+            const totalPages = Math.ceil(filteredInsuranceRules.length / itemsPerPage);
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedRules = filteredInsuranceRules.slice(startIndex, endIndex);
+            
+            const rulesHtml = paginatedRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name" onclick="showPdfPreview('${rule.id}', '${rule.name}')">${rule.name}</div>
+                        <div class="rule-desc">${rule.description}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${rule.priority === 'high' ? '高' : rule.priority === 'medium' ? '中' : '低'}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createTime}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="showPdfPreview('${rule.id}', '${rule.name}')">预览</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule(${rule.id})">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus(${rule.id})">切换状态</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = rulesHtml;
+            
+            // 渲染分页
+            if (totalPages > 1) {
+                const paginationHtml = `
+                    <button class="btn btn-outline btn-small" onclick="loadInsuranceRules(${page - 1})" ${page === 1 ? 'disabled' : ''}>上一页</button>
+                    <span class="page-info">第 ${page} 页，共 ${totalPages} 页</span>
+                    <button class="btn btn-outline btn-small" onclick="loadInsuranceRules(${page + 1})" ${page === totalPages ? 'disabled' : ''}>下一页</button>
+                `;
+                document.getElementById('insurancePagination').innerHTML = paginationHtml;
+            } else {
+                document.getElementById('insurancePagination').innerHTML = '';
+            }
+        }
+
+        // 加载诊断标准规则
+        function loadDiagnosisRules(page = 1) {
+            currentDiagnosisPage = page;
+            const container = document.getElementById('diagnosisRulesList');
+            
+            if (filteredDiagnosisRules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>暂无标准</h3><p>该疾病暂无诊断标准数据</p></div>';
+                document.getElementById('diagnosisPagination').innerHTML = '';
+                return;
+            }
+            
+            const totalPages = Math.ceil(filteredDiagnosisRules.length / itemsPerPage);
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedRules = filteredDiagnosisRules.slice(startIndex, endIndex);
+            
+            const rulesHtml = paginatedRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name" onclick="showPdfPreview('${rule.id}', '${rule.name}')">${rule.name}</div>
+                        <div class="rule-desc">${rule.description}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${rule.priority === 'high' ? '高' : rule.priority === 'medium' ? '中' : '低'}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">类型：${rule.type === 'primary' ? '主要诊断' : rule.type === 'secondary' ? '次要诊断' : '鉴别诊断'}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="showPdfPreview('${rule.id}', '${rule.name}')">预览</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule(${rule.id})">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus(${rule.id})">切换状态</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = rulesHtml;
+            
+            // 渲染分页
+            if (totalPages > 1) {
+                const paginationHtml = `
+                    <button class="btn btn-outline btn-small" onclick="loadDiagnosisRules(${page - 1})" ${page === 1 ? 'disabled' : ''}>上一页</button>
+                    <span class="page-info">第 ${page} 页，共 ${totalPages} 页</span>
+                    <button class="btn btn-outline btn-small" onclick="loadDiagnosisRules(${page + 1})" ${page === totalPages ? 'disabled' : ''}>下一页</button>
+                `;
+                document.getElementById('diagnosisPagination').innerHTML = paginationHtml;
+            } else {
+                document.getElementById('diagnosisPagination').innerHTML = '';
+            }
+        }
+
+        // 加载治疗方案规则
+        function loadTreatmentRules(page = 1) {
+            currentTreatmentPage = page;
+            const container = document.getElementById('treatmentRulesList');
+            
+            if (filteredTreatmentRules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>暂无方案</h3><p>该疾病暂无治疗方案数据</p></div>';
+                document.getElementById('treatmentPagination').innerHTML = '';
+                return;
+            }
+            
+            const totalPages = Math.ceil(filteredTreatmentRules.length / itemsPerPage);
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedRules = filteredTreatmentRules.slice(startIndex, endIndex);
+            
+            const rulesHtml = paginatedRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name" onclick="showPdfPreview('${rule.id}', '${rule.name}')">${rule.name}</div>
+                        <div class="rule-desc">${rule.description}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${rule.priority === 'high' ? '高' : rule.priority === 'medium' ? '中' : '低'}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">类型：${rule.type === 'conservative' ? '保守治疗' : rule.type === 'surgical' ? '手术治疗' : rule.type === 'medication' ? '药物治疗' : '康复治疗'}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="showPdfPreview('${rule.id}', '${rule.name}')">预览</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule(${rule.id})">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus(${rule.id})">切换状态</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = rulesHtml;
+            
+            // 渲染分页
+            if (totalPages > 1) {
+                const paginationHtml = `
+                    <button class="btn btn-outline btn-small" onclick="loadTreatmentRules(${page - 1})" ${page === 1 ? 'disabled' : ''}>上一页</button>
+                    <span class="page-info">第 ${page} 页，共 ${totalPages} 页</span>
+                    <button class="btn btn-outline btn-small" onclick="loadTreatmentRules(${page + 1})" ${page === totalPages ? 'disabled' : ''}>下一页</button>
+                `;
+                document.getElementById('treatmentPagination').innerHTML = paginationHtml;
+            } else {
+                document.getElementById('treatmentPagination').innerHTML = '';
+            }
+        }
+
+        // 加载临床路径规则
+        function loadClinicalRules(page = 1) {
+            currentClinicalPage = page;
+            const container = document.getElementById('clinicalRulesList');
+            
+            if (filteredClinicalRules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>暂无规则</h3><p>该疾病暂无临床路径规则数据</p></div>';
+                document.getElementById('clinicalPagination').innerHTML = '';
+                return;
+            }
+            
+            const totalPages = Math.ceil(filteredClinicalRules.length / itemsPerPage);
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedRules = filteredClinicalRules.slice(startIndex, endIndex);
+            
+            const rulesHtml = paginatedRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name" onclick="showPdfPreview('${rule.id}', '${rule.name}')">${rule.name}</div>
+                        <div class="rule-desc">${rule.description}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${rule.priority === 'high' ? '高' : rule.priority === 'medium' ? '中' : '低'}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">类型：${rule.type === 'standard' ? '标准路径' : rule.type === 'emergency' ? '急诊路径' : '复杂路径'}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="showPdfPreview('${rule.id}', '${rule.name}')">预览</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule(${rule.id})">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus(${rule.id})">切换状态</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            container.innerHTML = rulesHtml;
+            
+            // 渲染分页
+            if (totalPages > 1) {
+                const paginationHtml = `
+                    <button class="btn btn-outline btn-small" onclick="loadClinicalRules(${page - 1})" ${page === 1 ? 'disabled' : ''}>上一页</button>
+                    <span class="page-info">第 ${page} 页，共 ${totalPages} 页</span>
+                    <button class="btn btn-outline btn-small" onclick="loadClinicalRules(${page + 1})" ${page === totalPages ? 'disabled' : ''}>下一页</button>
+                `;
+                document.getElementById('clinicalPagination').innerHTML = paginationHtml;
+            } else {
+                document.getElementById('clinicalPagination').innerHTML = '';
+            }
+        }
+
+        // 筛选医保规则
+        function filterInsuranceRules() {
+            const search = document.getElementById('insuranceSearch').value.toLowerCase();
+            const priority = document.getElementById('insurancePriorityFilter').value;
+            const status = document.getElementById('insuranceStatusFilter').value;
+            
+            filteredInsuranceRules = insuranceRules.filter(rule => {
+                const matchesSearch = !search || 
+                    rule.name.toLowerCase().includes(search) || 
+                    rule.description.toLowerCase().includes(search);
+                const matchesPriority = !priority || rule.priority === priority;
+                const matchesStatus = !status || rule.status === status;
+                
+                return matchesSearch && matchesPriority && matchesStatus;
+            });
+            
+            updateTabCounts();
+            loadInsuranceRules(1);
+        }
+
+        // 筛选诊断标准规则
+        function filterDiagnosisRules() {
+            const search = document.getElementById('diagnosisSearch').value.toLowerCase();
+            const type = document.getElementById('diagnosisTypeFilter').value;
+            const status = document.getElementById('diagnosisStatusFilter').value;
+            
+            filteredDiagnosisRules = diagnosisRules.filter(rule => {
+                const matchesSearch = !search || 
+                    rule.name.toLowerCase().includes(search) || 
+                    rule.description.toLowerCase().includes(search);
+                const matchesType = !type || rule.type === type;
+                const matchesStatus = !status || rule.status === status;
+                
+                return matchesSearch && matchesType && matchesStatus;
+            });
+            
+            updateTabCounts();
+            loadDiagnosisRules(1);
+        }
+
+        // 筛选治疗方案规则
+        function filterTreatmentRules() {
+            const search = document.getElementById('treatmentSearch').value.toLowerCase();
+            const type = document.getElementById('treatmentTypeFilter').value;
+            const status = document.getElementById('treatmentStatusFilter').value;
+            
+            filteredTreatmentRules = treatmentRules.filter(rule => {
+                const matchesSearch = !search || 
+                    rule.name.toLowerCase().includes(search) || 
+                    rule.description.toLowerCase().includes(search);
+                const matchesType = !type || rule.type === type;
+                const matchesStatus = !status || rule.status === status;
+                
+                return matchesSearch && matchesType && matchesStatus;
+            });
+            
+            updateTabCounts();
+            loadTreatmentRules(1);
+        }
+
+        // 筛选临床路径规则
+        function filterClinicalRules() {
+            const search = document.getElementById('clinicalSearch').value.toLowerCase();
+            const type = document.getElementById('clinicalPathTypeFilter').value;
+            const status = document.getElementById('clinicalStatusFilter').value;
+            
+            filteredClinicalRules = clinicalRules.filter(rule => {
+                const matchesSearch = !search || 
+                    rule.name.toLowerCase().includes(search) || 
+                    rule.description.toLowerCase().includes(search);
+                const matchesType = !type || rule.type === type;
+                const matchesStatus = !status || rule.status === status;
+                
+                return matchesSearch && matchesType && matchesStatus;
+            });
+            
+            updateTabCounts();
+            loadClinicalRules(1);
+        }
+
+        // 重置筛选器
+        function resetInsuranceFilters() {
+            document.getElementById('insuranceSearch').value = '';
+            document.getElementById('insurancePriorityFilter').value = '';
+            document.getElementById('insuranceStatusFilter').value = '';
+            filteredInsuranceRules = [...insuranceRules];
+            updateTabCounts();
+            loadInsuranceRules(1);
+        }
+
+        function resetDiagnosisFilters() {
+            document.getElementById('diagnosisSearch').value = '';
+            document.getElementById('diagnosisTypeFilter').value = '';
+            document.getElementById('diagnosisStatusFilter').value = '';
+            filteredDiagnosisRules = [...diagnosisRules];
+            updateTabCounts();
+            loadDiagnosisRules(1);
+        }
+
+        function resetTreatmentFilters() {
+            document.getElementById('treatmentSearch').value = '';
+            document.getElementById('treatmentTypeFilter').value = '';
+            document.getElementById('treatmentStatusFilter').value = '';
+            filteredTreatmentRules = [...treatmentRules];
+            updateTabCounts();
+            loadTreatmentRules(1);
+        }
+
+        function resetClinicalFilters() {
+            document.getElementById('clinicalSearch').value = '';
+            document.getElementById('clinicalPathTypeFilter').value = '';
+            document.getElementById('clinicalStatusFilter').value = '';
+            filteredClinicalRules = [...clinicalRules];
+            updateTabCounts();
+            loadClinicalRules(1);
+        }
+
+        // 规则操作函数
+        function viewRule(ruleId) {
+            const rule = [...insuranceRules, ...diagnosisRules, ...treatmentRules, ...clinicalRules].find(r => r.id === ruleId);
+            if (!rule) {
+                alert('未找到规则信息');
+                return;
+            }
+            
+            // 确定规则类型
+            let ruleType = '';
+            if (insuranceRules.find(r => r.id === ruleId)) {
+                ruleType = '医保规则';
+            } else if (diagnosisRules.find(r => r.id === ruleId)) {
+                ruleType = '诊断标准';
+            } else if (treatmentRules.find(r => r.id === ruleId)) {
+                ruleType = '治疗方案';
+            } else if (clinicalRules.find(r => r.id === ruleId)) {
+                ruleType = '临床路径规则';
+            }
+            
+            // 创建查看规则模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h3>查看${ruleType}</h3>
+                        <button class="modal-close" onclick="closeRuleModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="rule-detail">
+                            <div class="detail-row">
+                                <label>规则名称：</label>
+                                <span>${rule.name}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>规则描述：</label>
+                                <span>${rule.description || '无'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>优先级：</label>
+                                <span>${rule.priority}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>创建时间：</label>
+                                <span>${rule.createTime}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>状态：</label>
+                                <span class="status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeRuleModal()">关闭</button>
+                        <button class="btn btn-primary" onclick="closeRuleModal(); editRule(${ruleId})">编辑</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function editRule(ruleId) {
+            const rule = [...insuranceRules, ...diagnosisRules, ...treatmentRules, ...clinicalRules].find(r => r.id === ruleId);
+            if (!rule) {
+                alert('未找到规则信息');
+                return;
+            }
+            
+            // 确定规则类型
+            let ruleType = '';
+            let ruleTypeKey = '';
+            if (insuranceRules.find(r => r.id === ruleId)) {
+                ruleType = '医保规则';
+                ruleTypeKey = 'insurance';
+            } else if (diagnosisRules.find(r => r.id === ruleId)) {
+                ruleType = '诊断标准';
+                ruleTypeKey = 'diagnosis';
+            } else if (treatmentRules.find(r => r.id === ruleId)) {
+                ruleType = '治疗方案';
+                ruleTypeKey = 'treatment';
+            } else if (clinicalRules.find(r => r.id === ruleId)) {
+                ruleType = '临床路径规则';
+                ruleTypeKey = 'clinical';
+            }
+            
+            // 创建编辑规则模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h3>编辑${ruleType}</h3>
+                        <button class="modal-close" onclick="closeRuleModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editRuleForm">
+                            <div class="form-group">
+                                <label for="editRuleName">规则名称 *</label>
+                                <input type="text" id="editRuleName" required value="${rule.name}">
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleDescription">规则描述 *</label>
+                                <textarea id="editRuleDescription" rows="4" required placeholder="请输入规则的详细描述">${rule.description || ''}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRulePriority">优先级 *</label>
+                                <select id="editRulePriority" required>
+                                    <option value="高" ${rule.priority === '高' ? 'selected' : ''}>高</option>
+                                    <option value="中" ${rule.priority === '中' ? 'selected' : ''}>中</option>
+                                    <option value="低" ${rule.priority === '低' ? 'selected' : ''}>低</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleStatus">状态 *</label>
+                                <select id="editRuleStatus" required>
+                                    <option value="active" ${rule.status === 'active' ? 'selected' : ''}>启用</option>
+                                    <option value="inactive" ${rule.status === 'inactive' ? 'selected' : ''}>停用</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeRuleModal()">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="saveEditRule(${ruleId}, '${ruleTypeKey}')">保存</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function toggleRuleStatus(ruleId) {
+            // 在所有规则数组中查找并更新状态
+            let rule = insuranceRules.find(r => r.id === ruleId);
+            if (rule) {
+                rule.status = rule.status === 'active' ? 'inactive' : 'active';
+                filterInsuranceRules();
+                return;
+            }
+            
+            rule = diagnosisRules.find(r => r.id === ruleId);
+            if (rule) {
+                rule.status = rule.status === 'active' ? 'inactive' : 'active';
+                filterDiagnosisRules();
+                return;
+            }
+            
+            rule = treatmentRules.find(r => r.id === ruleId);
+            if (rule) {
+                rule.status = rule.status === 'active' ? 'inactive' : 'active';
+                filterTreatmentRules();
+                return;
+            }
+            
+            rule = clinicalRules.find(r => r.id === ruleId);
+            if (rule) {
+                rule.status = rule.status === 'active' ? 'inactive' : 'active';
+                filterClinicalRules();
+                return;
+            }
+        }
+
+        // 批量编辑功能
+        function toggleInsuranceBatchEdit() {
+            alert('医保规则批量编辑功能正在开发中...');
+        }
+
+        function toggleDiagnosisBatchEdit() {
+            alert('诊断标准批量编辑功能正在开发中...');
+        }
+
+        function toggleTreatmentBatchEdit() {
+            alert('治疗方案批量编辑功能正在开发中...');
+        }
+
+        function toggleClinicalBatchEdit() {
+            alert('临床路径规则批量编辑功能正在开发中...');
+        }
+
+        // 创建规则功能
+        function createInsuranceRule() {
+            alert('创建医保规则功能正在开发中...');
+        }
+
+        function createDiagnosisRule() {
+            alert('创建诊断标准功能正在开发中...');
+        }
+
+        function createTreatmentRule() {
+            alert('创建治疗方案功能正在开发中...');
+        }
+
+        function createClinicalRule() {
+            alert('创建临床路径规则功能正在开发中...');
+        }
+
+        // 模板下载功能
+        function downloadInsuranceTemplate() {
+            alert('下载医保规则模板功能正在开发中...');
+        }
+
+        function downloadDiagnosisTemplate() {
+            alert('下载诊断标准模板功能正在开发中...');
+        }
+
+        function downloadTreatmentTemplate() {
+            alert('下载治疗方案模板功能正在开发中...');
+        }
+
+        function downloadClinicalTemplate() {
+            alert('下载临床路径模板功能正在开发中...');
+        }
+
+        // 规则导入功能
+        function importInsuranceRules() {
+            alert('导入医保规则功能正在开发中...');
+        }
+
+        function importDiagnosisRules() {
+            alert('导入诊断标准功能正在开发中...');
+        }
+
+        function importTreatmentRules() {
+            alert('导入治疗方案功能正在开发中...');
+        }
+
+        function importClinicalRules() {
+            alert('导入临床路径规则功能正在开发中...');
+        }
+
+        // 模态框相关函数
+        function showRuleModal(ruleId = null, ruleType = 'insurance') {
+            const rule = ruleId ? [...insuranceRules, ...diagnosisRules, ...treatmentRules, ...clinicalRules].find(r => r.id === ruleId) : null;
+            const isEdit = !!rule;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h3>${isEdit ? '编辑' : '新增'}${getRuleTypeName(ruleType)}规则</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>规则名称 *</label>
+                                <input type="text" class="form-input" id="ruleName" value="${rule ? rule.name : ''}" placeholder="请输入规则名称">
+                            </div>
+                            <div class="form-group">
+                                <label>规则编码 *</label>
+                                <input type="text" class="form-input" id="ruleCode" value="${rule ? rule.code : ''}" placeholder="请输入规则编码">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>优先级</label>
+                                <select class="form-select" id="rulePriority">
+                                    <option value="high" ${rule && rule.priority === 'high' ? 'selected' : ''}>高</option>
+                                    <option value="medium" ${rule && rule.priority === 'medium' ? 'selected' : ''}>中</option>
+                                    <option value="low" ${rule && rule.priority === 'low' ? 'selected' : ''}>低</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>状态</label>
+                                <select class="form-select" id="ruleStatus">
+                                    <option value="active" ${rule && rule.status === 'active' ? 'selected' : ''}>启用</option>
+                                    <option value="inactive" ${rule && rule.status === 'inactive' ? 'selected' : ''}>禁用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>规则描述</label>
+                            <textarea class="form-textarea" id="ruleDescription" rows="4" placeholder="请输入规则描述">${rule ? rule.description : ''}</textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>生效日期</label>
+                                <input type="date" class="form-input" id="ruleEffectiveDate" value="${rule ? rule.effectiveDate : ''}">
+                            </div>
+                            <div class="form-group">
+                                <label>失效日期</label>
+                                <input type="date" class="form-input" id="ruleExpiryDate" value="${rule ? rule.expiryDate || '' : ''}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn btn-primary" onclick="saveRule(${ruleId}, '${ruleType}')">${isEdit ? '保存' : '创建'}</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function showRuleDetailModal(ruleId) {
+            const rule = [...insuranceRules, ...diagnosisRules, ...treatmentRules, ...clinicalRules].find(r => r.id === ruleId);
+            if (!rule) return;
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3>规则详情</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="margin-bottom: 16px;">
+                            <strong>规则名称：</strong>${rule.name}
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>规则编码：</strong>${rule.code}
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>优先级：</strong><span class="priority priority-${rule.priority}">${rule.priority === 'high' ? '高' : rule.priority === 'medium' ? '中' : '低'}</span>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>状态：</strong><span class="status status-${rule.status}">${rule.status === 'active' ? '启用' : '禁用'}</span>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>规则描述：</strong><br>${rule.description}
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>生效日期：</strong>${rule.effectiveDate}
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <strong>创建时间：</strong>${rule.createTime}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeModal()">关闭</button>
+                        <button class="btn btn-primary" onclick="closeModal(); editRule(${ruleId})">编辑</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function getRuleTypeName(type) {
+            const typeNames = {
+                'insurance': '医保',
+                'diagnosis': '诊断标准',
+                'treatment': '治疗方案',
+                'clinical': '临床路径'
+            };
+            return typeNames[type] || '';
+        }
+
+        function saveRule(ruleId, ruleType) {
+            const name = document.getElementById('ruleName').value;
+            const code = document.getElementById('ruleCode').value;
+            const priority = document.getElementById('rulePriority').value;
+            const status = document.getElementById('ruleStatus').value;
+            const description = document.getElementById('ruleDescription').value;
+            const effectiveDate = document.getElementById('ruleEffectiveDate').value;
+            const expiryDate = document.getElementById('ruleExpiryDate').value;
+            
+            if (!name || !code) {
+                alert('请填写必填字段');
+                return;
+            }
+            
+            const ruleData = {
+                name,
+                code,
+                priority,
+                status,
+                description,
+                effectiveDate,
+                expiryDate: expiryDate || null,
+                updateTime: new Date().toLocaleString()
+            };
+            
+            if (ruleId) {
+                // 编辑规则
+                const rule = [...insuranceRules, ...diagnosisRules, ...treatmentRules, ...clinicalRules].find(r => r.id === ruleId);
+                if (rule) {
+                    Object.assign(rule, ruleData);
+                }
+            } else {
+                // 新增规则
+                const newRule = {
+                    id: Date.now(),
+                    ...ruleData,
+                    createTime: new Date().toLocaleString()
+                };
+                
+                switch (ruleType) {
+                    case 'insurance':
+                        insuranceRules.push(newRule);
+                        break;
+                    case 'diagnosis':
+                        diagnosisRules.push(newRule);
+                        break;
+                    case 'treatment':
+                        treatmentRules.push(newRule);
+                        break;
+                    case 'clinical':
+                        clinicalRules.push(newRule);
+                        break;
+                }
+            }
+            
+            // 刷新对应的规则列表
+            switch (ruleType) {
+                case 'insurance':
+                    filterInsuranceRules();
+                    break;
+                case 'diagnosis':
+                    filterDiagnosisRules();
+                    break;
+                case 'treatment':
+                    filterTreatmentRules();
+                    break;
+                case 'clinical':
+                    filterClinicalRules();
+                    break;
+            }
+            
+            updateTabCounts();
+            closeModal();
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        // 重写原有的函数，使用模态框
+        function viewRule(ruleId) {
+            showRuleDetailModal(ruleId);
+        }
+
+        function editRule(ruleId) {
+            const rule = [...insuranceRules, ...diagnosisRules, ...treatmentRules, ...clinicalRules].find(r => r.id === ruleId);
+            if (rule) {
+                let ruleType = 'insurance';
+                if (diagnosisRules.find(r => r.id === ruleId)) ruleType = 'diagnosis';
+                else if (treatmentRules.find(r => r.id === ruleId)) ruleType = 'treatment';
+                else if (clinicalRules.find(r => r.id === ruleId)) ruleType = 'clinical';
+                
+                showRuleModal(ruleId, ruleType);
+            }
+        }
+
+        // 重写创建规则函数
+        function createInsuranceRule() {
+            showRuleModal(null, 'insurance');
+        }
+
+        function createDiagnosisRule() {
+            showRuleModal(null, 'diagnosis');
+        }
+
+        function createTreatmentRule() {
+            showRuleModal(null, 'treatment');
+        }
+
+        function createClinicalRule() {
+            showRuleModal(null, 'clinical');
+        }
+
+        // 模态框相关函数
+        function showRuleModal(ruleId = null, ruleType = 'insurance') {
+            const rule = ruleId ? [...insuranceRules, ...diagnosisRules, ...treatmentRules, ...clinicalRules].find(r => r.id === ruleId) : null;
+            
+            const modalHtml = `
+                <div class="modal-overlay" onclick="closeModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="modal-header">
+                            <h3>${rule ? '编辑规则' : '新增规则'}</h3>
+                            <span class="modal-close" onclick="closeModal()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <form id="ruleForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="ruleName">规则名称 *</label>
+                                        <input type="text" id="ruleName" value="${rule ? rule.name : ''}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ruleCode">规则编码 *</label>
+                                        <input type="text" id="ruleCode" value="${rule ? rule.code : ''}" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="rulePriority">优先级</label>
+                                        <select id="rulePriority">
+                                            <option value="high" ${rule && rule.priority === 'high' ? 'selected' : ''}>高</option>
+                                            <option value="medium" ${rule && rule.priority === 'medium' ? 'selected' : ''}>中</option>
+                                            <option value="low" ${rule && rule.priority === 'low' ? 'selected' : ''}>低</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ruleStatus">状态</label>
+                                        <select id="ruleStatus">
+                                            <option value="active" ${rule && rule.status === 'active' ? 'selected' : ''}>启用</option>
+                                            <option value="inactive" ${rule && rule.status === 'inactive' ? 'selected' : ''}>停用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="ruleEffectiveDate">生效日期</label>
+                                        <input type="date" id="ruleEffectiveDate" value="${rule ? rule.effectiveDate : ''}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ruleExpiryDate">失效日期</label>
+                                        <input type="date" id="ruleExpiryDate" value="${rule ? rule.expiryDate || '' : ''}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ruleDescription">规则描述</label>
+                                    <textarea id="ruleDescription" rows="4" placeholder="请输入规则描述">${rule ? rule.description : ''}</textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                            <button type="button" class="btn btn-primary" onclick="saveRule(${ruleId}, '${ruleType}')">保存</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        function showRuleDetailModal(ruleId) {
+            const rule = [...insuranceRules, ...diagnosisRules, ...treatmentRules, ...clinicalRules].find(r => r.id === ruleId);
+            if (!rule) return;
+            
+            const modalHtml = `
+                <div class="modal-overlay" onclick="closeModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="modal-header">
+                            <h3>规则详情</h3>
+                            <span class="modal-close" onclick="closeModal()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <div class="detail-item">
+                                <label>规则名称：</label>
+                                <span>${rule.name}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>规则编码：</label>
+                                <span>${rule.code}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>优先级：</label>
+                                <span class="priority-${rule.priority}">${rule.priority === 'high' ? '高' : rule.priority === 'medium' ? '中' : '低'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>状态：</label>
+                                <span class="status-${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>生效日期：</label>
+                                <span>${rule.effectiveDate || '未设置'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>失效日期：</label>
+                                <span>${rule.expiryDate || '永久有效'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>创建时间：</label>
+                                <span>${rule.createTime}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>更新时间：</label>
+                                <span>${rule.updateTime || '未更新'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <label>规则描述：</label>
+                                <div class="description">${rule.description}</div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeModal()">关闭</button>
+                            <button type="button" class="btn btn-primary" onclick="closeModal(); editRule(${rule.id})">编辑</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+    </script>
+    
+    <style>
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
+
+        .detail-item {
+            display: flex;
+            margin-bottom: 12px;
+            align-items: flex-start;
+        }
+
+        .detail-item label {
+            min-width: 100px;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .detail-item .description {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        /* PDF预览样式 */
+        .pdf-preview-layout {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            z-index: 10000;
+        }
+
+        .pdf-sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pdf-content {
+            flex: 1;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pdf-toolbar {
+            padding: 20px;
+            border-bottom: 1px solid #34495e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pdf-toolbar h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .pdf-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pdf-close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .pdf-navigation {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .pdf-nav-item {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .pdf-nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .pdf-nav-item.active {
+            background: #3498db;
+        }
+
+        .pdf-controls {
+            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pdf-zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pdf-zoom-level {
+            min-width: 50px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .pdf-page-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .pdf-viewer {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: white;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .pdf-page {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            line-height: 1.6;
+            font-size: 14px;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .pdf-page h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        .pdf-page h3 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .pdf-page p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        .pdf-content .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 48px;
+            color: rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+
+    <script>
+        // 主Tab切换函数
+        function switchMainTab(tabName, clickedElement) {
+            // 移除所有tab按钮的active类
+            document.querySelectorAll('.main-tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 移除所有tab内容的active类
+            document.querySelectorAll('.main-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 添加active类到当前tab按钮
+            if (clickedElement) {
+                clickedElement.classList.add('active');
+            } else {
+                // 如果没有传入元素，则根据tabName查找对应按钮
+                const tabButton = document.querySelector(`[onclick*="switchMainTab('${tabName}',"]`);
+                if (tabButton) {
+                    tabButton.classList.add('active');
+                }
+            }
+            
+            // 显示对应的tab内容
+            const targetTab = document.getElementById(tabName + '-tab');
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 默认显示基本信息tab
+            switchMainTab('basic');
+        });
+        
+        // 所有Tab已改为左右分栏布局，不再需要垂直Tab切换函数
+        
+        // 医保规则相关功能函数
+        function downloadInsuranceTemplate() {
+            alert('下载医保规则模板');
+        }
+        
+        function importInsuranceRules() {
+            alert('导入医保规则');
+        }
+        
+        function createInsuranceRule() {
+            alert('创建新的医保规则');
+        }
+        
+        function editRule(type, id) {
+            alert(`编辑${type}规则 ID: ${id}`);
+        }
+        
+        function toggleRuleStatus(type, id) {
+            alert(`切换${type}规则状态 ID: ${id}`);
+        }
+        
+        // 诊断标准、治疗方案、相关政策Tab已改为左右分栏布局，不再需要切换函数
+        
+        // 医保规则相关函数
+        function showInsuranceContent(type) {
+            // 更新列表项激活状态
+            document.querySelectorAll('#insurance-tab .policy-file-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.policy-file-item').classList.add('active');
+            
+            // 模拟医保规则数据
+            const insuranceData = {
+                'catalog': {
+                    title: '医保目录管理规则',
+                    type: '医保目录',
+                    priority: '高',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>目录范围</h4>
+                            <p>本规则适用于基本医疗保险、工伤保险和生育保险药品目录的管理。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>准入条件</h4>
+                            <ul>
+                                <li>具有明确的临床价值和循证医学证据</li>
+                                <li>符合国家药品监督管理部门批准的适应症</li>
+                                <li>价格合理，具有良好的成本效益比</li>
+                            </ul>
+                        </div>
+                        <div class="content-section">
+                            <h4>管理要求</h4>
+                            <p>严格按照国家医保局制定的目录管理办法执行，定期评估和调整。</p>
+                        </div>
+                    `
+                },
+                'payment': {
+                    title: '医保支付标准规则',
+                    type: '支付标准',
+                    priority: '高',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>支付原则</h4>
+                            <p>按照国家统一的医保支付标准，结合地方实际情况制定具体支付政策。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>支付范围</h4>
+                            <ul>
+                                <li>基本医疗保险药品目录内药品</li>
+                                <li>符合临床必需、安全有效、价格合理原则</li>
+                                <li>经过医保谈判纳入的创新药品</li>
+                            </ul>
+                        </div>
+                    `
+                },
+                'limit': {
+                    title: '医保限制使用规则',
+                    type: '限制使用',
+                    priority: '中',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>限制条件</h4>
+                            <p>对特定药品实施限制使用管理，确保合理用药。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>适用范围</h4>
+                            <ul>
+                                <li>高价值药品的使用限制</li>
+                                <li>特殊人群用药限制</li>
+                                <li>特定疾病用药限制</li>
+                            </ul>
+                        </div>
+                    `
+                }
+            };
+            
+            const rule = insuranceData[type] || insuranceData['catalog'];
+            
+            // 显示对应内容
+            const content = document.getElementById('insuranceDetail');
+            content.innerHTML = `
+                <div class="file-detail-header">
+                    <div class="file-detail-title">${rule.title}</div>
+                    <div class="file-detail-meta">
+                        <span>类型：${rule.type}</span>
+                        <span>优先级：${rule.priority}</span>
+                        <span>状态：${rule.status}</span>
+                    </div>
+                </div>
+                <div class="file-detail-content">
+                    ${rule.content}
+                </div>
+            `;
+        }
+        
+        function searchInsuranceRules() {
+            const searchTerm = document.getElementById('insuranceSearchInput').value.toLowerCase();
+            // 实现搜索逻辑
+            console.log('搜索医保规则:', searchTerm);
+        }
+        
+        // 临床路径规则相关函数
+        function showClinicalContent(type) {
+            document.querySelectorAll('#clinical-tab .policy-file-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.policy-file-item').classList.add('active');
+            
+            // 模拟临床路径数据
+            const clinicalData = {
+                'diabetes': {
+                    title: '糖尿病临床路径',
+                    type: '临床路径',
+                    priority: '高',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>适用范围</h4>
+                            <p>适用于2型糖尿病患者的标准化诊疗流程。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>诊疗步骤</h4>
+                            <ul>
+                                <li>初步评估：血糖检测、糖化血红蛋白检查</li>
+                                <li>风险评估：并发症筛查、心血管风险评估</li>
+                                <li>治疗方案：个体化用药方案制定</li>
+                                <li>随访管理：定期监测和调整治疗</li>
+                            </ul>
+                        </div>
+                        <div class="content-section">
+                            <h4>质量指标</h4>
+                            <p>糖化血红蛋白控制目标<7%，血压控制目标<130/80mmHg。</p>
+                        </div>
+                    `
+                },
+                'hypertension': {
+                    title: '高血压临床路径',
+                    type: '临床路径',
+                    priority: '高',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>诊断标准</h4>
+                            <p>收缩压≥140mmHg和/或舒张压≥90mmHg。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>治疗原则</h4>
+                            <ul>
+                                <li>生活方式干预为基础</li>
+                                <li>个体化药物治疗</li>
+                                <li>血压目标管理</li>
+                                <li>并发症预防</li>
+                            </ul>
+                        </div>
+                    `
+                },
+                'coronary': {
+                    title: '冠心病临床路径',
+                    type: '临床路径',
+                    priority: '高',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>诊疗流程</h4>
+                            <p>从症状评估到介入治疗的标准化流程。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>关键节点</h4>
+                            <ul>
+                                <li>急性期处理</li>
+                                <li>介入治疗时机</li>
+                                <li>药物治疗方案</li>
+                                <li>康复指导</li>
+                            </ul>
+                        </div>
+                    `
+                }
+            };
+            
+            const pathway = clinicalData[type] || clinicalData['diabetes'];
+            
+            const content = document.getElementById('clinicalDetail');
+            content.innerHTML = `
+                <div class="file-detail-header">
+                    <div class="file-detail-title">${pathway.title}</div>
+                    <div class="file-detail-meta">
+                        <span>类型：${pathway.type}</span>
+                        <span>优先级：${pathway.priority}</span>
+                        <span>状态：${pathway.status}</span>
+                    </div>
+                </div>
+                <div class="file-detail-content">
+                    ${pathway.content}
+                </div>
+            `;
+        }
+        
+        function searchClinicalRules() {
+            const searchTerm = document.getElementById('clinicalSearchInput').value.toLowerCase();
+            console.log('搜索临床路径规则:', searchTerm);
+        }
+        
+        // 诊断标准相关函数
+        function showDiagnosisContent(type) {
+            document.querySelectorAll('#diagnosis-tab .policy-file-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.policy-file-item').classList.add('active');
+            
+            // 模拟诊断标准数据
+            const diagnosisData = {
+                'main': {
+                    title: '主要诊断标准',
+                    type: '诊断标准',
+                    priority: '高',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>诊断依据</h4>
+                            <p>基于国际疾病分类标准和临床诊疗指南制定的诊断标准。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>主要症状</h4>
+                            <ul>
+                                <li>典型临床表现和体征</li>
+                                <li>实验室检查异常指标</li>
+                                <li>影像学检查特征性改变</li>
+                                <li>病理学检查确诊依据</li>
+                            </ul>
+                        </div>
+                        <div class="content-section">
+                            <h4>诊断流程</h4>
+                            <p>按照循证医学原则，结合患者具体情况进行综合判断。</p>
+                        </div>
+                    `
+                },
+                'auxiliary': {
+                    title: '辅助诊断标准',
+                    type: '诊断标准',
+                    priority: '中',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>辅助检查</h4>
+                            <p>用于支持主要诊断的辅助性检查项目和判断标准。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>检查项目</h4>
+                            <ul>
+                                <li>生化检查指标</li>
+                                <li>免疫学检查</li>
+                                <li>分子生物学检测</li>
+                                <li>功能性检查</li>
+                            </ul>
+                        </div>
+                    `
+                },
+                'laboratory': {
+                    title: '实验室检查标准',
+                    type: '诊断标准',
+                    priority: '中',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>检验标准</h4>
+                            <p>规范化的实验室检查项目和参考值范围。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>质量控制</h4>
+                            <ul>
+                                <li>标本采集要求</li>
+                                <li>检测方法标准化</li>
+                                <li>结果判读标准</li>
+                                <li>质量保证措施</li>
+                            </ul>
+                        </div>
+                    `
+                }
+            };
+            
+            const standard = diagnosisData[type] || diagnosisData['main'];
+            
+            const content = document.getElementById('diagnosisDetail');
+            content.innerHTML = `
+                <div class="file-detail-header">
+                    <div class="file-detail-title">${standard.title}</div>
+                    <div class="file-detail-meta">
+                        <span>类型：${standard.type}</span>
+                        <span>优先级：${standard.priority}</span>
+                        <span>状态：${standard.status}</span>
+                    </div>
+                </div>
+                <div class="file-detail-content">
+                    ${standard.content}
+                </div>
+            `;
+        }
+        
+        function searchDiagnosis() {
+            const searchTerm = document.getElementById('diagnosisSearchInput').value.toLowerCase();
+            console.log('搜索诊断标准:', searchTerm);
+        }
+        
+        // 治疗方案相关函数
+        function showTreatmentContent(type) {
+            document.querySelectorAll('#treatment-tab .policy-file-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.policy-file-item').classList.add('active');
+            
+            // 模拟治疗方案数据
+            const treatmentData = {
+                'standard': {
+                    title: '标准治疗方案',
+                    type: '治疗方案',
+                    priority: '高',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>治疗原则</h4>
+                            <p>基于循证医学证据制定的标准化治疗方案，适用于大多数患者。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>治疗步骤</h4>
+                            <ul>
+                                <li>一线治疗：首选药物和剂量方案</li>
+                                <li>二线治疗：替代药物选择</li>
+                                <li>联合治疗：多药联用策略</li>
+                                <li>维持治疗：长期管理方案</li>
+                            </ul>
+                        </div>
+                        <div class="content-section">
+                            <h4>疗效评估</h4>
+                            <p>定期评估治疗效果，根据患者反应调整治疗方案。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>注意事项</h4>
+                            <ul>
+                                <li>监测药物不良反应</li>
+                                <li>定期复查相关指标</li>
+                                <li>患者教育和依从性管理</li>
+                            </ul>
+                        </div>
+                    `
+                },
+                'personalized': {
+                    title: '个体化治疗方案',
+                    type: '治疗方案',
+                    priority: '高',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>个体化原则</h4>
+                            <p>根据患者的基因型、表型、疾病特点制定个性化治疗方案。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>评估要素</h4>
+                            <ul>
+                                <li>患者年龄、性别、体重</li>
+                                <li>肝肾功能状态</li>
+                                <li>合并症情况</li>
+                                <li>药物代谢基因型</li>
+                            </ul>
+                        </div>
+                    `
+                },
+                'emergency': {
+                    title: '急诊治疗方案',
+                    type: '治疗方案',
+                    priority: '高',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>急诊处理</h4>
+                            <p>针对急危重症患者的快速诊疗和抢救方案。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>处理流程</h4>
+                            <ul>
+                                <li>生命体征稳定</li>
+                                <li>快速诊断评估</li>
+                                <li>紧急药物治疗</li>
+                                <li>后续治疗安排</li>
+                            </ul>
+                        </div>
+                    `
+                },
+                'rehabilitation': {
+                    title: '康复治疗方案',
+                    type: '治疗方案',
+                    priority: '中',
+                    status: '启用',
+                    content: `
+                        <div class="content-section">
+                            <h4>康复目标</h4>
+                            <p>帮助患者恢复功能，提高生活质量，预防并发症。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>康复措施</h4>
+                            <ul>
+                                <li>物理治疗</li>
+                                <li>作业治疗</li>
+                                <li>言语治疗</li>
+                                <li>心理康复</li>
+                            </ul>
+                        </div>
+                    `
+                }
+            };
+            
+            const treatment = treatmentData[type] || treatmentData['standard'];
+            
+            const content = document.getElementById('treatmentDetail');
+            content.innerHTML = `
+                <div class="file-detail-header">
+                    <div class="file-detail-title">${treatment.title}</div>
+                    <div class="file-detail-meta">
+                        <span>类型：${treatment.type}</span>
+                        <span>优先级：${treatment.priority}</span>
+                        <span>状态：${treatment.status}</span>
+                    </div>
+                </div>
+                <div class="file-detail-content">
+                    ${treatment.content}
+                </div>
+            `;
+        }
+        
+        function searchTreatment() {
+            const searchTerm = document.getElementById('treatmentSearchInput').value.toLowerCase();
+            console.log('搜索治疗方案:', searchTerm);
+        }
+        
+        // 相关政策文件相关函数
+        function showFileDetail(fileId) {
+            // 更新文件列表项激活状态
+            document.querySelectorAll('#policy-tab .policy-file-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.policy-file-item').classList.add('active');
+            
+            // 模拟文件数据
+            const fileData = {
+                'policy1': {
+                    title: '国家医保局关于糖尿病门诊用药政策解读',
+                    number: '医保发〔2024〕15号',
+                    date: '2024-03-15',
+                    department: '国家医保局',
+                    type: '政策解读',
+                    content: `
+                        <div class="content-section">
+                            <h4>政策背景</h4>
+                            <p>为进一步完善糖尿病门诊用药保障机制，减轻患者医疗费用负担，根据《基本医疗保险用药管理暂行办法》等相关规定，现就糖尿病门诊用药政策有关问题解读如下。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>主要内容</h4>
+                            <p>1. 扩大糖尿病门诊用药保障范围，将胰岛素及口服降糖药纳入门诊慢特病保障范围。</p>
+                            <p>2. 提高糖尿病门诊用药报销比例，职工医保报销比例不低于50%，居民医保报销比例不低于50%。</p>
+                            <p>3. 完善糖尿病门诊用药管理，建立处方审核和用药监管机制。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>执行要求</h4>
+                            <p>各地医保部门要结合本地实际，制定具体实施方案，确保政策落地见效。</p>
+                        </div>
+                    `
+                },
+                'policy2': {
+                    title: '慢性病医保支付政策解读',
+                    number: '医保发〔2024〕08号',
+                    date: '2024-02-20',
+                    department: '国家医保局',
+                    type: '政策解读',
+                    content: `
+                        <div class="content-section">
+                            <h4>政策目标</h4>
+                            <p>建立健全慢性病医保支付政策体系，提高慢性病患者医疗保障水平。</p>
+                        </div>
+                        <div class="content-section">
+                            <h4>保障范围</h4>
+                            <p>包括高血压、糖尿病、冠心病、脑卒中等常见慢性病的门诊治疗费用。</p>
+                        </div>
+                    `
+                }
+            };
+            
+            const file = fileData[fileId] || fileData['policy1'];
+            
+            // 显示文件详情
+              const content = document.getElementById('fileDetail');
+              content.innerHTML = `
+                 <div class="file-detail-header">
+                     <h3 class="file-detail-title">${file.title}</h3>
+                     <div class="file-detail-meta">
+                         <span>文号：${file.number}</span>
+                         <span>发布日期：${file.date}</span>
+                         <span>发布机构：${file.department}</span>
+                         <span>文件类型：${file.type}</span>
+                     </div>
+                 </div>
+                 <div class="file-detail-content">
+                     ${file.content}
+                 </div>
+             `;
+        }
+        
+        function searchPolicyFiles() {
+            const searchTerm = document.getElementById('policySearchInput').value.toLowerCase();
+            const fileItems = document.querySelectorAll('#policy-tab .policy-file-item');
+            
+            fileItems.forEach(item => {
+                const title = item.querySelector('.file-title').textContent.toLowerCase();
+                const meta = item.querySelector('.file-meta').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || meta.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        function downloadFile(fileId) {
+            alert(`下载文件: ${fileId}`);
+        }
+        
+        function printFile(fileId) {
+            alert(`打印文件: ${fileId}`);
+        }
+        
+        function shareFile(fileId) {
+            alert(`分享文件: ${fileId}`);
+        }
+        
+        // PDF预览功能
+        function showPdfPreview(ruleId, ruleName) {
+            const modal = document.getElementById('pdfPreviewModal');
+            const title = document.getElementById('pdfPreviewTitle');
+            const viewer = document.getElementById('pdfViewer');
+            
+            title.textContent = ruleName;
+            
+            // 模拟PDF内容
+            viewer.innerHTML = `
+                <div class="pdf-page">
+                    <h2>${ruleName}</h2>
+                    <div class="pdf-content">
+                        <h3>规则概述</h3>
+                        <p>这是${ruleName}的详细内容。本规则用于指导相关诊疗活动的执行和监管。</p>
+                        
+                        <h3>适用范围</h3>
+                        <p>本规则适用于所有相关的诊疗场景，包括但不限于门诊诊疗、住院治疗、临床路径管理等。</p>
+                        
+                        <h3>执行标准</h3>
+                        <p>1. 严格按照规定的诊疗流程执行</p>
+                        <p>2. 确保所有相关医疗文档完整</p>
+                        <p>3. 定期进行医疗质量检查</p>
+                        
+                        <h3>注意事项</h3>
+                        <p>在执行过程中需要特别注意相关医疗法规的变化，及时更新诊疗标准。</p>
+                        
+                        <div class="watermark">仅供内部使用 - 禁止复制</div>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closePdfPreview() {
+            const modal = document.getElementById('pdfPreviewModal');
+            modal.style.display = 'none';
+        }
+        
+        // 关闭规则模态框
+        function closeRuleModal() {
+            const modals = document.querySelectorAll('.modal-overlay');
+            modals.forEach(modal => modal.remove());
+        }
+        
+        // 保存编辑规则
+        function saveEditRule(ruleId, ruleType) {
+            const name = document.getElementById('editRuleName').value.trim();
+            const description = document.getElementById('editRuleDescription').value.trim();
+            const priority = document.getElementById('editRulePriority').value;
+            const status = document.getElementById('editRuleStatus').value;
+            
+            if (!name || !description) {
+                alert('请填写完整的规则信息');
+                return;
+            }
+            
+            // 根据规则类型更新对应的数组
+            let targetArray;
+            switch(ruleType) {
+                case 'insurance':
+                    targetArray = insuranceRules;
+                    break;
+                case 'diagnosis':
+                    targetArray = diagnosisRules;
+                    break;
+                case 'treatment':
+                    targetArray = treatmentRules;
+                    break;
+                case 'clinical':
+                    targetArray = clinicalRules;
+                    break;
+                default:
+                    alert('未知的规则类型');
+                    return;
+            }
+            
+            const ruleIndex = targetArray.findIndex(r => r.id === ruleId);
+            if (ruleIndex !== -1) {
+                targetArray[ruleIndex] = {
+                    ...targetArray[ruleIndex],
+                    name: name,
+                    description: description,
+                    priority: priority,
+                    status: status
+                };
+                
+                // 重新渲染对应的规则列表
+                switch(ruleType) {
+                    case 'insurance':
+                        renderInsuranceRules();
+                        break;
+                    case 'diagnosis':
+                        renderDiagnosisRules();
+                        break;
+                    case 'treatment':
+                        renderTreatmentRules();
+                        break;
+                    case 'clinical':
+                        renderClinicalRules();
+                        break;
+                }
+                
+                closeRuleModal();
+                alert('规则更新成功！');
+            } else {
+                alert('更新失败，未找到规则');
+            }
+        }
+
+        // 防止PDF内容被复制
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('selectstart', function(e) {
+                if (e.target.closest('#pdfViewer')) {
+                    e.preventDefault();
+                }
+            });
+            
+            document.addEventListener('contextmenu', function(e) {
+                if (e.target.closest('#pdfViewer')) {
+                    e.preventDefault();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.target.closest('#pdfViewer') && (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'a' || e.key === 's')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+    
+    <!-- PDF预览模态框 -->
+    <div id="pdfPreviewModal" class="pdf-preview-layout" style="display: none;">
+        <div class="pdf-sidebar">
+            <div class="pdf-toolbar">
+                <h3 id="pdfPreviewTitle">规则详情</h3>
+                <button class="pdf-close-btn" onclick="closePdfPreview()">&times;</button>
+            </div>
+            <div class="pdf-navigation">
+                <div class="pdf-nav-item active">第1页</div>
+            </div>
+        </div>
+        <div class="pdf-content">
+            <div class="pdf-controls">
+                <div class="pdf-zoom-controls">
+                    <button class="btn btn-outline btn-small">-</button>
+                    <span class="pdf-zoom-level">100%</span>
+                    <button class="btn btn-outline btn-small">+</button>
+                </div>
+                <div class="pdf-page-info">
+                    <span>第 1 页，共 1 页</span>
+                </div>
+            </div>
+            <div id="pdfViewer" class="pdf-viewer">
+                <!-- PDF内容将在这里动态加载 -->
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

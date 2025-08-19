@@ -1,0 +1,57 @@
+<h1 class="page-title"> tenant-analysis</h1>
+
+<nav class="breadcrumb" aria-label="面包屑导航">
+    <a href="../工作台/平台运营看板.html">首页</a> > <a href="../1.0/">1.0</a> > <a href="../1.0/超级管理员/">超级管理员</a> > <a href="../1.0/超级管理员/组件/">组件</a> > <span class="current">_tenant-analysis</span>
+</nav>
+<!-- 租户分析 -->
+<div class="tenant-analysis">
+    <div class="analysis-header">
+        <h3>租户分析</h3>
+        <div class="time-selector">
+            <button class="time-filter-btn active" onclick="switchTenantAnalysisTime(7, this)">近7天</button>
+            <button class="time-filter-btn" onclick="switchTenantAnalysisTime(30, this)">近30天</button>
+            <button class="time-filter-btn" onclick="switchTenantAnalysisTime(90, this)">近90天</button>
+        </div>
+    </div>
+    <div class="analysis-grid">
+        <div class="tenant-growth">
+            <div class="chart-header">
+                <h4>租户增长趋势</h4>
+                <div class="growth-stats">
+                    <span class="stat-item">新增: +12</span>
+                    <span class="stat-item">流失: -3</span>
+                    <span class="stat-item">净增长: +9</span>
+                </div>
+            </div>
+            <div class="line-chart-container">
+                <canvas id="tenantGrowthChart" width="500" height="200"></canvas>
+            </div>
+        </div>
+        <div class="tenant-distribution">
+            <div class="chart-header">
+                <h4>租户类型分布</h4>
+                <div class="distribution-legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #4ecdc4;"></div>
+                        <span>三甲医院 (68)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #45b7d1;"></div>
+                        <span>二甲医院 (52)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #f9ca24;"></div>
+                        <span>专科医院 (24)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #a55eea;"></div>
+                        <span>医保机构 (12)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="donut-chart-container">
+                <canvas id="tenantTypeChart" width="250" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>

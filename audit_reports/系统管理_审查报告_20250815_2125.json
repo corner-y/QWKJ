@@ -1,0 +1,273 @@
+{
+  "module": "系统管理",
+  "audit_time": "2025-08-15T21:25:45.842667",
+  "summary": {
+    "total_pages": 2,
+    "successful_audits": 2,
+    "pages_with_errors": 0,
+    "avg_navigation_score": 100.0
+  },
+  "pages": [
+    {
+      "page_info": {
+        "path": "系统管理/全局设置.html",
+        "name": "全局设置.html",
+        "module": "系统管理",
+        "title": "全局设置 - 医保审核系统",
+        "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E5%85%A8%E5%B1%80%E8%AE%BE%E7%BD%AE.html",
+        "screenshot": "全局设置.html.png",
+        "audit_time": "2025-08-15T21:25:38.901895"
+      },
+      "menu_analysis": {
+        "exists": true,
+        "structure": {
+          "工作台": {
+            "level": 1,
+            "expanded": true,
+            "children": {
+              "平台运营看板": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+              },
+              "报告规则分析": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+              }
+            }
+          },
+          "规则管理": {
+            "level": 1,
+            "expanded": false,
+            "children": {
+              "": {
+                "level": 2,
+                "href": null,
+                "children": {
+                  "": {
+                    "level": 3,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                  }
+                }
+              }
+            }
+          },
+          "审核管理": {
+            "level": 1,
+            "expanded": false,
+            "children": {
+              "": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+              }
+            }
+          },
+          "用户权限管理": {
+            "level": 1,
+            "expanded": false,
+            "children": {
+              "": {
+                "level": 2,
+                "href": null,
+                "children": {
+                  "": {
+                    "level": 3,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                  }
+                }
+              }
+            }
+          },
+          "系统管理": {
+            "level": 1,
+            "expanded": true,
+            "children": {
+              "全局设置": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E5%85%A8%E5%B1%80%E8%AE%BE%E7%BD%AE.html"
+              },
+              "系统监控": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+              }
+            }
+          },
+          "知识库": {
+            "level": 1,
+            "expanded": false,
+            "children": {
+              "": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+              }
+            }
+          }
+        },
+        "active_items": [
+          "系统管理 > 全局设置"
+        ],
+        "expanded_groups": [
+          "工作台",
+          "系统管理"
+        ],
+        "errors": [
+          "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x000000010464def8 chromedriver + 5918456\n1   chromedriver                        0x000000010464548a chromedriver + 5883018\n2   chromedriver                        0x0000000104111e20 chromedriver + 429600\n3   chromedriver                        0x0000000104163ed4 chromedriver + 765652\n4   chromedriver                        0x00000001041640f1 chromedriver + 766193\n5   chromedriver                        0x0000000104157b76 chromedriver + 715638\n6   chromedriver                        0x0000000104189f3d chromedriver + 921405\n7   chromedriver                        0x0000000104157a68 chromedriver + 715368\n8   chromedriver                        0x000000010418a0ce chromedriver + 921806\n9   chromedriver                        0x00000001041b1024 chromedriver + 1081380\n10  chromedriver                        0x0000000104189ce3 chromedriver + 920803\n11  chromedriver                        0x000000010415629b chromedriver + 709275\n12  chromedriver                        0x0000000104156f81 chromedriver + 712577\n13  chromedriver                        0x000000010460ac00 chromedriver + 5643264\n14  chromedriver                        0x000000010460eab4 chromedriver + 5659316\n15  chromedriver                        0x00000001045e6472 chromedriver + 5493874\n16  chromedriver                        0x000000010460f55f chromedriver + 5662047\n17  chromedriver                        0x00000001045d5414 chromedriver + 5424148\n18  chromedriver                        0x0000000104632778 chromedriver + 5805944\n19  chromedriver                        0x0000000104632940 chromedriver + 5806400\n20  chromedriver                        0x0000000104645061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+        ]
+      },
+      "navigation_score": {
+        "total": 100,
+        "details": {
+          "menu_exists": 20,
+          "structure_match": 25,
+          "active_highlight": 25,
+          "expansion_logic": 15,
+          "link_validity": 15
+        },
+        "issues": []
+      },
+      "error_logs": {
+        "count": 0,
+        "details": [],
+        "log_file": "全局设置.html.log"
+      },
+      "quality_indicators": {
+        "has_title": true,
+        "loads_successfully": true,
+        "menu_functional": true,
+        "error_free": true
+      }
+    },
+    {
+      "page_info": {
+        "path": "系统管理/系统监控.html",
+        "name": "系统监控.html",
+        "module": "系统管理",
+        "title": "系统监控 - 医保审核系统",
+        "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html",
+        "screenshot": "系统监控.html.png",
+        "audit_time": "2025-08-15T21:25:44.840595"
+      },
+      "menu_analysis": {
+        "exists": true,
+        "structure": {
+          "工作台": {
+            "level": 1,
+            "expanded": true,
+            "children": {
+              "平台运营看板": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+              },
+              "报告规则分析": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+              }
+            }
+          },
+          "规则管理": {
+            "level": 1,
+            "expanded": false,
+            "children": {
+              "": {
+                "level": 2,
+                "href": null,
+                "children": {
+                  "": {
+                    "level": 3,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                  }
+                }
+              }
+            }
+          },
+          "审核管理": {
+            "level": 1,
+            "expanded": false,
+            "children": {
+              "": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+              }
+            }
+          },
+          "用户权限管理": {
+            "level": 1,
+            "expanded": false,
+            "children": {
+              "": {
+                "level": 2,
+                "href": null,
+                "children": {
+                  "": {
+                    "level": 3,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                  }
+                }
+              }
+            }
+          },
+          "系统管理": {
+            "level": 1,
+            "expanded": true,
+            "children": {
+              "全局设置": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E5%85%A8%E5%B1%80%E8%AE%BE%E7%BD%AE.html"
+              },
+              "系统监控": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+              }
+            }
+          },
+          "知识库": {
+            "level": 1,
+            "expanded": false,
+            "children": {
+              "": {
+                "level": 2,
+                "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+              }
+            }
+          }
+        },
+        "active_items": [
+          "系统管理 > 系统监控"
+        ],
+        "expanded_groups": [
+          "工作台",
+          "系统管理"
+        ],
+        "errors": [
+          "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x000000010464def8 chromedriver + 5918456\n1   chromedriver                        0x000000010464548a chromedriver + 5883018\n2   chromedriver                        0x0000000104111e20 chromedriver + 429600\n3   chromedriver                        0x0000000104163ed4 chromedriver + 765652\n4   chromedriver                        0x00000001041640f1 chromedriver + 766193\n5   chromedriver                        0x0000000104157b76 chromedriver + 715638\n6   chromedriver                        0x0000000104189f3d chromedriver + 921405\n7   chromedriver                        0x0000000104157a68 chromedriver + 715368\n8   chromedriver                        0x000000010418a0ce chromedriver + 921806\n9   chromedriver                        0x00000001041b1024 chromedriver + 1081380\n10  chromedriver                        0x0000000104189ce3 chromedriver + 920803\n11  chromedriver                        0x000000010415629b chromedriver + 709275\n12  chromedriver                        0x0000000104156f81 chromedriver + 712577\n13  chromedriver                        0x000000010460ac00 chromedriver + 5643264\n14  chromedriver                        0x000000010460eab4 chromedriver + 5659316\n15  chromedriver                        0x00000001045e6472 chromedriver + 5493874\n16  chromedriver                        0x000000010460f55f chromedriver + 5662047\n17  chromedriver                        0x00000001045d5414 chromedriver + 5424148\n18  chromedriver                        0x0000000104632778 chromedriver + 5805944\n19  chromedriver                        0x0000000104632940 chromedriver + 5806400\n20  chromedriver                        0x0000000104645061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+        ]
+      },
+      "navigation_score": {
+        "total": 100,
+        "details": {
+          "menu_exists": 20,
+          "structure_match": 25,
+          "active_highlight": 25,
+          "expansion_logic": 15,
+          "link_validity": 15
+        },
+        "issues": []
+      },
+      "error_logs": {
+        "count": 0,
+        "details": [],
+        "log_file": "系统监控.html.log"
+      },
+      "quality_indicators": {
+        "has_title": true,
+        "loads_successfully": true,
+        "menu_functional": true,
+        "error_free": true
+      }
+    }
+  ],
+  "issues_summary": {
+    "navigation_issues": [],
+    "common_errors": [],
+    "recommendations": []
+  }
+}

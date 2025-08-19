@@ -1,0 +1,624 @@
+
+<!-- 统一左侧菜单组件 -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h1 class="sidebar-logo">医保审核系统</h1>
+        <div class="sidebar-subtitle">超级管理员</div>
+    </div>
+    <div class="sidebar-nav">
+        <!-- 一级菜单：工作台 -->
+        <div class="nav-group expanded">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="dashboard">
+                <span class="nav-icon nav-icon-dashboard"></span>
+                <span class="nav-text">工作台</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <a href="/1.0/超级管理员/工作台/平台运营看板.html" class="nav-item nav-level-2" data-menu="dashboard-overview">
+                    <span class="nav-icon nav-icon-chart"></span>
+                    <span class="nav-text">平台运营看板</span>
+                </a>
+                <a href="/1.0/超级管理员/工作台/报告规则分析.html" class="nav-item nav-level-2" data-menu="dashboard-analysis">
+                    <span class="nav-icon nav-icon-analysis"></span>
+                    <span class="nav-text">报告规则分析</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 一级菜单：规则管理 -->
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="rules">
+                <span class="nav-icon nav-icon-rules"></span>
+                <span class="nav-text">规则管理</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <!-- 二级菜单：药品规则库 -->
+                <div class="nav-subgroup">
+                    <a href="javascript:void(0)" onclick="navigateToRuleCategory('drugs')" class="nav-item nav-level-2" data-menu="rules-drugs">
+                        <span class="nav-icon nav-icon-drug"></span>
+                        <span class="nav-text">药品规则库</span>
+                    </a>
+                </div>
+                
+                <!-- 二级菜单：慢病规则库 -->
+                <div class="nav-subgroup">
+                    <a href="javascript:void(0)" onclick="navigateToRuleCategory('chronic')" class="nav-item nav-level-2" data-menu="rules-chronic">
+                        <span class="nav-icon nav-icon-chronic"></span>
+                        <span class="nav-text">慢病规则库</span>
+                    </a>
+                </div>
+                
+                <!-- 二级菜单：诊疗规则库 -->
+                <div class="nav-subgroup">
+                    <a href="javascript:void(0)" onclick="navigateToRuleCategory('clinical')" class="nav-item nav-level-2" data-menu="rules-clinical">
+                        <span class="nav-icon nav-icon-clinical"></span>
+                        <span class="nav-text">诊疗规则库</span>
+                    </a>
+                </div>
+                
+                <!-- 二级菜单：政策规则库 -->
+                <div class="nav-subgroup">
+                    <a href="javascript:void(0)" onclick="navigateToRuleCategory('policy')" class="nav-item nav-level-2" data-menu="rules-policy">
+                        <span class="nav-icon nav-icon-policy"></span>
+                        <span class="nav-text">政策规则库</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 一级菜单：审核管理 -->
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="audit">
+                <span class="nav-icon nav-icon-audit"></span>
+                <span class="nav-text">审核管理</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <!-- 二级菜单：审核流程 -->
+                <div class="nav-subgroup">
+                    <a href="javascript:void(0)" class="nav-item nav-level-2 nav-expandable" data-menu="audit-process">
+                        <span class="nav-icon nav-icon-process"></span>
+                        <span class="nav-text">审核流程</span>
+                        <span class="nav-arrow"></span>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="/1.0/超级管理员/审核管理/审核流程/事前审核记录.html" class="nav-item nav-level-3" data-menu="audit-pre">
+                            <span class="nav-text">事前审核记录</span>
+                        </a>
+                        <a href="/1.0/超级管理员/审核管理/审核流程/事中审核检查.html" class="nav-item nav-level-3" data-menu="audit-during">
+                            <span class="nav-text">事中审核检查</span>
+                        </a>
+                        <a href="/1.0/超级管理员/审核管理/审核流程/事后审核任务列表.html" class="nav-item nav-level-3" data-menu="audit-post">
+                            <span class="nav-text">事后审核任务</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 二级菜单：审核结果 -->
+                <div class="nav-subgroup">
+                    <a href="/1.0/超级管理员/审核管理/审核结果/审核结果.html" class="nav-item nav-level-2" data-menu="audit-results">
+                        <span class="nav-icon nav-icon-results"></span>
+                        <span class="nav-text">审核结果</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 一级菜单：用户权限管理 -->
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="user-permission">
+                <span class="nav-icon nav-icon-users"></span>
+                <span class="nav-text">用户权限管理</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <!-- 二级菜单：用户管理 -->
+                <div class="nav-subgroup">
+                    <a href="/1.0/超级管理员/用户权限管理/用户管理/用户列表.html" class="nav-item nav-level-2" data-menu="user-list">
+                        <span class="nav-icon nav-icon-user-list"></span>
+                        <span class="nav-text">用户管理</span>
+                    </a>
+                </div>
+                
+                <!-- 二级菜单：权限管理 -->
+                <div class="nav-subgroup">
+                    <a href="/1.0/超级管理员/用户权限管理/权限管理/权限管理.html" class="nav-item nav-level-2" data-menu="permission">
+                        <span class="nav-icon nav-icon-permission"></span>
+                        <span class="nav-text">权限管理</span>
+                    </a>
+                </div>
+                
+                <!-- 二级菜单：组织管理 -->
+                <div class="nav-subgroup">
+                    <a href="javascript:void(0)" class="nav-item nav-level-2 nav-expandable" data-menu="organization">
+                        <span class="nav-icon nav-icon-organization"></span>
+                        <span class="nav-text">组织管理</span>
+                        <span class="nav-arrow"></span>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="/1.0/超级管理员/用户权限管理/组织管理/科室管理.html" class="nav-item nav-level-3" data-menu="department">
+                            <span class="nav-text">科室管理</span>
+                        </a>
+                        <a href="/1.0/超级管理员/用户权限管理/组织管理/租户管理.html" class="nav-item nav-level-3" data-menu="tenant">
+                            <span class="nav-text">租户管理</span>
+                        </a>
+                        <a href="/1.0/超级管理员/用户权限管理/组织管理/租户表单.html" class="nav-item nav-level-3" data-menu="tenant-form">
+                            <span class="nav-text">租户表单</span>
+                        </a>
+                        <a href="/1.0/超级管理员/用户权限管理/组织管理/企业详情.html" class="nav-item nav-level-3" data-menu="enterprise">
+                            <span class="nav-text">企业详情</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 一级菜单：系统管理 -->
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="system">
+                <span class="nav-icon nav-icon-system"></span>
+                <span class="nav-text">系统管理</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <a href="/1.0/超级管理员/系统管理/全局设置.html" class="nav-item nav-level-2" data-menu="global-settings">
+                    <span class="nav-icon nav-icon-settings"></span>
+                    <span class="nav-text">全局设置</span>
+                </a>
+                <a href="/1.0/超级管理员/系统管理/系统监控.html" class="nav-item nav-level-2" data-menu="system-monitor">
+                    <span class="nav-icon nav-icon-monitor"></span>
+                    <span class="nav-text">系统监控</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 一级菜单：慢病管理 -->
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="chronic-management">
+                <span class="nav-icon nav-icon-chronic"></span>
+                <span class="nav-text">慢病管理</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <a href="/1.0/超级管理员/慢病管理/慢病资格申报/index.html" class="nav-item nav-level-2" data-menu="chronic-application">
+                    <span class="nav-icon nav-icon-application"></span>
+                    <span class="nav-text">慢病资格申报</span>
+                </a>
+                <a href="/1.0/超级管理员/慢病管理/慢病资格评审/index.html" class="nav-item nav-level-2" data-menu="chronic-review">
+                    <span class="nav-icon nav-icon-review"></span>
+                    <span class="nav-text">慢病资格评审</span>
+                </a>
+                <a href="/1.0/超级管理员/慢病管理/评审结果管理/index.html" class="nav-item nav-level-2" data-menu="chronic-results">
+                    <span class="nav-icon nav-icon-results"></span>
+                    <span class="nav-text">评审结果管理</span>
+                </a>
+                <a href="/1.0/超级管理员/慢病管理/慢病数据看板/index.html" class="nav-item nav-level-2" data-menu="chronic-dashboard">
+                    <span class="nav-icon nav-icon-dashboard"></span>
+                    <span class="nav-text">慢病数据看板</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 一级菜单：知识库 -->
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="knowledge">
+                <span class="nav-icon nav-icon-knowledge"></span>
+                <span class="nav-text">知识库</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <a href="/1.0/超级管理员/系统管理/知识库目录.html?catalog=drug" class="nav-item nav-level-2" data-menu="knowledge-drug">
+                    <span class="nav-icon nav-icon-list"></span>
+                    <span class="nav-text">药品目录</span>
+                </a>
+                <a href="/1.0/超级管理员/系统管理/知识库目录.html?catalog=treatment" class="nav-item nav-level-2" data-menu="knowledge-treatment">
+                    <span class="nav-icon nav-icon-list"></span>
+                    <span class="nav-text">诊疗目录</span>
+                </a>
+                <a href="/1.0/超级管理员/系统管理/知识库目录.html?catalog=material" class="nav-item nav-level-2" data-menu="knowledge-material">
+                    <span class="nav-icon nav-icon-list"></span>
+                    <span class="nav-text">耗材目录</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 退出登录 -->
+        <div class="nav-group nav-bottom">
+            <button class="nav-item logout-btn" onclick="logout()">
+                <span class="nav-icon nav-icon-logout"></span>
+                <span class="nav-text">退出登录</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// 全局导航函数 - 处理规则管理分类导航（直接跳转版本）
+function navigateToRuleCategory(category) {
+    console.log('导航到规则管理分类:', category);
+    
+    // 直接跳转到规则管理页面，并带上分类参数
+    // 使用绝对路径确保导航正确性
+    window.location.href = '/1.0/超级管理员/规则管理/index.html#' + category;
+}
+
+// 无缝加载规则管理内容
+function loadRuleManagementContent(category) {
+    // 直接使用绝对路径，不再计算相对路径
+    const absolutePath = '/1.0/超级管理员/规则管理/index.html';
+    
+    // 计算被加载页面的基准目录（用于修正相对资源路径）
+    const baseDir = window.location.origin + '/1.0/超级管理员/规则管理/';
+    
+    // 显示加载提示
+    showLoadingIndicator();
+    
+    // 使用fetch加载规则管理页面内容
+    fetch(absolutePath)
+        .then(response => response.text())
+        .then(html => {
+            // 创建临时DOM来解析HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
+            
+            // 优先提取右侧内容区域，其次是主容器，最后退回到body
+            const extractedContent = tempDiv.querySelector('.content-area') ||
+                                     tempDiv.querySelector('.main-container') ||
+                                     tempDiv.querySelector('body');
+            
+            if (extractedContent) {
+                // 当前页面的主内容区域（统一容器）
+                const currentMainContent = document.querySelector('.main-content');
+                if (currentMainContent) {
+                    // 替换内容
+                    currentMainContent.innerHTML = extractedContent.innerHTML;
+                    
+                    // 加载规则管理页面的CSS样式（修正相对路径）
+                    loadRuleManagementStyles(tempDiv, baseDir);
+                    
+                    // 执行规则管理页面的脚本（修正相对路径）
+                    executeRuleManagementScripts(tempDiv, category, baseDir);
+                    
+                    // 更新页面标题
+                    document.title = '规则管理 - 医保审核系统';
+                    
+                    // 仅更新hash，保持当前路径不变，实现无跳转集成
+                    const newUrl = window.location.pathname + window.location.search + '#' + category;
+                    history.pushState({ category }, '', newUrl);
+                    
+                    console.log('规则管理内容已无缝加载，分类：', category);
+                } else {
+                    console.error('未找到主内容区域 .main-content');
+                    fallbackToPageNavigation(absolutePath, category);
+                }
+            } else {
+                console.error('无法提取规则管理页面内容');
+                fallbackToPageNavigation(absolutePath, category);
+            }
+        })
+        .catch(error => {
+            console.error('加载规则管理内容失败:', error);
+            fallbackToPageNavigation(absolutePath, category);
+        })
+        .finally(() => {
+            hideLoadingIndicator();
+        });
+}
+
+// 加载规则管理页面的CSS样式（支持将相对路径转换为绝对路径）
+function loadRuleManagementStyles(tempDiv, baseDir) {
+    try {
+        // 提取页面中的style标签（仅加载一次）
+        const styleElements = tempDiv.querySelectorAll('style');
+        styleElements.forEach(style => {
+            if (!document.querySelector('style[data-rule-management="true"]')) {
+                const newStyle = document.createElement('style');
+                newStyle.setAttribute('data-rule-management', 'true');
+                
+                // 修改CSS以避免与统一侧边栏冲突
+                let cssContent = style.textContent;
+                
+                // 将规则管理页面的样式限定在 .main-content 内
+                cssContent = cssContent.replace(/\.sidebar(\s*{[^}]*})/g, '.main-content .rule-page-sidebar$1');
+                cssContent = cssContent.replace(/\.sidebar-header(\s*{[^}]*})/g, '.main-content .rule-page-sidebar-header$1');
+                cssContent = cssContent.replace(/\.sidebar-title(\s*{[^}]*})/g, '.main-content .rule-page-sidebar-title$1');
+                cssContent = cssContent.replace(/\.sidebar-subtitle(\s*{[^}]*})/g, '.main-content .rule-page-sidebar-subtitle$1');
+                
+                // 确保其他样式不影响统一侧边栏
+                cssContent = cssContent.replace(/(body\s*{[^}]*})/g, '.main-content $1');
+                cssContent = cssContent.replace(/(\*\s*{[^}]*})/g, '.main-content $1');
+                
+                newStyle.textContent = cssContent;
+                document.head.appendChild(newStyle);
+            }
+        });
+        
+        // 提取页面中的link标签（CSS文件），并修正href
+        const linkElements = tempDiv.querySelectorAll('link[rel="stylesheet"]');
+        linkElements.forEach(link => {
+            const href = link.getAttribute('href');
+            if (href) {
+                // 生成绝对路径
+                const absHref = new URL(href, baseDir).href;
+                if (!document.querySelector(`link[data-rule-management="true"][href="${absHref}"]`)) {
+                    const newLink = document.createElement('link');
+                    newLink.rel = 'stylesheet';
+                    newLink.href = absHref;
+                    newLink.setAttribute('data-rule-management', 'true');
+                    document.head.appendChild(newLink);
+                }
+            }
+        });
+        
+        // 修改已注入内容中的类名以匹配新的CSS选择器
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+            const sidebarElements = mainContent.querySelectorAll('.sidebar');
+            sidebarElements.forEach(el => {
+                el.classList.remove('sidebar');
+                el.classList.add('rule-page-sidebar');
+            });
+            
+            const sidebarHeaderElements = mainContent.querySelectorAll('.sidebar-header');
+            sidebarHeaderElements.forEach(el => {
+                el.classList.remove('sidebar-header');
+                el.classList.add('rule-page-sidebar-header');
+            });
+            
+            const sidebarTitleElements = mainContent.querySelectorAll('.sidebar-title');
+            sidebarTitleElements.forEach(el => {
+                el.classList.remove('sidebar-title');
+                el.classList.add('rule-page-sidebar-title');
+            });
+            
+            const sidebarSubtitleElements = mainContent.querySelectorAll('.sidebar-subtitle');
+            sidebarSubtitleElements.forEach(el => {
+                el.classList.remove('sidebar-subtitle');
+                el.classList.add('rule-page-sidebar-subtitle');
+            });
+        }
+    } catch (error) {
+        console.warn('加载规则管理样式时出错:', error);
+    }
+}
+
+// 执行规则管理页面的JavaScript代码（支持将相对路径转换为绝对路径）
+function executeRuleManagementScripts(tempDiv, category, baseDir) {
+    // 提取并执行脚本
+    const scripts = tempDiv.querySelectorAll('script');
+    scripts.forEach(script => {
+        if (script.src) {
+            // 外部脚本，修正为绝对路径
+            const absSrc = new URL(script.src, baseDir).href;
+            if (!document.querySelector(`script[data-rule-management="true"][src="${absSrc}"]`)) {
+                const newScript = document.createElement('script');
+                newScript.src = absSrc;
+                newScript.setAttribute('data-rule-management', 'true');
+                newScript.onload = () => {
+                    // 脚本加载完成后，尝试切换到指定分类
+                    setTimeout(() => {
+                        if (typeof showCategory === 'function') {
+                            showCategory(category);
+                        }
+                    }, 100);
+                };
+                document.head.appendChild(newScript);
+            }
+        } else {
+            // 内联脚本
+            try {
+                // 标记已执行，避免重复
+                if (!script.__executed__) {
+                    script.__executed__ = true;
+                    (0, eval)(script.textContent);
+                }
+            } catch (e) {
+                console.warn('执行内联脚本失败:', e);
+            }
+        }
+    });
+    
+    // 延迟执行分类切换（兜底）
+    setTimeout(() => {
+        if (typeof showCategory === 'function') {
+            showCategory(category);
+        }
+    }, 500);
+}
+
+// 显示加载指示器
+function showLoadingIndicator() {
+    // 创建加载遮罩
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.id = 'rule-loading-overlay';
+    loadingOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        font-size: 16px;
+        color: #666;
+    `;
+    loadingOverlay.innerHTML = '<div>正在加载规则管理内容...</div>';
+    document.body.appendChild(loadingOverlay);
+}
+
+// 隐藏加载指示器
+function hideLoadingIndicator() {
+    const loadingOverlay = document.getElementById('rule-loading-overlay');
+    if (loadingOverlay) {
+        loadingOverlay.remove();
+    }
+}
+
+// 清理规则管理相关的动态加载内容
+function cleanupRuleManagementContent() {
+    try {
+        // 清理动态加载的样式
+        const dynamicStyles = document.querySelectorAll('style[data-rule-management="true"], link[data-rule-management="true"]');
+        dynamicStyles.forEach(element => {
+            element.remove();
+        });
+        
+        // 清理动态加载的脚本（如果有标记的话）
+        const dynamicScripts = document.querySelectorAll('script[data-rule-management="true"]');
+        dynamicScripts.forEach(script => {
+            script.remove();
+        });
+        
+        console.log('已清理规则管理动态内容');
+    } catch (error) {
+        console.warn('清理规则管理内容时出错:', error);
+    }
+}
+
+// 回退到页面跳转方式
+function fallbackToPageNavigation(relativePath, category) {
+    console.log('回退到页面跳转方式');
+    // 使用绝对路径确保导航正确性
+    window.location.href = '/1.0/超级管理员/规则管理/index.html#' + category;
+}
+
+// 统一菜单交互脚本
+function initSidebar() {
+    console.log('初始化侧边栏菜单');
+    
+    // 菜单展开/收起功能
+    document.querySelectorAll('.nav-expandable').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('点击展开菜单:', this.querySelector('.nav-text').textContent);
+            
+            const parent = this.closest('.nav-group, .nav-subgroup');
+            const submenu = parent.querySelector('.nav-submenu');
+            
+            if (submenu) {
+                parent.classList.toggle('expanded');
+                submenu.style.display = parent.classList.contains('expanded') ? 'block' : 'none';
+            }
+        });
+    });
+    
+    // 普通链接导航功能 - 强制使用绝对路径导航以避免路径累积错误
+    document.querySelectorAll('.nav-item[href]:not(.nav-expandable)').forEach(item => {
+        item.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            console.log('点击菜单链接:', this.querySelector('.nav-text').textContent, '链接:', href);
+            
+            // 只对无效链接阻止默认行为
+            if (!href || href === 'javascript:void(0)' || href === '#') {
+                e.preventDefault();
+            } else {
+                // 强制使用绝对路径导航，避免相对路径多次点击后导致的路径累积错误
+                e.preventDefault();
+                
+                // 创建一个临时链接元素来获取绝对路径
+                const a = document.createElement('a');
+                a.href = href;
+                
+                // 获取相对于当前站点根目录的路径
+                const absolutePath = a.pathname;
+                
+                console.log('转换为绝对路径:', absolutePath);
+                window.location.href = absolutePath + a.search + a.hash;
+            }
+        });
+    });
+    
+    // 默认展开工作台菜单
+    const dashboardGroup = document.querySelector('[data-menu="dashboard"]').closest('.nav-group');
+    if (dashboardGroup) {
+        dashboardGroup.classList.add('expanded');
+        const submenu = dashboardGroup.querySelector('.nav-submenu');
+        if (submenu) {
+            submenu.style.display = 'block';
+        }
+    }
+    
+    // 设置当前页面菜单高亮
+    setActiveMenu();
+    
+    console.log('侧边栏初始化完成');
+}
+
+function setActiveMenu() {
+    const currentPath = decodeURIComponent(window.location.pathname);
+    const menuItems = document.querySelectorAll('.nav-item[href]');
+
+    menuItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (!href || href === 'javascript:void(0)' || href === '#') return;
+        
+        // 计算规范化路径
+        const a = document.createElement('a');
+        a.href = href; // 浏览器会自动解析为绝对路径
+        const normalizedHref = decodeURIComponent(a.pathname);
+        
+        // 匹配当前路径
+        if (currentPath.endsWith(normalizedHref) || currentPath.includes(normalizedHref)) {
+            item.classList.add('active');
+            
+            // 展开父级菜单
+            let parent = item.closest('.nav-group, .nav-subgroup');
+            while (parent) {
+                parent.classList.add('expanded');
+                const submenu = parent.querySelector('.nav-submenu');
+                if (submenu) submenu.style.display = 'block';
+                parent = parent.parentElement.closest('.nav-group, .nav-subgroup');
+            }
+        }
+    });
+}
+
+function logout() {
+    if (confirm('确定要退出登录吗？')) {
+        // 清除登录状态
+        localStorage.removeItem('userToken');
+        sessionStorage.clear();
+        // 跳转到登录页面
+        window.location.href = '/1.0/登录.html';
+    }
+}
+
+// 处理浏览器前进后退按钮
+window.addEventListener('popstate', function(event) {
+    if (event.state && event.state.category) {
+        // 如果是规则管理页面的状态，重新加载对应分类
+        if (window.location.hash) {
+            const category = window.location.hash.substring(1);
+            if (typeof showCategory === 'function') {
+                showCategory(category);
+            } else {
+                // 如果当前页面没有showCategory函数，重新加载规则管理内容
+                loadRuleManagementContent(category);
+            }
+        }
+    }
+});
+
+// 页面加载完成后初始化菜单
+document.addEventListener('DOMContentLoaded', function() {
+    initSidebar();
+    
+    // 检查URL中是否有分类参数
+    if (window.location.hash) {
+        const category = window.location.hash.substring(1);
+        if (['drugs', 'chronic', 'clinical', 'policy'].includes(category)) {
+            // 如果URL中有有效的分类参数，且不在规则管理页面，则加载规则管理内容
+            if (!window.location.pathname.includes('规则管理/index.html')) {
+                setTimeout(() => {
+                    loadRuleManagementContent(category);
+                }, 100);
+            }
+        }
+    }
+});
+</script>

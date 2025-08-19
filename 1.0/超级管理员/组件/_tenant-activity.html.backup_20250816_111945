@@ -1,0 +1,142 @@
+<!-- 租户活跃度分析 -->
+<div class="tenant-activity">
+    <div class="activity-header">
+        
+<nav class="breadcrumb" aria-label="面包屑导航">
+    <a href="../工作台/平台运营看板.html">首页</a> > <a href="../1.0/">1.0</a> > <a href="../1.0/超级管理员/">超级管理员</a> > <a href="../1.0/超级管理员/组件/">组件</a> > <span class="current">_tenant-activity</span>
+</nav>
+
+<h1 class="page-title"> tenant-activity</h1>
+
+            <h3>租户活跃度分析</h3>
+            <p class="header-subtitle">实时监控租户使用情况和活跃度变化趋势</p>
+        </div>
+        <div class="activity-controls">
+            <div class="time-filter">
+                <button class="filter-btn" data-period="today">今日</button>
+                <button class="filter-btn active" data-period="week">本周</button>
+                <button class="filter-btn" data-period="month">本月</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="activity-content">
+        <!-- 核心指标卡片 -->
+        <div class="metrics-grid">
+            <div class="metric-card primary">
+                <div class="metric-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="m22 21-3-3m0 0a5.5 5.5 0 1 0-7.78-7.78 5.5 5.5 0 0 0 7.78 7.78Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-value">142</div>
+                    <div class="metric-label">活跃租户</div>
+                    <div class="metric-trend positive">
+                        <span class="trend-icon">↗</span>
+                        <span class="trend-value">+8.5%</span>
+                        <span class="trend-period">vs 上周</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="metric-card secondary">
+                <div class="metric-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M22 11l-3-3m0 0l-3 3m3-3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-value">14</div>
+                    <div class="metric-label">非活跃租户</div>
+                    <div class="metric-trend negative">
+                        <span class="trend-icon">↘</span>
+                        <span class="trend-value">-12.3%</span>
+                        <span class="trend-period">vs 上周</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="metric-card info">
+                <div class="metric-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-value">91.0%</div>
+                    <div class="metric-label">活跃率</div>
+                    <div class="metric-trend positive">
+                        <span class="trend-icon">↗</span>
+                        <span class="trend-value">+2.1%</span>
+                        <span class="trend-period">vs 上周</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="metric-card warning">
+                <div class="metric-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="metric-content">
+                    <div class="metric-value">4.2h</div>
+                    <div class="metric-label">平均使用时长</div>
+                    <div class="metric-trend positive">
+                        <span class="trend-icon">↗</span>
+                        <span class="trend-value">+15.6%</span>
+                        <span class="trend-period">vs 上周</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 图表区域 -->
+        <div class="chart-section">
+            <div class="chart-header">
+                <h4>活跃度趋势</h4>
+                <div class="chart-legend">
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #4ecdc4;"></span>
+                        <span class="legend-label">活跃租户数</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #45b7d1;"></span>
+                        <span class="legend-label">新增活跃</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color" style="background-color: #ff6b6b;"></span>
+                        <span class="legend-label">流失活跃</span>
+                    </div>
+                </div>
+            </div>
+            <div class="activity-chart-container">
+                <canvas id="activityChart" width="800" height="400"></canvas>
+            </div>
+        </div>
+        
+        <!-- 活跃度热力图 -->
+        <div class="heatmap-section">
+            <div class="section-header">
+                <h4>每日活跃度热力图</h4>
+                <p class="section-subtitle">过去30天租户活跃度分布</p>
+            </div>
+            <div class="activity-heatmap">
+                <div class="heatmap-grid">
+                    <!-- 热力图网格将通过JavaScript生成 -->
+                </div>
+                <div class="heatmap-legend">
+                    <span class="legend-label">低</span>
+                    <div class="legend-gradient"></div>
+                    <span class="legend-label">高</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

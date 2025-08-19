@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>租户信息</title>
+    <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    <link rel="stylesheet" >
+    <link rel="stylesheet" >
+    <link rel="stylesheet" href="../../../样式文件/租户表单样式.css?v=1.0">
+    </head>
+<body>
+    
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        
+        <div class="main-content">
+<div class="tenant-form-container">
+        <div class="page-header">
+            <div class="header-left">
+                <button class="btn btn-link back-btn" onclick="goBack()">
+                    <i class="icon-arrow-left"></i> 返回租户列表
+                </button>
+                <h2 id="pageTitle">新增租户</h2>
+                <div class="page-description">填写租户基本信息和配置</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="saveDraft()">保存草稿</button>
+                <button class="btn btn-primary" onclick="submitForm()">保存</button>
+            </div>
+        </div>
+
+        <!-- 表单进度指示器 -->
+        <div class="form-progress">
+            <div class="progress-step active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-label">基本信息</div>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-label">确认创建</div>
+            </div>
+        </div>
+
+        <form class="tenant-form" id="tenantForm">
+            <!-- 步骤1：基本信息 -->
+            <div class="form-step active" id="step1">
+                <div class="step-header">
+                    <h3>基本信息</h3>
+                    <div class="step-description">请填写租户的基本信息</div>
+                </div>
+                <div class="form-content">
+                    <div class="form-section">
+                        <h4>机构信息</h4>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="required">机构名称</label>
+                                <input type="text" class="form-input" id="tenantName" name="tenantName" placeholder="请输入机构名称" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="required">机构类型</label>
+                                <select class="form-select" id="tenantType" name="tenantType" required>
+                                    <option value="">请选择机构类型</option>
+                                    <option value="hospital">医院</option>
+                                    <option value="clinic">诊所</option>
+                                    <option value="pharmacy">药店</option>
+                                    <option value="other">其他</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="required">统一社会信用代码</label>
+                                <input type="text" class="form-input" id="creditCode" name="creditCode" placeholder="请输入统一社会信用代码" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="required">联系人姓名</label>
+                                <input type="text" class="form-input" id="contactName" name="contactName" placeholder="请输入联系人姓名" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="required">联系电话</label>
+                                <input type="tel" class="form-input" id="contactPhone" name="contactPhone" placeholder="请输入联系电话" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="required">所在地区</label>
+                                <select class="form-select" id="region" name="region" required>
+                                    <option value="">请选择地区</option>
+                                    <option value="beijing">北京市</option>
+                                    <option value="shanghai">上海市</option>
+                                    <option value="guangdong">广东省</option>
+                                    <option value="jiangsu">江苏省</option>
+                                    <option value="zhejiang">浙江省</option>
+                                    <option value="sichuan">四川省</option>
+                                    <option value="other">其他</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button type="button" class="btn btn-primary" onclick="nextStep()">下一步</button>
+                </div>
+            </div>
+
+            <!-- 步骤2：确认创建 -->
+            <div class="form-step" id="step2">
+                <div class="step-header">
+                    <h3>确认创建</h3>
+                    <div class="step-description">请确认企业信息并创建</div>
+                </div>
+                <div class="form-content">
+                    <div class="form-section">
+                        <h4>企业信息确认</h4>
+                        <div class="confirm-info">
+                            <div class="info-item">
+                                <label>企业名称：</label>
+                                <span id="confirmCompanyName"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>企业类型：</label>
+                                <span id="confirmCompanyType"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>联系人姓名：</label>
+                                <span id="confirmContactName"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>联系电话：</label>
+                                <span id="confirmContactPhone"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>所在地区：</label>
+                                <span id="confirmRegion"></span>
+                            </div>
+                        </div>
+                        <div class="form-notice">
+                            <div class="notice-icon">ℹ️</div>
+                            <div class="notice-content">
+                                <p>创建成功后，您可以在企业详情页面完善更多信息，包括：</p>
+                                <ul>
+                                    <li>套餐管理和配置</li>
+                                    <li>人员管理和权限设置</li>
+                                    <li>详细联系信息</li>
+                                    <li>其他企业设置</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="step-actions">
+                    <button type="button" class="btn btn-secondary" onclick="prevStep()">上一步</button>
+                    <button type="button" class="btn btn-primary" onclick="createTenant()">创建企业</button>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+
+    <!-- 服务条款弹窗 -->
+    <div class="modal" id="termsModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>服务条款</h3>
+                <button class="modal-close" onclick="closeTermsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="terms-content">
+                    <h4>1. 服务内容</h4>
+                    <p>本平台为医疗机构提供智能审核服务，包括但不限于事前审核、事中监控、事后分析等功能。</p>
+                    
+                    <h4>2. 使用规范</h4>
+                    <p>用户应当合法合规使用本服务，不得用于任何违法违规活动。</p>
+                    
+                    <h4>3. 数据安全</h4>
+                    <p>我们承诺保护用户数据安全，采用行业标准的安全措施保护用户信息。</p>
+                    
+                    <h4>4. 服务费用</h4>
+                    <p>服务费用按照选择的套餐类型收取，具体费用标准以合同约定为准。</p>
+                    
+                    <h4>5. 服务变更</h4>
+                    <p>我们保留根据业务需要调整服务内容的权利，重大变更将提前通知用户。</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeTermsModal()">我已了解</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 隐私政策弹窗 -->
+    <div class="modal" id="privacyModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>隐私政策</h3>
+                <button class="modal-close" onclick="closePrivacyModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="privacy-content">
+                    <h4>1. 信息收集</h4>
+                    <p>我们收集必要的机构信息和联系信息，用于提供服务和账户管理。</p>
+                    
+                    <h4>2. 信息使用</h4>
+                    <p>收集的信息仅用于服务提供、技术支持和账单管理，不会用于其他商业目的。</p>
+                    
+                    <h4>3. 信息保护</h4>
+                    <p>我们采用加密传输、访问控制等技术手段保护用户信息安全。</p>
+                    
+                    <h4>4. 信息共享</h4>
+                    <p>除法律法规要求外，我们不会向第三方分享用户信息。</p>
+                    
+                    <h4>5. 用户权利</h4>
+                    <p>用户有权查看、修改、删除个人信息，如需帮助请联系客服。</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closePrivacyModal()">我已了解</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../脚本文件/租户表单.js"></script>
+        </div>
+    </div>
+    <!-- 加载统一菜单 -->
+<script>
+    // 加载统一菜单组件
+    fetch('../../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+
+
+</body>
+</html>

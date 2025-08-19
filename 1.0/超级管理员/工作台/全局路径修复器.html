@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全局路径修复器</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .content {
+            padding: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .status-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .status-indicator {
+            display: flex;
+            align-items: center;
+        }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-dot.inactive {
+            background-color: #dc3545;
+        }
+        .status-dot.active {
+            background-color: #28a745;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background-color: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #dee2e6;
+        }
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .log-area {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            margin-bottom: 20px;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+        }
+        .log-error {
+            color: #dc3545;
+        }
+        .log-success {
+            color: #28a745;
+        }
+        .log-info {
+            color: #333;
+        }
+        .log-debug {
+            color: #6c757d;
+            font-style: italic;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .feature-card {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .feature-card h3 {
+            margin-top: 0;
+            color: #667eea;
+            font-size: 18px;
+        }
+        .usage-guide {
+            background-color: #f0f4ff;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #d6e0ff;
+        }
+        .usage-guide ol {
+            margin-top: 0;
+        }
+        .usage-guide li {
+            margin-bottom: 8px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #6c757d;
+            font-size: 14px;
+            border-top: 1px solid #dee2e6;
+        }
+        @media (max-width: 768px) {
+            .button-group {
+                flex-direction: column;
+            }
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>全局路径修复器</h1>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>修复状态</h2>
+                <div class="status-panel">
+                    <div class="status-indicator">
+                        <span class="status-dot inactive" id="statusDot"></span>
+                        <span id="statusText">未激活</span>
+                    </div>
+                    <span id="currentTime"></span>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>控制面板</h2>
+                <div class="button-group">
+                    <button class="btn btn-primary" id="activateBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        激活修复
+                    </button>
+                    <button class="btn btn-secondary" id="testBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+                            <polyline points="21 3 12 12 9 9"></polyline>
+                        </svg>
+                        测试修复
+                    </button>
+                    <button class="btn btn-danger" id="deactivateBtn" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="9" y1="9" x2="15" y2="15"></line>
+                            <line x1="15" y1="9" x2="9" y2="15"></line>
+                        </svg>
+                        停用修复
+                    </button>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>日志记录</h2>
+                <div class="log-area" id="logArea"></div>
+            </div>
+            
+            <div class="section">
+                <h2>核心功能</h2>
+                <div class="features">
+                    <div class="feature-card">
+                        <h3>实时URL监控</h3>
+                        <p>持续监控所有页面请求，自动检测并修复重复路径问题</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>历史记录追踪</h3>
+                        <p>记录所有被修复的URL，方便排查问题</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>智能路径修复</h3>
+                        <p>能处理正反斜杠、相对路径和绝对路径等多种情况</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>自动重定向</h3>
+                        <p>在错误请求发出前进行拦截和修正</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>使用指南</h2>
+                <div class="usage-guide">
+                    <ol>
+                        <li>点击"激活修复"按钮启动路径修复功能</li>
+                        <li>修复器会自动监控所有URL请求并修复重复的"慢病管理"目录</li>
+                        <li>使用"测试修复"按钮验证修复功能是否正常工作</li>
+                        <li>如果需要，可以随时点击"停用修复"按钮关闭功能</li>
+                        <li>所有修复操作都会记录在日志中，便于追踪</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>全局路径修复器 v1.0 | 为解决二级菜单导航问题而设计</p>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let isActive = false;
+        let log = [];
+        let fixCount = 0;
+        let mutationObserver = null;
+        let originalFetch = null;
+        let originalOpen = null;
+        
+        // DOM元素引用
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const logArea = document.getElementById('logArea');
+        const activateBtn = document.getElementById('activateBtn');
+        const testBtn = document.getElementById('testBtn');
+        const deactivateBtn = document.getElementById('deactivateBtn');
+        const currentTimeElem = document.getElementById('currentTime');
+        
+        // 更新当前时间
+        function updateCurrentTime() {
+            const now = new Date();
+            currentTimeElem.textContent = now.toLocaleString('zh-CN');
+        }
+        setInterval(updateCurrentTime, 1000);
+        updateCurrentTime();
+        
+        // 记录日志
+        function logMessage(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            
+            // 添加到日志数组
+            log.push({ text: logEntry, type: type });
+            
+            // 限制日志数量，防止内存占用过多
+            if (log.length > 100) {
+                log.shift();
+            }
+            
+            // 更新日志显示
+            updateLogDisplay();
+            
+            // 同时输出到控制台
+            console.log(`[全局路径修复器] ${logEntry}`);
+        }
+        
+        // 更新日志显示
+        function updateLogDisplay() {
+            logArea.innerHTML = '';
+            
+            log.forEach(entry => {
+                const logDiv = document.createElement('div');
+                logDiv.className = `log-entry log-${entry.type}`;
+                logDiv.textContent = entry.text;
+                logArea.appendChild(logDiv);
+            });
+            
+            // 滚动到底部
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+        
+        // 核心修复函数：清理URL中的重复目录
+        function cleanUrl(url) {
+            if (!url || typeof url !== 'string') {
+                return url;
+            }
+            
+            // 记录原始URL
+            const originalUrl = url;
+            
+            // 1. 统一路径分隔符（将\转换为/）
+            let cleanedUrl = url.replace(/\\/g, '/');
+            
+            // 2. 移除重复的慢病管理目录
+            const慢病管理Regex = /慢病管理\/慢病管理/g;
+            cleanedUrl = cleanedUrl.replace(慢病管理Regex, '慢病管理');
+            
+            // 特殊情况处理：检查是否还有其他格式的重复
+            if (cleanedUrl.includes('慢病管理//慢病管理')) {
+                cleanedUrl = cleanedUrl.replace('慢病管理//慢病管理', '慢病管理');
+            }
+            
+            // 3. 确保URL格式正确
+            if (!cleanedUrl.startsWith('http://') && !cleanedUrl.startsWith('https://')) {
+                // 处理相对路径
+                if (!cleanedUrl.startsWith('/')) {
+                    // 从当前路径构建完整路径
+                    const currentPath = window.location.pathname.split('/').slice(0, -1).join('/');
+                    cleanedUrl = currentPath + '/' + cleanedUrl;
+                }
+            }
+            
+            // 4. 最后一次清理重复目录
+            cleanedUrl = cleanedUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+            
+            // 如果URL被修改了，记录修复
+            if (cleanedUrl !== originalUrl) {
+                fixCount++;
+                logMessage(`修复URL: ${originalUrl} -> ${cleanedUrl}`, 'success');
+            }
+            
+            return cleanedUrl;
+        }
+        
+        // 激活修复功能
+        function activateFix() {
+            if (isActive) {
+                logMessage('修复功能已经处于激活状态', 'info');
+                return;
+            }
+            
+            logMessage('开始激活全局路径修复功能...', 'info');
+            
+            // 1. 重写XMLHttpRequest.open方法
+            originalOpen = window.XMLHttpRequest.prototype.open;
+            window.XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+                // 修复URL
+                const cleanedUrl = cleanUrl(url);
+                // 调用原始方法
+                originalOpen.call(this, method, cleanedUrl, async, user, password);
+            };
+            logMessage('已重写XMLHttpRequest.open方法', 'info');
+            
+            // 2. 重写fetch API
+            originalFetch = window.fetch;
+            window.fetch = function(resource, init) {
+                // 修复resource URL
+                if (typeof resource === 'string') {
+                    resource = cleanUrl(resource);
+                }
+                // 调用原始fetch方法
+                return originalFetch(resource, init);
+            };
+            logMessage('已重写fetch API', 'info');
+            
+            // 3. 重写document.createElement，拦截新创建的链接元素
+            const originalCreateElement = document.createElement;
+            document.createElement = function(tagName) {
+                const element = originalCreateElement.call(this, tagName);
+                
+                // 拦截a标签的href设置
+                if (tagName.toLowerCase() === 'a') {
+                    const originalSetAttribute = element.setAttribute;
+                    element.setAttribute = function(name, value) {
+                        if (name.toLowerCase() === 'href' && value) {
+                            value = cleanUrl(value);
+                        }
+                        originalSetAttribute.call(this, name, value);
+                    };
+                }
+                
+                return element;
+            };
+            logMessage('已重写document.createElement方法', 'info');
+            
+            // 4. 监听DOM变化，修复动态添加的元素
+            mutationObserver = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    // 检查添加的节点
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // 元素节点
+                            // 检查并修复所有链接
+                            const links = node.querySelectorAll('a[href*="慢病管理/慢病管理"], a[href*="慢病管理\\慢病管理"]');
+                            links.forEach(function(link) {
+                                const originalHref = link.getAttribute('href');
+                                const cleanedHref = cleanUrl(originalHref);
+                                if (cleanedHref !== originalHref) {
+                                    link.setAttribute('href', cleanedHref);
+                                    logMessage(`修复动态链接: ${originalHref} -> ${cleanedHref}`, 'success');
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+            
+            // 开始观察DOM变化
+            mutationObserver.observe(document.body, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+                attributeFilter: ['href']
+            });
+            logMessage('已启动DOM变化监听', 'info');
+            
+            // 5. 修复当前页面的所有链接
+            const allLinks = document.querySelectorAll('a');
+            let linksFixed = 0;
+            allLinks.forEach(function(link) {
+                const originalHref = link.getAttribute('href');
+                if (originalHref) {
+                    const cleanedHref = cleanUrl(originalHref);
+                    if (cleanedHref !== originalHref) {
+                        link.setAttribute('href', cleanedHref);
+                        linksFixed++;
+                    }
+                }
+            });
+            logMessage(`已扫描并修复当前页面的 ${linksFixed} 个链接`, 'info');
+            
+            // 6. 设置状态
+            isActive = true;
+            statusDot.className = 'status-dot active';
+            statusText.textContent = '已激活';
+            activateBtn.disabled = true;
+            deactivateBtn.disabled = false;
+            
+            logMessage('全局路径修复功能已成功激活！', 'success');
+        }
+        
+        // 测试修复功能
+        function testFix() {
+            logMessage('开始测试修复功能...', 'info');
+            
+            // 测试用例
+            const testCases = [
+                { url: '.\\1.0\\超级管理员\\慢病管理\\慢病管理\\慢病资格评审\\index.html', name: 'Windows路径格式' },
+                { url: '/1.0/超级管理员/慢病管理/慢病管理/慢病资格评审/index.html', name: 'Web路径格式' },
+                { url: 'http://localhost:8000/1.0/超级管理员/慢病管理/慢病管理/慢病资格评审/index.html', name: '完整URL格式' },
+                { url: '慢病管理/慢病管理/慢病资格评审/index.html', name: '相对路径格式' },
+                { url: '慢病管理//慢病管理/慢病资格评审/index.html', name: '特殊重复格式' }
+            ];
+            
+            let allTestsPassed = true;
+            
+            testCases.forEach(function(testCase, index) {
+                const result = cleanUrl(testCase.url);
+                const passed = !result.includes('慢病管理/慢病管理');
+                
+                if (passed) {
+                    logMessage(`测试 ${index + 1} (${testCase.name}) 通过: ${result}`, 'success');
+                } else {
+                    logMessage(`测试 ${index + 1} (${testCase.name}) 失败: ${result}`, 'error');
+                    allTestsPassed = false;
+                }
+            });
+            
+            if (allTestsPassed) {
+                logMessage('✓ 所有测试用例均通过！修复功能正常工作。', 'success');
+            } else {
+                logMessage('✗ 部分测试用例未通过，请检查问题。', 'error');
+            }
+        }
+        
+        // 停用修复功能
+        function deactivateFix() {
+            if (!isActive) {
+                logMessage('修复功能已经处于停用状态', 'info');
+                return;
+            }
+            
+            logMessage('开始停用全局路径修复功能...', 'info');
+            
+            // 1. 恢复XMLHttpRequest.open方法
+            if (originalOpen) {
+                window.XMLHttpRequest.prototype.open = originalOpen;
+                originalOpen = null;
+                logMessage('已恢复XMLHttpRequest.open方法', 'info');
+            }
+            
+            // 2. 恢复fetch API
+            if (originalFetch) {
+                window.fetch = originalFetch;
+                originalFetch = null;
+                logMessage('已恢复fetch API', 'info');
+            }
+            
+            // 3. 恢复document.createElement
+            delete document.createElement;
+            logMessage('已恢复document.createElement方法', 'info');
+            
+            // 4. 停止DOM变化监听
+            if (mutationObserver) {
+                mutationObserver.disconnect();
+                mutationObserver = null;
+                logMessage('已停止DOM变化监听', 'info');
+            }
+            
+            // 5. 设置状态
+            isActive = false;
+            statusDot.className = 'status-dot inactive';
+            statusText.textContent = '未激活';
+            activateBtn.disabled = false;
+            deactivateBtn.disabled = true;
+            
+            logMessage(`全局路径修复功能已停用。本次会话共修复了 ${fixCount} 个URL。`, 'info');
+        }
+        
+        // 初始化
+        function init() {
+            // 设置按钮事件监听
+            activateBtn.addEventListener('click', activateFix);
+            testBtn.addEventListener('click', testFix);
+            deactivateBtn.addEventListener('click', deactivateFix);
+            
+            logMessage('全局路径修复器已加载完成，等待激活...', 'info');
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+        
+        // 页面卸载时恢复原始功能
+        window.addEventListener('beforeunload', function() {
+            if (isActive) {
+                deactivateFix();
+            }
+        });
+    </script>
+</body>
+</html>

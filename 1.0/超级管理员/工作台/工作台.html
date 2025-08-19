@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作台</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/工作台样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 面包屑导航 -->
+            <nav class="breadcrumb" aria-label="面包屑导航">
+                <a href="#" class="breadcrumb-item">首页</a>
+                <span class="breadcrumb-separator">></span>
+                <a href="#" class="breadcrumb-item">超级管理员</a>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-item active">工作台</span>
+            </nav>
+
+            <!-- 页面标题 -->
+            <h1 class="page-title">工作台</h1>
+
+            <!-- 页面头部 -->
+            <div class="page-header">
+                <div class="header-left">
+                    <h2>数据概览</h2>
+                    <div class="dashboard-meta">
+                        <span class="update-time">最后更新：2024-01-31 23:59</span>
+                        <span class="data-source">数据来源：实时监控</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="refreshDashboard()">刷新数据</button>
+                    <button class="btn btn-primary" onclick="openSettings()">设置</button>
+                </div>
+            </div>
+
+            <!-- 核心指标概览 -->
+            <div id="metrics-overview-container"></div>
+
+            <!-- 租户分析 -->
+            <div id="tenant-analysis-container"></div>
+
+            <!-- 收入分析 -->
+            <div id="revenue-analysis-container"></div>
+
+            <!-- 系统监控 -->
+            <div id="system-monitoring-container"></div>
+
+            <!-- 租户活跃度 -->
+            <div id="tenant-activity-container"></div>
+
+            <!-- 运营数据 -->
+            <div id="operation-data-container"></div>
+        </div>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div id="settings-modal-container"></div>
+
+    <!-- 脚本 -->
+    <script>
+        // 加载统一菜单组件
+        fetch('../组件/_unified-sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const sidebarContainer = document.getElementById('sidebar-container');
+                sidebarContainer.innerHTML = html;
+                
+                // 手动执行插入的脚本
+                const scripts = sidebarContainer.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.head.appendChild(newScript);
+                    script.remove();
+                });
+                
+                // 等待脚本执行后再初始化菜单
+                setTimeout(() => {
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    }
+                }, 100);
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+
+        // 加载各个组件
+        function loadComponent(selector, componentPath) {
+            fetch(componentPath)
+                .then(response => response.text())
+                .then(html => {
+                    const container = document.querySelector(selector);
+                    if (container) {
+                        container.innerHTML = html;
+                    }
+                })
+                .catch(error => console.error(`Error loading ${componentPath}:`, error));
+        }
+
+        // 初始化所有组件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载各个仪表板组件
+            loadComponent('#metrics-overview-container', '../组件/_metrics-overview.html');
+            loadComponent('#tenant-analysis-container', '../组件/_tenant-analysis.html');
+            loadComponent('#revenue-analysis-container', '../组件/_revenue-analysis.html');
+            loadComponent('#system-monitoring-container', '../组件/_system-monitoring.html');
+            loadComponent('#tenant-activity-container', '../组件/_tenant-activity.html');
+            loadComponent('#operation-data-container', '../组件/_operation-data.html');
+            loadComponent('#settings-modal-container', '../组件/_settings-modal.html');
+
+            // 无障碍访问增强
+            enhanceAccessibility();
+        });
+
+        // 无障碍访问增强
+        function enhanceAccessibility() {
+            // 为没有aria-label的按钮添加
+            const buttons = document.querySelectorAll('button:not([aria-label]):not([title])');
+            buttons.forEach(button => {
+                const text = button.textContent.trim() || button.innerHTML.replace(/<[^>]*>/g, '').trim();
+                if (text) {
+                    button.setAttribute('aria-label', text);
+                }
+            });
+            
+            // 为表单输入添加基础的无障碍支持
+            const inputs = document.querySelectorAll('input:not([aria-label]):not([title])');
+            inputs.forEach(input => {
+                const placeholder = input.getAttribute('placeholder');
+                if (placeholder) {
+                    input.setAttribute('aria-label', placeholder);
+                }
+            });
+        }
+
+        // 刷新仪表板数据
+        function refreshDashboard() {
+            console.log('刷新仪表板数据...');
+            // 这里添加刷新逻辑
+            window.location.reload();
+        }
+
+        // 打开设置弹窗
+        function openSettings() {
+            console.log('打开设置弹窗...');
+            // 这里添加打开设置弹窗的逻辑
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+
+<!-- 统一左侧菜单组件 -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h1 class="sidebar-logo">医保审核系统</h1>
+        <div class="sidebar-subtitle">超级管理员</div>
+    </div>
+    <div class="sidebar-nav">
+        <!-- 一级菜单：工作台 -->
+        <div class="nav-group expanded">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="dashboard">
+                <span class="nav-icon nav-icon-dashboard"></span>
+                <span class="nav-text">工作台</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <a href="../工作台/平台运营看板.html" class="nav-item nav-level-2" data-menu="dashboard-overview">
+                    <span class="nav-icon nav-icon-chart"></span>
+                    <span class="nav-text">平台运营看板</span>
+                </a>
+                <a href="../工作台/报告规则分析.html" class="nav-item nav-level-2" data-menu="dashboard-analysis">
+                    <span class="nav-icon nav-icon-analysis"></span>
+                    <span class="nav-text">报告规则分析</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 一级菜单：规则管理 -->
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="rules">
+                <span class="nav-icon nav-icon-rules"></span>
+                <span class="nav-text">规则管理</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <!-- 二级菜单：规则库 -->
+                <div class="nav-subgroup">
+                    <a href="javascript:void(0)" class="nav-item nav-level-2 nav-expandable" data-menu="rules-library">
+                        <span class="nav-icon nav-icon-list"></span>
+                        <span class="nav-text">规则库</span>
+                        <span class="nav-arrow"></span>
+                    </a>
+                    <div class="nav-submenu">
+                        <!-- 原 规则列表 -->
+                        <a href="../规则管理/规则列表/规则管理主页.html" class="nav-item nav-level-3" data-menu="rules-main">
+                            <span class="nav-text">规则管理主页</span>
+                        </a>
+                        <a href="../规则管理/规则列表/门诊规则管理.html" class="nav-item nav-level-3" data-menu="rules-outpatient">
+                            <span class="nav-text">门诊规则管理</span>
+                        </a>
+                        <a href="../规则管理/规则列表/医保规则管理系统v2.html" class="nav-item nav-level-3" data-menu="rules-medical">
+                            <span class="nav-text">医保规则管理</span>
+                        </a>
+                        <hr>
+                        <!-- 并入：规则详情（在规则库中查看） -->
+                        <a href="../规则管理/规则详情/规则详情.html" class="nav-item nav-level-3" data-menu="rules-detail-general">
+                            <span class="nav-text">通用规则详情</span>
+                        </a>
+                        <a href="../规则管理/规则详情/临床规则详情.html" class="nav-item nav-level-3" data-menu="rules-detail-clinical">
+                            <span class="nav-text">临床规则详情</span>
+                        </a>
+                        <a href="../规则管理/规则详情/慢病规则详情.html" class="nav-item nav-level-3" data-menu="rules-detail-chronic">
+                            <span class="nav-text">慢病规则详情</span>
+                        </a>
+                        <a href="../规则管理/规则详情/政策规则详情.html" class="nav-item nav-level-3" data-menu="rules-detail-policy">
+                            <span class="nav-text">政策规则详情</span>
+                        </a>
+                        <a href="../规则管理/规则详情/门诊规则详情.html" class="nav-item nav-level-3" data-menu="rules-detail-outpatient">
+                            <span class="nav-text">门诊规则详情</span>
+                        </a>
+                        <hr>
+                        <!-- 并入：规则配置（在规则库中创建/编辑） -->
+                        <a href="../规则管理/规则操作/创建规则.html" class="nav-item nav-level-3" data-menu="rules-create">
+                            <span class="nav-text">创建规则</span>
+                        </a>
+                        <a href="../规则管理/规则操作/编辑规则.html" class="nav-item nav-level-3" data-menu="rules-edit">
+                            <span class="nav-text">编辑规则</span>
+                        </a>
+                        <a href="../规则管理/规则操作/规则参数配置.html" class="nav-item nav-level-3" data-menu="rules-config">
+                            <span class="nav-text">规则参数配置</span>
+                        </a>
+                        <a href="../规则管理/规则操作/规则管理完整版.html" class="nav-item nav-level-3" data-menu="rules-full">
+                            <span class="nav-text">规则管理完整版</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 一级菜单：审核管理 -->
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="audit">
+                <span class="nav-icon nav-icon-audit"></span>
+                <span class="nav-text">审核管理</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <!-- 二级菜单：审核流程 -->
+                <div class="nav-subgroup">
+                    <a href="javascript:void(0)" class="nav-item nav-level-2 nav-expandable" data-menu="audit-process">
+                        <span class="nav-icon nav-icon-process"></span>
+                        <span class="nav-text">审核流程</span>
+                        <span class="nav-arrow"></span>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="../审核管理/审核流程/事前审核记录.html" class="nav-item nav-level-3" data-menu="audit-pre">
+                            <span class="nav-text">事前审核记录</span>
+                        </a>
+                        <a href="../审核管理/审核流程/事中审核检查.html" class="nav-item nav-level-3" data-menu="audit-during">
+                            <span class="nav-text">事中审核检查</span>
+                        </a>
+                        <a href="../审核管理/审核流程/事后审核任务列表.html" class="nav-item nav-level-3" data-menu="audit-post">
+                            <span class="nav-text">事后审核任务</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 二级菜单：审核结果 -->
+                <div class="nav-subgroup">
+                    <a href="../审核管理/审核结果/审核结果.html" class="nav-item nav-level-2" data-menu="audit-results">
+                        <span class="nav-icon nav-icon-results"></span>
+                        <span class="nav-text">审核结果</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 一级菜单：用户权限管理 -->
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="user-permission">
+                <span class="nav-icon nav-icon-users"></span>
+                <span class="nav-text">用户权限管理</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <!-- 二级菜单：用户管理 -->
+                <div class="nav-subgroup">
+                    <a href="../用户权限管理/用户管理/用户列表.html" class="nav-item nav-level-2" data-menu="user-list">
+                        <span class="nav-icon nav-icon-user-list"></span>
+                        <span class="nav-text">用户管理</span>
+                    </a>
+                </div>
+                
+                <!-- 二级菜单：权限管理 -->
+                <div class="nav-subgroup">
+                    <a href="../用户权限管理/权限管理/权限管理.html" class="nav-item nav-level-2" data-menu="permission">
+                        <span class="nav-icon nav-icon-permission"></span>
+                        <span class="nav-text">权限管理</span>
+                    </a>
+                </div>
+                
+                <!-- 二级菜单：组织管理 -->
+                <div class="nav-subgroup">
+                    <a href="javascript:void(0)" class="nav-item nav-level-2 nav-expandable" data-menu="organization">
+                        <span class="nav-icon nav-icon-organization"></span>
+                        <span class="nav-text">组织管理</span>
+                        <span class="nav-arrow"></span>
+                    </a>
+                    <div class="nav-submenu">
+                        <a href="../用户权限管理/组织管理/科室管理.html" class="nav-item nav-level-3" data-menu="department">
+                            <span class="nav-text">科室管理</span>
+                        </a>
+                        <a href="../用户权限管理/组织管理/租户管理.html" class="nav-item nav-level-3" data-menu="tenant">
+                            <span class="nav-text">租户管理</span>
+                        </a>
+                        <a href="../用户权限管理/组织管理/租户表单.html" class="nav-item nav-level-3" data-menu="tenant-form">
+                            <span class="nav-text">租户表单</span>
+                        </a>
+                        <a href="../用户权限管理/组织管理/企业详情.html" class="nav-item nav-level-3" data-menu="enterprise">
+                            <span class="nav-text">企业详情</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 一级菜单：系统管理 -->
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="system">
+                <span class="nav-icon nav-icon-system"></span>
+                <span class="nav-text">系统管理</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <a href="../系统管理/全局设置.html" class="nav-item nav-level-2" data-menu="global-settings">
+                    <span class="nav-icon nav-icon-settings"></span>
+                    <span class="nav-text">全局设置</span>
+                </a>
+                <a href="../系统管理/系统监控.html" class="nav-item nav-level-2" data-menu="system-monitor">
+                    <span class="nav-icon nav-icon-monitor"></span>
+                    <span class="nav-text">系统监控</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 一级菜单：知识库 -->
+        <div class="nav-group">
+            <a href="javascript:void(0)" class="nav-item nav-level-1 nav-expandable" data-menu="knowledge">
+                <span class="nav-icon nav-icon-knowledge"></span>
+                <span class="nav-text">知识库</span>
+                <span class="nav-arrow"></span>
+            </a>
+            <div class="nav-submenu">
+                <a href="../系统管理/知识库目录.html?catalog=drug" class="nav-item nav-level-2" data-menu="knowledge-drug">
+                    <span class="nav-icon nav-icon-list"></span>
+                    <span class="nav-text">药品目录</span>
+                </a>
+                <a href="../系统管理/知识库目录.html?catalog=treatment" class="nav-item nav-level-2" data-menu="knowledge-treatment">
+                    <span class="nav-icon nav-icon-list"></span>
+                    <span class="nav-text">诊疗目录</span>
+                </a>
+                <a href="../系统管理/知识库目录.html?catalog=material" class="nav-item nav-level-2" data-menu="knowledge-material">
+                    <span class="nav-icon nav-icon-list"></span>
+                    <span class="nav-text">耗材目录</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- 退出登录 -->
+        <div class="nav-group nav-bottom">
+            <button class="nav-item logout-btn" onclick="logout()">
+                <span class="nav-icon nav-icon-logout"></span>
+                <span class="nav-text">退出登录</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// 统一菜单交互脚本
+function initSidebar() {
+    console.log('初始化侧边栏菜单');
+    
+    // 菜单展开/收起功能
+    document.querySelectorAll('.nav-expandable').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('点击展开菜单:', this.querySelector('.nav-text').textContent);
+            
+            const parent = this.closest('.nav-group, .nav-subgroup');
+            const submenu = parent.querySelector('.nav-submenu');
+            
+            if (submenu) {
+                parent.classList.toggle('expanded');
+                submenu.style.display = parent.classList.contains('expanded') ? 'block' : 'none';
+            }
+        });
+    });
+    
+    // 普通链接导航功能
+    document.querySelectorAll('.nav-item[href]:not(.nav-expandable)').forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const href = this.getAttribute('href');
+            console.log('点击菜单链接:', this.querySelector('.nav-text').textContent, '链接:', href);
+            
+            if (href && href !== 'javascript:void(0)' && href !== '#') {
+                window.location.href = href;
+            }
+        });
+    });
+    
+    // 默认展开工作台菜单
+    const dashboardGroup = document.querySelector('[data-menu="dashboard"]').closest('.nav-group');
+    if (dashboardGroup) {
+        dashboardGroup.classList.add('expanded');
+        const submenu = dashboardGroup.querySelector('.nav-submenu');
+        if (submenu) {
+            submenu.style.display = 'block';
+        }
+    }
+    
+    // 设置当前页面菜单高亮
+    setActiveMenu();
+    
+    console.log('侧边栏初始化完成');
+}
+
+function setActiveMenu() {
+    const currentPath = decodeURIComponent(window.location.pathname);
+    const menuItems = document.querySelectorAll('.nav-item[href]');
+
+    menuItems.forEach(item => {
+        const href = item.getAttribute('href');
+        if (!href || href === 'javascript:void(0)' || href === '#') return;
+        
+        // 计算规范化路径
+        const a = document.createElement('a');
+        a.href = href; // 浏览器会自动解析为绝对路径
+        const normalizedHref = decodeURIComponent(a.pathname);
+        
+        // 匹配当前路径
+        if (currentPath.endsWith(normalizedHref) || currentPath.includes(normalizedHref)) {
+            item.classList.add('active');
+            
+            // 展开父级菜单
+            let parent = item.closest('.nav-group, .nav-subgroup');
+            while (parent) {
+                parent.classList.add('expanded');
+                const submenu = parent.querySelector('.nav-submenu');
+                if (submenu) submenu.style.display = 'block';
+                parent = parent.parentElement.closest('.nav-group, .nav-subgroup');
+            }
+        }
+    });
+}
+
+function logout() {
+    if (confirm('确定要退出登录吗？')) {
+        // 清除登录状态
+        localStorage.removeItem('userToken');
+        sessionStorage.clear();
+        // 跳转到登录页面
+        window.location.href = '../../登录.html';
+    }
+}
+
+// 页面加载完成后初始化菜单
+document.addEventListener('DOMContentLoaded', initSidebar);
+</script>

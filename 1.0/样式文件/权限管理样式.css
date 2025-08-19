@@ -1,0 +1,671 @@
+/* 权限管理页专用增强样式 */
+
+/* 统一内边距与栅格 */
+.main-content {
+  padding: 24px;
+}
+
+/* 统计卡片采用自适应栅格布局 */
+.stats-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 搜索过滤区域 */
+.search-filters {
+  margin-top: 32px;
+  padding: 16px 24px;
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+}
+.search-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px 24px;
+}
+.filter-actions {
+  margin-top: 16px;
+  text-align: right;
+}
+
+/* 表格工具栏 */
+.table-toolbar {
+  margin: 24px 0 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* 视图切换按钮 */
+.view-controls .view-btn {
+  padding: 6px 12px;
+  border: 1px solid #d9d9d9;
+  background: #fafafa;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 8px;
+}
+.view-controls .view-btn.active,
+.view-controls .view-btn:hover {
+  background: #1890ff;
+  color: #fff;
+  border-color: #1890ff;
+}
+
+/* 表格优化 */
+.tenant-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.tenant-table th,
+.tenant-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.tenant-table thead th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #595959;
+}
+.tenant-table tbody tr:hover {
+  background: #f5f7ff;
+}
+
+/* 状态徽章优化 */
+.status-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #fff;
+}
+.status-badge.active {
+  background: #52c41a;
+}
+.status-badge.inactive {
+  background: #bfbfbf;
+}
+
+/* 类型徽章 */
+.type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #ffffff;
+}
+.type-badge.system {
+  background: #1890ff;
+}
+.type-badge.custom {
+  background: #fa8c16;
+}
+.type-badge.tenant {
+  background: #13c2c2;
+}
+
+/* 动作按钮组 */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.dropdown-toggle {
+  position: relative;
+}
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  min-width: 120px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+.dropdown-toggle:focus + .dropdown-menu,
+.dropdown-toggle:hover + .dropdown-menu {
+  display: block;
+}
+.dropdown-menu a {
+  display: block;
+  padding: 8px 12px;
+  color: #595959;
+  font-size: 14px;
+  text-decoration: none;
+}
+.dropdown-menu a:hover {
+  background: #f5f5f5;
+  color: #1890ff;
+}
+
+/* 响应式：小屏幕下隐藏侧边栏 */
+@media (max-width: 992px) {
+  .dashboard-container {
+    display: block;
+  }
+  .sidebar {
+    position: fixed;
+    z-index: 1020;
+    left: -260px;
+    top: 0;
+    bottom: 0;
+    width: 240px;
+    transition: left 0.3s ease;
+  }
+  .sidebar.open {
+    left: 0;
+  }
+  .main-content {
+    padding: 16px;
+    margin-left: 0;
+  }
+}
+
+/* 统一 stat-icon 内部图标显示 */
+.stat-icon i {
+  color: #ffffff !important;
+  font-size: 28px;
+}
+.stat-icon i::before {
+  font-size: 28px;
+  display: block;
+  color: #ffffff !important;
+}
+/* 去除紫色背景或改为蓝色，与其它卡片保持一致 */
+.stat-card.support .stat-icon {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border: none !important;
+}
+/* 确保所有 stat-icon 没有紫色边框 */
+.stat-icon {
+  border: none !important;
+}
+
+/* 卡片视图样式 */
+.tenant-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.tenant-card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  padding: 20px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.tenant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #1890ff;
+}
+
+.tenant-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.tenant-card .tenant-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+}
+
+.tenant-card .tenant-avatar {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #1890ff, #096dd9);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.tenant-card .tenant-details h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.tenant-card .tenant-details p {
+  margin: 0;
+  font-size: 12px;
+  color: #8c8c8c;
+  line-height: 1.4;
+}
+
+.tenant-card .tenant-code {
+  font-family: 'Monaco', 'Menlo', monospace;
+  background: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 4px !important;
+}
+
+.tenant-card-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 0;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tenant-card .stat-item {
+  text-align: center;
+}
+
+.tenant-card .stat-label {
+  display: block;
+  font-size: 12px;
+  color: #8c8c8c;
+  margin-bottom: 4px;
+}
+
+.tenant-card .stat-value {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.tenant-card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 10;
+}
+
+.tenant-card .tenant-card-actions .btn {
+  pointer-events: auto;
+  cursor: pointer;
+  position: relative;
+  z-index: 11;
+}
+
+.tenant-card .dropdown {
+  position: relative;
+}
+
+.tenant-card .dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  min-width: 140px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  padding: 4px 0;
+}
+
+.tenant-card .dropdown-toggle:hover + .dropdown-menu,
+.tenant-card .dropdown-menu:hover {
+  display: block;
+}
+
+.tenant-card .dropdown-menu a {
+  display: block;
+  padding: 8px 16px;
+  color: #595959;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.tenant-card .dropdown-menu a:hover {
+  background: #f5f5f5;
+  color: #1890ff;
+}
+
+.tenant-card .dropdown-divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 4px 0;
+}
+
+/* 卡片视图图标样式 */
+.icon-role-super-admin::before {
+  content: 'SA';
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.icon-role-enterprise-admin::before {
+  content: 'EA';
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.icon-role-operator::before {
+  content: 'OP';
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.icon-role-viewer::before {
+  content: 'VW';
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .tenant-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .tenant-card-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+/* 抽屉样式 */
+.drawer-overlay {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.drawer {
+    background-color: #fff;
+    height: 100%;
+    width: 500px;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    animation: slideInRight 0.3s ease-out;
+}
+
+.drawer-wide {
+    width: 700px;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+.drawer-header {
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f9fa;
+}
+
+.drawer-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.drawer-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.drawer-close:hover {
+    color: #333;
+    background-color: #e9ecef;
+}
+
+.drawer-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.drawer-footer {
+    padding: 20px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    background-color: #f8f9fa;
+}
+
+/* 角色信息样式 */
+.role-info-section {
+    margin-bottom: 30px;
+}
+
+.role-info-section h4 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-item label {
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.info-item span {
+    color: #333;
+    padding: 8px 0;
+}
+
+.status-badge.active {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* 权限树样式 */
+.permissions-section h4 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.permissions-tree {
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.permission-category {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.permission-category:last-child {
+    border-bottom: none;
+}
+
+.category-header {
+    background-color: #f8f9fa;
+    padding: 12px 15px;
+    font-weight: 600;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.category-children {
+    padding: 10px 0;
+}
+
+.permission-item {
+    padding: 6px 35px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+}
+
+.icon-folder::before {
+    content: "📁";
+}
+
+.icon-check::before {
+    content: "✓";
+}
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #333;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* 权限分配样式 */
+.permissions-assignment {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-section {
+    margin-bottom: 20px;
+}
+
+.permissions-categories {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.permission-category-assign {
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.permission-category-assign .category-header {
+    background-color: #f8f9fa;
+    padding: 12px 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    margin: 0;
+}
+
+.category-checkbox {
+    margin: 0;
+}
+
+.category-name {
+    font-weight: 600;
+    color: #495057;
+}
+
+.category-permissions {
+    padding: 15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.permission-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 5px 0;
+    margin: 0;
+}
+
+.permission-checkbox input[type="checkbox"] {
+    margin: 0;
+}

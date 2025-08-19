@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事后筛查任务列表</title>
+    <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/事后审核任务样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    </head>
+<body>
+    
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        
+        <div class="main-content">
+<div class="task-list-container">
+        <div class="page-header">
+            <h2>事后筛查任务列表</h2>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="createTask()">创建任务</button>
+                <button class="btn btn-secondary" onclick="batchDelete()">批量删除</button>
+                <button class="btn btn-secondary" onclick="exportTasks()">导出任务</button>
+            </div>
+        </div>
+
+        <!-- 任务统计 -->
+        <div class="task-stats">
+            <div class="stat-card total">
+                <div class="stat-icon">
+                    <i class="icon-tasks"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">总任务数</div>
+                </div>
+            </div>
+            <div class="stat-card running">
+                <div class="stat-icon">
+                    <i class="icon-running"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">23</div>
+                    <div class="stat-label">执行中</div>
+                </div>
+            </div>
+            <div class="stat-card completed">
+                <div class="stat-icon">
+                    <i class="icon-completed"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">118</div>
+                    <div class="stat-label">已完成</div>
+                </div>
+            </div>
+            <div class="stat-card failed">
+                <div class="stat-icon">
+                    <i class="icon-failed"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">15</div>
+                    <div class="stat-label">执行失败</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 筛选条件 -->
+        <div class="filter-section">
+            <div class="filter-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>任务名称</label>
+                        <input type="text" class="form-input" id="taskName" placeholder="请输入任务名称">
+                    </div>
+                    <div class="form-group">
+                        <label>任务状态</label>
+                        <select class="form-select" id="taskStatus">
+                            <option value="">全部状态</option>
+                            <option value="pending">待执行</option>
+                            <option value="running">执行中</option>
+                            <option value="completed">已完成</option>
+                            <option value="failed">执行失败</option>
+                            <option value="cancelled">已取消</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>筛查类型</label>
+                        <select class="form-select" id="auditType">
+                            <option value="">全部类型</option>
+                            <option value="drug_abuse">药品滥用</option>
+                            <option value="overtreatment">过度治疗</option>
+                            <option value="cost_anomaly">费用异常</option>
+                            <option value="duplicate_service">重复服务</option>
+                            <option value="inappropriate_admission">不当入院</option>
+                            <option value="material_waste">耗材浪费</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>创建人</label>
+                        <select class="form-select" id="creator">
+                            <option value="">全部创建人</option>
+                            <option value="admin">系统管理员</option>
+                            <option value="auditor1">审核员张三</option>
+                            <option value="auditor2">审核员李四</option>
+                            <option value="auditor3">审核员王五</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>创建时间</label>
+                        <select class="form-select" id="createTime">
+                            <option value="today">今天</option>
+                            <option value="week">本周</option>
+                            <option value="month">本月</option>
+                            <option value="quarter">本季度</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                    </div>
+                    <div class="form-group filter-actions">
+                        <button class="btn btn-primary" onclick="applyFilter()">筛选</button>
+                        <button class="btn btn-secondary" onclick="resetFilter()">重置</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 任务列表 -->
+        <div class="task-list-section">
+            <div class="list-header">
+                <div class="list-title">
+                    <h3>筛查任务</h3>
+                    <span class="task-count">共 156 个任务</span>
+                </div>
+                <div class="list-actions">
+                    <div class="sort-options">
+                        <label>排序</label>
+                        <select class="form-select" id="sortBy">
+                            <option value="create_time">创建时间</option>
+                            <option value="status">任务状态</option>
+                            <option value="progress">执行进度</option>
+                            <option value="result_count">结果数量</option>
+                        </select>
+                    </div>
+                    <div class="view-mode">
+                        <button class="view-btn active" data-view="table">表格视图</button>
+                        <button class="view-btn" data-view="card">卡片视图</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 表格视图 -->
+            <div class="table-view" id="tableView">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll"></th>
+                            <th>任务名称</th>
+                            <th>筛查类型</th>
+                            <th>筛查范围</th>
+                            <th>执行状态</th>
+                            <th>执行进度</th>
+                            <th>结果数量</th>
+                            <th>创建人</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" class="task-check" data-id="1"></td>
+                            <td>
+                                <div class="task-name">
+                                    <span class="name">2024年1月药品滥用筛查</span>
+                                    <span class="priority high">高优先级</span>
+                                </div>
+                            </td>
+                            <td><span class="type-tag drug">药品滥用</span></td>
+                            <td>
+                                <div class="scope-info">
+                                    <div>时间：2024-01-01 至 2024-01-31</div>
+                                    <div>科室：全院</div>
+                                    <div>患者：住院患者</div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge completed">已完成</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                    <span class="progress-text">100%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="result-count">
+                                    <span class="count">156</span>
+                                    <span class="unit">条违规</span>
+                                </div>
+                            </td>
+                            <td>审核员张三</td>
+                            <td>2024-01-15 09:30</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-xs btn-info" onclick="viewResults(1)">查看结果</button>
+                                    <button class="btn btn-xs btn-secondary" onclick="viewDetail(1)">详情</button>
+                                    <button class="btn btn-xs btn-danger" onclick="deleteTask(1)">删除</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="task-check" data-id="2"></td>
+                            <td>
+                                <div class="task-name">
+                                    <span class="name">心内科过度治疗专项检查</span>
+                                    <span class="priority medium">中优先级</span>
+                                </div>
+                            </td>
+                            <td><span class="type-tag treatment">过度治疗</span></td>
+                            <td>
+                                <div class="scope-info">
+                                    <div>时间：2024-01-10 至 2024-01-15</div>
+                                    <div>科室：心内科</div>
+                                    <div>患者：全部患者</div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge running">执行中</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%"></div>
+                                    <span class="progress-text">65%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="result-count">
+                                    <span class="count">23</span>
+                                    <span class="unit">条违规</span>
+                                </div>
+                            </td>
+                            <td>审核员李四</td>
+                            <td>2024-01-14 14:20</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-xs btn-warning" onclick="pauseTask(2)">暂停</button>
+                                    <button class="btn btn-xs btn-secondary" onclick="viewDetail(2)">详情</button>
+                                    <button class="btn btn-xs btn-danger" onclick="cancelTask(2)">取消</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="task-check" data-id="3"></td>
+                            <td>
+                                <div class="task-name">
+                                    <span class="name">高值耗材使用异常筛查</span>
+                                    <span class="priority low">低优先级</span>
+                                </div>
+                            </td>
+                            <td><span class="type-tag material">耗材浪费</span></td>
+                            <td>
+                                <div class="scope-info">
+                                    <div>时间：2024-01-01 至 2024-01-10</div>
+                                    <div>科室：外科、心外科</div>
+                                    <div>患者：手术患者</div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge pending">待执行</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 0%"></div>
+                                    <span class="progress-text">0%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="result-count">
+                                    <span class="count">-</span>
+                                    <span class="unit">待执行</span>
+                                </div>
+                            </td>
+                            <td>审核员王五</td>
+                            <td>2024-01-13 16:45</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-xs btn-success" onclick="startTask(3)">开始</button>
+                                    <button class="btn btn-xs btn-secondary" onclick="editTask(3)">编辑</button>
+                                    <button class="btn btn-xs btn-danger" onclick="deleteTask(3)">删除</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="task-check" data-id="4"></td>
+                            <td>
+                                <div class="task-name">
+                                    <span class="name">重复检查项目筛查</span>
+                                    <span class="priority medium">中优先级</span>
+                                </div>
+                            </td>
+                            <td><span class="type-tag duplicate">重复服务</span></td>
+                            <td>
+                                <div class="scope-info">
+                                    <div>时间：2024-01-05 至 2024-01-12</div>
+                                    <div>科室：全院</div>
+                                    <div>患者：门诊患者</div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge failed">执行失败</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill error" style="width: 30%"></div>
+                                    <span class="progress-text">失败</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="result-count">
+                                    <span class="count">-</span>
+                                    <span class="unit">执行失败</span>
+                                </div>
+                            </td>
+                            <td>系统管理员</td>
+                            <td>2024-01-12 10:15</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-xs btn-warning" onclick="retryTask(4)">重试</button>
+                                    <button class="btn btn-xs btn-info" onclick="viewError(4)">查看错误</button>
+                                    <button class="btn btn-xs btn-danger" onclick="deleteTask(4)">删除</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="task-check" data-id="5"></td>
+                            <td>
+                                <div class="task-name">
+                                    <span class="name">费用异常模式识别</span>
+                                    <span class="priority high">高优先级</span>
+                                </div>
+                            </td>
+                            <td><span class="type-tag cost">费用异常</span></td>
+                            <td>
+                                <div class="scope-info">
+                                    <div>时间：2024-01-08 至 2024-01-14</div>
+                                    <div>科室：ICU、急诊科</div>
+                                    <div>患者：住院患者</div>
+                                </div>
+                            </td>
+                            <td><span class="status-badge completed">已完成</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                    <span class="progress-text">100%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="result-count">
+                                    <span class="count">89</span>
+                                    <span class="unit">条违规</span>
+                                </div>
+                            </td>
+                            <td>审核员张三</td>
+                            <td>2024-01-11 08:45</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-xs btn-info" onclick="viewResults(5)">查看结果</button>
+                                    <button class="btn btn-xs btn-secondary" onclick="viewDetail(5)">详情</button>
+                                    <button class="btn btn-xs btn-success" onclick="exportResults(5)">导出</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 卡片视图 -->
+            <div class="card-view" id="cardView" style="display: none;">
+                <div class="task-cards">
+                    <div class="task-card completed">
+                        <div class="card-header">
+                            <div class="task-info">
+                                <h4>2024年1月药品滥用筛查</h4>
+                                <span class="priority high">高优先级</span>
+                            </div>
+                            <div class="task-status">
+                                <span class="status-badge completed">已完成</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="task-meta">
+                                <div class="meta-item">
+                                    <span class="label">筛查类型：</span>
+                                    <span class="value">药品滥用</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="label">筛查范围：</span>
+                                    <span class="value">全院住院患者</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="label">时间范围：</span>
+                                    <span class="value">2024-01-01 至 2024-01-31</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="label">创建人：</span>
+                                    <span class="value">审核员张三</span>
+                                </div>
+                            </div>
+                            <div class="task-progress">
+                                <div class="progress-info">
+                                    <span>执行进度</span>
+                                    <span>100%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="task-results">
+                                <div class="result-item">
+                                    <span class="result-label">违规数量：</span>
+                                    <span class="result-value">156 条</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">创建时间：</span>
+                                    <span class="result-value">2024-01-15 09:30</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-xs btn-info" onclick="viewResults(1)">查看结果</button>
+                            <button class="btn btn-xs btn-secondary" onclick="viewDetail(1)">详情</button>
+                            <button class="btn btn-xs btn-danger" onclick="deleteTask(1)">删除</button>
+                        </div>
+                    </div>
+
+                    <div class="task-card running">
+                        <div class="card-header">
+                            <div class="task-info">
+                                <h4>心内科过度治疗专项检查</h4>
+                                <span class="priority medium">中优先级</span>
+                            </div>
+                            <div class="task-status">
+                                <span class="status-badge running">执行中</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="task-meta">
+                                <div class="meta-item">
+                                    <span class="label">筛查类型：</span>
+                                    <span class="value">过度治疗</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="label">筛查范围：</span>
+                                    <span class="value">心内科全部患者</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="label">时间范围：</span>
+                                    <span class="value">2024-01-10 至 2024-01-15</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="label">创建人：</span>
+                                    <span class="value">审核员李四</span>
+                                </div>
+                            </div>
+                            <div class="task-progress">
+                                <div class="progress-info">
+                                    <span>执行进度</span>
+                                    <span>65%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <div class="task-results">
+                                <div class="result-item">
+                                    <span class="result-label">当前违规：</span>
+                                    <span class="result-value">23 条</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">创建时间：</span>
+                                    <span class="result-value">2024-01-14 14:20</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-xs btn-warning" onclick="pauseTask(2)">暂停</button>
+                            <button class="btn btn-xs btn-secondary" onclick="viewDetail(2)">详情</button>
+                            <button class="btn btn-xs btn-danger" onclick="cancelTask(2)">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 批量操作 -->
+            <div class="batch-actions">
+                <div class="batch-info">
+                    <span id="selectedCount">已选择 0 个任务</span>
+                </div>
+                <div class="batch-buttons">
+                    <button class="btn btn-success" onclick="batchStart()" disabled>批量开始</button>
+                    <button class="btn btn-warning" onclick="batchPause()" disabled>批量暂停</button>
+                    <button class="btn btn-danger" onclick="batchDelete()" disabled>批量删除</button>
+                    <button class="btn btn-secondary" onclick="batchExport()" disabled>批量导出</button>
+                </div>
+            </div>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 1-10 条，共 156 个任务
+                </div>
+                <div class="pagination-controls">
+                    <button class="btn btn-sm btn-secondary" disabled>上一页</button>
+                    <div class="page-numbers">
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">4</button>
+                        <button class="page-btn">5</button>
+                    </div>
+                    <button class="btn btn-sm btn-secondary">下一页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 任务详情弹窗 -->
+    <div class="modal" id="taskDetailModal" style="display: none;">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>任务详情</h3>
+                <button class="modal-close" onclick="closeTaskDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="task-detail-content" id="taskDetailContent">
+                    <!-- 任务详情内容将动态加载 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeTaskDetailModal()">关闭</button>
+                <button class="btn btn-info" onclick="viewTaskResults()">查看结果</button>
+                <button class="btn btn-primary" onclick="editCurrentTask()">编辑任务</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/post-audit-task-list.js"></script>
+        </div>
+    </div>
+    <!-- 加载统一菜单 -->
+<script>
+    // 加载统一菜单组件
+    fetch('../../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+
+
+</body>
+</html>

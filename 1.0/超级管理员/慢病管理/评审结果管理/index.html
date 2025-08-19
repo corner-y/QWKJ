@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>评审结果管理</title>
+    <!-- <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css"> -->
+        <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    <style>
+        /* 评审结果管理页面样式 - 主容器样式 */
+        .review-results-container {
+            padding: 20px;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden; /* 禁止水平滚动 */
+            box-sizing: border-box;
+        }
+
+        /* 表格区域样式 - 确保表格容器支持水平滚动 */
+        .table-section {
+            background-color: var(--bg-primary); /* 使用主题背景色 */
+            border-radius: var(--radius-medium); /* 使用主题中等圆角 */
+            box-shadow: var(--shadow-light); /* 使用主题轻微阴影 */
+            padding: 16px; /* 内边距 */
+            width: 100%; /* 宽度100%，填满父容器 */
+            overflow-x: auto; /* 允许水平滚动，解决表格过宽问题 */
+        }
+
+        /* 表格样式 - 确保表格在小屏幕下也能正常显示 */
+        .table {
+            width: 100%; /* 宽度100%，填满表格容器 */
+            min-width: 800px; /* 设置最小宽度，确保表格内容不会过度压缩 */
+            table-layout: fixed; /* 固定表格布局，提高渲染性能 */
+        }
+        
+        /* 页面头部样式 - 标题区域 */
+        .page-header {
+            display: flex; /* 使用flex布局 */
+            justify-content: space-between; /* 两端对齐 */
+            align-items: center; /* 垂直居中 */
+            margin-bottom: 20px; /* 底部边距，与下方内容分隔 */
+        }
+        
+        .page-header h2 {
+            margin: 0; /* 重置默认margin */
+            color: var(--text-primary); /* 使用主题主文本颜色 */
+        }
+        
+        /* 搜索区域样式 - 搜索表单容器 */
+        .search-section {
+            background-color: var(--bg-primary); /* 使用主题背景色 */
+            border-radius: var(--radius-medium); /* 使用主题中等圆角 */
+            box-shadow: var(--shadow-light); /* 使用主题轻微阴影 */
+            padding: 16px; /* 内边距 */
+            margin-bottom: 20px; /* 底部边距，与下方内容分隔 */
+        }
+        
+        /* 表单行样式 - 表单元素的行布局 */
+        .form-row {
+            display: flex; /* 使用flex布局 */
+            gap: 16px; /* 元素间距 */
+            margin-bottom: 12px; /* 底部边距，与下一行分隔 */
+            flex-wrap: wrap; /* 允许换行，适应小屏幕 */
+        }
+        
+        /* 表单组样式 - 单个表单项容器 */
+        .form-group {
+            flex: 1; /* 灵活占据剩余空间 */
+            min-width: 150px; /* 设置最小宽度，确保在小屏幕上不会过度压缩 */
+        }
+        
+        /* 日期范围样式 - 日期选择器布局 */
+        .date-range {
+            display: flex; /* 使用flex布局 */
+            align-items: center; /* 垂直居中 */
+            gap: 8px; /* 元素间距 */
+        }
+        
+        .date-separator {
+            color: var(--text-tertiary); /* 使用主题次要文本颜色 */
+        }
+        
+        /* 搜索操作区样式 - 按钮组布局 */
+        .search-actions {
+            display: flex; /* 使用flex布局 */
+            gap: 8px; /* 按钮间距 */
+            align-items: flex-end; /* 底部对齐，与表单元素保持一致 */
+        }
+        
+        /* 表格头部样式 - 表格标题和操作区 */
+        .table-header {
+            display: flex; /* 使用flex布局 */
+            justify-content: space-between; /* 两端对齐 */
+            align-items: center; /* 垂直居中 */
+            margin-bottom: 16px; /* 底部边距，与表格内容分隔 */
+        }
+        
+        .table-title {
+            font-weight: var(--font-weight-semibold); /* 使用主题半粗体字重 */
+            color: var(--text-primary); /* 使用主题主文本颜色 */
+        }
+        
+        /* 结果标签样式 - 评审结果状态标签 */
+        .result-tag {
+            padding: 2px 8px; /* 内边距 */
+            border-radius: 12px; /* 圆角，使其呈胶囊形状 */
+            font-size: var(--font-size-xs); /* 使用主题超小字体 */
+            font-weight: 500; /* 中等字重 */
+        }
+        
+        /* 已通过标签样式 */
+        .result-approved {
+            background-color: var(--success-light); /* 使用主题成功浅色背景 */
+            color: var(--success-color); /* 使用主题成功颜色 */
+            border: 1px solid var(--success-light); /* 使用主题成功浅色边框 */
+        }
+        
+        /* 已拒绝标签样式 */
+        .result-rejected {
+            background-color: var(--error-light); /* 使用主题错误浅色背景 */
+            color: var(--error-color); /* 使用主题错误颜色 */
+            border: 1px solid var(--error-light); /* 使用主题错误浅色边框 */
+        }
+        
+        /* 操作按钮组样式 */
+        .action-buttons {
+            display: flex; /* 使用flex布局 */
+            gap: 8px; /* 按钮间距 */
+        }
+        
+        /* 查看按钮样式 */
+        .btn-view {
+            padding: 4px 12px; /* 内边距 */
+            border: none; /* 无边框 */
+            border-radius: var(--radius-small); /* 使用主题小圆角 */
+            cursor: pointer; /* 鼠标悬停时显示指针 */
+            font-size: var(--font-size-sm); /* 使用主题小字体 */
+            transition: all 0.2s; /* 添加过渡效果 */
+            background-color: var(--primary-light); /* 使用主题主要浅色背景 */
+            color: var(--primary-color); /* 使用主题主要颜色 */
+        }
+        
+        .btn-view:hover {
+            background-color: var(--primary-color); /* 悬停时使用主题主要颜色 */
+            color: white; /* 悬停时文字为白色 */
+        }
+        
+        /* 统计卡片样式 - 统计数据展示 */
+        .stats-cards {
+            display: grid; /* 使用grid布局 */
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 自动适应列数，最小宽度200px */
+            gap: 16px; /* 卡片间距 */
+            margin-bottom: 20px; /* 底部边距，与下方内容分隔 */
+        }
+        
+        .stat-card {
+            background-color: var(--bg-primary); /* 使用主题背景色 */
+            border-radius: var(--radius-medium); /* 使用主题中等圆角 */
+            box-shadow: var(--shadow-light); /* 使用主题轻微阴影 */
+            padding: 16px; /* 内边距 */
+            text-align: center; /* 文本居中 */
+            border-top: 3px solid var(--primary-color); /* 顶部边框，区分不同类型的卡片 */
+        }
+        
+        .stat-card.total {
+            border-top-color: var(--primary-color); /* 总数卡片使用主题主要颜色 */
+        }
+        
+        .stat-card.approved {
+            border-top-color: var(--success-color); /* 已通过卡片使用主题成功颜色 */
+        }
+        
+        .stat-card.rejected {
+            border-top-color: var(--error-color); /* 已拒绝卡片使用主题错误颜色 */
+        }
+        
+        .stat-card.pass-rate {
+            border-top-color: var(--warning-color); /* 通过率卡片使用主题警告颜色 */
+        }
+        
+        .stat-value {
+            font-size: var(--font-size-xl); /* 使用主题超大字体 */
+            font-weight: var(--font-weight-bold); /* 使用主题粗体字重 */
+            color: var(--text-primary); /* 使用主题主文本颜色 */
+            margin: 8px 0; /* 上下边距 */
+        }
+        
+        .stat-label {
+            font-size: var(--font-size-sm); /* 使用主题小字体 */
+            color: var(--text-secondary); /* 使用主题次要文本颜色 */
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="review-results-container">
+                <!-- 页面头部 -->
+                <div class="page-header">
+                    <h2>评审结果管理</h2>
+                </div>
+
+                <!-- 统计卡片 -->
+                <div class="stats-cards">
+                    <div class="stat-card total">
+                        <div class="stat-label">总评审量</div>
+                        <div class="stat-value" id="totalCount">100</div>
+                    </div>
+                    <div class="stat-card approved">
+                        <div class="stat-label">通过数量</div>
+                        <div class="stat-value" id="approvedCount">75</div>
+                    </div>
+                    <div class="stat-card rejected">
+                        <div class="stat-label">驳回数量</div>
+                        <div class="stat-value" id="rejectedCount">25</div>
+                    </div>
+                    <div class="stat-card pass-rate">
+                        <div class="stat-label">通过率</div>
+                        <div class="stat-value" id="passRate">75%</div>
+                    </div>
+                </div>
+
+                <!-- 搜索筛选区域 -->
+                <div class="search-section">
+                    <div class="search-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>患者姓名</label>
+                                <input type="text" class="form-control" id="patientName" placeholder="请输入患者姓名">
+                            </div>
+                            <div class="form-group">
+                                <label>申请病种</label>
+                                <select class="form-control" id="diseaseType">
+                                    <option value="">全部病种</option>
+                                    <option value="hypertension">高血压并发症</option>
+                                    <option value="diabetes">2型糖尿病</option>
+                                    <option value="heartDisease">冠心病</option>
+                                    <option value="stroke">脑卒中后遗症</option>
+                                    <option value="kidneyDisease">慢性肾脏病</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>评审结果</label>
+                                <select class="form-control" id="reviewResult">
+                                    <option value="">全部结果</option>
+                                    <option value="approved">通过</option>
+                                    <option value="rejected">驳回</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>审核专家</label>
+                                <select class="form-control" id="reviewer">
+                                    <option value="">全部专家</option>
+                                    <option value="expert1">张医生</option>
+                                    <option value="expert2">李医生</option>
+                                    <option value="expert3">王医生</option>
+                                    <option value="expert4">赵医生</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>完成日期</label>
+                                <div class="date-range">
+                                    <input type="date" class="form-control" id="startDate">
+                                    <span class="date-separator">至</span>
+                                    <input type="date" class="form-control" id="endDate">
+                                </div>
+                            </div>
+                            <div class="form-group search-actions">
+                                <button class="btn btn-primary" onclick="searchResults()">搜索</button>
+                                <button class="btn btn-secondary" onclick="resetSearch()">重置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 评审结果表格 -->
+                <div class="table-section">
+                    <div class="table-header">
+                        <div class="table-title">评审结果列表</div>
+                        <div class="table-actions">
+                            <button class="btn btn-secondary" onclick="exportResults()">导出结果</button>
+                            <select class="form-control" id="pageSize" onchange="changePageSize()" style="width: auto; margin-left: 8px;">
+                                <option value="10">10条/页</option>
+                                <option value="20" selected>20条/页</option>
+                                <option value="50">50条/页</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>申报ID</th>
+                                <th>患者姓名</th>
+                                <th>申请病种</th>
+                                <th>申报医院</th>
+                                <th>提交时间</th>
+                                <th>完成时间</th>
+                                <th>最终结论</th>
+                                <th>审核专家</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                            <!-- 模拟数据将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- 分页 -->
+                    <div class="pagination" id="pagination">
+                        <!-- 分页控件将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载统一菜单组件脚本 -->
+    <script>
+    // 加载统一菜单组件
+    fetch('../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+
+    <script>
+        // 模拟数据
+        const mockResults = [
+            { id: 'CM-202407001', name: '张三', disease: '高血压并发症', hospital: '北京协和医院', submitTime: '2024-07-20 09:30', completeTime: '2024-07-22 14:20', result: 'approved', reviewer: '张医生' },
+            { id: 'CM-202407002', name: '李四', disease: '2型糖尿病', hospital: '北京协和医院', submitTime: '2024-07-19 14:45', completeTime: '2024-07-21 10:15', result: 'approved', reviewer: '李医生' },
+            { id: 'CM-202407003', name: '王五', disease: '冠心病', hospital: '北京协和医院', submitTime: '2024-07-18 10:20', completeTime: '2024-07-20 16:30', result: 'rejected', reviewer: '王医生' },
+            { id: 'CM-202407004', name: '赵六', disease: '脑卒中后遗症', hospital: '北京协和医院', submitTime: '2024-07-17 16:10', completeTime: '2024-07-19 11:45', result: 'approved', reviewer: '赵医生' },
+            { id: 'CM-202407005', name: '钱七', disease: '慢性肾脏病', hospital: '北京协和医院', submitTime: '2024-07-16 08:50', completeTime: '2024-07-18 09:20', result: 'rejected', reviewer: '张医生' },
+            { id: 'CM-202407006', name: '孙八', disease: '高血压并发症', hospital: '北京协和医院', submitTime: '2024-07-15 13:30', completeTime: '2024-07-17 15:50', result: 'approved', reviewer: '李医生' },
+            { id: 'CM-202407007', name: '周九', disease: '2型糖尿病', hospital: '北京协和医院', submitTime: '2024-07-14 11:40', completeTime: '2024-07-16 14:30', result: 'approved', reviewer: '王医生' },
+            { id: 'CM-202407008', name: '吴十', disease: '冠心病', hospital: '北京协和医院', submitTime: '2024-07-13 15:20', completeTime: '2024-07-15 10:10', result: 'rejected', reviewer: '赵医生' },
+            { id: 'CM-202407009', name: '郑一', disease: '脑卒中后遗症', hospital: '北京协和医院', submitTime: '2024-07-12 09:10', completeTime: '2024-07-14 13:45', result: 'approved', reviewer: '张医生' },
+            { id: 'CM-202407010', name: '王二', disease: '慢性肾脏病', hospital: '北京协和医院', submitTime: '2024-07-11 14:50', completeTime: '2024-07-13 09:30', result: 'rejected', reviewer: '李医生' },
+            { id: 'CM-202407011', name: '张三', disease: '高血压并发症', hospital: '北京协和医院', submitTime: '2024-07-10 10:30', completeTime: '2024-07-12 14:20', result: 'approved', reviewer: '王医生' },
+            { id: 'CM-202407012', name: '李四', disease: '2型糖尿病', hospital: '北京协和医院', submitTime: '2024-07-09 14:45', completeTime: '2024-07-11 10:15', result: 'approved', reviewer: '赵医生' },
+            { id: 'CM-202407013', name: '王五', disease: '冠心病', hospital: '北京协和医院', submitTime: '2024-07-08 10:20', completeTime: '2024-07-10 16:30', result: 'rejected', reviewer: '张医生' },
+            { id: 'CM-202407014', name: '赵六', disease: '脑卒中后遗症', hospital: '北京协和医院', submitTime: '2024-07-07 16:10', completeTime: '2024-07-09 11:45', result: 'approved', reviewer: '李医生' },
+            { id: 'CM-202407015', name: '钱七', disease: '慢性肾脏病', hospital: '北京协和医院', submitTime: '2024-07-06 08:50', completeTime: '2024-07-08 09:20', result: 'rejected', reviewer: '王医生' },
+            { id: 'CM-202407016', name: '孙八', disease: '高血压并发症', hospital: '北京协和医院', submitTime: '2024-07-05 13:30', completeTime: '2024-07-07 15:50', result: 'approved', reviewer: '赵医生' },
+            { id: 'CM-202407017', name: '周九', disease: '2型糖尿病', hospital: '北京协和医院', submitTime: '2024-07-04 11:40', completeTime: '2024-07-06 14:30', result: 'approved', reviewer: '张医生' },
+            { id: 'CM-202407018', name: '吴十', disease: '冠心病', hospital: '北京协和医院', submitTime: '2024-07-03 15:20', completeTime: '2024-07-05 10:10', result: 'rejected', reviewer: '李医生' },
+            { id: 'CM-202407019', name: '郑一', disease: '脑卒中后遗症', hospital: '北京协和医院', submitTime: '2024-07-02 09:10', completeTime: '2024-07-04 13:45', result: 'approved', reviewer: '王医生' },
+            { id: 'CM-202407020', name: '王二', disease: '慢性肾脏病', hospital: '北京协和医院', submitTime: '2024-07-01 14:50', completeTime: '2024-07-03 09:30', result: 'rejected', reviewer: '赵医生' }
+        ];
+
+        // 当前页码和每页显示数量
+        let currentPage = 1;
+        let pageSize = 20;
+        let filteredResults = [...mockResults];
+
+        // 渲染统计数据
+        function renderStatistics() {
+            const totalCount = filteredResults.length;
+            const approvedCount = filteredResults.filter(item => item.result === 'approved').length;
+            const rejectedCount = totalCount - approvedCount;
+            const passRate = totalCount > 0 ? Math.round((approvedCount / totalCount) * 100) : 0;
+
+            document.getElementById('totalCount').textContent = totalCount;
+            document.getElementById('approvedCount').textContent = approvedCount;
+            document.getElementById('rejectedCount').textContent = rejectedCount;
+            document.getElementById('passRate').textContent = `${passRate}%`;
+        }
+
+        // 渲染表格数据
+        function renderTableData() {
+            const tableBody = document.getElementById('resultsTableBody');
+            tableBody.innerHTML = '';
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const paginatedData = filteredResults.slice(startIndex, endIndex);
+
+            if (paginatedData.length === 0) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.innerHTML = `<td colspan="9" class="text-center">暂无数据</td>`;
+                tableBody.appendChild(emptyRow);
+                return;
+            }
+
+            paginatedData.forEach(result => {
+                const row = document.createElement('tr');
+                
+                // 结果标签样式
+                let resultClass = '';
+                let resultText = '';
+                switch (result.result) {
+                    case 'approved':
+                        resultClass = 'result-approved';
+                        resultText = '通过';
+                        break;
+                    case 'rejected':
+                        resultClass = 'result-rejected';
+                        resultText = '驳回';
+                        break;
+                }
+
+                row.innerHTML = `
+                    <td>${result.id}</td>
+                    <td>${result.name}</td>
+                    <td>${result.disease}</td>
+                    <td>${result.hospital}</td>
+                    <td>${result.submitTime}</td>
+                    <td>${result.completeTime}</td>
+                    <td><span class="result-tag ${resultClass}">${resultText}</span></td>
+                    <td>${result.reviewer}</td>
+                    <td class="action-buttons">
+                        <button class="btn-view" onclick="viewReviewDetail('${result.id}')">查看评审详情</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // 渲染分页
+            renderPagination();
+        }
+
+        // 渲染分页控件
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            const totalPages = Math.ceil(filteredResults.length / pageSize);
+            const maxVisiblePages = 5;
+            
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            // 上一页
+            const prevButton = document.createElement('button');
+            prevButton.textContent = '上一页';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTableData();
+                }
+            };
+            prevButton.className = 'btn btn-secondary';
+            pagination.appendChild(prevButton);
+            
+            // 页码
+            for (let i = startPage; i <= endPage; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.disabled = i === currentPage;
+                pageButton.onclick = () => {
+                    currentPage = i;
+                    renderTableData();
+                };
+                pageButton.className = i === currentPage ? 'btn btn-primary' : 'btn btn-secondary';
+                pagination.appendChild(pageButton);
+            }
+            
+            // 下一页
+            const nextButton = document.createElement('button');
+            nextButton.textContent = '下一页';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTableData();
+                }
+            };
+            nextButton.className = 'btn btn-secondary';
+            pagination.appendChild(nextButton);
+            
+            // 页码信息
+            const pageInfo = document.createElement('span');
+            pageInfo.textContent = `第 ${currentPage} 页，共 ${totalPages} 页，共 ${filteredResults.length} 条记录`;
+            pageInfo.style.marginLeft = '20px';
+            pageInfo.style.color = 'var(--text-secondary)';
+            pagination.appendChild(pageInfo);
+        }
+
+        // 搜索评审结果
+        function searchResults() {
+            const patientName = document.getElementById('patientName').value.toLowerCase();
+            const diseaseType = document.getElementById('diseaseType').value;
+            const reviewResult = document.getElementById('reviewResult').value;
+            const reviewer = document.getElementById('reviewer').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            filteredResults = mockResults.filter(result => {
+                let match = true;
+                
+                if (patientName && !result.name.toLowerCase().includes(patientName)) {
+                    match = false;
+                }
+                if (diseaseType && result.disease !== getDiseaseText(diseaseType)) {
+                    match = false;
+                }
+                if (reviewResult && result.result !== reviewResult) {
+                    match = false;
+                }
+                if (reviewer && result.reviewer !== getReviewerText(reviewer)) {
+                    match = false;
+                }
+                if (startDate && new Date(result.completeTime.split(' ')[0]) < new Date(startDate)) {
+                    match = false;
+                }
+                if (endDate && new Date(result.completeTime.split(' ')[0]) > new Date(endDate)) {
+                    match = false;
+                }
+                
+                return match;
+            });
+
+            currentPage = 1; // 重置为第一页
+            renderStatistics();
+            renderTableData();
+        }
+
+        // 根据病种代码获取病种文本
+        function getDiseaseText(code) {
+            const diseaseMap = {
+                'hypertension': '高血压并发症',
+                'diabetes': '2型糖尿病',
+                'heartDisease': '冠心病',
+                'stroke': '脑卒中后遗症',
+                'kidneyDisease': '慢性肾脏病'
+            };
+            return diseaseMap[code] || '';
+        }
+
+        // 根据专家代码获取专家姓名
+        function getReviewerText(code) {
+            const reviewerMap = {
+                'expert1': '张医生',
+                'expert2': '李医生',
+                'expert3': '王医生',
+                'expert4': '赵医生'
+            };
+            return reviewerMap[code] || '';
+        }
+
+        // 重置搜索条件
+        function resetSearch() {
+            document.getElementById('patientName').value = '';
+            document.getElementById('diseaseType').value = '';
+            document.getElementById('reviewResult').value = '';
+            document.getElementById('reviewer').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            
+            filteredResults = [...mockResults];
+            currentPage = 1;
+            renderStatistics();
+            renderTableData();
+        }
+
+        // 更改每页显示数量
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('pageSize').value);
+            currentPage = 1;
+            renderTableData();
+        }
+
+        // 查看评审详情（只读模式）
+        function viewReviewDetail(id) {
+            // 找到对应的评审记录
+            const result = mockResults.find(item => item.id === id);
+            if (!result) {
+                alert('评审记录不存在');
+                return;
+            }
+            
+            // 在实际应用中，这里会跳转到评审页面的只读模式
+            // 在实际应用中，这里会跳转到评审页面的只读模式
+                // 由于review-details.html可能不存在，所以这里使用alert代替跳转
+                alert(`查看评审ID：${id} 的详情\n患者姓名：${result.name}\n申请病种：${result.disease}\n最终结论：${result.result === 'approved' ? '通过' : '驳回'}\n审核专家：${result.reviewer}\n提交时间：${result.submitTime}\n完成时间：${result.completeTime}`);
+        }
+
+        // 导出结果
+        function exportResults() {
+            // 模拟导出功能
+            alert('评审结果导出成功！');
+            // 实际应用中，这里会调用导出API生成Excel或CSV文件
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            renderStatistics();
+            renderTableData();
+        });
+    </script>
+</body>
+</html>

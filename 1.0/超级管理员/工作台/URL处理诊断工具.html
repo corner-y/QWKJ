@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL处理诊断工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #4CAF50;
+            margin-top: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e9ffe9;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .log {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .test-case {
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: #fff;
+            border-left: 3px solid #4CAF50;
+        }
+        .test-case button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>URL处理诊断工具</h1>
+        <p>本工具用于诊断和测试URL路径处理逻辑，特别是处理重复"慢病管理"目录的问题。</p>
+
+        <!-- 当前页面URL信息 -->
+        <div class="test-section">
+            <h2>当前页面URL信息</h2>
+            <div class="result" id="currentUrlInfo"></div>
+        </div>
+
+        <!-- 单个URL测试 -->
+        <div class="test-section">
+            <h2>单个URL测试</h2>
+            <div class="input-group">
+                <label for="urlToTest">输入URL或路径:</label>
+                <input type="text" id="urlToTest" placeholder=".\1.0\超级管理员\慢病管理\慢病管理\慢病资格评审\index.html">
+            </div>
+            <button id="testUrlBtn">测试URL处理</button>
+            <div class="result" id="singleTestResult"></div>
+            <div class="log" id="singleTestLog"></div>
+        </div>
+
+        <!-- 预设测试用例 -->
+        <div class="test-section">
+            <h2>预设测试用例</h2>
+            
+            <div class="test-case">
+                <span>测试1: 重复慢病管理目录（Windows路径）</span>
+                <button class="test-case-btn" data-url=".\1.0\超级管理员\慢病管理\慢病管理\慢病资格评审\index.html">测试</button>
+            </div>
+            
+            <div class="test-case">
+                <span>测试2: 重复慢病管理目录（Web路径）</span>
+                <button class="test-case-btn" data-url="/1.0/超级管理员/慢病管理/慢病管理/慢病资格评审/index.html">测试</button>
+            </div>
+            
+            <div class="test-case">
+                <span>测试3: 包含协议的完整URL</span>
+                <button class="test-case-btn" data-url="http://localhost:8000/1.0/超级管理员/慢病管理/慢病管理/慢病资格评审/index.html">测试</button>
+            </div>
+            
+            <div class="test-case">
+                <span>测试4: 相对路径</span>
+                <button class="test-case-btn" data-url="慢病管理/慢病管理/慢病资格评审/index.html">测试</button>
+            </div>
+            
+            <div class="test-case">
+                <span>测试5: 重复超级管理员目录</span>
+                <button class="test-case-btn" data-url=".\1.0\超级管理员\超级管理员\慢病管理\慢病资格评审\index.html">测试</button>
+            </div>
+        </div>
+
+        <!-- 导航监听测试 -->
+        <div class="test-section">
+            <h2>导航监听测试</h2>
+            <p>以下链接模拟侧边栏菜单项，点击后会记录导航行为：</p>
+            <div>
+                <a href=".\1.0\超级管理员\慢病管理\慢病资格评审\index.html" class="test-link">链接1: 正常路径</a><br>
+                <a href=".\1.0\超级管理员\慢病管理\慢病管理\慢病资格评审\index.html" class="test-link">链接2: 重复目录路径</a><br>
+                <a href="慢病管理/慢病管理/慢病资格评审/index.html" class="test-link">链接3: 相对路径</a>
+            </div>
+            <div class="log" id="navigationLog"></div>
+        </div>
+    </div>
+
+    <script>
+        // 全局日志数组
+        let log = [];
+        let navigationLog = [];
+
+        // 工具函数: 记录日志
+        function addToLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            log.push(`[${timestamp}] ${message}`);
+            console.log(`[URL诊断] ${message}`);
+        }
+
+        // 工具函数: 显示日志
+        function displayLog(elementId) {
+            document.getElementById(elementId).textContent = log.join('\n');
+        }
+
+        // 工具函数: 清除日志
+        function clearLog() {
+            log = [];
+        }
+
+        // 模拟convertToAbsolutePath方法 - 完整版
+        function convertToAbsolutePath(relativeUrl) {
+            addToLog(`原始相对路径: ${relativeUrl}`);
+            
+            // 移除前后空格
+            relativeUrl = relativeUrl.trim();
+            addToLog(`移除空格后: ${relativeUrl}`);
+            
+            // 检查是否是带有协议的完整URL
+            if (relativeUrl.startsWith('http://') || relativeUrl.startsWith('https://')) {
+                addToLog(`已是完整URL，直接返回: ${relativeUrl}`);
+                
+                // 即使已经是完整URL，也检查是否有重复目录
+                if (relativeUrl.includes('/慢病管理/慢病管理/')) {
+                    const cleanedUrl = relativeUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+                    addToLog(`修复绝对路径中的重复慢病管理目录: ${cleanedUrl}`);
+                    return cleanedUrl;
+                }
+                
+                return relativeUrl;
+            }
+            
+            // 检查是否是绝对路径但没有协议
+            if (relativeUrl.startsWith('/')) {
+                // 为绝对路径添加当前页面的协议和域名
+                const protocolAndDomain = window.location.origin;
+                const fullUrl = protocolAndDomain + relativeUrl;
+                addToLog(`为绝对路径添加协议和域名: ${fullUrl}`);
+                
+                // 即使已经是绝对路径，也检查是否有重复目录
+                if (fullUrl.includes('/慢病管理/慢病管理/')) {
+                    const cleanedUrl = fullUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+                    addToLog(`修复绝对路径中的重复慢病管理目录: ${cleanedUrl}`);
+                    return cleanedUrl;
+                }
+                
+                return fullUrl;
+            }
+            
+            // 处理Windows风格路径
+            if (relativeUrl.includes('\\')) {
+                addToLog('检测到Windows风格路径，转换为Web风格');
+                relativeUrl = relativeUrl.replace(/\\/g, '/');
+                addToLog(`转换后: ${relativeUrl}`);
+            }
+            
+            // 分割URL为路径部分
+            const parts = relativeUrl.split('/');
+            
+            // 处理所有类型的URL中的路径重复问题
+            addToLog(`需要处理路径重复问题，路径分割前: [${parts.join(', ')}]`);
+            
+            // 改进的路径去重逻辑，移除所有重复的目录
+            const cleanParts = [];
+            const seenPaths = new Set();
+            
+            for (let i = 0; i < parts.length; i++) {
+                // 如果当前部分不为空
+                if (parts[i]) {
+                    // 特殊处理特定目录
+                    const specialDirs = ['慢病管理', '超级管理员'];
+                    
+                    if (specialDirs.includes(parts[i])) {
+                        // 只添加第一个出现的特殊目录
+                        if (!seenPaths.has(parts[i])) {
+                            cleanParts.push(parts[i]);
+                            seenPaths.add(parts[i]);
+                            addToLog(`添加特殊目录: ${parts[i]}`);
+                        } else {
+                            addToLog(`发现重复的特殊目录: ${parts[i]} 已移除`);
+                        }
+                    } else {
+                        // 对于其他目录，只要不为空就添加
+                        cleanParts.push(parts[i]);
+                        addToLog(`添加常规目录: ${parts[i]}`);
+                    }
+                } else {
+                    // 保留空部分（可能是根路径的一部分）
+                    cleanParts.push('');
+                }
+            }
+            
+            // 重新组合路径
+            relativeUrl = cleanParts.join('/');
+            addToLog(`路径处理后: ${relativeUrl}`);
+            
+            // 再次检查是否有重复的慢病管理目录（防止任何形式的重复）
+            if (relativeUrl.includes('慢病管理/慢病管理')) {
+                relativeUrl = relativeUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+                addToLog(`再次清理后的路径: ${relativeUrl}`);
+            }
+            
+            addToLog(`最终处理后的URL: ${relativeUrl}`);
+            
+            // 获取当前页面的基础URL（包含协议和域名）
+            const baseUrl = window.location.origin + window.location.pathname.replace(/[^/]+$/, '');
+            addToLog(`使用的基础URL: ${baseUrl}`);
+            
+            // 使用URL对象来解析相对路径
+            try {
+                let absoluteUrl = new URL(relativeUrl, baseUrl).href;
+                addToLog(`转换后的绝对路径: ${absoluteUrl}`);
+                
+                // 最后一次检查，确保没有重复的慢病管理目录
+                if (absoluteUrl.includes('/慢病管理/慢病管理/')) {
+                    absoluteUrl = absoluteUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+                    addToLog(`最终修复的绝对路径: ${absoluteUrl}`);
+                }
+                
+                return absoluteUrl;
+            } catch (e) {
+                addToLog(`路径转换失败: ${e.message}`);
+                // 作为最后的备选方案，直接拼接协议和域名
+                let fallbackUrl = window.location.origin + '/' + relativeUrl;
+                addToLog(`使用备选URL: ${fallbackUrl}`);
+                
+                // 备选URL也进行重复目录检查
+                if (fallbackUrl.includes('/慢病管理/慢病管理/')) {
+                    fallbackUrl = fallbackUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+                    addToLog(`备选URL修复后: ${fallbackUrl}`);
+                }
+                
+                return fallbackUrl;
+            }
+        }
+
+        // 显示当前页面URL信息
+        function showCurrentUrlInfo() {
+            const info = `
+当前页面完整URL: ${window.location.href}
+协议: ${window.location.protocol}
+主机名: ${window.location.hostname}
+端口: ${window.location.port}
+路径名: ${window.location.pathname}
+来源: ${window.location.origin}
+基础URL: ${window.location.origin + window.location.pathname.replace(/[^/]+$/, '')}
+`;
+            document.getElementById('currentUrlInfo').textContent = info;
+        }
+
+        // 测试单个URL
+        function testSingleUrl(url) {
+            clearLog();
+            
+            try {
+                const result = convertToAbsolutePath(url);
+                document.getElementById('singleTestResult').textContent = `处理结果: ${result}`;
+                displayLog('singleTestLog');
+            } catch (e) {
+                document.getElementById('singleTestResult').textContent = `处理出错: ${e.message}`;
+                displayLog('singleTestLog');
+            }
+        }
+
+        // 监听链接点击事件
+        function setupLinkListeners() {
+            document.querySelectorAll('.test-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const url = this.getAttribute('href');
+                    const timestamp = new Date().toLocaleTimeString();
+                    
+                    navigationLog.push(`[${timestamp}] 点击链接: ${url}`);
+                    
+                    try {
+                        const processedUrl = convertToAbsolutePath(url);
+                        navigationLog.push(`[${timestamp}] 处理后URL: ${processedUrl}`);
+                    } catch (e) {
+                        navigationLog.push(`[${timestamp}] 处理出错: ${e.message}`);
+                    }
+                    
+                    document.getElementById('navigationLog').textContent = navigationLog.join('\n');
+                });
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 显示当前页面URL信息
+            showCurrentUrlInfo();
+            
+            // 设置单个URL测试按钮
+            document.getElementById('testUrlBtn').addEventListener('click', function() {
+                const url = document.getElementById('urlToTest').value;
+                if (url) {
+                    testSingleUrl(url);
+                } else {
+                    alert('请输入要测试的URL');
+                }
+            });
+            
+            // 设置预设测试用例按钮
+            document.querySelectorAll('.test-case-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+                    document.getElementById('urlToTest').value = url;
+                    testSingleUrl(url);
+                });
+            });
+            
+            // 设置链接监听
+            setupLinkListeners();
+        });
+    </script>
+</body>
+</html>

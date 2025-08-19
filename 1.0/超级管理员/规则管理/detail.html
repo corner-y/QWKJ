@@ -1,0 +1,3431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>药品详情 - 医保审核系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .drug-header {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .page-header {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drug-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .drug-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .drug-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .drug-code {
+            font-size: 14px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .drug-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #007bff;
+            color: #007bff;
+        }
+
+        .btn-outline:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .drug-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .insurance-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .insurance-badge.class-a {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .insurance-badge.class-b {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .insurance-badge.non-insurance {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .rules-section {
+            margin-top: 24px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .rule-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .rule-category {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .rule-category:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .category-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .category-count {
+            background: #007bff;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .category-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .rule-list {
+            list-style: none;
+        }
+
+        .rule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .rule-item:last-child {
+            border-bottom: none;
+        }
+
+        .rule-name {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .rule-status {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .rule-status.active {
+            color: #28a745;
+        }
+
+        .rule-status.inactive {
+            color: #dc3545;
+        }
+
+        .rule-status.pending {
+            color: #ffc107;
+        }
+
+        .view-all-btn {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 12px;
+        }
+
+        .view-all-btn:hover {
+            background: #e9ecef;
+        }
+
+        .stats-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #007bff;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+
+        .rule-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .rule-filters select {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .detail-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .main-tab-navigation {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .main-tab-item {
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .main-tab-item:hover {
+            color: #007bff;
+            background: #e9ecef;
+        }
+
+        .main-tab-item.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            background: white;
+        }
+
+        .main-tab-contents {
+            padding: 24px;
+        }
+
+        .main-tab-content {
+            display: none;
+        }
+
+        .main-tab-content.active {
+            display: block;
+        }
+
+        .rules-layout {
+            display: flex;
+            gap: 24px;
+            min-height: 500px;
+        }
+
+        .vertical-tab-navigation {
+            min-width: 200px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        .vertical-tab-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .vertical-tab-item:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .vertical-tab-item.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .rules-content {
+            flex: 1;
+            padding: 24px;
+        }
+
+        .vertical-tab-contents {
+            height: 100%;
+        }
+
+        .vertical-tab-content {
+            display: none;
+        }
+
+        .vertical-tab-content.active {
+            display: block;
+        }
+
+        .tab-count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .vertical-tab-item.active .tab-count {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .rules-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .rules-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .rules-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .batch-edit-mode .rule-item {
+            padding-left: 40px;
+            position: relative;
+        }
+
+        .batch-edit-mode .rule-checkbox {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .batch-actions {
+            display: none;
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .batch-actions.show {
+            display: flex;
+        }
+
+        .selected-count {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .rule-checkbox {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .rule-checkbox:checked {
+            accent-color: #007bff;
+        }
+
+        .rule-priority {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-low {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .priority-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .priority-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .priority-critical {
+            background: #f5c6cb;
+            color: #721c24;
+        }
+
+        .rule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .rule-item:hover {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .rule-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .rule-info {
+            flex: 1;
+        }
+
+        .rule-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .rule-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .rule-meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .rule-priority {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-low {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .priority-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .priority-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .priority-critical {
+            background: #f5c6cb;
+            color: #721c24;
+        }
+
+        .rule-status {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .rule-status.active {
+            color: #28a745;
+        }
+
+        .rule-status.inactive {
+            color: #dc3545;
+        }
+
+        .rule-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 20px 0;
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #666;
+            margin: 0 10px;
+        }
+
+        .pagination .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #007bff;
+            color: #007bff;
+        }
+
+        .btn-outline:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        .info-card, .rules-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #eee;
+            background: #f8f9fa;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .info-item label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item span {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .page-header {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drug-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .drug-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .insurance-type {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .type-a {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .type-b {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .batch-actions {
+            display: none;
+            background: #f8f9fa;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #dee2e6;
+        }
+
+        .batch-actions.show {
+            display: flex;
+        }
+
+        .batch-actions .selected-count {
+            font-size: 14px;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .batch-actions .btn {
+            margin-left: 8px;
+        }
+
+        .rules-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .rules-card .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .rules-card .card-header h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .rule-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 0 20px;
+            padding-top: 16px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-top: 1px solid #eee;
+            background: #f8f9fa;
+        }
+
+        .pagination .btn {
+            padding: 6px 12px;
+            font-size: 14px;
+            border: 1px solid #dee2e6;
+            background: white;
+            color: #495057;
+        }
+
+        .pagination .page-numbers {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .pagination .page-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: 1px solid #dee2e6;
+            background: white;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination .page-number:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .pagination .page-number.active {
+            background: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+
+        .pagination .page-ellipsis {
+            padding: 0 8px;
+            color: #6c757d;
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .pagination .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .btn:disabled:hover {
+            background: white;
+        }
+
+        /* 药品说明书样式 */
+        .instruction-layout {
+            display: flex;
+            height: 600px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .instruction-content-area {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: #fff;
+            user-select: none; /* 禁止选择文本 */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .instruction-content {
+            display: none;
+        }
+
+        .instruction-content.active {
+            display: block;
+        }
+
+        .instruction-section {
+            margin-bottom: 30px;
+        }
+
+        .instruction-section h3 {
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .instruction-text {
+            line-height: 1.8;
+            color: #34495e;
+            font-size: 14px;
+        }
+
+        .instruction-text p {
+            margin-bottom: 12px;
+        }
+
+        .instruction-text strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .instruction-text ul, .instruction-text ol {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        .instruction-text li {
+            margin-bottom: 8px;
+        }
+
+        .instruction-text sub {
+            font-size: 12px;
+        }
+
+        .instruction-image {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .instruction-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .image-caption {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .warning-box h4 {
+            color: #e67e22;
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .warning-box p {
+            margin: 0;
+            color: #8b4513;
+        }
+
+        .storage-conditions {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .condition-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .condition-item:last-child {
+            border-bottom: none;
+        }
+
+        .condition-label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 80px;
+        }
+
+        .condition-value {
+            color: #6c757d;
+            text-align: right;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal[style*="flex"] {
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #1f2937;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close {
+            color: #6b7280;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: #374151;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* 表单样式 */
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label,
+        .form-label {
+            margin-bottom: 6px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea,
+        .form-input,
+        .form-select,
+        .form-textarea {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus,
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea,
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20px auto;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">药品管理</a> > 药品详情
+        </div>
+
+        <div class="page-header">
+            <div class="header-content">
+                <div class="drug-title">
+                    <h1 id="drugName">阿莫西林胶囊</h1>
+                    <span class="status-badge status-active">在用</span>
+                    <span class="insurance-type type-a">甲类</span>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="editDrug()">编辑药品</button>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <div class="detail-container">
+            <div class="main-tab-navigation">
+                <button class="main-tab-item active" onclick="switchMainTab('basic')">基本信息</button>
+                <button class="main-tab-item" onclick="switchMainTab('insurance')">医保规则</button>
+                <button class="main-tab-item" onclick="switchMainTab('rational')">合理用药规则</button>
+                <button class="main-tab-item" onclick="switchMainTab('instruction')">药品说明书</button>
+            </div>
+
+            <div class="main-tab-contents">
+                <!-- 基本信息Tab -->
+                <div id="basic-tab" class="main-tab-content active">
+                    <div class="info-card">
+                        <div class="card-header">
+                            <h3>基本信息</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-grid" id="drugInfoGrid">
+                                <!-- 药品信息将通过JavaScript动态填充 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-bar">
+                        <div class="stats-grid" id="statsGrid">
+                            <!-- 统计信息将通过JavaScript动态填充 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 医保规则Tab -->
+                <div id="insurance-tab" class="main-tab-content">
+                    <div class="rules-layout">
+                        <div class="vertical-tab-navigation">
+                            <button class="vertical-tab-item active" onclick="switchInsuranceTab('basic')">
+                                基本医保 <span class="tab-count">32</span>
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchInsuranceTab('special')">
+                                特殊医保 <span class="tab-count">18</span>
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchInsuranceTab('limit')">
+                                限制使用 <span class="tab-count">12</span>
+                            </button>
+                        </div>
+                        <div class="rules-content">
+                            <div class="vertical-tab-contents">
+                                <div id="basic-insurance" class="vertical-tab-content active">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">基本医保规则</h3>
+                                        <div class="rules-actions">
+                                            <button class="btn btn-outline btn-small" onclick="downloadInsuranceTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importInsuranceRules()">导入规则</button>
+                                            <button class="btn btn-secondary btn-small" onclick="toggleInsuranceBatchEdit()" id="insuranceBatchEditBtn">批量编辑</button>
+                                            <button class="btn btn-primary btn-small" onclick="createInsuranceRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="batch-actions" id="insuranceBatchActions">
+                                        <div>
+                                            <span class="selected-count" id="insuranceSelectedCount">已选择 0 项</span>
+                                            <button class="btn btn-secondary btn-small" onclick="selectAllInsuranceRules()">全选</button>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-success btn-small" onclick="insuranceBatchEnable()">批量启用</button>
+                                            <button class="btn btn-warning btn-small" onclick="insuranceBatchDisable()">批量禁用</button>
+                                            <button class="btn btn-danger btn-small" onclick="insuranceBatchDelete()">批量删除</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="rule-filters">
+                                        <input type="text" class="search-input" placeholder="搜索规则..." id="insuranceSearchInput">
+                                        <select id="insuranceStatusFilter">
+                                            <option value="all">全部状态</option>
+                                            <option value="active">启用</option>
+                                            <option value="inactive">停用</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="rules-list">
+                                        <div class="rule-item">
+                                            <input type="checkbox" class="rule-checkbox" style="display: none;">
+                                            <div class="rule-info">
+                                                <div class="rule-name">年龄限制规则</div>
+                                                <div class="rule-desc">限制65岁以上患者使用</div>
+                                                <div class="rule-meta">
+                                                    <span class="rule-priority priority-high">高</span>
+                                                    <span class="rule-status active" data-status="active">启用</span>
+                                                </div>
+                                            </div>
+                                            <div class="rule-actions">
+                                                <button class="btn btn-outline btn-small" onclick="editRule('insurance', 1)">编辑</button>
+                                                <button class="btn btn-secondary btn-small" onclick="toggleRuleStatus('insurance', 1, 'active')">禁用</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="rule-item">
+                                            <input type="checkbox" class="rule-checkbox" style="display: none;">
+                                            <div class="rule-info">
+                                                <div class="rule-name">剂量限制规则</div>
+                                                <div class="rule-desc">每日最大剂量不超过2g</div>
+                                                <div class="rule-meta">
+                                                    <span class="rule-priority priority-medium">中</span>
+                                                    <span class="rule-status active" data-status="active">启用</span>
+                                                </div>
+                                            </div>
+                                            <div class="rule-actions">
+                                                <button class="btn btn-outline btn-small" onclick="editRule('insurance', 2)">编辑</button>
+                                                <button class="btn btn-secondary btn-small" onclick="toggleRuleStatus('insurance', 2, 'active')">禁用</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pagination">
+                                        <button class="btn" onclick="prevPage('basic-insurance')" id="basicInsurancePrevBtn">上一页</button>
+                                        <div class="page-numbers" id="basicInsurancePageNumbers">
+                                            <!-- 页码将通过JavaScript生成 -->
+                                        </div>
+                                        <button class="btn" onclick="nextPage('basic-insurance')" id="basicInsuranceNextBtn">下一页</button>
+                                        <div class="page-info" id="basicInsurancePageInfo">第 1 页，共 10 页 (95 条记录)</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 特殊医保规则 -->
+                                <div id="special-insurance" class="vertical-tab-content">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">特殊医保规则</h3>
+                                        <div class="rules-actions">
+                                            <button class="btn btn-outline btn-small" onclick="downloadSpecialInsuranceTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importSpecialInsuranceRules()">导入规则</button>
+                                            <button class="btn btn-secondary btn-small" onclick="toggleSpecialInsuranceBatchEdit()" id="specialInsuranceBatchEditBtn">批量编辑</button>
+                                            <button class="btn btn-primary btn-small" onclick="createSpecialInsuranceRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="batch-actions" id="specialInsuranceBatchActions">
+                                        <div>
+                                            <span class="selected-count" id="specialInsuranceSelectedCount">已选择 0 项</span>
+                                            <button class="btn btn-secondary btn-small" onclick="selectAllSpecialInsuranceRules()">全选</button>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-success btn-small" onclick="specialInsuranceBatchEnable()">批量启用</button>
+                                            <button class="btn btn-warning btn-small" onclick="specialInsuranceBatchDisable()">批量禁用</button>
+                                            <button class="btn btn-danger btn-small" onclick="specialInsuranceBatchDelete()">批量删除</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="rule-filters">
+                                        <input type="text" class="search-input" placeholder="搜索规则..." id="specialInsuranceSearchInput">
+                                        <select id="specialInsuranceStatusFilter">
+                                            <option value="all">全部状态</option>
+                                            <option value="active">启用</option>
+                                            <option value="inactive">停用</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="rules-list">
+                                        <div class="rule-item">
+                                            <input type="checkbox" class="rule-checkbox" style="display: none;">
+                                            <div class="rule-info">
+                                                <div class="rule-name">特殊人群报销规则</div>
+                                                <div class="rule-desc">低保户、残疾人等特殊人群报销比例95%</div>
+                                                <div class="rule-meta">
+                                                    <span class="rule-priority priority-high">高</span>
+                                                    <span class="rule-status active" data-status="active">启用</span>
+                                                </div>
+                                            </div>
+                                            <div class="rule-actions">
+                                                <button class="btn btn-outline btn-small" onclick="editRule('special-insurance', 1)">编辑</button>
+                                                <button class="btn btn-secondary btn-small" onclick="toggleRuleStatus('special-insurance', 1, 'active')">禁用</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pagination">
+                                        <button class="btn" onclick="prevPage('special-insurance')" id="specialInsurancePrevBtn">上一页</button>
+                                        <div class="page-numbers" id="specialInsurancePageNumbers">
+                                            <!-- 页码将通过JavaScript生成 -->
+                                        </div>
+                                        <button class="btn" onclick="nextPage('special-insurance')" id="specialInsuranceNextBtn">下一页</button>
+                                        <div class="page-info" id="specialInsurancePageInfo">第 1 页，共 5 页 (18 条记录)</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 限制使用规则 -->
+                                <div id="limit-insurance" class="vertical-tab-content">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">限制使用规则</h3>
+                                        <div class="rules-actions">
+                                            <button class="btn btn-outline btn-small" onclick="downloadLimitInsuranceTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importLimitInsuranceRules()">导入规则</button>
+                                            <button class="btn btn-secondary btn-small" onclick="toggleLimitInsuranceBatchEdit()" id="limitInsuranceBatchEditBtn">批量编辑</button>
+                                            <button class="btn btn-primary btn-small" onclick="createLimitInsuranceRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="batch-actions" id="limitInsuranceBatchActions">
+                                        <div>
+                                            <span class="selected-count" id="limitInsuranceSelectedCount">已选择 0 项</span>
+                                            <button class="btn btn-secondary btn-small" onclick="selectAllLimitInsuranceRules()">全选</button>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-success btn-small" onclick="limitInsuranceBatchEnable()">批量启用</button>
+                                            <button class="btn btn-warning btn-small" onclick="limitInsuranceBatchDisable()">批量禁用</button>
+                                            <button class="btn btn-danger btn-small" onclick="limitInsuranceBatchDelete()">批量删除</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="rule-filters">
+                                        <input type="text" class="search-input" placeholder="搜索规则..." id="limitInsuranceSearchInput">
+                                        <select id="limitInsuranceStatusFilter">
+                                            <option value="all">全部状态</option>
+                                            <option value="active">启用</option>
+                                            <option value="inactive">停用</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="rules-list">
+                                        <div class="rule-item">
+                                            <input type="checkbox" class="rule-checkbox" style="display: none;">
+                                            <div class="rule-info">
+                                                <div class="rule-name">用量限制规则</div>
+                                                <div class="rule-desc">单次开药量不超过7天，月累计不超过30天</div>
+                                                <div class="rule-meta">
+                                                    <span class="rule-priority priority-high">高</span>
+                                                    <span class="rule-status active" data-status="active">启用</span>
+                                                </div>
+                                            </div>
+                                            <div class="rule-actions">
+                                                <button class="btn btn-outline btn-small" onclick="editRule('limit-insurance', 1)">编辑</button>
+                                                <button class="btn btn-secondary btn-small" onclick="toggleRuleStatus('limit-insurance', 1, 'active')">禁用</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="rule-item">
+                                            <input type="checkbox" class="rule-checkbox" style="display: none;">
+                                            <div class="rule-info">
+                                                <div class="rule-name">年龄限制规则</div>
+                                                <div class="rule-desc">限制65岁以上患者使用</div>
+                                                <div class="rule-meta">
+                                                    <span class="rule-priority priority-medium">中</span>
+                                                    <span class="rule-status active" data-status="active">启用</span>
+                                                </div>
+                                            </div>
+                                            <div class="rule-actions">
+                                                <button class="btn btn-outline btn-small" onclick="editRule('limit-insurance', 2)">编辑</button>
+                                                <button class="btn btn-secondary btn-small" onclick="toggleRuleStatus('limit-insurance', 2, 'active')">禁用</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pagination">
+                                        <button class="btn" onclick="prevPage('limit-insurance')" id="limitInsurancePrevBtn">上一页</button>
+                                        <div class="page-numbers" id="limitInsurancePageNumbers">
+                                            <!-- 页码将通过JavaScript生成 -->
+                                        </div>
+                                        <button class="btn" onclick="nextPage('limit-insurance')" id="limitInsuranceNextBtn">下一页</button>
+                                        <div class="page-info" id="limitInsurancePageInfo">第 1 页，共 3 页 (12 条记录)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="rational-tab" class="main-tab-content">
+                    <div class="rules-layout">
+                        <div class="vertical-tab-navigation">
+                            <button class="vertical-tab-item active" onclick="switchRationalTab('dosage')">
+                                剂量规则 <span class="tab-count">15</span>
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchRationalTab('interaction')">
+                                相互作用 <span class="tab-count">8</span>
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchRationalTab('contraindication')">
+                                禁忌症 <span class="tab-count">6</span>
+                            </button>
+                        </div>
+                        <div class="rules-content">
+                            <div class="vertical-tab-contents">
+                                <div id="dosage-rational" class="vertical-tab-content active">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">剂量规则</h3>
+                                        <div class="rules-actions">
+                                            <button class="btn btn-outline btn-small" onclick="downloadRationalRuleTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importRationalRules()">导入规则</button>
+                                            <button class="btn btn-secondary btn-small" onclick="toggleRationalBatchEdit()" id="rationalBatchEditBtn">批量编辑</button>
+                                            <button class="btn btn-primary btn-small" onclick="createRationalRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="batch-actions" id="rationalBatchActions">
+                                        <div>
+                                            <span class="selected-count" id="rationalSelectedCount">已选择 0 项</span>
+                                            <button class="btn btn-secondary btn-small" onclick="selectAllRationalRules()">全选</button>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-success btn-small" onclick="rationalBatchEnable()">批量启用</button>
+                                            <button class="btn btn-warning btn-small" onclick="rationalBatchDisable()">批量禁用</button>
+                                            <button class="btn btn-danger btn-small" onclick="rationalBatchDelete()">批量删除</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="rule-filters">
+                                        <input type="text" class="search-input" placeholder="搜索规则..." id="rationalSearchInput">
+                                        <select id="rationalStatusFilter">
+                                            <option value="all">全部状态</option>
+                                            <option value="active">启用</option>
+                                            <option value="inactive">停用</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="rules-list">
+                                        <div class="rule-item">
+                                            <input type="checkbox" class="rule-checkbox" style="display: none;">
+                                            <div class="rule-info">
+                                                <div class="rule-name">成人剂量规则</div>
+                                                <div class="rule-desc">成人每次0.25-0.5g，每日3-4次</div>
+                                                <div class="rule-meta">
+                                                    <span class="rule-priority priority-high">高</span>
+                                                    <span class="rule-status active" data-status="active">启用</span>
+                                                </div>
+                                            </div>
+                                            <div class="rule-actions">
+                                                <button class="btn btn-outline btn-small" onclick="editRule('rational', 1)">编辑</button>
+                                                <button class="btn btn-secondary btn-small" onclick="toggleRuleStatus('rational', 1, 'active')">禁用</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pagination">
+                                        <button class="btn" onclick="prevPage('dosage-rational')" id="dosageRationalPrevBtn">上一页</button>
+                                        <div class="page-numbers" id="dosageRationalPageNumbers">
+                                            <!-- 页码将通过JavaScript生成 -->
+                                        </div>
+                                        <button class="btn" onclick="nextPage('dosage-rational')" id="dosageRationalNextBtn">下一页</button>
+                                        <div class="page-info" id="dosageRationalPageInfo">第 1 页，共 5 页 (48 条记录)</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 相互作用规则 -->
+                                <div id="interaction-rational" class="vertical-tab-content">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">相互作用规则</h3>
+                                        <div class="rules-actions">
+                                            <button class="btn btn-outline btn-small" onclick="downloadInteractionRuleTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importInteractionRules()">导入规则</button>
+                                            <button class="btn btn-secondary btn-small" onclick="toggleInteractionBatchEdit()" id="interactionBatchEditBtn">批量编辑</button>
+                                            <button class="btn btn-primary btn-small" onclick="createInteractionRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="batch-actions" id="interactionBatchActions">
+                                        <div>
+                                            <span class="selected-count" id="interactionSelectedCount">已选择 0 项</span>
+                                            <button class="btn btn-secondary btn-small" onclick="selectAllInteractionRules()">全选</button>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-success btn-small" onclick="interactionBatchEnable()">批量启用</button>
+                                            <button class="btn btn-warning btn-small" onclick="interactionBatchDisable()">批量禁用</button>
+                                            <button class="btn btn-danger btn-small" onclick="interactionBatchDelete()">批量删除</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="rule-filters">
+                                        <input type="text" class="search-input" placeholder="搜索规则..." id="interactionSearchInput">
+                                        <select id="interactionStatusFilter">
+                                            <option value="all">全部状态</option>
+                                            <option value="active">启用</option>
+                                            <option value="inactive">停用</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="rules-list">
+                                        <div class="rule-item">
+                                            <input type="checkbox" class="rule-checkbox" style="display: none;">
+                                            <div class="rule-info">
+                                                <div class="rule-name">华法林相互作用</div>
+                                                <div class="rule-desc">与华法林同用时需监测凝血功能</div>
+                                                <div class="rule-meta">
+                                                    <span class="rule-priority priority-high">高</span>
+                                                    <span class="rule-status active" data-status="active">启用</span>
+                                                </div>
+                                            </div>
+                                            <div class="rule-actions">
+                                                <button class="btn btn-outline btn-small" onclick="editRule('interaction', 1)">编辑</button>
+                                                <button class="btn btn-secondary btn-small" onclick="toggleRuleStatus('interaction', 1, 'active')">禁用</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pagination">
+                                        <button class="btn" onclick="prevPage('interaction-rational')" id="interactionRationalPrevBtn">上一页</button>
+                                        <div class="page-numbers" id="interactionRationalPageNumbers">
+                                            <!-- 页码将通过JavaScript生成 -->
+                                        </div>
+                                        <button class="btn" onclick="nextPage('interaction-rational')" id="interactionRationalNextBtn">下一页</button>
+                                        <div class="page-info" id="interactionRationalPageInfo">第 1 页，共 3 页 (8 条记录)</div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 禁忌症规则 -->
+                                <div id="contraindication-rational" class="vertical-tab-content">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">禁忌症规则</h3>
+                                        <div class="rules-actions">
+                                            <button class="btn btn-outline btn-small" onclick="downloadContraindicationRuleTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importContraindicationRules()">导入规则</button>
+                                            <button class="btn btn-secondary btn-small" onclick="toggleContraindicationBatchEdit()" id="contraindicationBatchEditBtn">批量编辑</button>
+                                            <button class="btn btn-primary btn-small" onclick="createContraindicationRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="batch-actions" id="contraindicationBatchActions">
+                                        <div>
+                                            <span class="selected-count" id="contraindicationSelectedCount">已选择 0 项</span>
+                                            <button class="btn btn-secondary btn-small" onclick="selectAllContraindicationRules()">全选</button>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-success btn-small" onclick="contraindicationBatchEnable()">批量启用</button>
+                                            <button class="btn btn-warning btn-small" onclick="contraindicationBatchDisable()">批量禁用</button>
+                                            <button class="btn btn-danger btn-small" onclick="contraindicationBatchDelete()">批量删除</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="rule-filters">
+                                        <input type="text" class="search-input" placeholder="搜索规则..." id="contraindicationSearchInput">
+                                        <select id="contraindicationStatusFilter">
+                                            <option value="all">全部状态</option>
+                                            <option value="active">启用</option>
+                                            <option value="inactive">停用</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="rules-list">
+                                        <div class="rule-item">
+                                            <input type="checkbox" class="rule-checkbox" style="display: none;">
+                                            <div class="rule-info">
+                                                <div class="rule-name">青霉素过敏禁忌</div>
+                                                <div class="rule-desc">青霉素类药物过敏者禁用</div>
+                                                <div class="rule-meta">
+                                                    <span class="rule-priority priority-critical">严重</span>
+                                                    <span class="rule-status active" data-status="active">启用</span>
+                                                </div>
+                                            </div>
+                                            <div class="rule-actions">
+                                                <button class="btn btn-outline btn-small" onclick="editRule('contraindication', 1)">编辑</button>
+                                                <button class="btn btn-secondary btn-small" onclick="toggleRuleStatus('contraindication', 1, 'active')">禁用</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pagination">
+                                        <button class="btn" onclick="prevPage('contraindication-rational')" id="contraindicationRationalPrevBtn">上一页</button>
+                                        <div class="page-numbers" id="contraindicationRationalPageNumbers">
+                                            <!-- 页码将通过JavaScript生成 -->
+                                        </div>
+                                        <button class="btn" onclick="nextPage('contraindication-rational')" id="contraindicationRationalNextBtn">下一页</button>
+                                        <div class="page-info" id="contraindicationRationalPageInfo">第 1 页，共 2 页 (6 条记录)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 药品说明书Tab -->
+                <div id="instruction-tab" class="main-tab-content">
+                    <div class="instruction-layout">
+                        <div class="vertical-tab-navigation">
+                            <button class="vertical-tab-item active" onclick="switchInstructionTab('basic')">
+                                基本信息
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchInstructionTab('indication')">
+                                适应症
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchInstructionTab('usage')">
+                                用法用量
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchInstructionTab('adverse')">
+                                不良反应
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchInstructionTab('contraindication')">
+                                禁忌
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchInstructionTab('precautions')">
+                                注意事项
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchInstructionTab('interactions')">
+                                药物相互作用
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchInstructionTab('storage')">
+                                贮藏
+                            </button>
+                        </div>
+                        <div class="instruction-content-area">
+                            <!-- 基本信息内容 -->
+                            <div id="instruction-basic" class="instruction-content active">
+                                <div class="instruction-section">
+                                    <h3>药品名称</h3>
+                                    <div class="instruction-text">
+                                        <p><strong>通用名称：</strong>阿莫西林胶囊</p>
+                                        <p><strong>商品名称：</strong>安必仙</p>
+                                        <p><strong>英文名称：</strong>Amoxicillin Capsules</p>
+                                        <p><strong>汉语拼音：</strong>Amoxilin Jiaonang</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="instruction-section">
+                                    <h3>成份</h3>
+                                    <div class="instruction-text">
+                                        <p>本品主要成份为阿莫西林。</p>
+                                        <p><strong>化学名称：</strong>(2S,5R,6R)-3,3-二甲基-7-氧代-6-[(R)-(-)-2-氨基-2-(4-羟基苯基)乙酰氨基]-4-硫杂-1-氮杂双环[3.2.0]庚烷-2-甲酸三水合物</p>
+                                        <p><strong>分子式：</strong>C<sub>16</sub>H<sub>19</sub>N<sub>3</sub>O<sub>5</sub>S·3H<sub>2</sub>O</p>
+                                        <p><strong>分子量：</strong>419.45</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="instruction-section">
+                                    <h3>性状</h3>
+                                    <div class="instruction-text">
+                                        <p>本品为胶囊剂，内容物为白色或类白色颗粒和粉末。</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="instruction-section">
+                                    <h3>规格</h3>
+                                    <div class="instruction-text">
+                                        <p>0.25g（按C<sub>16</sub>H<sub>19</sub>N<sub>3</sub>O<sub>5</sub>S计）</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 适应症内容 -->
+                            <div id="instruction-indication" class="instruction-content">
+                                <div class="instruction-section">
+                                    <h3>适应症</h3>
+                                    <div class="instruction-text">
+                                        <p>阿莫西林适用于敏感菌（不产β内酰胺酶菌株）所致的下列感染：</p>
+                                        <ul>
+                                            <li><strong>上呼吸道感染：</strong>鼻窦炎、咽炎、扁桃体炎。</li>
+                                            <li><strong>下呼吸道感染：</strong>急性支气管炎、肺炎。</li>
+                                            <li><strong>皮肤软组织感染。</strong></li>
+                                            <li><strong>泌尿生殖道感染。</strong></li>
+                                        </ul>
+                                        <p>本品还可用于治疗伤寒、伤寒带菌者及钩端螺旋体病；阿莫西林亦可与克拉霉素、兰索拉唑三联用药根除胃、十二指肠幽门螺杆菌，降低消化道溃疡复发率。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 用法用量内容 -->
+                            <div id="instruction-usage" class="instruction-content">
+                                <div class="instruction-section">
+                                    <h3>用法用量</h3>
+                                    <div class="instruction-text">
+                                        <p><strong>口服。</strong></p>
+                                        <p><strong>成人：</strong>一次0.5g，每6～8小时1次，一日剂量不超过4g。</p>
+                                        <p><strong>小儿：</strong>一日剂量按体重20～40mg/kg，每8小时1次；3个月以下婴儿一日剂量按体重30mg/kg，每12小时1次。</p>
+                                        <p><strong>肾功能严重损害患者需调整给药剂量：</strong></p>
+                                        <ul>
+                                            <li>肌酐清除率为10～30ml/分钟的患者，每12小时0.25～0.5g。</li>
+                                            <li>肌酐清除率小于10ml/分钟的患者，每24小时0.25～0.5g。</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 不良反应内容 -->
+                            <div id="instruction-adverse" class="instruction-content">
+                                <div class="instruction-section">
+                                    <h3>不良反应</h3>
+                                    <div class="instruction-text">
+                                        <p><strong>1. 过敏反应：</strong>皮疹、药物热和哮喘等过敏反应，特别是有青霉素过敏史的患者；偶见过敏性休克。</p>
+                                        <p><strong>2. 消化系统：</strong>腹泻、恶心、呕吐等症状，偶见伪膜性肠炎。</p>
+                                        <p><strong>3. 皮肤：</strong>偶见皮肤红斑、荨麻疹等。</p>
+                                        <p><strong>4. 其他：</strong>长期使用可出现由念珠菌或耐药菌引起的二重感染。</p>
+                                        <div class="instruction-image">
+                                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIiBzdHJva2U9IiNjY2MiIHN0cm9rZS13aWR0aD0iMSIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2NjYiPuS4jeiJr+WPjeW6lOekvuS+izwvdGV4dD4KPC9zdmc+" alt="不良反应示例图" style="max-width: 100%; height: auto; margin: 10px 0;">
+                                            <p class="image-caption">图1：常见皮肤过敏反应示例</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 禁忌内容 -->
+                            <div id="instruction-contraindication" class="instruction-content">
+                                <div class="instruction-section">
+                                    <h3>禁忌</h3>
+                                    <div class="instruction-text">
+                                        <p>青霉素类药物过敏者禁用。</p>
+                                        <div class="warning-box">
+                                            <h4>⚠️ 重要警告</h4>
+                                            <p>使用前必须详细询问患者青霉素类、头孢菌素类或其他β-内酰胺类药物过敏史，有青霉素类药物过敏性休克史者不应再使用本类药物。</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 注意事项内容 -->
+                            <div id="instruction-precautions" class="instruction-content">
+                                <div class="instruction-section">
+                                    <h3>注意事项</h3>
+                                    <div class="instruction-text">
+                                        <ol>
+                                            <li>在应用本品前须详细询问患者对青霉素类、头孢菌素类或其他药物的过敏史。有青霉素类药物过敏性休克史者不应再使用本类药物。</li>
+                                            <li>青霉素类药物可引起过敏性休克，偶可致死，多见于注射给药，但口服给药也可发生。</li>
+                                            <li>青霉素类药物过敏者约有5%～10%对头孢菌素类药物过敏。</li>
+                                            <li>传染性单核细胞增多症患者应用本品易发生皮疹，应避免使用。</li>
+                                            <li>疗程较长患者应检查肝、肾功能和血常规。</li>
+                                            <li>阿莫西林可导致采用Benedict或Fehling试剂的尿糖试验出现假阳性。</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 药物相互作用内容 -->
+                            <div id="instruction-interactions" class="instruction-content">
+                                <div class="instruction-section">
+                                    <h3>药物相互作用</h3>
+                                    <div class="instruction-text">
+                                        <p><strong>1. 丙磺舒：</strong>丙磺舒可减少阿莫西林的肾小管分泌，两药同用可引起阿莫西林血药浓度升高、半衰期延长。</p>
+                                        <p><strong>2. 氯霉素、大环内酯类、磺胺类和四环素：</strong>理论上具有拮抗作用。</p>
+                                        <p><strong>3. 口服避孕药：</strong>可能降低口服避孕药的效果。</p>
+                                        <p><strong>4. 华法林：</strong>可能增强华法林的抗凝作用。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 贮藏内容 -->
+                            <div id="instruction-storage" class="instruction-content">
+                                <div class="instruction-section">
+                                    <h3>贮藏</h3>
+                                    <div class="instruction-text">
+                                        <p>密封，在干燥处保存。</p>
+                                        <div class="storage-conditions">
+                                            <div class="condition-item">
+                                                <span class="condition-label">温度：</span>
+                                                <span class="condition-value">室温（15-25℃）</span>
+                                            </div>
+                                            <div class="condition-item">
+                                                <span class="condition-label">湿度：</span>
+                                                <span class="condition-value">相对湿度不超过60%</span>
+                                            </div>
+                                            <div class="condition-item">
+                                                <span class="condition-label">光照：</span>
+                                                <span class="condition-value">避光保存</span>
+                                            </div>
+                                            <div class="condition-item">
+                                                <span class="condition-label">有效期：</span>
+                                                <span class="condition-value">36个月</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟药品数据
+        const drugsData = {
+            1: {
+                id: 1,
+                name: "阿莫西林胶囊",
+                code: "A01AA01",
+                manufacturer: "华北制药",
+                specification: "0.25g×24粒",
+                dosageForm: "胶囊剂",
+                category: "西药",
+                insuranceType: "甲类",
+                price: 15.80,
+                status: "active",
+                description: "青霉素类抗生素，用于敏感菌所致的各种感染",
+                indications: "呼吸道感染、泌尿道感染、皮肤软组织感染等",
+                contraindications: "对青霉素类药物过敏者禁用",
+                dosage: "成人一次0.25-0.5g，一日3-4次"
+            },
+            2: {
+                id: 2,
+                name: "布洛芬缓释胶囊",
+                code: "M01AE01",
+                manufacturer: "扬子江药业",
+                specification: "0.3g×20粒",
+                dosageForm: "缓释胶囊",
+                category: "西药",
+                insuranceType: "乙类",
+                price: 28.50,
+                status: "active",
+                description: "非甾体抗炎药，具有解热、镇痛、抗炎作用",
+                indications: "用于缓解轻至中度疼痛如头痛、关节痛、偏头痛、牙痛、肌肉痛、神经痛、痛经",
+                contraindications: "对布洛芬或其他非甾体抗炎药过敏者禁用",
+                dosage: "成人一次0.3g，一日2次"
+            },
+            3: {
+                id: 3,
+                name: "复方丹参滴丸",
+                code: "C01EB02",
+                manufacturer: "天士力",
+                specification: "27mg×180丸",
+                dosageForm: "滴丸",
+                category: "中成药",
+                insuranceType: "乙类",
+                price: 45.20,
+                status: "active",
+                description: "活血化瘀，理气止痛。用于气滞血瘀所致的胸痹",
+                indications: "冠心病心绞痛见上述证候者",
+                contraindications: "孕妇禁用",
+                dosage: "含服，一次10丸，一日3次"
+            },
+            4: {
+                id: 4,
+                name: "甘草片",
+                code: "R05CA03",
+                manufacturer: "同仁堂",
+                specification: "0.3g×100片",
+                dosageForm: "片剂",
+                category: "中药饮片",
+                insuranceType: "甲类",
+                price: 8.90,
+                status: "inactive",
+                description: "镇咳祛痰。用于咳嗽痰多",
+                indications: "用于咳嗽痰多",
+                contraindications: "不宜长期服用",
+                dosage: "口服，一次2-3片，一日3次"
+            },
+            5: {
+                id: 5,
+                name: "头孢克肟胶囊",
+                code: "J01DD08",
+                manufacturer: "齐鲁制药",
+                specification: "0.1g×6粒",
+                dosageForm: "胶囊剂",
+                category: "西药",
+                insuranceType: "乙类",
+                price: 32.60,
+                status: "active",
+                description: "第三代头孢菌素类抗生素，抗菌谱广",
+                indications: "敏感菌所致的呼吸道、泌尿道、胆道感染等",
+                contraindications: "对头孢菌素类药物过敏者禁用",
+                dosage: "成人一次0.1g，一日2次"
+            },
+            6: {
+                id: 6,
+                name: "感冒清热颗粒",
+                code: "R05X001",
+                manufacturer: "同仁堂",
+                specification: "12g×10袋",
+                dosageForm: "颗粒剂",
+                category: "中成药",
+                insuranceType: "甲类",
+                price: 12.30,
+                status: "active",
+                description: "疏风散寒，解表清热。用于风寒感冒",
+                indications: "头痛发热，恶寒身痛，鼻流清涕，咳嗽咽干",
+                contraindications: "风热感冒者不适用",
+                dosage: "开水冲服，一次1袋，一日2次"
+            }
+        };
+
+
+
+
+
+        function getStatusText(status) {
+            const statusMap = {
+                'active': '生效',
+                'inactive': '停用',
+                'pending': '待审'
+            };
+            return statusMap[status] || status;
+        }
+
+        function updateTabCounts() {
+            // 更新医保规则Tab计数
+            const insuranceTabs = ['basic', 'special', 'limit'];
+            insuranceTabs.forEach(tabName => {
+                const tabContent = document.getElementById(`${tabName}-insurance-tab`);
+                if (tabContent) {
+                    const ruleItems = tabContent.querySelectorAll('.rule-item');
+                    const visibleRules = Array.from(ruleItems).filter(item => item.style.display !== 'none');
+                    const tabElement = document.querySelector(`#insurance-tab [onclick="switchInsuranceTab('${tabName}')"]`);
+                    if (tabElement) {
+                        const countElement = tabElement.querySelector('.tab-count');
+                        if (countElement) {
+                            countElement.textContent = visibleRules.length;
+                        }
+                    }
+                }
+            });
+            
+            // 更新合理用药规则Tab计数
+            const rationalTabs = ['dosage', 'interaction', 'contraindication'];
+            rationalTabs.forEach(tabName => {
+                const tabContent = document.getElementById(`${tabName}-rational-tab`);
+                if (tabContent) {
+                    const ruleItems = tabContent.querySelectorAll('.rule-item');
+                    const visibleRules = Array.from(ruleItems).filter(item => item.style.display !== 'none');
+                    const tabElement = document.querySelector(`#rational-tab [onclick="switchRationalTab('${tabName}')"]`);
+                    if (tabElement) {
+                        const countElement = tabElement.querySelector('.tab-count');
+                        if (countElement) {
+                            countElement.textContent = visibleRules.length;
+                        }
+                    }
+                }
+            });
+        }
+
+        // 全局变量
+        let currentInsuranceTab = 'basic';
+        let currentRationalTab = 'dosage';
+        let insuranceBatchEditMode = false;
+        let rationalBatchEditMode = false;
+
+        // 获取URL参数中的药品ID
+        function getDrugIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id') || '1';
+        }
+
+        // 加载药品信息
+        function loadDrugInfo() {
+            const drugId = getDrugIdFromUrl();
+            const drug = drugsData[drugId];
+            
+            if (!drug) {
+                console.error('药品不存在');
+                return;
+            }
+
+            // 更新页面标题和基本信息
+            document.getElementById('drugName').textContent = drug.name;
+            
+            // 渲染药品信息
+            renderDrugInfo(drug);
+            
+            // 渲染统计信息
+            renderStats(drug);
+        }
+
+        // 渲染药品信息
+        function renderDrugInfo(drug) {
+            const drugInfoGrid = document.getElementById('drugInfoGrid');
+            drugInfoGrid.innerHTML = `
+                <div class="info-item">
+                    <label>药品编码</label>
+                    <span>${drug.code}</span>
+                </div>
+                <div class="info-item">
+                    <label>生产厂家</label>
+                    <span>${drug.manufacturer}</span>
+                </div>
+                <div class="info-item">
+                    <label>规格</label>
+                    <span>${drug.specification}</span>
+                </div>
+                <div class="info-item">
+                    <label>剂型</label>
+                    <span>${drug.dosageForm}</span>
+                </div>
+                <div class="info-item">
+                    <label>分类</label>
+                    <span>${drug.category}</span>
+                </div>
+                <div class="info-item">
+                    <label>医保类型</label>
+                    <span class="insurance-badge class-${drug.insuranceType === '甲类' ? 'a' : 'b'}">${drug.insuranceType}</span>
+                </div>
+                <div class="info-item">
+                    <label>价格</label>
+                    <span>¥${drug.price}</span>
+                </div>
+                <div class="info-item">
+                    <label>状态</label>
+                    <span>${getStatusText(drug.status)}</span>
+                </div>
+                <div class="info-item full-width">
+                    <label>适应症</label>
+                    <span>${drug.indications}</span>
+                </div>
+                <div class="info-item full-width">
+                    <label>禁忌症</label>
+                    <span>${drug.contraindications}</span>
+                </div>
+                <div class="info-item full-width">
+                    <label>用法用量</label>
+                    <span>${drug.dosage}</span>
+                </div>
+            `;
+        }
+
+        // 渲染统计信息
+        function renderStats(drug) {
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-item">
+                    <span class="stat-number">62</span>
+                    <span class="stat-label">总规则数</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">45</span>
+                    <span class="stat-label">启用规则</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">17</span>
+                    <span class="stat-label">停用规则</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">待审核</span>
+                </div>
+            `;
+        }
+
+        // 主Tab切换
+        // 主Tab切换
+        function switchMainTab(tabName) {
+            // 移除所有主Tab的active状态
+            document.querySelectorAll('.main-tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.main-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 激活当前Tab
+            const activeTab = document.querySelector(`[onclick="switchMainTab('${tabName}')"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            
+            const tabContent = document.getElementById(`${tabName}-tab`);
+            if (tabContent) {
+                tabContent.classList.add('active');
+            }
+        }
+
+        // 医保规则子Tab切换
+        function switchInsuranceTab(tabName) {
+            currentInsuranceTab = tabName;
+            
+            document.querySelectorAll('#insurance-tab .vertical-tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('#insurance-tab .vertical-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const activeTab = document.querySelector(`#insurance-tab [onclick="switchInsuranceTab('${tabName}')"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            
+            const tabContent = document.getElementById(`${tabName}-insurance`);
+            if (tabContent) {
+                tabContent.classList.add('active');
+            }
+        }
+
+        // 合理用药规则子Tab切换
+        function switchRationalTab(tabName) {
+            currentRationalTab = tabName;
+            
+            document.querySelectorAll('#rational-tab .vertical-tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('#rational-tab .vertical-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const activeTab = document.querySelector(`#rational-tab [onclick="switchRationalTab('${tabName}')"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            
+            const tabContent = document.getElementById(`${tabName}-rational`);
+            if (tabContent) {
+                tabContent.classList.add('active');
+            }
+        }
+
+        // 批量编辑功能
+        function toggleInsuranceBatchEdit() {
+            insuranceBatchEditMode = !insuranceBatchEditMode;
+            if (insuranceBatchEditMode) {
+                enterInsuranceBatchEdit();
+            } else {
+                exitInsuranceBatchEdit();
+            }
+        }
+
+        function enterInsuranceBatchEdit() {
+            const batchToolbar = document.getElementById('insuranceBatchActions');
+            if (batchToolbar) {
+                batchToolbar.classList.add('show');
+            }
+            
+            const currentTabContent = document.querySelector('#insurance-tab .vertical-tab-content.active');
+            if (currentTabContent) {
+                currentTabContent.classList.add('batch-edit-mode');
+                const checkboxes = currentTabContent.querySelectorAll('.rule-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.style.display = 'block';
+                });
+            }
+            
+            const batchEditBtn = document.getElementById('insuranceBatchEditBtn');
+            if (batchEditBtn) {
+                batchEditBtn.textContent = '退出批量编辑';
+            }
+        }
+
+        function exitInsuranceBatchEdit() {
+            const batchToolbar = document.getElementById('insuranceBatchActions');
+            if (batchToolbar) {
+                batchToolbar.classList.remove('show');
+            }
+            
+            document.querySelectorAll('#insurance-tab .rule-checkbox').forEach(checkbox => {
+                checkbox.style.display = 'none';
+                checkbox.checked = false;
+            });
+            
+            document.querySelectorAll('#insurance-tab .vertical-tab-content').forEach(content => {
+                content.classList.remove('batch-edit-mode');
+            });
+            
+            const batchEditBtn = document.getElementById('insuranceBatchEditBtn');
+            if (batchEditBtn) {
+                batchEditBtn.textContent = '批量编辑';
+            }
+        }
+
+        function toggleRationalBatchEdit() {
+            rationalBatchEditMode = !rationalBatchEditMode;
+            if (rationalBatchEditMode) {
+                enterRationalBatchEdit();
+            } else {
+                exitRationalBatchEdit();
+            }
+        }
+
+        function enterRationalBatchEdit() {
+            const batchToolbar = document.getElementById('rationalBatchActions');
+            if (batchToolbar) {
+                batchToolbar.classList.add('show');
+            }
+            
+            const currentTabContent = document.querySelector('#rational-tab .vertical-tab-content.active');
+            if (currentTabContent) {
+                currentTabContent.classList.add('batch-edit-mode');
+                const checkboxes = currentTabContent.querySelectorAll('.rule-checkbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.style.display = 'block';
+                });
+            }
+            
+            const batchEditBtn = document.getElementById('rationalBatchEditBtn');
+            if (batchEditBtn) {
+                batchEditBtn.textContent = '退出批量编辑';
+            }
+        }
+
+        function exitRationalBatchEdit() {
+            const batchToolbar = document.getElementById('rationalBatchActions');
+            if (batchToolbar) {
+                batchToolbar.classList.remove('show');
+            }
+            
+            document.querySelectorAll('#rational-tab .rule-checkbox').forEach(checkbox => {
+                checkbox.style.display = 'none';
+                checkbox.checked = false;
+            });
+            
+            document.querySelectorAll('#rational-tab .vertical-tab-content').forEach(content => {
+                content.classList.remove('batch-edit-mode');
+            });
+            
+            const batchEditBtn = document.getElementById('rationalBatchEditBtn');
+            if (batchEditBtn) {
+                batchEditBtn.textContent = '批量编辑';
+            }
+        }
+
+        // 全选功能
+        function selectAllInsuranceRules() {
+            const currentTabContent = document.querySelector('#insurance-tab .vertical-tab-content.active');
+            if (!currentTabContent) return;
+            
+            const visibleCheckboxes = currentTabContent.querySelectorAll('.rule-checkbox');
+            const allChecked = Array.from(visibleCheckboxes).every(cb => cb.checked);
+            
+            visibleCheckboxes.forEach(checkbox => {
+                checkbox.checked = !allChecked;
+            });
+            
+            updateInsuranceSelectedCount();
+        }
+
+        function updateInsuranceSelectedCount() {
+            const selectedCheckboxes = document.querySelectorAll('#insurance-tab .rule-checkbox:checked');
+            const selectedCountElement = document.getElementById('insuranceSelectedCount');
+            if (selectedCountElement) {
+                selectedCountElement.textContent = `已选择 ${selectedCheckboxes.length} 项`;
+            }
+            
+            const batchButtons = document.querySelectorAll('#insuranceBatchActions .btn:not(.btn-secondary)');
+            batchButtons.forEach(btn => {
+                btn.disabled = selectedCheckboxes.length === 0;
+            });
+        }
+
+        function selectAllRationalRules() {
+            const currentTabContent = document.querySelector('#rational-tab .vertical-tab-content.active');
+            if (!currentTabContent) return;
+            
+            const visibleCheckboxes = currentTabContent.querySelectorAll('.rule-checkbox');
+            const allChecked = Array.from(visibleCheckboxes).every(cb => cb.checked);
+            
+            visibleCheckboxes.forEach(checkbox => {
+                checkbox.checked = !allChecked;
+            });
+            
+            updateRationalSelectedCount();
+        }
+
+        function updateRationalSelectedCount() {
+            const selectedCheckboxes = document.querySelectorAll('#rational-tab .rule-checkbox:checked');
+            const selectedCountElement = document.getElementById('rationalSelectedCount');
+            if (selectedCountElement) {
+                selectedCountElement.textContent = `已选择 ${selectedCheckboxes.length} 项`;
+            }
+            
+            const batchButtons = document.querySelectorAll('#rationalBatchActions .btn:not(.btn-secondary)');
+            batchButtons.forEach(btn => {
+                btn.disabled = selectedCheckboxes.length === 0;
+            });
+        }
+
+        // 批量操作功能
+        function insuranceBatchEnable() {
+            const selectedCheckboxes = document.querySelectorAll('#insurance-tab .rule-checkbox:checked');
+            selectedCheckboxes.forEach(checkbox => {
+                const ruleItem = checkbox.closest('.rule-item');
+                const statusSpan = ruleItem.querySelector('.rule-status');
+                const toggleBtn = ruleItem.querySelector('button[onclick*="toggleRuleStatus"]');
+                
+                if (statusSpan && toggleBtn) {
+                    statusSpan.textContent = '启用';
+                    statusSpan.className = 'rule-status active';
+                    statusSpan.setAttribute('data-status', 'active');
+                    toggleBtn.textContent = '禁用';
+                }
+            });
+            alert(`已启用 ${selectedCheckboxes.length} 条规则`);
+        }
+
+        function insuranceBatchDisable() {
+            const selectedCheckboxes = document.querySelectorAll('#insurance-tab .rule-checkbox:checked');
+            selectedCheckboxes.forEach(checkbox => {
+                const ruleItem = checkbox.closest('.rule-item');
+                const statusSpan = ruleItem.querySelector('.rule-status');
+                const toggleBtn = ruleItem.querySelector('button[onclick*="toggleRuleStatus"]');
+                
+                if (statusSpan && toggleBtn) {
+                    statusSpan.textContent = '停用';
+                    statusSpan.className = 'rule-status inactive';
+                    statusSpan.setAttribute('data-status', 'inactive');
+                    toggleBtn.textContent = '启用';
+                }
+            });
+            alert(`已禁用 ${selectedCheckboxes.length} 条规则`);
+        }
+
+        function insuranceBatchDelete() {
+            const selectedCheckboxes = document.querySelectorAll('#insurance-tab .rule-checkbox:checked');
+            if (confirm(`确定要删除选中的 ${selectedCheckboxes.length} 条规则吗？此操作不可撤销。`)) {
+                selectedCheckboxes.forEach(checkbox => {
+                    const ruleItem = checkbox.closest('.rule-item');
+                    if (ruleItem) {
+                        ruleItem.remove();
+                    }
+                });
+                alert(`已删除 ${selectedCheckboxes.length} 条规则`);
+                updateInsuranceSelectedCount();
+            }
+        }
+
+        function rationalBatchEnable() {
+            const selectedCheckboxes = document.querySelectorAll('#rational-tab .rule-checkbox:checked');
+            selectedCheckboxes.forEach(checkbox => {
+                const ruleItem = checkbox.closest('.rule-item');
+                const statusSpan = ruleItem.querySelector('.rule-status');
+                const toggleBtn = ruleItem.querySelector('button[onclick*="toggleRuleStatus"]');
+                
+                if (statusSpan && toggleBtn) {
+                    statusSpan.textContent = '启用';
+                    statusSpan.className = 'rule-status active';
+                    statusSpan.setAttribute('data-status', 'active');
+                    toggleBtn.textContent = '禁用';
+                }
+            });
+            alert(`已启用 ${selectedCheckboxes.length} 条规则`);
+        }
+
+        function rationalBatchDisable() {
+            const selectedCheckboxes = document.querySelectorAll('#rational-tab .rule-checkbox:checked');
+            selectedCheckboxes.forEach(checkbox => {
+                const ruleItem = checkbox.closest('.rule-item');
+                const statusSpan = ruleItem.querySelector('.rule-status');
+                const toggleBtn = ruleItem.querySelector('button[onclick*="toggleRuleStatus"]');
+                
+                if (statusSpan && toggleBtn) {
+                    statusSpan.textContent = '停用';
+                    statusSpan.className = 'rule-status inactive';
+                    statusSpan.setAttribute('data-status', 'inactive');
+                    toggleBtn.textContent = '启用';
+                }
+            });
+            alert(`已禁用 ${selectedCheckboxes.length} 条规则`);
+        }
+
+        function rationalBatchDelete() {
+            const selectedCheckboxes = document.querySelectorAll('#rational-tab .rule-checkbox:checked');
+            if (confirm(`确定要删除选中的 ${selectedCheckboxes.length} 条规则吗？此操作不可撤销。`)) {
+                selectedCheckboxes.forEach(checkbox => {
+                    const ruleItem = checkbox.closest('.rule-item');
+                    if (ruleItem) {
+                        ruleItem.remove();
+                    }
+                });
+                alert(`已删除 ${selectedCheckboxes.length} 条规则`);
+                updateRationalSelectedCount();
+            }
+        }
+
+        // 编辑规则功能
+        function editRule(ruleType, ruleId) {
+            const drugId = getDrugIdFromUrl();
+            
+            // 模拟获取规则数据
+            const ruleData = {
+                id: ruleId,
+                name: '示例规则名称',
+                type: ruleType,
+                description: '这是一个示例规则描述',
+                condition: '年龄 > 65',
+                action: '警告',
+                priority: 'high',
+                status: 'active'
+            };
+            
+            showRuleEditModal(ruleData);
+        }
+        
+        // 显示规则编辑模态框
+        function showRuleEditModal(ruleData) {
+            document.getElementById('editRuleId').value = ruleData.id;
+            document.getElementById('editRuleName').value = ruleData.name;
+            document.getElementById('editRuleType').value = ruleData.type;
+            document.getElementById('editRuleDescription').value = ruleData.description;
+            document.getElementById('editRuleCondition').value = ruleData.condition;
+            document.getElementById('editRuleAction').value = ruleData.action;
+            document.getElementById('editRulePriority').value = ruleData.priority;
+            document.getElementById('editRuleStatus').value = ruleData.status;
+            
+            document.getElementById('ruleEditModal').style.display = 'flex';
+        }
+        
+        // 关闭规则编辑模态框
+        function closeRuleEditModal() {
+            document.getElementById('ruleEditModal').style.display = 'none';
+        }
+        
+        // 保存规则编辑
+        function saveRuleEdit() {
+            const ruleData = {
+                id: document.getElementById('editRuleId').value,
+                name: document.getElementById('editRuleName').value,
+                type: document.getElementById('editRuleType').value,
+                description: document.getElementById('editRuleDescription').value,
+                condition: document.getElementById('editRuleCondition').value,
+                action: document.getElementById('editRuleAction').value,
+                priority: document.getElementById('editRulePriority').value,
+                status: document.getElementById('editRuleStatus').value
+            };
+            
+            // 验证必填字段
+            if (!ruleData.name || !ruleData.type || !ruleData.condition) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 这里应该调用API保存规则数据
+            console.log('保存规则数据:', ruleData);
+            
+            // 更新页面显示
+            updateRuleDisplay(ruleData);
+            
+            closeRuleEditModal();
+            alert('规则保存成功');
+        }
+        
+        // 更新规则显示
+        function updateRuleDisplay(ruleData) {
+            const ruleItems = document.querySelectorAll('.rule-item');
+            ruleItems.forEach(item => {
+                const editBtn = item.querySelector(`button[onclick*="editRule('${ruleData.type}', ${ruleData.id})"]`);
+                if (editBtn) {
+                    const nameElement = item.querySelector('.rule-name');
+                    const descElement = item.querySelector('.rule-desc');
+                    const statusElement = item.querySelector('.rule-status');
+                    const priorityElement = item.querySelector('.rule-priority');
+                    
+                    if (nameElement) nameElement.textContent = ruleData.name;
+                    if (descElement) descElement.textContent = ruleData.description;
+                    if (statusElement) {
+                        statusElement.textContent = ruleData.status === 'active' ? '启用' : '停用';
+                        statusElement.className = `rule-status ${ruleData.status}`;
+                    }
+                    if (priorityElement) {
+                        priorityElement.textContent = ruleData.priority === 'high' ? '高' : ruleData.priority === 'medium' ? '中' : '低';
+                        priorityElement.className = `rule-priority priority-${ruleData.priority}`;
+                    }
+                }
+            });
+        }
+
+        // 切换规则状态功能
+        function toggleRuleStatus(ruleType, ruleId, currentStatus) {
+            const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+            const actionText = newStatus === 'active' ? '启用' : '禁用';
+            
+            if (confirm(`确定要${actionText}这条规则吗？`)) {
+                const ruleItems = document.querySelectorAll('.rule-item');
+                ruleItems.forEach(item => {
+                    const editBtn = item.querySelector(`button[onclick*="editRule('${ruleType}', ${ruleId})"]`);
+                    if (editBtn) {
+                        const statusSpan = item.querySelector('.rule-status');
+                        const toggleBtn = item.querySelector(`button[onclick*="toggleRuleStatus('${ruleType}', ${ruleId},"]`);
+                        
+                        if (statusSpan && toggleBtn) {
+                            statusSpan.textContent = newStatus === 'active' ? '启用' : '停用';
+                            statusSpan.className = `rule-status ${newStatus}`;
+                            statusSpan.setAttribute('data-status', newStatus);
+                            item.setAttribute('data-status', newStatus);
+                            
+                            toggleBtn.textContent = newStatus === 'active' ? '禁用' : '启用';
+                            toggleBtn.setAttribute('onclick', `toggleRuleStatus('${ruleType}', ${ruleId}, '${newStatus}')`);
+                        }
+                    }
+                });
+                
+                alert(`规则已${actionText}`);
+            }
+        }
+
+        // 创建规则功能
+        function createInsuranceRule() {
+            showRuleModal(null, 'insurance');
+        }
+
+        function createRationalRule() {
+            showRuleModal(null, 'rational');
+        }
+
+        // 药品说明书规则相关变量和函数
+        let currentInstructionTab = 'basic';
+
+        // 药品说明书规则子Tab切换
+        function switchInstructionTab(tabName) {
+            currentInstructionTab = tabName;
+            
+            document.querySelectorAll('#instruction-tab .vertical-tab-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('#instruction-tab .instruction-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const activeTab = document.querySelector(`#instruction-tab [onclick="switchInstructionTab('${tabName}')"]`);
+            const tabContent = document.getElementById(`instruction-${tabName}`);
+            
+            if (activeTab) activeTab.classList.add('active');
+            if (tabContent) tabContent.classList.add('active');
+        }
+
+        function createInstructionRule() {
+            showRuleModal(null, 'instruction');
+        }
+
+        // 药品说明书规则批量操作
+        function toggleInstructionBatchEdit() {
+            const batchActions = document.getElementById('instructionBatchActions');
+            const checkboxes = document.querySelectorAll('#instruction-tab .rule-checkbox');
+            const batchEditBtn = document.getElementById('instructionBatchEditBtn');
+            
+            if (batchActions.style.display === 'none' || !batchActions.style.display) {
+                batchActions.style.display = 'flex';
+                checkboxes.forEach(checkbox => checkbox.style.display = 'inline-block');
+                batchEditBtn.textContent = '取消批量';
+            } else {
+                batchActions.style.display = 'none';
+                checkboxes.forEach(checkbox => {
+                    checkbox.style.display = 'none';
+                    checkbox.checked = false;
+                });
+                batchEditBtn.textContent = '批量编辑';
+                updateInstructionSelectedCount();
+            }
+        }
+
+        function selectAllInstructionRules() {
+            const checkboxes = document.querySelectorAll('#instruction-tab .rule-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = !allChecked;
+            });
+            updateInstructionSelectedCount();
+        }
+
+        function updateInstructionSelectedCount() {
+            const selectedCheckboxes = document.querySelectorAll('#instruction-tab .rule-checkbox:checked');
+            const countElement = document.getElementById('instructionSelectedCount');
+            if (countElement) {
+                countElement.textContent = `已选择 ${selectedCheckboxes.length} 项`;
+            }
+        }
+
+        function instructionBatchEnable() {
+            const selectedCheckboxes = document.querySelectorAll('#instruction-tab .rule-checkbox:checked');
+            selectedCheckboxes.forEach(checkbox => {
+                const ruleItem = checkbox.closest('.rule-item');
+                const statusSpan = ruleItem.querySelector('.rule-status');
+                const toggleBtn = ruleItem.querySelector('button[onclick*="toggleRuleStatus"]');
+                
+                if (statusSpan && toggleBtn) {
+                    statusSpan.textContent = '启用';
+                    statusSpan.className = 'rule-status active';
+                    statusSpan.setAttribute('data-status', 'active');
+                    toggleBtn.textContent = '禁用';
+                }
+            });
+            alert(`已启用 ${selectedCheckboxes.length} 条规则`);
+        }
+
+        function instructionBatchDisable() {
+            const selectedCheckboxes = document.querySelectorAll('#instruction-tab .rule-checkbox:checked');
+            selectedCheckboxes.forEach(checkbox => {
+                const ruleItem = checkbox.closest('.rule-item');
+                const statusSpan = ruleItem.querySelector('.rule-status');
+                const toggleBtn = ruleItem.querySelector('button[onclick*="toggleRuleStatus"]');
+                
+                if (statusSpan && toggleBtn) {
+                    statusSpan.textContent = '停用';
+                    statusSpan.className = 'rule-status inactive';
+                    statusSpan.setAttribute('data-status', 'inactive');
+                    toggleBtn.textContent = '启用';
+                }
+            });
+            alert(`已禁用 ${selectedCheckboxes.length} 条规则`);
+        }
+
+        function instructionBatchDelete() {
+            const selectedCheckboxes = document.querySelectorAll('#instruction-tab .rule-checkbox:checked');
+            if (confirm(`确定要删除选中的 ${selectedCheckboxes.length} 条规则吗？此操作不可撤销。`)) {
+                selectedCheckboxes.forEach(checkbox => {
+                    const ruleItem = checkbox.closest('.rule-item');
+                    ruleItem.remove();
+                });
+                alert(`已删除 ${selectedCheckboxes.length} 条规则`);
+                updateInstructionSelectedCount();
+            }
+        }
+
+        // 其他功能
+        function editDrug() {
+            const drugId = getDrugIdFromUrl();
+            const drug = drugsData[drugId];
+            if (drug) {
+                showDrugModal(drug);
+            }
+        }
+
+        // 显示药品模态框
+        function showDrugModal(drug = null) {
+            const modal = document.getElementById('drugModal');
+            const title = document.getElementById('drugModalTitle');
+            const form = document.getElementById('drugForm');
+            
+            if (drug) {
+                title.textContent = '编辑药品';
+                document.getElementById('drugName').value = drug.name;
+                document.getElementById('drugCode').value = drug.code;
+                document.getElementById('drugCategory').value = drug.category;
+                document.getElementById('drugInsurance').value = drug.insuranceType;
+                document.getElementById('drugManufacturer').value = drug.manufacturer;
+                document.getElementById('drugSpec').value = drug.specification || '';
+                document.getElementById('drugPrice').value = drug.price || '';
+                document.getElementById('drugDosageForm').value = drug.dosageForm || '';
+                document.getElementById('drugDescription').value = drug.description || '';
+                form.dataset.drugId = drug.id;
+            } else {
+                title.textContent = '新增药品';
+                form.reset();
+                delete form.dataset.drugId;
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        // 关闭药品模态框
+        function closeDrugModal() {
+            const modal = document.getElementById('drugModal');
+            modal.style.display = 'none';
+        }
+
+        // 保存药品
+        function saveDrug() {
+            const form = document.getElementById('drugForm');
+            const formData = new FormData(form);
+            
+            // 验证必填字段
+            const requiredFields = ['drugName', 'drugCode', 'drugCategory', 'drugInsurance'];
+            for (let field of requiredFields) {
+                if (!formData.get(field)) {
+                    alert('请填写所有必填字段');
+                    return;
+                }
+            }
+            
+            const drugData = {
+                name: formData.get('drugName'),
+                code: formData.get('drugCode'),
+                category: formData.get('drugCategory'),
+                insuranceType: formData.get('drugInsurance'),
+                manufacturer: formData.get('drugManufacturer') || '',
+                specification: formData.get('drugSpec') || '',
+                price: formData.get('drugPrice') || '',
+                dosageForm: formData.get('drugDosageForm') || '',
+                description: formData.get('drugDescription') || '',
+                status: 'active'
+            };
+            
+            const drugId = form.dataset.drugId;
+            if (drugId) {
+                // 编辑现有药品
+                const existingDrug = drugsData[drugId];
+                if (existingDrug) {
+                    Object.assign(existingDrug, drugData);
+                    alert('药品信息已更新');
+                    loadDrugInfo(); // 重新加载页面信息
+                }
+            } else {
+                // 新增药品
+                const newId = Math.max(...Object.keys(drugsData).map(Number)) + 1;
+                drugData.id = newId;
+                drugsData[newId] = drugData;
+                alert('药品添加成功');
+            }
+            
+            closeDrugModal();
+        }
+
+        function addRule() {
+            alert('添加规则');
+        }
+
+        function createRule() {
+            const drugId = getDrugIdFromUrl();
+            window.location.href = `创建规则.html?drugId=${drugId}`;
+        }
+
+        // 合理用药规则导入和模板下载功能
+        function downloadRationalRuleTemplate() {
+            const csvContent = "规则名称,规则类型,触发条件,操作符,条件值,执行动作,优先级,状态,生效日期,失效日期,描述\n" +
+                "成人剂量规则,剂量,年龄,>=,18,检查剂量范围,高,启用,2024-01-01,2025-12-31,成人患者剂量检查\n" +
+                "儿童剂量规则,剂量,年龄,<,18,按体重计算剂量,高,启用,2024-01-01,2025-12-31,儿童患者剂量检查\n" +
+                "肾功能不全剂量调整,剂量,肌酐清除率,<,30,减量使用,高,启用,2024-01-01,2025-12-31,肾功能不全患者剂量调整";
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', '合理用药规则模板.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function importRationalRules() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv,.xlsx,.xls';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    alert(`正在导入合理用药规则文件: ${file.name}`);
+                    // 这里可以添加实际的文件处理逻辑
+                }
+            };
+            input.click();
+        }
+
+        function downloadInteractionRuleTemplate() {
+            const csvContent = "规则名称,药物A,药物B,相互作用类型,严重程度,临床意义,处理建议,状态,描述\n" +
+                "华法林相互作用,阿莫西林,华法林,增强抗凝,中等,可能增强华法林抗凝作用,监测凝血功能,启用,需要密切监测INR值\n" +
+                "丙磺舒相互作用,阿莫西林,丙磺舒,药代动力学,轻微,延长阿莫西林半衰期,可同时使用,启用,丙磺舒可减少阿莫西林肾排泄";
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', '药物相互作用规则模板.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function importInteractionRules() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv,.xlsx,.xls';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    alert(`正在导入药物相互作用规则文件: ${file.name}`);
+                    // 这里可以添加实际的文件处理逻辑
+                }
+            };
+            input.click();
+        }
+
+        function downloadContraindicationRuleTemplate() {
+            const csvContent = "规则名称,禁忌类型,禁忌条件,严重程度,临床表现,处理措施,状态,描述\n" +
+                "青霉素过敏禁忌,过敏史,青霉素类药物过敏,严重,过敏性休克,绝对禁用,启用,有青霉素过敏史患者禁用\n" +
+                "妊娠期禁忌,特殊人群,妊娠期,中等,可能影响胎儿,权衡利弊,启用,妊娠期患者需权衡利弊使用";
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', '禁忌症规则模板.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function importContraindicationRules() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv,.xlsx,.xls';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    alert(`正在导入禁忌症规则文件: ${file.name}`);
+                    // 这里可以添加实际的文件处理逻辑
+                }
+            };
+            input.click();
+        }
+
+        function filterRules() {
+            const searchValue = document.getElementById('ruleSearchInput').value.toLowerCase();
+            const typeFilter = document.getElementById('ruleTypeFilter').value;
+            const statusFilter = document.getElementById('ruleStatusFilter').value;
+            const categories = document.querySelectorAll('.rule-category');
+            
+            categories.forEach(category => {
+                const categoryKey = category.dataset.category;
+                let shouldShowCategory = false;
+                
+                // 检查类型筛选
+                if (typeFilter === 'all' || categoryKey === typeFilter) {
+                    const ruleItems = category.querySelectorAll('.rule-item');
+                    let visibleRulesCount = 0;
+                    
+                    ruleItems.forEach(ruleItem => {
+                        const ruleName = ruleItem.querySelector('.rule-name').textContent.toLowerCase();
+                        const ruleStatus = ruleItem.querySelector('.rule-status').dataset.status || 'active';
+                        
+                        // 检查搜索条件
+                        const matchesSearch = searchValue === '' || ruleName.includes(searchValue);
+                        
+                        // 检查状态筛选
+                        const matchesStatus = statusFilter === 'all' || ruleStatus === statusFilter;
+                        
+                        if (matchesSearch && matchesStatus) {
+                            ruleItem.style.display = 'flex';
+                            visibleRulesCount++;
+                            shouldShowCategory = true;
+                        } else {
+                            ruleItem.style.display = 'none';
+                        }
+                    });
+                    
+                    // 更新分类计数
+                    const countElement = category.querySelector('.category-count');
+                    if (countElement) {
+                        countElement.textContent = visibleRulesCount;
+                    }
+                }
+                
+                // 显示或隐藏分类
+                category.style.display = shouldShowCategory ? 'block' : 'none';
+            });
+        }
+
+        // 分页功能
+        const pageData = {
+            'basic-insurance': { current: 1, total: 10, records: 95 },
+            'special-insurance': { current: 1, total: 8, records: 76 },
+            'limit-insurance': { current: 1, total: 5, records: 42 },
+            'dosage-rational': { current: 1, total: 5, records: 48 },
+            'interaction-rational': { current: 1, total: 3, records: 25 },
+            'contraindication-rational': { current: 1, total: 2, records: 18 }
+        };
+
+        function goToPage(tabType, pageNumber) {
+            if (!pageData[tabType]) return;
+            
+            const data = pageData[tabType];
+            if (pageNumber < 1 || pageNumber > data.total) return;
+            
+            data.current = pageNumber;
+            updatePagination(tabType);
+        }
+
+        function prevPage(tabType) {
+            const data = pageData[tabType];
+            if (!data) return;
+            
+            if (data.current < data.total) {
+                data.current++;
+                updatePagination(tabType);
+            }
+        }
+
+        function updatePagination(tabType) {
+            const data = pageData[tabType];
+            if (!data) return;
+            
+            const pageNumbersContainer = document.getElementById(tabType.replace('-', '') + 'PageNumbers');
+            const pageInfoElement = document.getElementById(tabType.replace('-', '') + 'PageInfo');
+            const prevBtn = document.getElementById(tabType.replace('-', '') + 'PrevBtn');
+            const nextBtn = document.getElementById(tabType.replace('-', '') + 'NextBtn');
+            
+            if (pageNumbersContainer) {
+                pageNumbersContainer.innerHTML = generatePageNumbers(data.current, data.total, tabType);
+            }
+            
+            if (pageInfoElement) {
+                pageInfoElement.textContent = `第 ${data.current} 页，共 ${data.total} 页 (${data.records} 条记录)`;
+            }
+            
+            if (prevBtn) {
+                prevBtn.disabled = data.current === 1;
+            }
+            
+            if (nextBtn) {
+                nextBtn.disabled = data.current === data.total;
+            }
+        }
+
+        function generatePageNumbers(current, total, tabType) {
+            let html = '';
+            const maxVisible = 5;
+            let start = Math.max(1, current - Math.floor(maxVisible / 2));
+            let end = Math.min(total, start + maxVisible - 1);
+            
+            if (end - start + 1 < maxVisible) {
+                start = Math.max(1, end - maxVisible + 1);
+            }
+            
+            if (start > 1) {
+                html += `<a href="#" class="page-number" onclick="goToPage('${tabType}', 1)">1</a>`;
+                if (start > 2) {
+                    html += '<span class="page-ellipsis">...</span>';
+                }
+            }
+            
+            for (let i = start; i <= end; i++) {
+                const activeClass = i === current ? ' active' : '';
+                html += `<a href="#" class="page-number${activeClass}" onclick="goToPage('${tabType}', ${i})">${i}</a>`;
+            }
+            
+            if (end < total) {
+                if (end < total - 1) {
+                    html += '<span class="page-ellipsis">...</span>';
+                }
+                html += `<a href="#" class="page-number" onclick="goToPage('${tabType}', ${total})">${total}</a>`;
+            }
+            
+            return html;
+        }
+
+        // 分页配置
+        const pageSize = 10;
+        let currentInsurancePage = {};
+        let currentRationalPage = {};
+
+        // 加载医保规则
+        function loadInsuranceRules(type = 'basic', page = 1) {
+            // 模拟医保规则数据
+            const rules = [
+                { id: 1, name: '年龄限制规则', description: '限制65岁以上患者使用', priority: 'high', status: 'active', createdAt: '2024-01-15' },
+                { id: 2, name: '剂量限制规则', description: '每日最大剂量不超过2g', priority: 'medium', status: 'active', createdAt: '2024-01-14' },
+                { id: 3, name: '适应症限制规则', description: '仅限于细菌感染治疗', priority: 'high', status: 'active', createdAt: '2024-01-13' },
+                { id: 4, name: '禁忌症规则', description: '青霉素过敏患者禁用', priority: 'critical', status: 'active', createdAt: '2024-01-12' },
+                { id: 5, name: '联合用药规则', description: '不可与华法林同时使用', priority: 'high', status: 'inactive', createdAt: '2024-01-11' }
+            ];
+            
+            // 找到当前激活的医保规则Tab中的规则列表容器
+            const activeInsuranceTab = document.querySelector('#insurance-tab .vertical-tab-content.active');
+            const container = activeInsuranceTab ? activeInsuranceTab.querySelector('.rules-list') : null;
+            
+            currentInsurancePage[type] = page;
+            
+            if (!container || rules.length === 0) {
+                if (container) {
+                    container.innerHTML = '<div class="empty-state"><h3>暂无规则</h3><p>该分类下暂无规则数据</p></div>';
+                }
+                return;
+            }
+
+            const totalPages = Math.ceil(rules.length / pageSize);
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const paginatedRules = rules.slice(startIndex, endIndex);
+
+            const rulesHtml = paginatedRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name">${rule.name}</div>
+                        <div class="rule-desc">${rule.description}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${rule.priority}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createdAt}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="viewRule(${rule.id})">查看</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule(${rule.id})">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus(${rule.id})">切换状态</button>
+                    </div>
+                </div>
+            `).join('');
+
+            const paginationHtml = totalPages > 1 ? `
+                <div class="pagination">
+                    <button class="btn btn-outline btn-small" onclick="loadInsuranceRules('${type}', ${page - 1})" ${page === 1 ? 'disabled' : ''}>上一页</button>
+                    <span class="page-info">第 ${page} 页，共 ${totalPages} 页</span>
+                    <button class="btn btn-outline btn-small" onclick="loadInsuranceRules('${type}', ${page + 1})" ${page === totalPages ? 'disabled' : ''}>下一页</button>
+                </div>
+            ` : '';
+
+            container.innerHTML = rulesHtml + paginationHtml;
+        }
+
+        // 加载合理用药规则
+        function loadRationalRules(type = 'dosage', page = 1) {
+            // 模拟合理用药规则数据
+            const rules = [
+                { id: 1, name: '剂量检查规则', description: '检查药物剂量是否在安全范围内', priority: 'high', status: 'active', createdAt: '2024-01-15' },
+                { id: 2, name: '相互作用规则', description: '检查药物间的相互作用', priority: 'critical', status: 'active', createdAt: '2024-01-14' },
+                { id: 3, name: '重复用药规则', description: '检查是否存在重复用药', priority: 'medium', status: 'active', createdAt: '2024-01-13' },
+                { id: 4, name: '过敏史检查规则', description: '检查患者过敏史', priority: 'critical', status: 'active', createdAt: '2024-01-12' },
+                { id: 5, name: '用药频次规则', description: '检查用药频次是否合理', priority: 'medium', status: 'inactive', createdAt: '2024-01-11' }
+            ];
+            
+            // 找到当前激活的合理用药规则Tab中的规则列表容器
+            const activeRationalTab = document.querySelector('#rational-tab .vertical-tab-content.active');
+            const container = activeRationalTab ? activeRationalTab.querySelector('.rules-list') : null;
+            
+            currentRationalPage[type] = page;
+            
+            if (!container || rules.length === 0) {
+                if (container) {
+                    container.innerHTML = '<div class="empty-state"><h3>暂无规则</h3><p>该分类下暂无规则数据</p></div>';
+                }
+                return;
+            }
+
+            const totalPages = Math.ceil(rules.length / pageSize);
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const paginatedRules = rules.slice(startIndex, endIndex);
+
+            const rulesHtml = paginatedRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name">${rule.name}</div>
+                        <div class="rule-desc">${rule.description}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${rule.priority}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createdAt}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="viewRule(${rule.id})">查看</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule(${rule.id})">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus(${rule.id})">切换状态</button>
+                    </div>
+                </div>
+            `).join('');
+
+            const paginationHtml = totalPages > 1 ? `
+                <div class="pagination">
+                    <button class="btn btn-outline btn-small" onclick="loadRationalRules('${type}', ${page - 1})" ${page === 1 ? 'disabled' : ''}>上一页</button>
+                    <span class="page-info">第 ${page} 页，共 ${totalPages} 页</span>
+                    <button class="btn btn-outline btn-small" onclick="loadRationalRules('${type}', ${page + 1})" ${page === totalPages ? 'disabled' : ''}>下一页</button>
+                </div>
+            ` : '';
+
+            container.innerHTML = rulesHtml + paginationHtml;
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDrugInfo();
+            
+            // 初始化规则
+            loadInsuranceRules('basic');
+            loadRationalRules('dosage');
+            
+            // 绑定复选框变化事件
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('rule-checkbox')) {
+                    if (e.target.closest('#insurance-tab')) {
+                        updateInsuranceSelectedCount();
+                    } else if (e.target.closest('#rational-tab')) {
+                        updateRationalSelectedCount();
+                    }
+                }
+            });
+            
+            console.log('药品详情页面加载完成');
+        });
+
+        // 模态框相关函数
+        function showRuleModal(ruleId = null, ruleType = 'insurance') {
+            const modalHtml = `
+                <div class="modal-overlay" onclick="closeModal()">
+                    <div class="modal-content" onclick="event.stopPropagation()">
+                        <div class="modal-header">
+                            <h3>${ruleId ? '编辑规则' : '新增规则'}</h3>
+                            <span class="modal-close" onclick="closeModal()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <form id="ruleForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="ruleName">规则名称 *</label>
+                                        <input type="text" id="ruleName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ruleCode">规则编码 *</label>
+                                        <input type="text" id="ruleCode" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="rulePriority">优先级</label>
+                                        <select id="rulePriority">
+                                            <option value="high">高</option>
+                                            <option value="medium" selected>中</option>
+                                            <option value="low">低</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ruleStatus">状态</label>
+                                        <select id="ruleStatus">
+                                            <option value="active" selected>启用</option>
+                                            <option value="inactive">停用</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="ruleDescription">规则描述</label>
+                                    <textarea id="ruleDescription" rows="4" placeholder="请输入规则描述"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                            <button type="button" class="btn btn-primary" onclick="saveRule(${ruleId}, '${ruleType}')">保存</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function saveRule(ruleId, ruleType) {
+            const ruleName = document.getElementById('ruleName').value;
+            const ruleCode = document.getElementById('ruleCode').value;
+            const rulePriority = document.getElementById('rulePriority').value;
+            const ruleStatus = document.getElementById('ruleStatus').value;
+            const ruleDescription = document.getElementById('ruleDescription').value;
+            
+            if (!ruleName || !ruleCode) {
+                alert('请填写必填字段');
+                return;
+            }
+            
+            // 这里添加保存规则的逻辑
+            alert(ruleId ? '规则编辑成功！' : '规则创建成功！');
+            closeModal();
+            // 刷新页面数据
+            location.reload();
+        }
+     </script>
+
+    <!-- 药品编辑模态框 -->
+    <div id="drugModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="drugModalTitle">编辑药品</h3>
+                <span class="close" onclick="closeDrugModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="drugForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="drugName">药品名称 *</label>
+                            <input type="text" id="drugName" name="drugName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="drugCode">药品编码 *</label>
+                            <input type="text" id="drugCode" name="drugCode" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="drugCategory">药品分类 *</label>
+                            <select id="drugCategory" name="drugCategory" required>
+                                <option value="">请选择分类</option>
+                                <option value="西药">西药</option>
+                                <option value="中成药">中成药</option>
+                                <option value="中药饮片">中药饮片</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="drugInsurance">医保类型 *</label>
+                            <select id="drugInsurance" name="drugInsurance" required>
+                                <option value="">请选择医保类型</option>
+                                <option value="甲类">甲类</option>
+                                <option value="乙类">乙类</option>
+                                <option value="丙类">丙类</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="drugManufacturer">生产厂家</label>
+                            <input type="text" id="drugManufacturer" name="drugManufacturer">
+                        </div>
+                        <div class="form-group">
+                            <label for="drugSpec">规格</label>
+                            <input type="text" id="drugSpec" name="drugSpec">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="drugPrice">价格</label>
+                            <input type="number" id="drugPrice" name="drugPrice" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="drugDosageForm">剂型</label>
+                            <input type="text" id="drugDosageForm" name="drugDosageForm">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="drugDescription">药品描述</label>
+                        <textarea id="drugDescription" name="drugDescription" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeDrugModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveDrug()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 规则编辑模态框 -->
+    <div id="ruleEditModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑规则</h3>
+                <span class="close" onclick="closeRuleEditModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editRuleId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">规则名称 *</label>
+                        <input type="text" class="form-input" id="editRuleName" placeholder="请输入规则名称">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">规则类型 *</label>
+                        <select class="form-select" id="editRuleType">
+                            <option value="">请选择规则类型</option>
+                            <option value="basic-insurance">基本医保</option>
+                            <option value="special-insurance">特殊医保</option>
+                            <option value="limit-insurance">限制使用</option>
+                            <option value="dosage">剂量规则</option>
+                            <option value="interaction">相互作用</option>
+                            <option value="contraindication">禁忌症</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">规则描述</label>
+                    <textarea class="form-textarea" id="editRuleDescription" rows="3" placeholder="请输入规则描述"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">规则条件 *</label>
+                        <input type="text" class="form-input" id="editRuleCondition" placeholder="请输入规则条件">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">执行动作</label>
+                        <select class="form-select" id="editRuleAction">
+                            <option value="">请选择执行动作</option>
+                            <option value="拦截">拦截</option>
+                            <option value="警告">警告</option>
+                            <option value="提示">提示</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">优先级</label>
+                        <select class="form-select" id="editRulePriority">
+                            <option value="">请选择优先级</option>
+                            <option value="high">高</option>
+                            <option value="medium">中</option>
+                            <option value="low">低</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">状态</label>
+                        <select class="form-select" id="editRuleStatus">
+                            <option value="active">启用</option>
+                            <option value="inactive">停用</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeRuleEditModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveRuleEdit()">保存</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

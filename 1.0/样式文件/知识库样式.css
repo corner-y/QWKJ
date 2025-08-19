@@ -1,0 +1,88 @@
+/* 知识库样式 */
+.kb-container {
+    padding: 20px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.page-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.kb-content {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.kb-tree {
+    margin-top: 20px;
+}
+
+.tree-node {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tree-node:hover {
+    background-color: #f8f9fa;
+}
+
+.tree-node.selected {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.node-icon {
+    margin-right: 8px;
+    color: #666;
+}
+
+.node-title {
+    font-weight: 500;
+}
+
+.node-children {
+    margin-left: 20px;
+    border-left: 1px solid #ddd;
+    padding-left: 10px;
+}

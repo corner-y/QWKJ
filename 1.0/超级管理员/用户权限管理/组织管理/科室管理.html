@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科室管理</title>
+    <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/科室管理样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    </head>
+<body>
+    
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        
+        <div class="main-content">
+<div class="department-container">
+        <div class="page-header">
+            <h2>科室管理</h2>
+            <div class="header-actions">
+                <button class="btn btn-primary" id="addDepartmentBtn">新增科室</button>
+                <button class="btn btn-secondary" id="importBtn">批量导入</button>
+            </div>
+        </div>
+
+        <div class="department-content">
+            <!-- 科室树形结构 -->
+            <div class="department-tree">
+                <div class="tree-header">
+                    <h3>科室架构</h3>
+                    <div class="tree-actions">
+                        <button class="btn btn-sm" id="expandAllBtn">展开全部</button>
+                        <button class="btn btn-sm" id="collapseAllBtn">收起全部</button>
+                    </div>
+                </div>
+                <div class="tree-content" id="departmentTree">
+                    <div class="tree-node expanded" data-id="root">
+                        <div class="node-content">
+                            <span class="node-toggle">-</span>
+                            <span class="node-icon hospital"></span>
+                            <span class="node-name">医院总部</span>
+                            <div class="node-actions">
+                                <button class="btn btn-xs btn-primary" onclick="addSubDepartment('root')">添加下级</button>
+                            </div>
+                        </div>
+                        <div class="node-children">
+                            <div class="tree-node expanded" data-id="clinical">
+                                <div class="node-content">
+                                    <span class="node-toggle">-</span>
+                                    <span class="node-icon department"></span>
+                                    <span class="node-name">临床科室</span>
+                                    <div class="node-actions">
+                                        <button class="btn btn-xs btn-primary" onclick="addSubDepartment('clinical')">添加下级</button>
+                                        <button class="btn btn-xs btn-warning" onclick="editDepartment('clinical')">编辑</button>
+                                    </div>
+                                </div>
+                                <div class="node-children">
+                                    <div class="tree-node" data-id="cardiology">
+                                        <div class="node-content">
+                                            <span class="node-toggle"></span>
+                                            <span class="node-icon subdept"></span>
+                                            <span class="node-name">心内科</span>
+                                            <span class="node-info">(医生: 12人, 护士: 25人)</span>
+                                            <div class="node-actions">
+                                                <button class="btn btn-xs btn-primary" onclick="addSubDepartment('cardiology')">添加下级</button>
+                                                <button class="btn btn-xs btn-warning" onclick="editDepartment('cardiology')">编辑</button>
+                                                <button class="btn btn-xs btn-danger" onclick="deleteDepartment('cardiology')">删除</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tree-node" data-id="orthopedics">
+                                        <div class="node-content">
+                                            <span class="node-toggle"></span>
+                                            <span class="node-icon subdept"></span>
+                                            <span class="node-name">骨科</span>
+                                            <span class="node-info">(医生: 8人, 护士: 18人)</span>
+                                            <div class="node-actions">
+                                                <button class="btn btn-xs btn-primary" onclick="addSubDepartment('orthopedics')">添加下级</button>
+                                                <button class="btn btn-xs btn-warning" onclick="editDepartment('orthopedics')">编辑</button>
+                                                <button class="btn btn-xs btn-danger" onclick="deleteDepartment('orthopedics')">删除</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tree-node" data-id="neurosurgery">
+                                        <div class="node-content">
+                                            <span class="node-toggle"></span>
+                                            <span class="node-icon subdept"></span>
+                                            <span class="node-name">神经外科</span>
+                                            <span class="node-info">(医生: 6人, 护士: 15人)</span>
+                                            <div class="node-actions">
+                                                <button class="btn btn-xs btn-primary" onclick="addSubDepartment('neurosurgery')">添加下级</button>
+                                                <button class="btn btn-xs btn-warning" onclick="editDepartment('neurosurgery')">编辑</button>
+                                                <button class="btn btn-xs btn-danger" onclick="deleteDepartment('neurosurgery')">删除</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tree-node" data-id="medical-tech">
+                                <div class="node-content">
+                                    <span class="node-toggle">+</span>
+                                    <span class="node-icon department"></span>
+                                    <span class="node-name">医技科室</span>
+                                    <div class="node-actions">
+                                        <button class="btn btn-xs btn-primary" onclick="addSubDepartment('medical-tech')">添加下级</button>
+                                        <button class="btn btn-xs btn-warning" onclick="editDepartment('medical-tech')">编辑</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tree-node" data-id="administration">
+                                <div class="node-content">
+                                    <span class="node-toggle">+</span>
+                                    <span class="node-icon department"></span>
+                                    <span class="node-name">行政管理</span>
+                                    <div class="node-actions">
+                                        <button class="btn btn-xs btn-primary" onclick="addSubDepartment('administration')">添加下级</button>
+                                        <button class="btn btn-xs btn-warning" onclick="editDepartment('administration')">编辑</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 科室详情面板 -->
+            <div class="department-detail" id="departmentDetail">
+                <div class="detail-header">
+                    <h3>科室详情</h3>
+                    <button class="btn btn-sm btn-primary" id="editDetailBtn">编辑信息</button>
+                </div>
+                <div class="detail-content">
+                    <div class="detail-section">
+                        <h4>基本信息</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>科室名称:</label>
+                                <span id="deptName">请选择科室</span>
+                            </div>
+                            <div class="info-item">
+                                <label>科室编码:</label>
+                                <span id="deptCode">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>上级科室:</label>
+                                <span id="parentDept">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>科室类型:</label>
+                                <span id="deptType">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>负责人:</label>
+                                <span id="deptHead">-</span>
+                            </div>
+                            <div class="info-item">
+                                <label>联系电话:</label>
+                                <span id="deptPhone">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h4>人员统计</h4>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-value" id="doctorCount">0</div>
+                                <div class="stat-label">医生</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="nurseCount">0</div>
+                                <div class="stat-label">护士</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="otherCount">0</div>
+                                <div class="stat-label">其他</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="totalCount">0</div>
+                                <div class="stat-label">总计</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-section">
+                        <h4>科室描述</h4>
+                        <div class="description" id="deptDescription">
+                            请选择科室查看详细信息
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 科室表单弹窗 -->
+    <div class="modal" id="departmentModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">新增科室</h3>
+                <button class="modal-close" onclick="closeDepartmentModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="departmentForm">
+                    <div class="form-group">
+                        <label for="deptNameInput">科室名称 <span class="required">*</span></label>
+                        <input type="text" id="deptNameInput" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="deptCodeInput">科室编码 <span class="required">*</span></label>
+                        <input type="text" id="deptCodeInput" name="code" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="parentDeptSelect">上级科室</label>
+                        <select id="parentDeptSelect" name="parentId">
+                            <option value="">无上级科室</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="deptTypeSelect">科室类型</label>
+                        <select id="deptTypeSelect" name="type">
+                            <option value="clinical">临床科室</option>
+                            <option value="medical-tech">医技科室</option>
+                            <option value="administration">行政管理</option>
+                            <option value="logistics">后勤保障</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="deptHeadInput">科室负责人</label>
+                        <input type="text" id="deptHeadInput" name="head">
+                    </div>
+                    <div class="form-group">
+                        <label for="deptPhoneInput">联系电话</label>
+                        <input type="tel" id="deptPhoneInput" name="phone">
+                    </div>
+                    <div class="form-group">
+                        <label for="deptDescInput">科室描述</label>
+                        <textarea id="deptDescInput" name="description" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="saveDepartment()">保存</button>
+                <button class="btn btn-secondary" onclick="closeDepartmentModal()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/department-management.js"></script>
+        </div>
+    </div>
+    <!-- 加载统一菜单 -->
+<script>
+    // 加载统一菜单组件
+    fetch('../../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+
+
+</body>
+</html>

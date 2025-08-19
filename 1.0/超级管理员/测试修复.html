@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修复测试页面</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .test-link {
+            display: inline-block;
+            margin: 10px 15px 10px 0;
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .test-link:hover {
+            background-color: #2980b9;
+        }
+        .log {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            color: #27ae60;
+        }
+        .error {
+            color: #e74c3c;
+        }
+        .info {
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <h1>侧边栏路径修复测试</h1>
+    
+    <div class="section">
+        <h2>问题分析</h2>
+        <p>当前系统中存在大量404错误，主要原因是各页面使用了不同的相对路径来引用侧边栏组件，导致导航路径错误。</p>
+        <p>服务器日志显示：<span class="error">请求路径 `/1.0/组件/_unified-sidebar.html` 不存在，正确路径应为 `/1.0/超级管理员/组件/_unified-sidebar.html`</span></p>
+    </div>
+    
+    <div class="section">
+        <h2>修复方案</h2>
+        <p>将所有页面中引用侧边栏组件的相对路径统一改为绝对路径 `/1.0/超级管理员/组件/_unified-sidebar.html`</p>
+        
+        <h3>测试链接</h3>
+        <p>点击以下链接测试绝对路径修复效果：</p>
+        <a href="/1.0/超级管理员/审核管理/审核流程/事中审核检查.html" class="test-link" target="_blank">事中审核检查页面</a>
+        <a href="/1.0/超级管理员/工作台/平台运营看板.html" class="test-link" target="_blank">平台运营看板</a>
+        <a href="/1.0/超级管理员/工作台/报告规则分析.html" class="test-link" target="_blank">报告规则分析</a>
+        <a href="/1.0/超级管理员/规则管理/门诊规则管理.html" class="test-link" target="_blank">门诊规则管理</a>
+    </div>
+    
+    <div class="section">
+        <h2>修复工具</h2>
+        <p>由于自动脚本执行存在问题，这里提供手动修复方法：</p>
+        <ol>
+            <li>找到所有使用侧边栏的HTML文件</li>
+            <li>搜索文件中的 `fetch('../组件/_unified-sidebar.html')` 或类似代码</li>
+            <li>将其替换为 `fetch('/1.0/超级管理员/组件/_unified-sidebar.html')`</li>
+        </ol>
+    </div>
+    
+    <div class="section">
+        <h2>路径测试</h2>
+        <p>以下是直接测试侧边栏组件路径的代码：</p>
+        <button onclick="testSidebarPath()">测试正确路径</button>
+        <button onclick="testWrongPath()">测试错误路径</button>
+        <div class="log" id="log">等待测试...</div>
+    </div>
+    
+    <script>
+        const logElement = document.getElementById('log');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const typeClass = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            logElement.innerHTML += `[${timestamp}] <span class="${typeClass}">${message}</span>\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        async function testSidebarPath() {
+            log('开始测试正确的侧边栏路径...');
+            try {
+                const response = await fetch('/1.0/超级管理员/组件/_unified-sidebar.html');
+                if (response.ok) {
+                    log('✅ 正确路径测试成功！侧边栏组件可以被正常加载。', 'success');
+                    const content = await response.text();
+                    log(`获取到的内容长度: ${content.length} 字符`);
+                } else {
+                    log(`❌ 正确路径测试失败: HTTP ${response.status} ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ 正确路径测试异常: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testWrongPath() {
+            log('开始测试错误的侧边栏路径...');
+            try {
+                const response = await fetch('/1.0/组件/_unified-sidebar.html');
+                if (response.ok) {
+                    log('⚠️ 错误路径竟然可以访问？这可能是因为服务器配置了重定向。', 'info');
+                } else {
+                    log(`❌ 错误路径测试结果: HTTP ${response.status} ${response.statusText} (符合预期)`, 'error');
+                }
+            } catch (error) {
+                log(`❌ 错误路径测试异常: ${error.message} (符合预期)`, 'error');
+            }
+        }
+        
+        // 页面加载后立即测试正确路径
+        window.addEventListener('load', () => {
+            log('页面加载完成，正在自动测试正确的侧边栏路径...');
+            setTimeout(testSidebarPath, 1000);
+        });
+    </script>
+</body>
+</html>

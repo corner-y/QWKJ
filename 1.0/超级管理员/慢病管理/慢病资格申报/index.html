@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>慢病资格申报</title>
+      <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    <style>
+        /* 全局样式 - 已移除所有div元素的边框 */
+        div {
+            box-sizing: border-box;
+        }
+        
+        /* 慢病资格申报页面样式 - 主容器样式 */
+        /* 确保容器占满整个可用空间并允许滚动 */
+        .chronic-application-container {
+            padding: 20px;
+            width: calc(100% - 280px); /* 确保宽度不会超出父容器 */
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden; /* 禁止水平滚动 */
+            box-sizing: border-box;
+            margin-left: 280px; /* 为固定的侧边栏留出空间 */
+        }
+
+        /* 表格区域样式 - 确保表格容器支持水平滚动 */
+        .table-section {
+            background-color: var(--bg-primary); /* 使用主题背景色 */
+            border-radius: var(--radius-medium); /* 使用主题中等圆角 */
+            box-shadow: var(--shadow-light); /* 使用主题轻微阴影 */
+            padding: 16px; /* 内边距 */
+            width: 100%; /* 宽度100%，填满父容器 */
+            overflow-x: auto; /* 允许水平滚动，解决表格过宽问题 */
+        }
+
+        /* 表格样式 - 确保表格在小屏幕下也能正常显示 */
+        .table {
+            width: 100%; /* 宽度100%，填满表格容器 */
+            min-width: 800px; /* 设置最小宽度，确保表格内容不会过度压缩 */
+            table-layout: fixed; /* 固定表格布局，提高渲染性能 */
+        }
+        
+        /* 页面头部样式 - 标题区域 */
+        .page-header {
+            display: flex; /* 使用flex布局 */
+            justify-content: space-between; /* 两端对齐 */
+            align-items: center; /* 垂直居中 */
+            margin-bottom: 20px; /* 底部边距，与下方内容分隔 */
+        }
+        
+        .page-header h2 {
+            margin: 0; /* 重置默认margin */
+            color: var(--text-primary); /* 使用主题主文本颜色 */
+        }
+        
+        /* 搜索区域样式 - 搜索表单容器 */
+        .search-section {
+            background-color: var(--bg-primary); /* 使用主题背景色 */
+            border-radius: var(--radius-medium); /* 使用主题中等圆角 */
+            box-shadow: var(--shadow-light); /* 使用主题轻微阴影 */
+            padding: 16px; /* 内边距 */
+            margin-bottom: 20px; /* 底部边距，与下方内容分隔 */
+        }
+        
+        /* 表单行样式 - 表单元素的行布局 */
+        .form-row {
+            display: flex; /* 使用flex布局 */
+            gap: 16px; /* 元素间距 */
+            margin-bottom: 12px; /* 底部边距，与下一行分隔 */
+            flex-wrap: wrap; /* 允许换行，适应小屏幕 */
+        }
+        
+        /* 表单组样式 - 单个表单项容器 */
+        .form-group {
+            flex: 1; /* 灵活占据剩余空间 */
+            min-width: 150px; /* 设置最小宽度，确保在小屏幕上不会过度压缩 */
+        }
+        
+        /* 日期范围样式 - 日期选择器布局 */
+        .date-range {
+            display: flex; /* 使用flex布局 */
+            align-items: center; /* 垂直居中 */
+            gap: 8px; /* 元素间距 */
+        }
+        
+        .date-separator {
+            color: var(--text-tertiary); /* 使用主题次要文本颜色 */
+        }
+        
+        /* 搜索操作区样式 - 按钮组布局 */
+        .search-actions {
+            display: flex; /* 使用flex布局 */
+            gap: 8px; /* 按钮间距 */
+            align-items: flex-end; /* 底部对齐，与表单元素保持一致 */
+        }
+        
+        /* 表格头部样式 - 表格标题和操作区 */
+        .table-header {
+            display: flex; /* 使用flex布局 */
+            justify-content: space-between; /* 两端对齐 */
+            align-items: center; /* 垂直居中 */
+            margin-bottom: 16px; /* 底部边距，与表格内容分隔 */
+        }
+        
+        .table-title {
+            font-weight: var(--font-weight-semibold); /* 使用主题半粗体字重 */
+            color: var(--text-primary); /* 使用主题主文本颜色 */
+        }
+        
+        /* 状态标签样式 - 申报状态标签 */
+        .status-tag {
+            padding: 2px 8px; /* 内边距 */
+            border-radius: 12px; /* 圆角，使其呈胶囊形状 */
+            font-size: var(--font-size-xs); /* 使用主题超小字体 */
+            font-weight: 500; /* 中等字重 */
+        }
+        
+        /* 待处理状态标签样式 */
+        .status-pending {
+            background-color: var(--info-light); /* 使用主题信息浅色背景 */
+            color: var(--info-color); /* 使用主题信息颜色 */
+            border: 1px solid var(--primary-light); /* 使用主题主要浅色边框 */
+        }
+        
+        /* 评审中状态标签样式 */
+        .status-reviewing {
+            background-color: var(--warning-light); /* 使用主题警告浅色背景 */
+            color: var(--warning-color); /* 使用主题警告颜色 */
+            border: 1px solid var(--warning-light); /* 使用主题警告浅色边框 */
+        }
+        
+        /* 已通过状态标签样式 */
+        .status-approved {
+            background-color: var(--success-light); /* 使用主题成功浅色背景 */
+            color: var(--success-color); /* 使用主题成功颜色 */
+            border: 1px solid var(--success-light); /* 使用主题成功浅色边框 */
+        }
+        
+        /* 已拒绝状态标签样式 */
+        .status-rejected {
+            background-color: var(--error-light); /* 使用主题错误浅色背景 */
+            color: var(--error-color); /* 使用主题错误颜色 */
+            border: 1px solid var(--error-light); /* 使用主题错误浅色边框 */
+        }
+        
+        /* 操作按钮组样式 */
+        .action-buttons {
+            display: flex; /* 使用flex布局 */
+            gap: 8px; /* 按钮间距 */
+        }
+        
+        /* 查看和取消按钮基础样式 */
+        .btn-view, .btn-cancel {
+            padding: 4px 12px; /* 内边距 */
+            border: none; /* 无边框 */
+            border-radius: var(--radius-small); /* 使用主题小圆角 */
+            cursor: pointer; /* 鼠标悬停时显示指针 */
+            font-size: var(--font-size-sm); /* 使用主题小字体 */
+            transition: all 0.2s; /* 添加过渡效果 */
+        }
+        
+        /* 查看按钮样式 */
+        .btn-view {
+            background-color: var(--primary-light); /* 使用主题主要浅色背景 */
+            color: var(--primary-color); /* 使用主题主要颜色 */
+        }
+        
+        .btn-view:hover {
+            background-color: var(--primary-color); /* 悬停时使用主题主要颜色 */
+            color: white; /* 悬停时文字为白色 */
+        }
+        
+        /* 取消按钮样式 */
+        .btn-cancel {
+            background-color: var(--error-light); /* 使用主题错误浅色背景 */
+            color: var(--error-color); /* 使用主题错误颜色 */
+        }
+        
+        .btn-cancel:hover {
+            background-color: var(--error-color); /* 悬停时使用主题错误颜色 */
+            color: white; /* 悬停时文字为白色 */
+        }
+        
+        /* 模态框样式 - 弹出窗口基础样式 */
+        .modal {
+            display: none; /* 默认隐藏 */
+            position: fixed; /* 固定定位 */
+            top: 0; /* 顶部对齐 */
+            left: 0; /* 左侧对齐 */
+            width: 100%; /* 宽度100% */
+            height: 100%; /* 高度100% */
+            background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+            z-index: 1000; /* 高优先级层级，确保在最上层 */
+            overflow-y: auto; /* 允许内容超出时垂直滚动 */
+        }
+        
+        /* 模态框内容样式 */
+        .modal-content {
+            background-color: var(--bg-primary); /* 使用主题背景色 */
+            border-radius: var(--radius-medium); /* 使用主题中等圆角 */
+            margin: 20px auto; /* 居中显示 */
+            width: 90%; /* 宽度90%，适应不同屏幕尺寸 */
+            max-width: 800px; /* 最大宽度，防止在大屏幕上过宽 */
+            max-height: 90vh; /* 最大高度，防止内容过多时溢出 */
+            display: flex; /* 使用flex布局 */
+            flex-direction: column; /* 垂直方向排列 */
+        }
+        
+        /* 模态框头部样式 */
+        .modal-header {
+            padding: 16px 20px; /* 内边距 */
+            border-bottom: 1px solid var(--border-primary); /* 底部边框，与内容区分 */
+            display: flex; /* 使用flex布局 */
+            justify-content: space-between; /* 两端对齐 */
+            align-items: center; /* 垂直居中 */
+        }
+        
+        .modal-title {
+            margin: 0; /* 重置默认margin */
+            font-size: var(--font-size-lg);
+            color: var(--text-primary);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-tertiary);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-small);
+            transition: all 0.2s;
+        }
+        
+        .modal-close:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-primary);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        /* 文件上传样式 */
+        .upload-area {
+            border: 2px dashed var(--border-primary);
+            border-radius: var(--radius-medium);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: var(--bg-secondary);
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: var(--text-tertiary);
+            margin-bottom: 8px;
+        }
+        
+        .upload-text {
+            color: var(--text-secondary);
+        }
+        
+        .upload-hint {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+            margin-top: 8px;
+        }
+        
+        .file-list {
+            margin-top: 16px;
+        }
+        
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-small);
+            margin-bottom: 8px;
+            background-color: var(--bg-secondary);
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+        
+        .file-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .file-size {
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+        
+        .file-remove {
+            background: none;
+            border: none;
+            color: var(--error-color);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: var(--radius-small);
+            transition: background-color 0.2s;
+        }
+        
+        .file-remove:hover {
+            background-color: var(--error-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="chronic-application-container">
+                <!-- 页面头部 -->
+                <div class="page-header">
+                    <h2>慢病资格申报</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="openNewApplicationModal()">+ 新建申报</button>
+                    </div>
+                </div>
+
+                <!-- 搜索筛选区域 -->
+                <div class="search-section">
+                    <div class="search-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>患者姓名</label>
+                                <input type="text" class="form-control" id="patientName" placeholder="请输入患者姓名">
+                            </div>
+                            <div class="form-group">
+                                <label>申请病种</label>
+                                <select class="form-control" id="diseaseType">
+                                    <option value="">全部病种</option>
+                                    <option value="hypertension">高血压并发症</option>
+                                    <option value="diabetes">2型糖尿病</option>
+                                    <option value="heartDisease">冠心病</option>
+                                    <option value="stroke">脑卒中后遗症</option>
+                                    <option value="kidneyDisease">慢性肾脏病</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>审核状态</label>
+                                <select class="form-control" id="auditStatus">
+                                    <option value="">全部状态</option>
+                                    <option value="pending">待审核</option>
+                                    <option value="reviewing">评审中</option>
+                                    <option value="approved">已通过</option>
+                                    <option value="rejected">已驳回</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>提交日期</label>
+                                <div class="date-range">
+                                    <input type="date" class="form-control" id="startDate">
+                                    <span class="date-separator">至</span>
+                                    <input type="date" class="form-control" id="endDate">
+                                </div>
+                            </div>
+                            <div class="form-group search-actions">
+                                <button class="btn btn-primary" onclick="searchApplications()">搜索</button>
+                                <button class="btn btn-secondary" onclick="resetSearch()">重置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 申报记录表格 -->
+                <div class="table-section">
+                    <div class="table-header">
+                        <div class="table-title">申报记录列表</div>
+                        <div class="table-actions">
+                            <select class="form-control" id="pageSize" onchange="changePageSize()" style="width: auto;">
+                                <option value="10">10条/页</option>
+                                <option value="20" selected>20条/页</option>
+                                <option value="50">50条/页</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>申报ID</th>
+                                <th>患者姓名</th>
+                                <th>身份证号</th>
+                                <th>申请病种</th>
+                                <th>申报医院</th>
+                                <th>提交时间</th>
+                                <th>审核状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicationTableBody">
+                            <!-- 模拟数据将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                    
+                    <!-- 分页 -->
+                    <div class="pagination" id="pagination">
+                        <!-- 分页控件将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新建申报模态框 -->
+    <div class="modal" id="newApplicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">新建慢病资格申报</h3>
+                <button class="modal-close" onclick="closeNewApplicationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="newApplicationForm">
+                    <div class="form-group">
+                        <label class="required">患者姓名</label>
+                        <input type="text" class="form-control" id="newPatientName" required placeholder="请输入患者姓名">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">身份证号</label>
+                        <input type="text" class="form-control" id="newPatientId" required placeholder="请输入18位身份证号">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">申请病种</label>
+                        <select class="form-control" id="newDiseaseType" required>
+                            <option value="">请选择病种</option>
+                            <option value="hypertension">高血压并发症</option>
+                            <option value="diabetes">2型糖尿病</option>
+                            <option value="heartDisease">冠心病</option>
+                            <option value="stroke">脑卒中后遗症</option>
+                            <option value="kidneyDisease">慢性肾脏病</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>申报医院</label>
+                        <input type="text" class="form-control" id="newHospital" placeholder="请输入申报医院名称" value="北京协和医院">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">材料上传</label>
+                        <div class="upload-area" onclick="document.getElementById('fileUpload').click()">
+                            <input type="file" id="fileUpload" multiple accept=".pdf,.jpg,.jpeg,.png" style="display: none;">
+                            <div class="upload-icon">📎</div>
+                            <div class="upload-text">点击或拖拽文件到此处上传</div>
+                            <div class="upload-hint">支持PDF、JPG、PNG格式，最多上传5个文件</div>
+                        </div>
+                        <div class="file-list" id="fileList"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeNewApplicationModal()">取消</button>
+                <button class="btn btn-primary" onclick="submitNewApplication()">提交</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载统一菜单组件脚本 -->
+    <script>
+    // 加载统一菜单组件
+    fetch('../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+
+    <script>
+        // 模拟数据
+        const mockApplications = [
+            { id: 'CM-202408001', name: '张三', idCard: '110101199001011234', disease: '高血压并发症', hospital: '北京协和医院', submitTime: '2024-08-18 09:30', status: 'pending' },
+            { id: 'CM-202408002', name: '李四', idCard: '110101199202022345', disease: '2型糖尿病', hospital: '北京协和医院', submitTime: '2024-08-17 14:45', status: 'reviewing' },
+            { id: 'CM-202408003', name: '王五', idCard: '110101199503033456', disease: '冠心病', hospital: '北京协和医院', submitTime: '2024-08-16 10:20', status: 'approved' },
+            { id: 'CM-202408004', name: '赵六', idCard: '110101199804044567', disease: '脑卒中后遗症', hospital: '北京协和医院', submitTime: '2024-08-15 16:10', status: 'rejected' },
+            { id: 'CM-202408005', name: '钱七', idCard: '110101199105055678', disease: '慢性肾脏病', hospital: '北京协和医院', submitTime: '2024-08-14 08:50', status: 'pending' },
+            { id: 'CM-202408006', name: '孙八', idCard: '110101199306066789', disease: '高血压并发症', hospital: '北京协和医院', submitTime: '2024-08-13 13:30', status: 'reviewing' },
+            { id: 'CM-202408007', name: '周九', idCard: '110101199607077890', disease: '2型糖尿病', hospital: '北京协和医院', submitTime: '2024-08-12 11:40', status: 'approved' },
+            { id: 'CM-202408008', name: '吴十', idCard: '110101199908088901', disease: '冠心病', hospital: '北京协和医院', submitTime: '2024-08-11 15:20', status: 'rejected' },
+            { id: 'CM-202408009', name: '郑一', idCard: '110101199209099012', disease: '脑卒中后遗症', hospital: '北京协和医院', submitTime: '2024-08-10 09:10', status: 'pending' },
+            { id: 'CM-202408010', name: '王二', idCard: '110101199410100123', disease: '慢性肾脏病', hospital: '北京协和医院', submitTime: '2024-08-09 14:50', status: 'reviewing' }
+        ];
+
+        // 当前页码和每页显示数量
+        let currentPage = 1;
+        let pageSize = 10;
+        let filteredApplications = [...mockApplications];
+
+        // 渲染表格数据
+        function renderTableData() {
+            const tableBody = document.getElementById('applicationTableBody');
+            tableBody.innerHTML = '';
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const paginatedData = filteredApplications.slice(startIndex, endIndex);
+
+            if (paginatedData.length === 0) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.innerHTML = `<td colspan="8" class="text-center">暂无数据</td>`;
+                tableBody.appendChild(emptyRow);
+                return;
+            }
+
+            paginatedData.forEach(application => {
+                const row = document.createElement('tr');
+                
+                // 状态标签样式
+                let statusClass = '';
+                let statusText = '';
+                switch (application.status) {
+                    case 'pending':
+                        statusClass = 'status-pending';
+                        statusText = '待审核';
+                        break;
+                    case 'reviewing':
+                        statusClass = 'status-reviewing';
+                        statusText = '评审中';
+                        break;
+                    case 'approved':
+                        statusClass = 'status-approved';
+                        statusText = '已通过';
+                        break;
+                    case 'rejected':
+                        statusClass = 'status-rejected';
+                        statusText = '已驳回';
+                        break;
+                }
+
+                row.innerHTML = `
+                    <td>${application.id}</td>
+                    <td>${application.name}</td>
+                    <td>${formatIdCard(application.idCard)}</td>
+                    <td>${application.disease}</td>
+                    <td>${application.hospital}</td>
+                    <td>${application.submitTime}</td>
+                    <td><span class="status-tag ${statusClass}">${statusText}</span></td>
+                    <td class="action-buttons">
+                        <button class="btn-view" onclick="viewApplication('${application.id}')">查看详情</button>
+                        <button class="btn-cancel" onclick="cancelApplication('${application.id}')">撤销</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // 渲染分页
+            renderPagination();
+        }
+
+        // 格式化身份证号（中间部分用*代替）
+        function formatIdCard(idCard) {
+            if (!idCard || idCard.length !== 18) return idCard;
+            return idCard.substring(0, 6) + '********' + idCard.substring(14);
+        }
+
+        // 渲染分页控件
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            const totalPages = Math.ceil(filteredApplications.length / pageSize);
+            const maxVisiblePages = 5;
+            
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            // 上一页
+            const prevButton = document.createElement('button');
+            prevButton.textContent = '上一页';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTableData();
+                }
+            };
+            prevButton.className = 'btn btn-secondary';
+            pagination.appendChild(prevButton);
+            
+            // 页码
+            for (let i = startPage; i <= endPage; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.disabled = i === currentPage;
+                pageButton.onclick = () => {
+                    currentPage = i;
+                    renderTableData();
+                };
+                pageButton.className = i === currentPage ? 'btn btn-primary' : 'btn btn-secondary';
+                pagination.appendChild(pageButton);
+            }
+            
+            // 下一页
+            const nextButton = document.createElement('button');
+            nextButton.textContent = '下一页';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTableData();
+                }
+            };
+            nextButton.className = 'btn btn-secondary';
+            pagination.appendChild(nextButton);
+            
+            // 页码信息
+            const pageInfo = document.createElement('span');
+            pageInfo.textContent = `第 ${currentPage} 页，共 ${totalPages} 页，共 ${filteredApplications.length} 条记录`;
+            pageInfo.style.marginLeft = '20px';
+            pageInfo.style.color = 'var(--text-secondary)';
+            pagination.appendChild(pageInfo);
+        }
+
+        // 搜索申报记录
+        function searchApplications() {
+            const patientName = document.getElementById('patientName').value.toLowerCase();
+            const diseaseType = document.getElementById('diseaseType').value;
+            const auditStatus = document.getElementById('auditStatus').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            filteredApplications = mockApplications.filter(app => {
+                let match = true;
+                
+                if (patientName && !app.name.toLowerCase().includes(patientName)) {
+                    match = false;
+                }
+                if (diseaseType && app.disease !== getDiseaseText(diseaseType)) {
+                    match = false;
+                }
+                if (auditStatus && app.status !== auditStatus) {
+                    match = false;
+                }
+                if (startDate && new Date(app.submitTime.split(' ')[0]) < new Date(startDate)) {
+                    match = false;
+                }
+                if (endDate && new Date(app.submitTime.split(' ')[0]) > new Date(endDate)) {
+                    match = false;
+                }
+                
+                return match;
+            });
+
+            currentPage = 1; // 重置为第一页
+            renderTableData();
+        }
+
+        // 根据病种代码获取病种文本
+        function getDiseaseText(code) {
+            const diseaseMap = {
+                'hypertension': '高血压并发症',
+                'diabetes': '2型糖尿病',
+                'heartDisease': '冠心病',
+                'stroke': '脑卒中后遗症',
+                'kidneyDisease': '慢性肾脏病'
+            };
+            return diseaseMap[code] || '';
+        }
+
+        // 重置搜索条件
+        function resetSearch() {
+            document.getElementById('patientName').value = '';
+            document.getElementById('diseaseType').value = '';
+            document.getElementById('auditStatus').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            
+            filteredApplications = [...mockApplications];
+            currentPage = 1;
+            renderTableData();
+        }
+
+        // 更改每页显示数量
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('pageSize').value);
+            currentPage = 1;
+            renderTableData();
+        }
+
+        // 查看申报详情
+        function viewApplication(id) {
+            alert(`查看申报ID：${id} 的详情`);
+            // 实际应用中，这里会打开详情页面或弹窗
+        }
+
+        // 撤销申报
+        function cancelApplication(id) {
+            if (confirm(`确定要撤销申报ID：${id} 吗？`)) {
+                // 实际应用中，这里会调用API撤销申报
+                alert(`申报ID：${id} 已撤销`);
+                // 重新加载数据
+                resetSearch();
+            }
+        }
+
+        // 打开新建申报模态框
+        function openNewApplicationModal() {
+            document.getElementById('newApplicationModal').style.display = 'flex';
+        }
+
+        // 关闭新建申报模态框
+        function closeNewApplicationModal() {
+            document.getElementById('newApplicationModal').style.display = 'none';
+            document.getElementById('newApplicationForm').reset();
+            document.getElementById('fileList').innerHTML = '';
+        }
+
+        // 文件上传处理
+        let uploadedFiles = [];
+        document.getElementById('fileUpload').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            
+            // 检查文件数量限制
+            if (uploadedFiles.length + files.length > 5) {
+                alert('最多只能上传5个文件');
+                return;
+            }
+            
+            // 检查文件类型
+            const validFiles = files.filter(file => {
+                const extension = file.name.split('.').pop().toLowerCase();
+                return ['pdf', 'jpg', 'jpeg', 'png'].includes(extension);
+            });
+            
+            if (validFiles.length < files.length) {
+                alert('只支持PDF、JPG、PNG格式的文件');
+            }
+            
+            // 添加有效文件
+            validFiles.forEach(file => {
+                uploadedFiles.push(file);
+            });
+            
+            // 渲染文件列表
+            renderFileList();
+            
+            // 清空input，允许重复选择同一文件
+            this.value = '';
+        });
+
+        // 渲染文件列表
+        function renderFileList() {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            
+            uploadedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                // 文件大小格式化
+                let fileSize = (file.size / 1024).toFixed(2);
+                let sizeUnit = 'KB';
+                if (fileSize > 1024) {
+                    fileSize = (fileSize / 1024).toFixed(2);
+                    sizeUnit = 'MB';
+                }
+                
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <div class="file-icon">
+                            ${getFileIcon(file.name)}
+                        </div>
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${fileSize} ${sizeUnit}</div>
+                    </div>
+                    <button class="file-remove" onclick="removeFile(${index})">×</button>
+                `;
+                
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        // 获取文件图标
+        function getFileIcon(fileName) {
+            const extension = fileName.split('.').pop().toLowerCase();
+            if (extension === 'pdf') return '📄';
+            if (['jpg', 'jpeg', 'png'].includes(extension)) return '🖼️';
+            return '📎';
+        }
+
+        // 移除文件
+        function removeFile(index) {
+            uploadedFiles.splice(index, 1);
+            renderFileList();
+        }
+
+        // 提交新建申报
+        function submitNewApplication() {
+            const patientName = document.getElementById('newPatientName').value;
+            const patientId = document.getElementById('newPatientId').value;
+            const diseaseType = document.getElementById('newDiseaseType').value;
+            const hospital = document.getElementById('newHospital').value;
+            
+            // 表单验证
+            if (!patientName || !patientId || !diseaseType) {
+                alert('请填写必填项');
+                return;
+            }
+            
+            // 身份证号验证（简单验证）
+            if (!/^\d{18}$/.test(patientId)) {
+                alert('请输入正确的18位身份证号');
+                return;
+            }
+            
+            // 检查是否上传了文件
+            if (uploadedFiles.length === 0) {
+                alert('请至少上传一个证明材料');
+                return;
+            }
+            
+            // 模拟提交成功
+            alert('申报提交成功！');
+            
+            // 关闭模态框
+            closeNewApplicationModal();
+            
+            // 模拟添加新数据
+            const newApplication = {
+                id: 'CM-' + new Date().getTime(),
+                name: patientName,
+                idCard: patientId,
+                disease: getDiseaseText(diseaseType),
+                hospital: hospital,
+                submitTime: new Date().toLocaleString('zh-CN'),
+                status: 'pending'
+            };
+            
+            // 将新数据添加到列表开头
+            mockApplications.unshift(newApplication);
+            
+            // 重新加载数据
+            resetSearch();
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTableData();
+        });
+    </script>
+    </div>
+</body>
+</html>

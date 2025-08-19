@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识库目录</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/知识库样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    </head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        
+<nav class="breadcrumb" aria-label="面包屑导航">
+    <a href="../工作台/平台运营看板.html">首页</a> > <a href="../1.0/">1.0</a> > <a href="../1.0/超级管理员/">超级管理员</a> > <a href="../1.0/超级管理员/系统管理/">系统管理</a> > <span class="current">知识库目录</span>
+</nav>
+
+<h1 class="page-title">知识库目录</h1>
+
+            <div class="kb-container">
+        <div class="page-header">
+            <h2>知识库目录</h2>
+            <div class="header-actions">
+                <button class="btn btn-primary" id="importDataBtn">导入数据</button>
+                <button class="btn btn-secondary" id="exportDataBtn">导出数据</button>
+                <button class="btn btn-info" id="syncDataBtn">同步更新</button>
+            </div>
+        </div>
+
+        <!-- 目录分类导航 -->
+        <div class="kb-nav">
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-catalog="drug">
+                    <span class="tab-icon drug"></span>
+                    <span class="tab-text">药品目录</span>
+                    <span class="tab-count" id="drugCount">12,456</span>
+                </button>
+                <button class="nav-tab" data-catalog="treatment">
+                    <span class="tab-icon treatment"></span>
+                    <span class="tab-text">诊疗目录</span>
+                    <span class="tab-count" id="treatmentCount">8,923</span>
+                </button>
+                <button class="nav-tab" data-catalog="material">
+                    <span class="tab-icon material"></span>
+                    <span class="tab-text">耗材目录</span>
+                    <span class="tab-count" id="materialCount">15,678</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 搜索和筛选区域 -->
+        <div class="search-filter-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索编码、名称或拼音">
+                <button class="btn btn-search" id="searchBtn">搜索</button>
+                <button class="btn btn-secondary" id="advancedSearchBtn">高级搜索</button>
+            </div>
+            <div class="filter-options" id="filterOptions">
+                <!-- 筛选选项将根据当前目录动态生成 -->
+            </div>
+        </div>
+
+        <!-- 目录内容 -->
+        <div class="kb-content">
+            <!-- 药品目录 -->
+            <div class="catalog-section active" data-catalog="drug">
+                <div class="catalog-stats">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">12,456</div>
+                            <div class="stat-label">药品总数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">2,134</div>
+                            <div class="stat-label">西药</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">1,876</div>
+                            <div class="stat-label">中成药</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">456</div>
+                            <div class="stat-label">中药饮片</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">234</div>
+                            <div class="stat-label">生物制品</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="drugTable">
+                        <thead>
+                            <tr>
+                                <th>药品编码</th>
+                                <th>药品名称</th>
+                                <th>通用名</th>
+                                <th>剂型</th>
+                                <th>规格</th>
+                                <th>单位</th>
+                                <th>分类</th>
+                                <th>价格(元)</th>
+                                <th>医保类别</th>
+                                <th>限制使用</th>
+                                <th>更新时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>A01AA01001</td>
+                                <td>阿司匹林肠溶片</td>
+                                <td>阿司匹林</td>
+                                <td>肠溶片</td>
+                                <td>100mg</td>
+                                <td>片</td>
+                                <td>解热镇痛药</td>
+                                <td>0.15</td>
+                                <td><span class="insurance-tag class-a">甲类</span></td>
+                                <td><span class="restriction-tag none">无限制</span></td>
+                                <td>2024-01-10</td>
+                                <td>
+                                    <button class="btn btn-xs btn-info" onclick="viewDrugDetail('A01AA01001')">详情</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A01BB02001</td>
+                                <td>氨氯地平片</td>
+                                <td>氨氯地平</td>
+                                <td>片剂</td>
+                                <td>5mg</td>
+                                <td>片</td>
+                                <td>钙通道阻滞剂</td>
+                                <td>0.28</td>
+                                <td><span class="insurance-tag class-b">乙类</span></td>
+                                <td><span class="restriction-tag limited">限高血压</span></td>
+                                <td>2024-01-08</td>
+                                <td>
+                                    <button class="btn btn-xs btn-info" onclick="viewDrugDetail('A01BB02001')">详情</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>A01CC03001</td>
+                                <td>阿托伐他汀钙片</td>
+                                <td>阿托伐他汀</td>
+                                <td>片剂</td>
+                                <td>20mg</td>
+                                <td>片</td>
+                                <td>调血脂药</td>
+                                <td>1.25</td>
+                                <td><span class="insurance-tag class-b">乙类</span></td>
+                                <td><span class="restriction-tag limited">限血脂异常</span></td>
+                                <td>2024-01-05</td>
+                                <td>
+                                    <button class="btn btn-xs btn-info" onclick="viewDrugDetail('A01CC03001')">详情</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 诊疗目录 -->
+            <div class="catalog-section" data-catalog="treatment">
+                <div class="catalog-stats">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">8,923</div>
+                            <div class="stat-label">诊疗项目总数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">3,456</div>
+                            <div class="stat-label">检查项目</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">2,789</div>
+                            <div class="stat-label">检验项目</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">1,234</div>
+                            <div class="stat-label">治疗项目</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">1,444</div>
+                            <div class="stat-label">手术项目</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="treatmentTable">
+                        <thead>
+                            <tr>
+                                <th>项目编码</th>
+                                <th>项目名称</th>
+                                <th>项目分类</th>
+                                <th>计价单位</th>
+                                <th>价格(元)</th>
+                                <th>医保类别</th>
+                                <th>适应症</th>
+                                <th>限制条件</th>
+                                <th>更新时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>B01001001</td>
+                                <td>胸部CT平扫</td>
+                                <td>影像检查</td>
+                                <td>次</td>
+                                <td>280.00</td>
+                                <td><span class="insurance-tag class-a">甲类</span></td>
+                                <td>胸部疾病诊断</td>
+                                <td><span class="restriction-tag none">无限制</span></td>
+                                <td>2024-01-12</td>
+                                <td>
+                                    <button class="btn btn-xs btn-info" onclick="viewTreatmentDetail('B01001001')">详情</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>B02002001</td>
+                                <td>血常规</td>
+                                <td>实验室检验</td>
+                                <td>次</td>
+                                <td>25.00</td>
+                                <td><span class="insurance-tag class-a">甲类</span></td>
+                                <td>血液系统疾病筛查</td>
+                                <td><span class="restriction-tag none">无限制</span></td>
+                                <td>2024-01-10</td>
+                                <td>
+                                    <button class="btn btn-xs btn-info" onclick="viewTreatmentDetail('B02002001')">详情</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>B03003001</td>
+                                <td>冠状动脉造影术</td>
+                                <td>介入治疗</td>
+                                <td>次</td>
+                                <td>2800.00</td>
+                                <td><span class="insurance-tag class-b">乙类</span></td>
+                                <td>冠心病诊断</td>
+                                <td><span class="restriction-tag strict">严格限制</span></td>
+                                <td>2024-01-08</td>
+                                <td>
+                                    <button class="btn btn-xs btn-info" onclick="viewTreatmentDetail('B03003001')">详情</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 耗材目录 -->
+            <div class="catalog-section" data-catalog="material">
+                <div class="catalog-stats">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">15,678</div>
+                            <div class="stat-label">耗材总数</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">8,234</div>
+                            <div class="stat-label">一般耗材</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">3,456</div>
+                            <div class="stat-label">高值耗材</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">2,789</div>
+                            <div class="stat-label">植入性耗材</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">1,199</div>
+                            <div class="stat-label">一次性耗材</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="materialTable">
+                        <thead>
+                            <tr>
+                                <th>耗材编码</th>
+                                <th>耗材名称</th>
+                                <th>规格型号</th>
+                                <th>生产厂家</th>
+                                <th>单位</th>
+                                <th>价格(元)</th>
+                                <th>耗材分类</th>
+                                <th>医保类别</th>
+                                <th>使用限制</th>
+                                <th>更新时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>C01001001</td>
+                                <td>一次性注射器</td>
+                                <td>5ml</td>
+                                <td>某某医疗器械公司</td>
+                                <td>支</td>
+                                <td>0.85</td>
+                                <td>一次性耗材</td>
+                                <td><span class="insurance-tag class-a">甲类</span></td>
+                                <td><span class="restriction-tag none">无限制</span></td>
+                                <td>2024-01-15</td>
+                                <td>
+                                    <button class="btn btn-xs btn-info" onclick="viewMaterialDetail('C01001001')">详情</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C02002001</td>
+                                <td>冠脉支架</td>
+                                <td>3.0×18mm</td>
+                                <td>某某心血管器械公司</td>
+                                <td>个</td>
+                                <td>8500.00</td>
+                                <td>高值耗材</td>
+                                <td><span class="insurance-tag class-b">乙类</span></td>
+                                <td><span class="restriction-tag strict">严格限制</span></td>
+                                <td>2024-01-12</td>
+                                <td>
+                                    <button class="btn btn-xs btn-info" onclick="viewMaterialDetail('C02002001')">详情</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>C03003001</td>
+                                <td>人工关节假体</td>
+                                <td>全髋关节</td>
+                                <td>某某骨科器械公司</td>
+                                <td>套</td>
+                                <td>25000.00</td>
+                                <td>植入性耗材</td>
+                                <td><span class="insurance-tag class-b">乙类</span></td>
+                                <td><span class="restriction-tag strict">严格限制</span></td>
+                                <td>2024-01-10</td>
+                                <td>
+                                    <button class="btn btn-xs btn-info" onclick="viewMaterialDetail('C03003001')">详情</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination-container">
+            <div class="pagination-info">
+                显示第 <span id="pageStart">1</span>-<span id="pageEnd">20</span> 条，共 <span id="totalRecords">12,456</span> 条记录
+            </div>
+            <div class="pagination">
+                <button class="btn btn-sm" id="prevPageBtn" disabled>上一页</button>
+                <button class="btn btn-sm active">1</button>
+                <button class="btn btn-sm">2</button>
+                <button class="btn btn-sm">3</button>
+                <button class="btn btn-sm">...</button>
+                <button class="btn btn-sm">623</button>
+                <button class="btn btn-sm" id="nextPageBtn">下一页</button>
+            </div>
+            <div class="page-size-selector">
+                每页显示
+                <select id="pageSizeSelect">
+                    <option value="20" selected>20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                条
+            </div>
+        </div>
+    </div>
+
+    <!-- 高级搜索弹窗 -->
+    <div class="modal" id="advancedSearchModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>高级搜索</h3>
+                <button class="modal-close" onclick="closeAdvancedSearch()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="advancedSearchForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="codeSearch">编码</label>
+                            <input type="text" id="codeSearch" name="code" placeholder="请输入编码">
+                        </div>
+                        <div class="form-group">
+                            <label for="nameSearch">名称</label>
+                            <input type="text" id="nameSearch" name="name" placeholder="请输入名称">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="categorySearch">分类</label>
+                            <select id="categorySearch" name="category">
+                                <option value="">全部分类</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="insuranceSearch">医保类别</label>
+                            <select id="insuranceSearch" name="insurance">
+                                <option value="">全部类别</option>
+                                <option value="class-a">甲类</option>
+                                <option value="class-b">乙类</option>
+                                <option value="class-c">丙类</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="priceMinSearch">价格范围</label>
+                            <div class="price-range">
+                                <input type="number" id="priceMinSearch" name="priceMin" placeholder="最低价格">
+                                <span>-</span>
+                                <input type="number" id="priceMaxSearch" name="priceMax" placeholder="最高价格">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateTimeSearch">更新时间</label>
+                            <input type="date" id="updateTimeSearch" name="updateTime">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="performAdvancedSearch()">搜索</button>
+                <button class="btn btn-secondary" onclick="resetAdvancedSearch()">重置</button>
+                <button class="btn btn-default" onclick="closeAdvancedSearch()">取消</button>
+            </div>
+        </div>
+    </div>
+            </div> <!-- 关闭 kb-container -->
+        </div> <!-- 关闭 main-content -->
+    </div> <!-- 关闭 dashboard-container -->
+
+    <script src="./assets/js/knowledge-base.js"></script>
+    
+    <!-- 加载统一菜单 -->
+<script>
+    // 加载统一菜单组件
+    fetch('../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+
+<script>
+// 根据URL参数设置默认目录tab
+(function() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const catalog = params.get('catalog');
+    if (!catalog) return;
+    // 激活tab按钮
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.catalog === catalog);
+    });
+    // 激活内容区域
+    document.querySelectorAll('.catalog-section').forEach(sec => {
+      sec.classList.toggle('active', sec.dataset.catalog === catalog);
+    });
+  } catch (e) { console.warn('catalog 参数解析失败:', e); }
+})();
+</script>
+
+<script>
+// 基础表单验证
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const inputs = form.querySelectorAll('input[required]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.borderColor = '#ff4d4f';
+                    isValid = false;
+                } else {
+                    input.style.borderColor = '';
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('请填写所有必填字段');
+            }
+        });
+    });
+});
+</script>
+
+<script>
+// 无障碍访问增强
+document.addEventListener('DOMContentLoaded', function() {
+    // 为没有aria-label的按钮添加
+    const buttons = document.querySelectorAll('button:not([aria-label]):not([title])');
+    buttons.forEach(button => {
+        const text = button.textContent.trim() || button.innerHTML.replace(/<[^>]*>/g, '').trim();
+        if (text) {
+            button.setAttribute('aria-label', text);
+        }
+    });
+    
+    // 为表单输入添加基础的无障碍支持
+    const inputs = document.querySelectorAll('input:not([aria-label]):not([title])');
+    inputs.forEach(input => {
+        const placeholder = input.getAttribute('placeholder');
+        if (placeholder) {
+            input.setAttribute('aria-label', placeholder);
+        }
+    });
+});
+</script>
+
+<script>
+// 无障碍访问增强
+document.addEventListener('DOMContentLoaded', function() {
+    // 为没有aria-label的按钮添加
+    const buttons = document.querySelectorAll('button:not([aria-label]):not([title])');
+    buttons.forEach(button => {
+        const text = button.textContent.trim() || button.innerHTML.replace(/<[^>]*>/g, '').trim();
+        if (text) {
+            button.setAttribute('aria-label', text);
+        }
+    });
+    
+    // 为表单输入添加基础的无障碍支持
+    const inputs = document.querySelectorAll('input:not([aria-label]):not([title])');
+    inputs.forEach(input => {
+        const placeholder = input.getAttribute('placeholder');
+        if (placeholder) {
+            input.setAttribute('aria-label', placeholder);
+        }
+    });
+});
+</script>
+
+<script>
+// 无障碍访问增强
+document.addEventListener('DOMContentLoaded', function() {
+    // 为没有aria-label的按钮添加
+    const buttons = document.querySelectorAll('button:not([aria-label]):not([title])');
+    buttons.forEach(button => {
+        const text = button.textContent.trim() || button.innerHTML.replace(/<[^>]*>/g, '').trim();
+        if (text) {
+            button.setAttribute('aria-label', text);
+        }
+    });
+    
+    // 为表单输入添加基础的无障碍支持
+    const inputs = document.querySelectorAll('input:not([aria-label]):not([title])');
+    inputs.forEach(input => {
+        const placeholder = input.getAttribute('placeholder');
+        if (placeholder) {
+            input.setAttribute('aria-label', placeholder);
+        }
+    });
+});
+</script>
+
+<script>
+// 无障碍访问增强
+document.addEventListener('DOMContentLoaded', function() {
+    // 为没有aria-label的按钮添加
+    const buttons = document.querySelectorAll('button:not([aria-label]):not([title])');
+    buttons.forEach(button => {
+        const text = button.textContent.trim() || button.innerHTML.replace(/<[^>]*>/g, '').trim();
+        if (text) {
+            button.setAttribute('aria-label', text);
+        }
+    });
+    
+    // 为表单输入添加基础的无障碍支持
+    const inputs = document.querySelectorAll('input:not([aria-label]):not([title])');
+    inputs.forEach(input => {
+        const placeholder = input.getAttribute('placeholder');
+        if (placeholder) {
+            input.setAttribute('aria-label', placeholder);
+        }
+    });
+});
+</script>
+
+<script>
+// 无障碍访问增强
+document.addEventListener('DOMContentLoaded', function() {
+    // 为没有aria-label的按钮添加
+    const buttons = document.querySelectorAll('button:not([aria-label]):not([title])');
+    buttons.forEach(button => {
+        const text = button.textContent.trim() || button.innerHTML.replace(/<[^>]*>/g, '').trim();
+        if (text) {
+            button.setAttribute('aria-label', text);
+        }
+    });
+    
+    // 为表单输入添加基础的无障碍支持
+    const inputs = document.querySelectorAll('input:not([aria-label]):not([title])');
+    inputs.forEach(input => {
+        const placeholder = input.getAttribute('placeholder');
+        if (placeholder) {
+            input.setAttribute('aria-label', placeholder);
+        }
+    });
+});
+</script>
+</body>
+</html>

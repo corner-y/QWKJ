@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>租户管理</title>
+    <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/租户列表样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    </head>
+<body>
+    <div class="dashboard-container">
+        
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="tenant-list-container">
+        <div class="page-header">
+            <div class="header-left">
+                <h2>租户管理</h2>
+                <div class="page-description">管理平台上的所有租户（医院/医保机构）</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportTenants()">导出列表</button>
+                <button class="btn btn-primary" onclick="addTenant()">新增租户</button>
+            </div>
+        </div>
+
+        <!-- 统计概览 -->
+        <div class="stats-overview">
+            <div class="stat-card total">
+                <div class="stat-icon">
+                    <i class="icon-tenants"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">总租户数</div>
+                </div>
+                <div class="stat-trend">
+                    <span class="trend-value up">+12</span>
+                    <span class="trend-label">本月新增</span>
+                </div>
+            </div>
+            <div class="stat-card active">
+                <div class="stat-icon">
+                    <i class="icon-active"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">142</div>
+                    <div class="stat-label">活跃租户</div>
+                </div>
+                <div class="stat-trend">
+                    <span class="trend-value">91.0%</span>
+                    <span class="trend-label">活跃率</span>
+                </div>
+            </div>
+            <div class="stat-card revenue">
+                <div class="stat-icon">
+                    <i class="icon-revenue"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">¥2.34M</div>
+                    <div class="stat-label">月度收入</div>
+                </div>
+                <div class="stat-trend">
+                    <span class="trend-value up">+18.5%</span>
+                    <span class="trend-label">环比增长</span>
+                </div>
+            </div>
+            <div class="stat-card support">
+                <div class="stat-icon">
+                    <i class="icon-support"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-value">23</div>
+                    <div class="stat-label">待处理工单</div>
+                </div>
+                <div class="stat-trend">
+                    <span class="trend-value neutral">持平</span>
+                    <span class="trend-label">较昨日</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 搜索和筛选 -->
+        <div class="search-filters">
+            <div class="search-section">
+                <div class="search-group">
+                    <label>租户名称</label>
+                    <input type="text" class="form-input" id="tenantName" placeholder="请输入租户名称">
+                </div>
+                <div class="search-group">
+                    <label>租户类型</label>
+                    <select class="form-select" id="tenantType">
+                        <option value="">全部类型</option>
+                        <option value="level3">三甲医院</option>
+                        <option value="level2">二甲医院</option>
+                        <option value="level1">一甲医院</option>
+                        <option value="specialist">专科医院</option>
+                        <option value="insurance">医保机构</option>
+                        <option value="clinic">诊所</option>
+                    </select>
+                </div>
+                <div class="search-group">
+                    <label>所在地区</label>
+                    <select class="form-select" id="region">
+                        <option value="">全部地区</option>
+                        <option value="beijing">北京</option>
+                        <option value="shanghai">上海</option>
+                        <option value="guangzhou">广州</option>
+                        <option value="shenzhen">深圳</option>
+                        <option value="hangzhou">杭州</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="search-group">
+                    <label>状态</label>
+                    <select class="form-select" id="status">
+                        <option value="">全部状态</option>
+                        <option value="active">活跃</option>
+                        <option value="inactive">非活跃</option>
+                        <option value="suspended">暂停</option>
+                        <option value="trial">试用</option>
+                    </select>
+                </div>
+            </div>
+            <!-- 高级筛选（默认隐藏） -->
+            <div class="filter-row" id="advancedFilters" style="display: none;">
+                <div class="filter-group">
+                    <label>注册时间</label>
+                    <div class="date-range">
+                        <input type="date" class="form-input" id="registerStartDate">
+                        <span class="date-separator">至</span>
+                        <input type="date" class="form-input" id="registerEndDate">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>月收入范围</label>
+                    <div class="amount-range">
+                        <input type="number" class="form-input" id="revenueMin" placeholder="最小金额">
+                        <span class="amount-separator">-</span>
+                        <input type="number" class="form-input" id="revenueMax" placeholder="最大金额">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>套餐类型</label>
+                    <select class="form-select" id="planType">
+                        <option value="">全部套餐</option>
+                        <option value="basic">基础版</option>
+                        <option value="standard">标准版</option>
+                        <option value="premium">高级版</option>
+                        <option value="enterprise">企业版</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>客户经理</label>
+                    <select class="form-select" id="accountManager">
+                        <option value="">全部经理</option>
+                        <option value="zhang">张经理</option>
+                        <option value="li">李经理</option>
+                        <option value="wang">王经理</option>
+                        <option value="liu">刘经理</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-primary" onclick="searchTenants()">搜索</button>
+                <button class="btn btn-secondary" onclick="resetFilters()">重置</button>
+                <button class="btn btn-info" onclick="toggleAdvancedFilters()">高级筛选</button>
+            </div>
+        </div>
+
+        <!-- 操作栏 -->
+        <div class="table-toolbar">
+            <div class="toolbar-left">
+                <div class="bulk-actions">
+                    <button class="btn btn-sm btn-secondary" onclick="bulkActivate()" disabled id="bulkActivateBtn">批量激活</button>
+                    <button class="btn btn-sm btn-warning" onclick="bulkSuspend()" disabled id="bulkSuspendBtn">批量暂停</button>
+                </div>
+            </div>
+            <div class="toolbar-right">
+                <div class="view-controls">
+                    <button class="view-btn active" data-view="table" onclick="switchView('table')">表格视图</button>
+                    <button class="view-btn" data-view="card" onclick="switchView('card')">卡片视图</button>
+                </div>
+                <div class="sort-controls">
+                    <select class="form-select" id="sortBy" onchange="sortTenants()">
+                        <option value="name">按名称排序</option>
+                        <option value="register_time">按注册时间</option>
+                        <option value="revenue">按收入排序</option>
+                        <option value="activity">按活跃度排序</option>
+                        <option value="last_login">按最后登录</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 租户列表 - 表格视图 -->
+        <div class="tenant-table-view" id="tableView">
+            <table class="tenant-table">
+                <thead>
+                    <tr>
+                        <th width="40"><input type="checkbox" id="selectAll" class="select-all-checkbox"></th>
+                        <th width="60">ID</th>
+                        <th width="200">租户信息</th>
+                        <th width="100">类型</th>
+                        <th width="120">地区</th>
+                        <th width="100">套餐</th>
+                        <th width="100">月收入</th>
+                        <th width="80">活跃度</th>
+                        <th width="100">最后登录</th>
+                        <th width="80">状态</th>
+                        <th width="150">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" class="tenant-checkbox" value="T-001"></td>
+                        <td><span class="tenant-id">T-001</span></td>
+                        <td>
+                            <div class="tenant-info">
+                                <div class="tenant-details">
+                                    <div class="tenant-name">北京协和医院</div>
+                                    <div class="tenant-contact">联系人：张主任 | 13800138001</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-3">三甲医院</span></td>
+                        <td><span class="region-tag">北京</span></td>
+                        <td><span class="plan-tag enterprise">企业版</span></td>
+                        <td><span class="revenue-amount high">¥89,500</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 95%;"></div>
+                                </div>
+                                <span class="activity-value">95%</span>
+                            </div>
+                        </td>
+                        <td><span class="last-login recent">2小时前</span></td>
+                        <td><span class="status-badge active">活跃</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-primary" onclick="viewTenant('T-001')">查看</button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="editTenant('T-001')">编辑</a>
+                                        <a href="#" onclick="loginAsTenant('T-001')">登录为</a>
+                                        <a href="#" onclick="viewBilling('T-001')">账单详情</a>
+                                        <a href="#" onclick="viewLogs('T-001')">操作日志</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="suspendTenant('T-001')" class="text-warning">暂停服务</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="tenant-checkbox" value="T-002"></td>
+                        <td><span class="tenant-id">T-002</span></td>
+                        <td>
+                            <div class="tenant-info">
+                                <div class="tenant-details">
+                                    <div class="tenant-name">上海华山医院</div>
+                                    <div class="tenant-contact">联系人：李院长 | 13900139002</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-3">三甲医院</span></td>
+                        <td><span class="region-tag">上海</span></td>
+                        <td><span class="plan-tag premium">高级版</span></td>
+                        <td><span class="revenue-amount high">¥76,800</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 92%;"></div>
+                                </div>
+                                <span class="activity-value">92%</span>
+                            </div>
+                        </td>
+                        <td><span class="last-login recent">1天前</span></td>
+                        <td><span class="status-badge active">活跃</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-primary" onclick="viewTenant('T-002')">查看</button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="editTenant('T-002')">编辑</a>
+                                        <a href="#" onclick="loginAsTenant('T-002')">登录为</a>
+                                        <a href="#" onclick="viewBilling('T-002')">账单详情</a>
+                                        <a href="#" onclick="viewLogs('T-002')">操作日志</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="suspendTenant('T-002')" class="text-warning">暂停服务</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="tenant-checkbox" value="T-003"></td>
+                        <td><span class="tenant-id">T-003</span></td>
+                        <td>
+                            <div class="tenant-info">
+                                <div class="tenant-details">
+                                    <div class="tenant-name">广州中山医院</div>
+                                    <div class="tenant-contact">联系人：王主任 | 13700137003</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-3">三甲医院</span></td>
+                        <td><span class="region-tag">广州</span></td>
+                        <td><span class="plan-tag standard">标准版</span></td>
+                        <td><span class="revenue-amount medium">¥65,200</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 88%;"></div>
+                                </div>
+                                <span class="activity-value">88%</span>
+                            </div>
+                        </td>
+                        <td><span class="last-login normal">3天前</span></td>
+                        <td><span class="status-badge active">活跃</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-info" onclick="viewTenant('T-003')">查看</button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="editTenant('T-003')">编辑</a>
+                                        <a href="#" onclick="loginAsTenant('T-003')">登录为</a>
+                                        <a href="#" onclick="viewBilling('T-003')">账单详情</a>
+                                        <a href="#" onclick="viewLogs('T-003')">操作日志</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="suspendTenant('T-003')" class="text-warning">暂停服务</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="tenant-checkbox" value="T-004"></td>
+                        <td><span class="tenant-id">T-004</span></td>
+                        <td>
+                            <div class="tenant-info">
+                                <div class="tenant-details">
+                                    <div class="tenant-name">深圳市人民医院</div>
+                                    <div class="tenant-contact">联系人：刘院长 | 13600136004</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-2">二甲医院</span></td>
+                        <td><span class="region-tag">深圳</span></td>
+                        <td><span class="plan-tag standard">标准版</span></td>
+                        <td><span class="revenue-amount medium">¥52,300</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 85%;"></div>
+                                </div>
+                                <span class="activity-value">85%</span>
+                            </div>
+                        </td>
+                        <td><span class="last-login normal">5天前</span></td>
+                        <td><span class="status-badge active">活跃</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-info" onclick="viewTenant('T-004')">查看</button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="editTenant('T-004')">编辑</a>
+                                        <a href="#" onclick="loginAsTenant('T-004')">登录为</a>
+                                        <a href="#" onclick="viewBilling('T-004')">账单详情</a>
+                                        <a href="#" onclick="viewLogs('T-004')">操作日志</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="suspendTenant('T-004')" class="text-warning">暂停服务</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="tenant-checkbox" value="T-005"></td>
+                        <td><span class="tenant-id">T-005</span></td>
+                        <td>
+                            <div class="tenant-info">
+                                <div class="tenant-details">
+                                    <div class="tenant-name">杭州市医保局</div>
+                                    <div class="tenant-contact">联系人：陈局长 | 13500135005</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag insurance">医保机构</span></td>
+                        <td><span class="region-tag">杭州</span></td>
+                        <td><span class="plan-tag premium">高级版</span></td>
+                        <td><span class="revenue-amount medium">¥48,900</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 82%;"></div>
+                                </div>
+                                <span class="activity-value">82%</span>
+                            </div>
+                        </td>
+                        <td><span class="last-login old">1周前</span></td>
+                        <td><span class="status-badge inactive">非活跃</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-info" onclick="viewTenant('T-005')">查看</button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="editTenant('T-005')">编辑</a>
+                                        <a href="#" onclick="loginAsTenant('T-005')">登录为</a>
+                                        <a href="#" onclick="viewBilling('T-005')">账单详情</a>
+                                        <a href="#" onclick="viewLogs('T-005')">操作日志</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="activateTenant('T-005')" class="text-success">激活服务</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="tenant-checkbox" value="T-006"></td>
+                        <td><span class="tenant-id">T-006</span></td>
+                        <td>
+                            <div class="tenant-info">
+
+                                <div class="tenant-details">
+                                    <div class="tenant-name">成都华西医院</div>
+                                    <div class="tenant-contact">联系人：赵主任 | 13400134006</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="tenant-type-tag level-3">三甲医院</span></td>
+                        <td><span class="region-tag">成都</span></td>
+                        <td><span class="plan-tag basic">基础版</span></td>
+                        <td><span class="revenue-amount low">¥28,600</span></td>
+                        <td>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 45%;"></div>
+                                </div>
+                                <span class="activity-value">45%</span>
+                            </div>
+                        </td>
+                        <td><span class="last-login old">2周前</span></td>
+                        <td><span class="status-badge trial">试用</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-info" onclick="viewTenant('T-006')">查看</button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="editTenant('T-006')">编辑</a>
+                                        <a href="#" onclick="loginAsTenant('T-006')">登录为</a>
+                                        <a href="#" onclick="viewBilling('T-006')">账单详情</a>
+                                        <a href="#" onclick="viewLogs('T-006')">操作日志</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="convertTrial('T-006')" class="text-success">转为正式</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 租户列表 - 卡片视图 -->
+        <div class="tenant-card-view" id="cardView" style="display: none;">
+            <div class="tenant-cards-grid">
+                <div class="tenant-card" data-tenant-id="T-001">
+                    <div class="card-header">
+                        <input type="checkbox" class="tenant-checkbox" value="T-001">
+                        <div class="tenant-basic-info">
+                            <div class="tenant-name">北京协和医院</div>
+                            <div class="tenant-id">T-001</div>
+                        </div>
+                        <div class="tenant-status">
+                            <span class="status-badge active">活跃</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <span class="info-label">类型：</span>
+                            <span class="tenant-type-tag level-3">三甲医院</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">地区：</span>
+                            <span class="region-tag">北京</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">套餐：</span>
+                            <span class="plan-tag enterprise">企业版</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">月收入：</span>
+                            <span class="revenue-amount high">¥89,500</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">活跃度：</span>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 95%;"></div>
+                                </div>
+                                <span class="activity-value">95%</span>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">最后登录：</span>
+                            <span class="last-login recent">2小时前</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">联系人：</span>
+                            <span class="contact-info">张主任 | 13800138001</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-sm btn-primary" onclick="viewTenant('T-001')">查看</button>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                            <div class="dropdown-menu">
+                                <a href="#" onclick="editTenant('T-001')">编辑</a>
+                                <a href="#" onclick="loginAsTenant('T-001')">登录为</a>
+                                <a href="#" onclick="viewBilling('T-001')">账单详情</a>
+                                <a href="#" onclick="viewLogs('T-001')">操作日志</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" onclick="suspendTenant('T-001')" class="text-warning">暂停服务</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tenant-card" data-tenant-id="T-002">
+                    <div class="card-header">
+                        <input type="checkbox" class="tenant-checkbox" value="T-002">
+                        <div class="tenant-basic-info">
+                            <div class="tenant-name">上海华山医院</div>
+                            <div class="tenant-id">T-002</div>
+                        </div>
+                        <div class="tenant-status">
+                            <span class="status-badge active">活跃</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <span class="info-label">类型：</span>
+                            <span class="tenant-type-tag level-3">三甲医院</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">地区：</span>
+                            <span class="region-tag">上海</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">套餐：</span>
+                            <span class="plan-tag premium">高级版</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">月收入：</span>
+                            <span class="revenue-amount high">¥76,800</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">活跃度：</span>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 92%;"></div>
+                                </div>
+                                <span class="activity-value">92%</span>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">最后登录：</span>
+                            <span class="last-login recent">1天前</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">联系人：</span>
+                            <span class="contact-info">李院长 | 13900139002</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-sm btn-info" onclick="viewTenant('T-002')">查看</button>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                            <div class="dropdown-menu">
+                                <a href="#" onclick="editTenant('T-002')">编辑</a>
+                                <a href="#" onclick="loginAsTenant('T-002')">登录为</a>
+                                <a href="#" onclick="viewBilling('T-002')">账单详情</a>
+                                <a href="#" onclick="viewLogs('T-002')">操作日志</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" onclick="suspendTenant('T-002')" class="text-warning">暂停服务</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tenant-card" data-tenant-id="T-005">
+                    <div class="card-header">
+                        <input type="checkbox" class="tenant-checkbox" value="T-005">
+
+                        <div class="tenant-basic-info">
+                            <div class="tenant-name">杭州市医保局</div>
+                            <div class="tenant-id">T-005</div>
+                        </div>
+                        <div class="tenant-status">
+                            <span class="status-badge inactive">非活跃</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <span class="info-label">类型：</span>
+                            <span class="tenant-type-tag insurance">医保机构</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">地区：</span>
+                            <span class="region-tag">杭州</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">套餐：</span>
+                            <span class="plan-tag premium">高级版</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">月收入：</span>
+                            <span class="revenue-amount medium">¥48,900</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">活跃度：</span>
+                            <div class="activity-indicator">
+                                <div class="activity-bar">
+                                    <div class="activity-fill" style="width: 82%;"></div>
+                                </div>
+                                <span class="activity-value">82%</span>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">最后登录：</span>
+                            <span class="last-login old">1周前</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">联系人：</span>
+                            <span class="contact-info">陈局长 | 13500135005</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn btn-sm btn-info" onclick="viewTenant('T-005')">查看</button>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                            <div class="dropdown-menu">
+                                <a href="#" onclick="editTenant('T-005')">编辑</a>
+                                <a href="#" onclick="loginAsTenant('T-005')">登录为</a>
+                                <a href="#" onclick="viewBilling('T-005')">账单详情</a>
+                                <a href="#" onclick="viewLogs('T-005')">操作日志</a>
+                                <div class="dropdown-divider"></div>
+                                <a href="#" onclick="activateTenant('T-005')" class="text-success">激活服务</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination-container">
+            <div class="pagination-info">
+                <span>共 156 条记录，当前显示第 1-10 条</span>
+            </div>
+            <div class="pagination-right">
+                <div class="pagination">
+                    <button class="page-btn" disabled>上一页</button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">4</button>
+                    <button class="page-btn">5</button>
+                    <span class="page-ellipsis">...</span>
+                    <button class="page-btn">16</button>
+                    <button class="page-btn">下一页</button>
+                </div>
+                <div class="page-size-selector">
+                    <select class="form-select" onchange="changePageSize()">
+                        <option value="10" selected>10条/页</option>
+                        <option value="20">20条/页</option>
+                        <option value="50">50条/页</option>
+                        <option value="100">100条/页</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 租户详情弹窗 -->
+    <div class="modal" id="tenantDetailModal" style="display: none;">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>租户详情</h3>
+                <button class="modal-close" onclick="closeTenantDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="tenant-detail-tabs">
+                    <div class="tab-nav">
+                        <button class="tab-btn active" data-tab="basic">基本信息</button>
+                        <button class="tab-btn" data-tab="billing">账单信息</button>
+                        <button class="tab-btn" data-tab="usage">使用统计</button>
+                        <button class="tab-btn" data-tab="logs">操作日志</button>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="basicTab">
+                            <div class="detail-section">
+                                <h4>基本信息</h4>
+                                <div class="detail-grid">
+                                    <div class="detail-item">
+                                        <label>租户ID：</label>
+                                        <span>T-001</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>租户名称：</label>
+                                        <span>北京协和医院</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>机构类型：</label>
+                                        <span>三甲医院</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>所在地区：</label>
+                                        <span>北京市东城区</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>联系人：</label>
+                                        <span>张主任</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>联系电话：</label>
+                                        <span>13800138001</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>注册时间：</label>
+                                        <span>2023-06-15 14:30:00</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>当前状态：</label>
+                                        <span class="status-badge active">活跃</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>套餐信息</h4>
+                                <div class="detail-grid">
+                                    <div class="detail-item">
+                                        <label>当前套餐：</label>
+                                        <span class="plan-tag enterprise">企业版</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>套餐开始：</label>
+                                        <span>2023-07-01</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>套餐到期：</label>
+                                        <span>2024-06-30</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <label>月费用：</label>
+                                        <span>¥89,500</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="billingTab">
+                            <div class="billing-summary">
+                                <div class="billing-card">
+                                    <div class="billing-label">本月账单</div>
+                                    <div class="billing-amount">¥89,500</div>
+                                </div>
+                                <div class="billing-card">
+                                    <div class="billing-label">累计消费</div>
+                                    <div class="billing-amount">¥1,074,000</div>
+                                </div>
+                                <div class="billing-card">
+                                    <div class="billing-label">账户余额</div>
+                                    <div class="billing-amount">¥156,800</div>
+                                </div>
+                            </div>
+                            <div class="billing-history">
+                                <h4>账单历史</h4>
+                                <table class="billing-table">
+                                    <thead>
+                                        <tr>
+                                            <th>账单月份</th>
+                                            <th>套餐费用</th>
+                                            <th>使用量费用</th>
+                                            <th>总金额</th>
+                                            <th>支付状态</th>
+                                            <th>支付时间</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>2024-01</td>
+                                            <td>¥80,000</td>
+                                            <td>¥9,500</td>
+                                            <td>¥89,500</td>
+                                            <td><span class="payment-status paid">已支付</span></td>
+                                            <td>2024-01-05</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2023-12</td>
+                                            <td>¥80,000</td>
+                                            <td>¥8,200</td>
+                                            <td>¥88,200</td>
+                                            <td><span class="payment-status paid">已支付</span></td>
+                                            <td>2023-12-03</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="usageTab">
+                            <div class="usage-stats">
+                                <div class="usage-card">
+                                    <div class="usage-label">本月审核次数</div>
+                                    <div class="usage-value">156,789</div>
+                                    <div class="usage-trend up">+12.5%</div>
+                                </div>
+                                <div class="usage-card">
+                                    <div class="usage-label">平均响应时间</div>
+                                    <div class="usage-value">1.2s</div>
+                                    <div class="usage-trend down">-0.3s</div>
+                                </div>
+                                <div class="usage-card">
+                                    <div class="usage-label">活跃用户数</div>
+                                    <div class="usage-value">245</div>
+                                    <div class="usage-trend up">+18</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="logsTab">
+                            <div class="logs-list">
+                                <div class="log-item">
+                                    <div class="log-time">2024-01-31 15:30:00</div>
+                                    <div class="log-action">登录系统</div>
+                                    <div class="log-user">张主任</div>
+                                    <div class="log-ip">192.168.1.100</div>
+                                </div>
+                                <div class="log-item">
+                                    <div class="log-time">2024-01-31 14:20:00</div>
+                                    <div class="log-action">修改规则配置</div>
+                                    <div class="log-user">李医生</div>
+                                    <div class="log-ip">192.168.1.101</div>
+                                </div>
+                                <div class="log-item">
+                                    <div class="log-time">2024-01-31 10:15:00</div>
+                                    <div class="log-action">导出审核报告</div>
+                                    <div class="log-user">王护士</div>
+                                    <div class="log-ip">192.168.1.102</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeTenantDetailModal()">关闭</button>
+                <button class="btn btn-primary" onclick="editTenantFromDetail()">编辑租户</button>
+            </div>
+        </div>
+    </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/tenant-list.js"></script>
+    <!-- 加载统一菜单 -->
+<script>
+    // 加载统一菜单组件
+    fetch('../../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+
+</body>
+</html>

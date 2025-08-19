@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>审核结果 - 医保智能审核系统</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/审核结果样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    </head>
+<body>
+    
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-navbar">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="icon-menu"></i>
+                </button>
+                <div class="breadcrumb">
+                    <span>案例管理</span>
+                    <span class="separator">></span>
+                    <span>审核结果</span>
+                </div>
+                <div class="navbar-actions">
+                    <button class="btn btn-icon" onclick="showNotifications()">
+                        <i class="icon-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="btn btn-icon" onclick="refreshPage()">
+                        <i class="icon-refresh"></i>
+                    </button>
+                    <div class="current-time" id="currentTime"></div>
+                </div>
+            </div>
+            
+            <div class="container">
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <div class="header-left">
+                <h1>审核结果</h1>
+                <div class="breadcrumb">
+                    <span>操作员工作台</span>
+                    <span class="separator">></span>
+                    <span>审核结果</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-success" onclick="exportResults()">
+                    <i class="icon-export"></i>
+                    导出结果
+                </button>
+                <button class="btn btn-info" onclick="generateReport()">
+                    <i class="icon-report"></i>
+                    生成报告
+                </button>
+                <button class="btn btn-secondary" onclick="refreshResults()">
+                    <i class="icon-refresh"></i>
+                    刷新数据
+                </button>
+            </div>
+        </div>
+
+        <!-- 结果统计 -->
+        <div class="stats-section">
+            <div class="stats-cards">
+                <div class="stat-card total">
+                    <div class="stat-icon">
+                        <i class="icon-total"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">1,234</div>
+                        <div class="stat-label">总审核记录</div>
+                        <div class="stat-change positive">+56 较昨日</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card violations">
+                    <div class="stat-icon">
+                        <i class="icon-warning"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">189</div>
+                        <div class="stat-label">违规记录</div>
+                        <div class="stat-change negative">+12 较昨日</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card amount">
+                    <div class="stat-icon">
+                        <i class="icon-money"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">¥456,789</div>
+                        <div class="stat-label">涉及金额</div>
+                        <div class="stat-change negative">+¥23,456</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card rate">
+                    <div class="stat-icon">
+                        <i class="icon-percent"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">15.3%</div>
+                        <div class="stat-label">违规率</div>
+                        <div class="stat-change positive">-2.1% 较昨日</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 筛选和搜索 -->
+        <div class="filter-section">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>违规类型：</label>
+                    <select class="filter-select" id="violationTypeFilter">
+                        <option value="">全部类型</option>
+                        <option value="drug_abuse">药品滥用</option>
+                        <option value="duplicate_service">重复服务</option>
+                        <option value="overtreatment">过度治疗</option>
+                        <option value="cost_anomaly">费用异常</option>
+                        <option value="material_abuse">耗材滥用</option>
+                        <option value="false_claim">虚假申报</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>严重程度：</label>
+                    <select class="filter-select" id="severityFilter">
+                        <option value="">全部程度</option>
+                        <option value="critical">严重</option>
+                        <option value="high">较高</option>
+                        <option value="medium">中等</option>
+                        <option value="low">较低</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>科室：</label>
+                    <select class="filter-select" id="departmentFilter">
+                        <option value="">全部科室</option>
+                        <option value="cardiology">心内科</option>
+                        <option value="neurology">神经内科</option>
+                        <option value="orthopedics">骨科</option>
+                        <option value="surgery">外科</option>
+                        <option value="pediatrics">儿科</option>
+                        <option value="icu">ICU</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label>处理状态：</label>
+                    <select class="filter-select" id="statusFilter">
+                        <option value="">全部状态</option>
+                        <option value="pending">待处理</option>
+                        <option value="processing">处理中</option>
+                        <option value="resolved">已处理</option>
+                        <option value="ignored">已忽略</option>
+                        <option value="appealed">已申诉</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>时间范围：</label>
+                    <select class="filter-select" id="timeRangeFilter">
+                        <option value="today">今天</option>
+                        <option value="week">本周</option>
+                        <option value="month" selected>本月</option>
+                        <option value="quarter">本季度</option>
+                        <option value="custom">自定义</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group custom-date" style="display: none;">
+                    <label>开始日期：</label>
+                    <input type="date" class="filter-input" id="startDate">
+                    <label>结束日期：</label>
+                    <input type="date" class="filter-input" id="endDate">
+                </div>
+                
+                <div class="filter-group search-group">
+                    <input type="text" class="search-input" placeholder="搜索患者姓名、病历号..." id="searchInput">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <i class="icon-search"></i>
+                        搜索
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetFilters()">
+                        <i class="icon-reset"></i>
+                        重置
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结果列表 -->
+        <div class="results-section">
+            <div class="section-header">
+                <div class="section-title">
+                    <h3>审核结果列表</h3>
+                    <span class="result-count">共找到 189 条违规记录</span>
+                </div>
+                <div class="section-actions">
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="list" onclick="switchView('list')">
+                            <i class="icon-list"></i>
+                            列表
+                        </button>
+                        <button class="view-btn" data-view="card" onclick="switchView('card')">
+                            <i class="icon-grid"></i>
+                            卡片
+                        </button>
+                    </div>
+                    <div class="sort-options">
+                        <label>排序：</label>
+                        <select class="sort-select" id="sortBy">
+                            <option value="time">时间</option>
+                            <option value="severity">严重程度</option>
+                            <option value="amount">涉及金额</option>
+                            <option value="department">科室</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 列表视图 -->
+            <div class="results-list" id="listView">
+                <div class="list-header">
+                    <div class="header-cell">
+                        <input type="checkbox" id="selectAll" onchange="handleSelectAll()">
+                    </div>
+                    <div class="header-cell">严重程度</div>
+                    <div class="header-cell">患者信息</div>
+                    <div class="header-cell">违规类型</div>
+                    <div class="header-cell">科室</div>
+                    <div class="header-cell">涉及金额</div>
+                    <div class="header-cell">发现时间</div>
+                    <div class="header-cell">状态</div>
+                    <div class="header-cell">操作</div>
+                </div>
+
+                <div class="result-item">
+                    <div class="item-cell">
+                        <input type="checkbox" class="result-checkbox" data-result-id="1">
+                    </div>
+                    <div class="item-cell">
+                        <span class="severity-badge critical">严重</span>
+                    </div>
+                    <div class="item-cell">
+                        <div class="patient-info">
+                            <div class="patient-name">张三</div>
+                            <div class="patient-id">ID: 20240115001</div>
+                            <div class="patient-details">男, 45岁, 职工医保</div>
+                        </div>
+                    </div>
+                    <div class="item-cell">
+                        <div class="violation-type">
+                            <span class="type-tag drug-abuse">药品滥用</span>
+                            <div class="violation-desc">抗生素使用超出合理范围</div>
+                        </div>
+                    </div>
+                    <div class="item-cell">
+                        <span class="department">心内科</span>
+                    </div>
+                    <div class="item-cell">
+                        <span class="amount critical">¥12,345</span>
+                    </div>
+                    <div class="item-cell">
+                        <span class="time">2024-01-15 14:30</span>
+                    </div>
+                    <div class="item-cell">
+                        <span class="status-badge pending">待处理</span>
+                    </div>
+                    <div class="item-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-xs btn-primary" onclick="viewDetail(1)" title="查看详情">
+                                <i class="icon-eye"></i>
+                            </button>
+                            <button class="btn btn-xs btn-success" onclick="processViolation(1)" title="处理">
+                                <i class="icon-check"></i>
+                            </button>
+                            <button class="btn btn-xs btn-warning" onclick="ignoreViolation(1)" title="忽略">
+                                <i class="icon-ignore"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <div class="item-cell">
+                        <input type="checkbox" class="result-checkbox" data-result-id="2">
+                    </div>
+                    <div class="item-cell">
+                        <span class="severity-badge high">较高</span>
+                    </div>
+                    <div class="item-cell">
+                        <div class="patient-info">
+                            <div class="patient-name">李四</div>
+                            <div class="patient-id">ID: 20240115002</div>
+                            <div class="patient-details">女, 32岁, 居民医保</div>
+                        </div>
+                    </div>
+                    <div class="item-cell">
+                        <div class="violation-type">
+                            <span class="type-tag duplicate-service">重复服务</span>
+                            <div class="violation-desc">同日重复检查项目</div>
+                        </div>
+                    </div>
+                    <div class="item-cell">
+                        <span class="department">神经内科</span>
+                    </div>
+                    <div class="item-cell">
+                        <span class="amount high">¥3,456</span>
+                    </div>
+                    <div class="item-cell">
+                        <span class="time">2024-01-15 13:45</span>
+                    </div>
+                    <div class="item-cell">
+                        <span class="status-badge processing">处理中</span>
+                    </div>
+                    <div class="item-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-xs btn-primary" onclick="viewDetail(2)" title="查看详情">
+                                <i class="icon-eye"></i>
+                            </button>
+                            <button class="btn btn-xs btn-info" onclick="viewProgress(2)" title="查看进度">
+                                <i class="icon-progress"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <div class="item-cell">
+                        <input type="checkbox" class="result-checkbox" data-result-id="3">
+                    </div>
+                    <div class="item-cell">
+                        <span class="severity-badge medium">中等</span>
+                    </div>
+                    <div class="item-cell">
+                        <div class="patient-info">
+                            <div class="patient-name">王五</div>
+                            <div class="patient-id">ID: 20240115003</div>
+                            <div class="patient-details">男, 28岁, 职工医保</div>
+                        </div>
+                    </div>
+                    <div class="item-cell">
+                        <div class="violation-type">
+                            <span class="type-tag cost-anomaly">费用异常</span>
+                            <div class="violation-desc">单日费用超出正常范围</div>
+                        </div>
+                    </div>
+                    <div class="item-cell">
+                        <span class="department">骨科</span>
+                    </div>
+                    <div class="item-cell">
+                        <span class="amount medium">¥8,901</span>
+                    </div>
+                    <div class="item-cell">
+                        <span class="time">2024-01-15 12:20</span>
+                    </div>
+                    <div class="item-cell">
+                        <span class="status-badge resolved">已处理</span>
+                    </div>
+                    <div class="item-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-xs btn-primary" onclick="viewDetail(3)" title="查看详情">
+                                <i class="icon-eye"></i>
+                            </button>
+                            <button class="btn btn-xs btn-secondary" onclick="viewResult(3)" title="查看结果">
+                                <i class="icon-result"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片视图 -->
+            <div class="results-cards" id="cardView" style="display: none;">
+                <div class="result-card">
+                    <div class="card-header">
+                        <div class="card-checkbox">
+                            <input type="checkbox" class="result-checkbox" data-result-id="1">
+                        </div>
+                        <div class="severity-info">
+                            <span class="severity-badge critical">严重</span>
+                            <span class="violation-tag drug-abuse">药品滥用</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-xs btn-primary" onclick="viewDetail(1)" title="查看详情">
+                                <i class="icon-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="patient-section">
+                            <h4>患者信息</h4>
+                            <div class="patient-details">
+                                <span class="patient-name">张三</span>
+                                <span class="patient-id">ID: 20240115001</span>
+                                <span class="patient-info">男, 45岁, 职工医保</span>
+                            </div>
+                        </div>
+                        <div class="violation-section">
+                            <h4>违规详情</h4>
+                            <p class="violation-desc">抗生素使用超出合理范围，存在药品滥用风险</p>
+                            <div class="violation-meta">
+                                <span class="meta-item">科室: 心内科</span>
+                                <span class="meta-item">涉及金额: ¥12,345</span>
+                                <span class="meta-item">发现时间: 2024-01-15 14:30</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="status-section">
+                            <span class="status-badge pending">待处理</span>
+                        </div>
+                        <div class="action-section">
+                            <button class="btn btn-sm btn-success" onclick="processViolation(1)">处理</button>
+                            <button class="btn btn-sm btn-warning" onclick="ignoreViolation(1)">忽略</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="card-header">
+                        <div class="card-checkbox">
+                            <input type="checkbox" class="result-checkbox" data-result-id="2">
+                        </div>
+                        <div class="severity-info">
+                            <span class="severity-badge high">较高</span>
+                            <span class="violation-tag duplicate-service">重复服务</span>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-xs btn-primary" onclick="viewDetail(2)" title="查看详情">
+                                <i class="icon-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="patient-section">
+                            <h4>患者信息</h4>
+                            <div class="patient-details">
+                                <span class="patient-name">李四</span>
+                                <span class="patient-id">ID: 20240115002</span>
+                                <span class="patient-info">女, 32岁, 居民医保</span>
+                            </div>
+                        </div>
+                        <div class="violation-section">
+                            <h4>违规详情</h4>
+                            <p class="violation-desc">同日重复检查项目，可能存在过度医疗</p>
+                            <div class="violation-meta">
+                                <span class="meta-item">科室: 神经内科</span>
+                                <span class="meta-item">涉及金额: ¥3,456</span>
+                                <span class="meta-item">发现时间: 2024-01-15 13:45</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="status-section">
+                            <span class="status-badge processing">处理中</span>
+                        </div>
+                        <div class="action-section">
+                            <button class="btn btn-sm btn-info" onclick="viewProgress(2)">查看进度</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 批量操作 -->
+            <div class="batch-actions">
+                <div class="batch-info">
+                    <span id="selectedCount">已选择 0 条记录</span>
+                </div>
+                <div class="batch-buttons">
+                    <button class="btn btn-success" onclick="batchProcess()" disabled>
+                        <i class="icon-check"></i>
+                        批量处理
+                    </button>
+                    <button class="btn btn-warning" onclick="batchIgnore()" disabled>
+                        <i class="icon-ignore"></i>
+                        批量忽略
+                    </button>
+                    <button class="btn btn-info" onclick="batchExport()" disabled>
+                        <i class="icon-export"></i>
+                        批量导出
+                    </button>
+                </div>
+            </div>
+
+            <!-- 分页 -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    显示第 1-20 条，共 189 条记录
+                </div>
+                <div class="pagination-controls">
+                    <button class="btn btn-sm btn-secondary" disabled>上一页</button>
+                    <div class="page-numbers">
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">4</button>
+                        <button class="page-btn">5</button>
+                        <span class="page-ellipsis">...</span>
+                        <button class="page-btn">10</button>
+                    </div>
+                    <button class="btn btn-sm btn-secondary">下一页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div class="modal" id="detailModal" style="display: none;">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>违规详情</h3>
+                <button class="modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-content" id="detailContent">
+                    <!-- 详情内容将动态加载 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeDetailModal()">关闭</button>
+                <button class="btn btn-success" onclick="processCurrentViolation()">处理违规</button>
+                <button class="btn btn-warning" onclick="ignoreCurrentViolation()">忽略</button>
+            </div>
+        </div>
+    </div>
+    
+        </div>
+    </div>
+
+    <script src="../assets/js/operator-dashboard.js"></script>
+    <script src="../assets/js/audit-results.js"></script>
+        </div>
+    </div>
+    <!-- 加载统一菜单 -->
+<script>
+    // 加载统一菜单组件
+    fetch('../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+
+
+</body>
+</html>

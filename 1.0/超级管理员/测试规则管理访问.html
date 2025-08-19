@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>规则管理访问测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        a {
+            padding: 12px 20px;
+            background-color: #2196f3;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        a:hover {
+            background-color: #1976d2;
+        }
+        .info {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f0f7ff;
+            border-left: 4px solid #2196f3;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>规则管理访问测试</h1>
+        
+        <div class="info">
+            <p>请点击下方链接尝试访问规则管理页面：</p>
+        </div>
+        
+        <div class="links">
+            <a href="规则管理/index.html">规则管理主页</a>
+            <a href="规则管理/create.html">创建规则页面</a>
+            <a href="规则管理/detail.html">规则详情页面</a>
+            <a href="规则管理/创建规则.html">中文名称 - 创建规则</a>
+            <a href="规则管理/规则详情.html">中文名称 - 规则详情</a>
+        </div>
+        
+        <div class="info">
+            <p>如果链接无法访问，请检查以下几点：</p>
+            <ol>
+                <li>确保Node.js服务器正在运行（端口8000）</li>
+                <li>确认所有文件路径正确</li>
+                <li>检查服务器日志是否有错误信息</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,4 @@
+
+==== 2025-08-15 13:05:06 ====: 知识库目录.html ===
+Console[SEVERE]: http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/assets/js/knowledge-base.js - Failed to load resource: the server responded with a status of 404 (File not found)
+NetworkFailed:  | net::ERR_ABORTED

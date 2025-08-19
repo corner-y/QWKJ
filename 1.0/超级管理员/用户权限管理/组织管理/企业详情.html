@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企业详情 - 医保智能审核系统</title>
+    <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/企业详情样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    <link rel="stylesheet" >
+    <link rel="stylesheet" >
+    </head>
+<body>
+    <div class="dashboard-container">
+        
+        <div id="sidebar-container"></div>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部导航 -->
+            <header class="top-header">
+                <div class="header-left">
+                    <h1>企业详情</h1>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span class="user-name">管理员</span>
+                        <div class="user-avatar">管</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 面包屑导航 -->
+            <div class="breadcrumb">
+                <a href="租户管理.html" class="breadcrumb-link">企业管理</a>
+                <span class="separator">/</span>
+                <span class="current">企业详情</span>
+            </div>
+
+            <!-- 企业基本信息 -->
+            <div class="tenant-info-card">
+                <div class="card-header">
+                    <div class="header-left">
+                        <h3>基本信息</h3>
+                        <span class="status-badge status-active">正常</span>
+                    </div>
+                    <div class="header-right">
+                        <button class="btn btn-outline" onclick="editBasicInfo()">编辑基本信息</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>企业名称：</label>
+                            <span id="companyName">示例医疗集团有限公司</span>
+                        </div>
+                        <div class="info-item">
+                            <label>企业类型：</label>
+                            <span id="companyType">医疗机构</span>
+                        </div>
+                        <div class="info-item">
+                            <label>联系人：</label>
+                            <span id="contactName">张三</span>
+                        </div>
+                        <div class="info-item">
+                            <label>联系电话：</label>
+                            <span id="contactPhone">13800138000</span>
+                        </div>
+                        <div class="info-item">
+                            <label>所在地区：</label>
+                            <span id="region">北京市朝阳区</span>
+                        </div>
+                        <div class="info-item">
+                            <label>创建时间：</label>
+                            <span id="createTime">2024-01-15 10:30:00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab页签 -->
+            <div class="tab-container">
+                <div class="tab-header">
+                    <button class="tab-btn active" data-tab="package">套餐管理</button>
+                    <button class="tab-btn" data-tab="staff">人员管理</button>
+                    <button class="tab-btn" data-tab="contact">联系信息</button>
+                    <button class="tab-btn" data-tab="settings">系统设置</button>
+                </div>
+
+                <!-- 套餐管理 -->
+                <div class="tab-content active" id="package-tab">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h4>当前套餐</h4>
+                            <button class="btn btn-primary" onclick="changePlan()">变更套餐</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="package-info">
+                                <div class="package-item">
+                                    <label>套餐类型：</label>
+                                    <span class="package-name">标准版</span>
+                                </div>
+                                <div class="package-item">
+                                    <label>月费用：</label>
+                                    <span class="package-price">¥2,999/月</span>
+                                </div>
+                                <div class="package-item">
+                                    <label>服务开始：</label>
+                                    <span>2024-01-15</span>
+                                </div>
+                                <div class="package-item">
+                                    <label>合同期限：</label>
+                                    <span>12个月</span>
+                                </div>
+                            </div>
+                            <div class="package-features">
+                                <h5>功能模块</h5>
+                                <div class="features-cards">
+                                    <div class="feature-card enabled">
+                                        <div class="feature-icon">
+                                            <i class="icon-audit"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <h6>智能审核</h6>
+                                            <p>AI智能审核医保单据，提高审核效率</p>
+                                            <span class="feature-status enabled">已启用</span>
+                                        </div>
+                                    </div>
+                                    <div class="feature-card enabled">
+                                        <div class="feature-icon">
+                                            <i class="icon-analytics"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <h6>数据分析</h6>
+                                            <p>多维度数据分析，洞察业务趋势</p>
+                                            <span class="feature-status enabled">已启用</span>
+                                        </div>
+                                    </div>
+                                    <div class="feature-card enabled">
+                                        <div class="feature-icon">
+                                            <i class="icon-report"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <h6>报表生成</h6>
+                                            <p>自动生成各类统计报表</p>
+                                            <span class="feature-status enabled">已启用</span>
+                                        </div>
+                                    </div>
+                                    <div class="feature-card disabled">
+                                        <div class="feature-icon">
+                                            <i class="icon-advanced"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <h6>高级分析</h6>
+                                            <p>深度学习算法，预测性分析</p>
+                                            <span class="feature-status disabled">未启用</span>
+                                        </div>
+                                    </div>
+                                    <div class="feature-card disabled">
+                                        <div class="feature-icon">
+                                            <i class="icon-api"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <h6>API接口</h6>
+                                            <p>开放API接口，支持第三方集成</p>
+                                            <span class="feature-status disabled">未启用</span>
+                                        </div>
+                                    </div>
+                                    <div class="feature-card disabled">
+                                        <div class="feature-icon">
+                                            <i class="icon-custom"></i>
+                                        </div>
+                                        <div class="feature-content">
+                                            <h6>定制开发</h6>
+                                            <p>根据需求定制专属功能模块</p>
+                                            <span class="feature-status disabled">未启用</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 人员管理 -->
+                <div class="tab-content" id="staff-tab">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h4>人员列表</h4>
+                            <button class="btn btn-primary" onclick="addStaff()">添加人员</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>姓名</th>
+                                            <th>手机号</th>
+                                            <th>邮箱</th>
+                                            <th>角色</th>
+                                            <th>部门</th>
+                                            <th>状态</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="staffTableBody">
+                                        <tr>
+                                            <td>张三</td>
+                                            <td>13800138000</td>
+                                            <td>zhangsan@example.com</td>
+                                            <td><span class="role-badge admin">管理员</span></td>
+                                            <td>信息科</td>
+                                            <td><span class="status-badge status-active">正常</span></td>
+                                            <td>
+                                                <button class="btn-link" onclick="editStaff(1)">编辑</button>
+                                                <button class="btn-link text-danger" onclick="deleteStaff(1)">删除</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 联系信息 -->
+                <div class="tab-content" id="contact-tab">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h4>联系信息</h4>
+                            <button class="btn btn-outline" onclick="editContactInfo()">编辑联系信息</button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="data-table contact-table">
+                                    <thead>
+                                        <tr>
+                                            <th>信息类型</th>
+                                            <th>项目</th>
+                                            <th>内容</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td rowspan="4" class="contact-type">主要联系人</td>
+                                            <td>姓名</td>
+                                            <td>张三</td>
+                                            <td rowspan="4" class="contact-actions">
+                                                <button class="btn-link" onclick="editContactInfo('primary')">编辑</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>职位</td>
+                                            <td>信息科主任</td>
+                                        </tr>
+                                        <tr>
+                                            <td>手机号</td>
+                                            <td>13800138000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>邮箱</td>
+                                            <td>zhangsan@example.com</td>
+                                        </tr>
+                                        <tr>
+                                            <td rowspan="3" class="contact-type">企业地址</td>
+                                            <td>省市区</td>
+                                            <td>北京市朝阳区</td>
+                                            <td rowspan="3" class="contact-actions">
+                                                <button class="btn-link" onclick="editContactInfo('address')">编辑</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>详细地址</td>
+                                            <td>朝阳路123号医疗大厦15层</td>
+                                        </tr>
+                                        <tr>
+                                            <td>邮政编码</td>
+                                            <td>100020</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 系统设置 -->
+                <div class="tab-content" id="settings-tab">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h4>系统设置</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="settings-section">
+                                <h5>账号状态</h5>
+                                <div class="setting-item">
+                                    <label>企业状态：</label>
+                                    <div class="setting-control">
+                                        <span class="status-badge status-active">正常</span>
+                                        <button class="btn btn-outline btn-sm" onclick="changeStatus()">修改状态</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="settings-section">
+                                <h5>危险操作</h5>
+                                <div class="setting-item">
+                                    <label>删除企业：</label>
+                                    <div class="setting-control">
+                                        <button class="btn btn-danger" onclick="deleteTenant()">删除企业</button>
+                                        <small class="text-muted">删除后无法恢复，请谨慎操作</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 编辑基本信息抽屉 -->
+    <div class="drawer-overlay" id="basicInfoDrawer">
+        <div class="drawer">
+            <div class="drawer-header">
+                <h3>编辑基本信息</h3>
+                <button class="drawer-close" onclick="closeDrawer('basicInfoDrawer')">&times;</button>
+            </div>
+            <div class="drawer-body">
+                <form id="basicInfoForm">
+                    <div class="form-group">
+                        <label for="editCompanyName">企业名称 <span class="required">*</span></label>
+                        <input type="text" id="editCompanyName" name="companyName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCompanyType">企业类型 <span class="required">*</span></label>
+                        <select id="editCompanyType" name="companyType" required>
+                            <option value="">请选择企业类型</option>
+                            <option value="医疗机构">医疗机构</option>
+                            <option value="药品零售">药品零售</option>
+                            <option value="医疗器械">医疗器械</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editContactName">联系人 <span class="required">*</span></label>
+                        <input type="text" id="editContactName" name="contactName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editContactPhone">联系电话 <span class="required">*</span></label>
+                        <input type="tel" id="editContactPhone" name="contactPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editRegion">所在地区 <span class="required">*</span></label>
+                        <input type="text" id="editRegion" name="region" required>
+                    </div>
+                </form>
+            </div>
+            <div class="drawer-footer">
+                <button type="button" class="btn btn-outline" onclick="closeDrawer('basicInfoDrawer')">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveBasicInfo()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑套餐抽屉 -->
+    <div class="drawer-overlay" id="packageDrawer">
+        <div class="drawer large">
+            <div class="drawer-header">
+                <h3>变更套餐</h3>
+                <button class="drawer-close" onclick="closeDrawer('packageDrawer')">&times;</button>
+            </div>
+            <div class="drawer-body">
+                <form id="packageForm">
+                    <div class="form-group">
+                        <label>当前套餐</label>
+                        <div class="current-package">
+                            <span class="package-name">标准版</span>
+                            <span class="package-price">¥2,999/月</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPackage">选择新套餐 <span class="required">*</span></label>
+                        <div class="package-options">
+                            <div class="package-option" data-package="basic">
+                                <div class="package-header">
+                                    <input type="radio" name="newPackage" value="basic" id="basic">
+                                    <label for="basic">
+                                        <span class="package-title">基础版</span>
+                                        <span class="package-price">¥1,999/月</span>
+                                    </label>
+                                </div>
+                                <div class="package-features">
+                                    <p>• 基础审核功能</p>
+                                    <p>• 标准报表</p>
+                                    <p>• 5个用户账号</p>
+                                </div>
+                            </div>
+                            <div class="package-option" data-package="standard">
+                                <div class="package-header">
+                                    <input type="radio" name="newPackage" value="standard" id="standard" checked>
+                                    <label for="standard">
+                                        <span class="package-title">标准版</span>
+                                        <span class="package-price">¥2,999/月</span>
+                                    </label>
+                                </div>
+                                <div class="package-features">
+                                    <p>• 智能审核功能</p>
+                                    <p>• 数据分析</p>
+                                    <p>• 报表生成</p>
+                                    <p>• 20个用户账号</p>
+                                </div>
+                            </div>
+                            <div class="package-option" data-package="premium">
+                                <div class="package-header">
+                                    <input type="radio" name="newPackage" value="premium" id="premium">
+                                    <label for="premium">
+                                        <span class="package-title">高级版</span>
+                                        <span class="package-price">¥4,999/月</span>
+                                    </label>
+                                </div>
+                                <div class="package-features">
+                                    <p>• 全部标准版功能</p>
+                                    <p>• 高级分析</p>
+                                    <p>• API接口</p>
+                                    <p>• 定制开发</p>
+                                    <p>• 无限用户账号</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="effectiveDate">生效日期 <span class="required">*</span></label>
+                        <input type="date" id="effectiveDate" name="effectiveDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contractPeriod">合同期限 <span class="required">*</span></label>
+                        <select id="contractPeriod" name="contractPeriod" required>
+                            <option value="">请选择合同期限</option>
+                            <option value="3">3个月</option>
+                            <option value="6">6个月</option>
+                            <option value="12">12个月</option>
+                            <option value="24">24个月</option>
+                            <option value="36">36个月</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="packageRemark">备注</label>
+                        <textarea id="packageRemark" name="remark" rows="3" placeholder="请输入变更原因或备注信息"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="drawer-footer">
+                <button type="button" class="btn btn-outline" onclick="closeDrawer('packageDrawer')">取消</button>
+                <button type="button" class="btn btn-primary" onclick="savePackage()">确认变更</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加人员抽屉 -->
+    <div class="drawer-overlay" id="addStaffDrawer">
+        <div class="drawer">
+            <div class="drawer-header">
+                <h3>添加人员</h3>
+                <button class="drawer-close" onclick="closeDrawer('addStaffDrawer')">&times;</button>
+            </div>
+            <div class="drawer-body">
+                <form id="addStaffForm">
+                    <div class="form-group">
+                        <label for="staffName">姓名 <span class="required">*</span></label>
+                        <input type="text" id="staffName" name="name" required>
+                        <div class="field-error" id="staffNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffPhone">手机号 <span class="required">*</span></label>
+                        <input type="tel" id="staffPhone" name="phone" required>
+                        <div class="field-error" id="staffPhoneError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffEmail">邮箱 <span class="required">*</span></label>
+                        <input type="email" id="staffEmail" name="email" required>
+                        <div class="field-error" id="staffEmailError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffRole">角色 <span class="required">*</span></label>
+                        <select id="staffRole" name="role" required>
+                            <option value="">请选择角色</option>
+                            <option value="admin">管理员</option>
+                            <option value="operator">操作员</option>
+                            <option value="auditor">审核员</option>
+                            <option value="viewer">查看员</option>
+                        </select>
+                        <div class="field-error" id="staffRoleError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffDepartment">部门 <span class="required">*</span></label>
+                        <input type="text" id="staffDepartment" name="department" required>
+                        <div class="field-error" id="staffDepartmentError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffStatus">状态 <span class="required">*</span></label>
+                        <select id="staffStatus" name="status" required>
+                            <option value="active">正常</option>
+                            <option value="inactive">停用</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffRemark">备注</label>
+                        <textarea id="staffRemark" name="remark" rows="3" placeholder="请输入备注信息"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="drawer-footer">
+                <button type="button" class="btn btn-outline" onclick="closeDrawer('addStaffDrawer')">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveStaff()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑人员抽屉 -->
+    <div class="drawer-overlay" id="editStaffDrawer">
+        <div class="drawer">
+            <div class="drawer-header">
+                <h3>编辑人员</h3>
+                <button class="drawer-close" onclick="closeDrawer('editStaffDrawer')">&times;</button>
+            </div>
+            <div class="drawer-body">
+                <form id="editStaffForm">
+                    <input type="hidden" id="editStaffId" name="id">
+                    <div class="form-group">
+                        <label for="editStaffName">姓名 <span class="required">*</span></label>
+                        <input type="text" id="editStaffName" name="name" required>
+                        <div class="field-error" id="editStaffNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStaffPhone">手机号 <span class="required">*</span></label>
+                        <input type="tel" id="editStaffPhone" name="phone" required>
+                        <div class="field-error" id="editStaffPhoneError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStaffEmail">邮箱 <span class="required">*</span></label>
+                        <input type="email" id="editStaffEmail" name="email" required>
+                        <div class="field-error" id="editStaffEmailError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStaffRole">角色 <span class="required">*</span></label>
+                        <select id="editStaffRole" name="role" required>
+                            <option value="">请选择角色</option>
+                            <option value="admin">管理员</option>
+                            <option value="operator">操作员</option>
+                            <option value="auditor">审核员</option>
+                            <option value="viewer">查看员</option>
+                        </select>
+                        <div class="field-error" id="editStaffRoleError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStaffDepartment">部门 <span class="required">*</span></label>
+                        <input type="text" id="editStaffDepartment" name="department" required>
+                        <div class="field-error" id="editStaffDepartmentError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStaffStatus">状态 <span class="required">*</span></label>
+                        <select id="editStaffStatus" name="status" required>
+                            <option value="active">正常</option>
+                            <option value="inactive">停用</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editStaffRemark">备注</label>
+                        <textarea id="editStaffRemark" name="remark" rows="3" placeholder="请输入备注信息"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="drawer-footer">
+                <button type="button" class="btn btn-outline" onclick="closeDrawer('editStaffDrawer')">取消</button>
+                <button type="button" class="btn btn-primary" onclick="updateStaff()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑联系信息抽屉 -->
+    <div class="drawer-overlay" id="contactDrawer">
+        <div class="drawer">
+            <div class="drawer-header">
+                <h3>编辑联系信息</h3>
+                <button class="drawer-close" onclick="closeDrawer('contactDrawer')">&times;</button>
+            </div>
+            <div class="drawer-body">
+                <form id="contactForm">
+                    <div class="contact-section">
+                        <h5>主要联系人</h5>
+                        <div class="form-group">
+                            <label for="primaryContactName">姓名 <span class="required">*</span></label>
+                            <input type="text" id="primaryContactName" name="primaryContactName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="primaryContactPosition">职位 <span class="required">*</span></label>
+                            <input type="text" id="primaryContactPosition" name="primaryContactPosition" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="primaryContactPhone">手机号 <span class="required">*</span></label>
+                            <input type="tel" id="primaryContactPhone" name="primaryContactPhone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="primaryContactEmail">邮箱 <span class="required">*</span></label>
+                            <input type="email" id="primaryContactEmail" name="primaryContactEmail" required>
+                        </div>
+                    </div>
+                    <div class="contact-section">
+                        <h5>企业地址</h5>
+                        <div class="form-group">
+                            <label for="addressProvince">省市区 <span class="required">*</span></label>
+                            <input type="text" id="addressProvince" name="addressProvince" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addressDetail">详细地址 <span class="required">*</span></label>
+                            <input type="text" id="addressDetail" name="addressDetail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addressPostcode">邮政编码</label>
+                            <input type="text" id="addressPostcode" name="addressPostcode" pattern="[0-9]{6}">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="drawer-footer">
+                <button type="button" class="btn btn-outline" onclick="closeDrawer('contactDrawer')">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveContactInfo()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 修改企业状态弹窗 -->
+    <div class="modal-overlay" id="statusModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>修改企业状态</h3>
+            </div>
+            <div class="modal-content">
+                <form id="statusForm">
+                    <div class="form-group">
+                        <label>当前状态</label>
+                        <div class="current-status">
+                            <span class="status-badge status-active">正常</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newStatus">新状态 <span class="required">*</span></label>
+                        <select id="newStatus" name="newStatus" required>
+                            <option value="">请选择状态</option>
+                            <option value="active">正常</option>
+                            <option value="suspended">暂停</option>
+                            <option value="inactive">停用</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="statusReason">变更原因 <span class="required">*</span></label>
+                        <textarea id="statusReason" name="reason" rows="3" required placeholder="请输入状态变更原因"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('statusModal')">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveStatus()">确认修改</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../脚本文件/企业详情.js"></script>
+    <!-- 加载统一菜单 -->
+<script>
+    // 加载统一菜单组件
+    fetch('../../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>权限管理 - 医保审核系统</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/权限管理样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    </head>
+<body>
+    <div class="dashboard-container">
+        
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+
+            <div class="tenant-list-container">
+                <div class="page-header">
+                    <div class="header-left">
+                        <h2>权限管理</h2>
+                        <div class="page-description">管理系统中的所有角色和权限</div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" id="addRoleBtn" onclick="addRole()">新增角色</button>
+                    </div>
+                </div>
+
+                <!-- 统计概览 -->
+                <div class="stats-overview">
+                    <div class="stat-card total">
+                        <div class="stat-icon">
+                            <i class="icon-tenants"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value">8</div>
+                            <div class="stat-label">总角色数</div>
+                        </div>
+                        <div class="stat-trend">
+                            <span class="trend-value up">+2</span>
+                            <span class="trend-label">本月新增</span>
+                        </div>
+                    </div>
+                    <div class="stat-card active">
+                        <div class="stat-icon">
+                            <i class="icon-active"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value">245</div>
+                            <div class="stat-label">活跃用户</div>
+                        </div>
+                        <div class="stat-trend">
+                            <span class="trend-value">98.2%</span>
+                            <span class="trend-label">在线率</span>
+                        </div>
+                    </div>
+                    <div class="stat-card revenue">
+                        <div class="stat-icon">
+                            <i class="icon-revenue"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value">156</div>
+                            <div class="stat-label">权限点数</div>
+                        </div>
+                        <div class="stat-trend">
+                            <span class="trend-value up">+8</span>
+                            <span class="trend-label">本月新增</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 搜索和筛选 -->
+                <div class="search-filters">
+                    <div class="search-section">
+                        <div class="search-group">
+                            <label>角色名称</label>
+                            <input type="text" class="form-input" id="roleName" placeholder="请输入角色名称">
+                        </div>
+                        <div class="search-group">
+                            <label>角色类型</label>
+                            <select class="form-select" id="roleType">
+                                <option value="">全部类型</option>
+                                <option value="system">系统角色</option>
+                                <option value="custom">自定义角色</option>
+                                <option value="tenant">租户角色</option>
+                            </select>
+                        </div>
+                        <div class="search-group">
+                            <label>状态</label>
+                            <select class="form-select" id="roleStatus">
+                                <option value="">全部状态</option>
+                                <option value="active">启用</option>
+                                <option value="inactive">禁用</option>
+                            </select>
+                        </div>
+                        <div class="search-group">
+                            <label>创建时间</label>
+                            <input type="date" class="form-input" id="createDate">
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary" onclick="searchRoles()">搜索</button>
+                        <button class="btn btn-secondary" onclick="resetRoleFilters()">重置</button>
+                    </div>
+                </div>
+
+                <!-- 操作栏 -->
+                <div class="table-toolbar">
+                    <div class="toolbar-left">
+                        <div class="bulk-actions">
+                            <button class="btn btn-sm btn-secondary" onclick="batchEnable()" disabled id="bulkEnableBtn">批量启用</button>
+                            <button class="btn btn-sm btn-warning" onclick="batchDisable()" disabled id="bulkDisableBtn">批量禁用</button>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <div class="view-controls">
+                            <button class="view-btn active" data-view="table" onclick="switchView('table')">表格视图</button>
+                            <button class="view-btn" data-view="card" onclick="switchView('card')">卡片视图</button>
+                        </div>
+                        <div class="sort-controls">
+                            <select class="form-select" id="sortBy" onchange="sortRoles()">
+                                <option value="name">按名称排序</option>
+                                <option value="createTime">按创建时间排序</option>
+                                <option value="userCount">按用户数量排序</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- 角色列表 - 表格视图 -->
+                <div class="tenant-table-view" id="tableView">
+                    <table class="tenant-table">
+                        <thead>
+                            <tr>
+                                <th width="40"><input type="checkbox" id="selectAll" class="select-all-checkbox" onchange="toggleSelectAll()"></th>
+                                <th width="300">角色信息</th>
+                                <th width="120">角色类型</th>
+                                <th width="100">用户数量</th>
+                                <th width="100">权限数量</th>
+                                <th width="120">创建时间</th>
+                                <th width="80">状态</th>
+                                <th width="150">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rolesTableBody">
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox" value="超级管理员" onchange="updateBatchActions()"></td>
+                                <td>
+                                    <div class="tenant-info">
+                                        <div class="tenant-avatar">
+                                            <i class="icon-role-admin"></i>
+                                        </div>
+                                        <div class="tenant-details">
+                                            <div class="tenant-name">超级管理员</div>
+                                            <div class="tenant-code">超级管理员</div>
+                                            <div class="tenant-desc">系统最高权限管理员，拥有所有功能权限</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="type-badge system">系统角色</span>
+                                </td>
+                                <td>
+                                    <div class="user-count">
+                                        <span class="count-number">2</span>
+                                        <span class="count-label">个用户</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="permission-count">
+                                        <span class="count-number">128</span>
+                                        <span class="count-label">个权限</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="date-info">
+                                        <div class="date-primary">2024-01-01</div>
+                                        <div class="date-secondary">系统创建</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge active">启用</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-primary" onclick="viewRoleDetail('超级管理员')">查看</button>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                                            <div class="dropdown-menu">
+                                                <a href="#" onclick="editRole('超级管理员')">编辑</a>
+                                                <a href="#" onclick="managePermissions('超级管理员')">权限管理</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a href="#" onclick="toggleRoleStatus('超级管理员', 'inactive')" class="text-warning">停用</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox" value="enterprise-admin" onchange="updateBatchActions()"></td>
+                                <td>
+                                    <div class="tenant-info">
+                                        <div class="tenant-avatar">
+                                            <i class="icon-role-enterprise"></i>
+                                        </div>
+                                        <div class="tenant-details">
+                                            <div class="tenant-name">企业管理员</div>
+                                            <div class="tenant-code">enterprise-admin</div>
+                                            <div class="tenant-desc">企业级管理员，管理本企业用户和规则配置</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="type-badge custom">自定义角色</span>
+                                </td>
+                                <td>
+                                    <div class="user-count">
+                                        <span class="count-number">15</span>
+                                        <span class="count-label">个用户</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="permission-count">
+                                        <span class="count-number">76</span>
+                                        <span class="count-label">个权限</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="date-info">
+                                        <div class="date-primary">2024-01-05</div>
+                                        <div class="date-secondary">管理员创建</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge active">启用</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-primary" onclick="viewRoleDetail('enterprise-admin')">查看</button>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                                            <div class="dropdown-menu">
+                                                <a href="#" onclick="editRole('enterprise-admin')">编辑</a>
+                                                <a href="#" onclick="managePermissions('enterprise-admin')">权限管理</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a href="#" onclick="toggleRoleStatus('enterprise-admin', 'inactive')" class="text-warning">停用</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox" value="operator" onchange="updateBatchActions()"></td>
+                                <td>
+                                    <div class="tenant-info">
+                                        <div class="tenant-avatar">
+                                            <i class="icon-role-operator"></i>
+                                        </div>
+                                        <div class="tenant-details">
+                                            <div class="tenant-name">审核员</div>
+                                            <div class="tenant-code">operator</div>
+                                            <div class="tenant-desc">医保审核操作员，负责日常审核工作</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="type-badge tenant">租户角色</span>
+                                </td>
+                                <td>
+                                    <div class="user-count">
+                                        <span class="count-number">48</span>
+                                        <span class="count-label">个用户</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="permission-count">
+                                        <span class="count-number">45</span>
+                                        <span class="count-label">个权限</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="date-info">
+                                        <div class="date-primary">2024-01-05</div>
+                                        <div class="date-secondary">系统创建</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge active">启用</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-primary" onclick="viewRoleDetail('operator')">查看</button>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                                            <div class="dropdown-menu">
+                                                <a href="#" onclick="editRole('operator')">编辑</a>
+                                                <a href="#" onclick="managePermissions('operator')">权限管理</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a href="#" onclick="toggleRoleStatus('operator', 'inactive')" class="text-warning">停用</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox" class="row-checkbox" value="viewer" onchange="updateBatchActions()"></td>
+                                <td>
+                                    <div class="tenant-info">
+                                        <div class="tenant-avatar">
+                                            <i class="icon-role-viewer"></i>
+                                        </div>
+                                        <div class="tenant-details">
+                                            <div class="tenant-name">只读用户</div>
+                                            <div class="tenant-code">viewer</div>
+                                            <div class="tenant-desc">只读权限用户，仅可查看数据和报告</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="type-badge custom">自定义角色</span>
+                                </td>
+                                <td>
+                                    <div class="user-count">
+                                        <span class="count-number">12</span>
+                                        <span class="count-label">个用户</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="permission-count">
+                                        <span class="count-number">12</span>
+                                        <span class="count-label">个权限</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="date-info">
+                                        <div class="date-primary">2024-01-10</div>
+                                        <div class="date-secondary">管理员创建</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge inactive">禁用</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-primary" onclick="viewRoleDetail('viewer')">查看</button>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-secondary dropdown-toggle">更多</button>
+                                            <div class="dropdown-menu">
+                                                <a href="#" onclick="editRole('viewer')">编辑</a>
+                                                <a href="#" onclick="managePermissions('viewer')">权限管理</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a href="#" onclick="toggleRoleStatus('viewer', 'active')" class="text-success">启用</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 角色列表 - 卡片视图 -->
+                <div class="tenant-card-view" id="cardView" style="display: none;">
+                    <div class="tenant-cards-grid">
+                        <!-- 超级管理员卡片 -->
+                        <div class="tenant-card">
+                            <div class="tenant-card-header">
+                                <div class="tenant-info">
+                                    <div class="tenant-avatar">
+                                        <i class="icon-role-超级管理员"></i>
+                                    </div>
+                                    <div class="tenant-details">
+                                        <h4 class="tenant-name">超级管理员</h4>
+                                        <p class="tenant-code">超级管理员</p>
+                                        <p class="tenant-desc">拥有系统最高权限，可管理所有功能和数据</p>
+                                    </div>
+                                </div>
+                                <div class="tenant-status">
+                                    <span class="status-badge status-active">启用</span>
+                                </div>
+                            </div>
+                            <div class="tenant-card-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">用户数量</span>
+                                    <span class="stat-value">3个</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">权限数量</span>
+                                    <span class="stat-value">128个权限</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">创建时间</span>
+                                    <span class="stat-value">2024-01-01</span>
+                                </div>
+                            </div>
+                            <div class="tenant-card-actions">
+                                <button class="btn btn-sm btn-primary" onclick="viewRoleDetail('超级管理员')">查看</button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline dropdown-toggle" type="button" data-toggle="dropdown" onclick="toggleDropdown(this)">更多</button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="editRole('超级管理员')">编辑</a>
+                                        <a href="#" onclick="managePermissions('超级管理员')">分配权限</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="toggleRoleStatus('超级管理员', 'active')" class="text-warning">停用</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 企业管理员卡片 -->
+                        <div class="tenant-card">
+                            <div class="tenant-card-header">
+                                <div class="tenant-info">
+                                    <div class="tenant-avatar">
+                                        <i class="icon-role-enterprise-admin"></i>
+                                    </div>
+                                    <div class="tenant-details">
+                                        <h4 class="tenant-name">企业管理员</h4>
+                                        <p class="tenant-code">enterprise-admin</p>
+                                        <p class="tenant-desc">管理企业内部用户、科室和基础配置</p>
+                                    </div>
+                                </div>
+                                <div class="tenant-status">
+                                    <span class="status-badge status-active">启用</span>
+                                </div>
+                            </div>
+                            <div class="tenant-card-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">用户数量</span>
+                                    <span class="stat-value">15个</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">权限数量</span>
+                                    <span class="stat-value">76个权限</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">创建时间</span>
+                                    <span class="stat-value">2024-01-01</span>
+                                </div>
+                            </div>
+                            <div class="tenant-card-actions">
+                                <button class="btn btn-sm btn-primary" onclick="viewRoleDetail('enterprise-admin')">查看</button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline dropdown-toggle" type="button" data-toggle="dropdown" onclick="toggleDropdown(this)">更多</button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="editRole('enterprise-admin')">编辑</a>
+                                        <a href="#" onclick="managePermissions('enterprise-admin')">分配权限</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="toggleRoleStatus('enterprise-admin', 'active')" class="text-warning">停用</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 审核员卡片 -->
+                        <div class="tenant-card">
+                            <div class="tenant-card-header">
+                                <div class="tenant-info">
+                                    <div class="tenant-avatar">
+                                        <i class="icon-role-operator"></i>
+                                    </div>
+                                    <div class="tenant-details">
+                                        <h4 class="tenant-name">审核员</h4>
+                                        <p class="tenant-code">operator</p>
+                                        <p class="tenant-desc">负责审核工作台的各项审核任务</p>
+                                    </div>
+                                </div>
+                                <div class="tenant-status">
+                                    <span class="status-badge status-active">启用</span>
+                                </div>
+                            </div>
+                            <div class="tenant-card-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">用户数量</span>
+                                    <span class="stat-value">28个</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">权限数量</span>
+                                    <span class="stat-value">45个权限</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">创建时间</span>
+                                    <span class="stat-value">2024-01-01</span>
+                                </div>
+                            </div>
+                            <div class="tenant-card-actions">
+                                <button class="btn btn-sm btn-primary" onclick="viewRoleDetail('operator')">查看</button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline dropdown-toggle" type="button" data-toggle="dropdown" onclick="toggleDropdown(this)">更多</button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="editRole('operator')">编辑</a>
+                                        <a href="#" onclick="managePermissions('operator')">分配权限</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="toggleRoleStatus('operator', 'active')" class="text-warning">停用</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 只读用户卡片 -->
+                        <div class="tenant-card">
+                            <div class="tenant-card-header">
+                                <div class="tenant-info">
+                                    <div class="tenant-avatar">
+                                        <i class="icon-role-viewer"></i>
+                                    </div>
+                                    <div class="tenant-details">
+                                        <h4 class="tenant-name">只读用户</h4>
+                                        <p class="tenant-code">viewer</p>
+                                        <p class="tenant-desc">只读权限用户，仅可查看数据和报告</p>
+                                    </div>
+                                </div>
+                                <div class="tenant-status">
+                                    <span class="status-badge status-active">启用</span>
+                                </div>
+                            </div>
+                            <div class="tenant-card-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">用户数量</span>
+                                    <span class="stat-value">52个</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">权限数量</span>
+                                    <span class="stat-value">12个权限</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">创建时间</span>
+                                    <span class="stat-value">2024-01-01</span>
+                                </div>
+                            </div>
+                            <div class="tenant-card-actions">
+                                <button class="btn btn-sm btn-primary" onclick="viewRoleDetail('viewer')">查看</button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline dropdown-toggle" type="button" data-toggle="dropdown" onclick="toggleDropdown(this)">更多</button>
+                                    <div class="dropdown-menu">
+                                        <a href="#" onclick="editRole('viewer')">编辑</a>
+                                        <a href="#" onclick="managePermissions('viewer')">分配权限</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" onclick="toggleRoleStatus('viewer', 'active')" class="text-success">启用</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- 分页 -->
+                <div class="pagination-container">
+                    <div class="pagination-info">
+                        <span>显示第 1-8 条，共 8 条记录</span>
+                    </div>
+                    <div class="pagination">
+                        <button class="page-btn" disabled>上一页</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn" disabled>下一页</button>
+                    </div>
+                    <div class="page-size-selector">
+                        <label>每页显示</label>
+                        <select class="form-select" onchange="changePageSize(this.value)">
+                            <option value="10">10条</option>
+                            <option value="20" selected>20条</option>
+                            <option value="50">50条</option>
+                            <option value="100">100条</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- 新增/编辑角色抽屉 -->
+    <div id="roleDrawer" class="drawer-overlay">
+        <div class="drawer-container">
+            <div class="drawer-header">
+                <h3 id="roleDrawerTitle">新增角色</h3>
+                <button class="close-btn" onclick="closeRoleDrawer()">&times;</button>
+            </div>
+            <div class="drawer-content">
+                <form id="roleForm" class="drawer-form">
+                    <div class="form-group">
+                        <label for="roleName">角色名称 <span class="required">*</span></label>
+                        <input type="text" id="roleName" required placeholder="请输入角色名称">
+                        <div class="field-error" id="roleNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="roleCode">角色代码 <span class="required">*</span></label>
+                        <input type="text" id="roleCode" required placeholder="请输入角色代码">
+                        <div class="field-error" id="roleCodeError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="roleDescription">角色描述</label>
+                        <textarea id="roleDescription" rows="3" placeholder="请输入角色描述"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="roleStatus">状态</label>
+                        <select id="roleStatus">
+                            <option value="active">启用</option>
+                            <option value="inactive">禁用</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="drawer-footer">
+                <button class="btn btn-secondary" onclick="closeRoleDrawer()">取消</button>
+                <button class="btn btn-primary" onclick="saveRole()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 权限管理抽屉 -->
+    <div id="permissionDrawer" class="drawer-overlay">
+        <div class="drawer-container large">
+            <div class="drawer-header">
+                <h3 id="permissionDrawerTitle">权限管理</h3>
+                <button class="close-btn" onclick="closePermissionDrawer()">&times;</button>
+            </div>
+            <div class="drawer-content">
+                <div class="permissions-tree" id="drawerPermissionsTree">
+                    <!-- 权限树内容将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            <div class="drawer-footer">
+                <button class="btn btn-secondary" onclick="resetDrawerPermissions()">重置</button>
+                <button class="btn btn-primary" onclick="saveDrawerPermissions()">保存权限</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自定义确认弹窗 -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="confirmTitle">确认操作</h3>
+            </div>
+            <div class="modal-content">
+                <p id="confirmMessage">确定要执行此操作吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">取消</button>
+                <button class="btn btn-primary" id="confirmBtn" onclick="confirmAction()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 角色详情抽屉 -->
+    <div id="roleDetailDrawer" class="drawer-overlay">
+        <div class="drawer-container">
+            <div class="drawer-header">
+                <h3>角色详情</h3>
+                <button class="close-btn" onclick="closeRoleDetailDrawer()">&times;</button>
+            </div>
+            <div class="drawer-content">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <label>角色名称：</label>
+                        <span id="detailRoleName">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>角色代码：</label>
+                        <span id="detailRoleCode">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>角色描述：</label>
+                        <span id="detailRoleDescription">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>状态：</label>
+                        <span id="detailRoleStatus">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>用户数量：</label>
+                        <span id="detailUserCount">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>权限数量：</label>
+                        <span id="detailPermissionCount">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <label>创建时间：</label>
+                        <span id="detailCreateTime">-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="drawer-footer">
+                <button class="btn btn-secondary" onclick="closeRoleDetailDrawer()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 原有的模态框保留用于兼容 -->
+    <div id="roleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="roleModalTitle">新增角色</h3>
+                <span class="close" onclick="closeRoleModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="roleForm">
+                    <div class="form-group">
+                        <label for="roleName">角色名称</label>
+                        <input type="text" id="roleName" required placeholder="请输入角色名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleCode">角色代码</label>
+                        <input type="text" id="roleCode" required placeholder="请输入角色代码">
+                    </div>
+                    <div class="form-group">
+                        <label for="roleDescription">角色描述</label>
+                        <textarea id="roleDescription" rows="3" placeholder="请输入角色描述"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="roleStatus">状态</label>
+                        <select id="roleStatus">
+                            <option value="active">启用</option>
+                            <option value="inactive">禁用</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeRoleModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveRole()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 权限管理功能
+        class PermissionManager {
+            constructor() {
+                this.currentRole = null;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadRoles();
+            }
+
+            bindEvents() {
+                document.getElementById('addRoleBtn')?.addEventListener('click', () => {
+                    this.showRoleDrawer();
+                });
+
+                // 移除导出权限按钮事件
+
+                document.getElementById('roleSelect')?.addEventListener('change', (e) => {
+                    this.loadRolePermissions(e.target.value);
+                });
+
+                document.getElementById('savePermissionsBtn')?.addEventListener('click', () => {
+                    this.savePermissions();
+                });
+
+                document.getElementById('resetPermissionsBtn')?.addEventListener('click', () => {
+                    this.resetPermissions();
+                });
+
+                // 权限树事件
+                this.bindPermissionTreeEvents();
+            }
+
+            bindPermissionTreeEvents() {
+                // 组权限复选框事件
+                document.querySelectorAll('.group-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', (e) => {
+                        const group = e.target.dataset.group;
+                        const checked = e.target.checked;
+                        const groupPermissions = document.querySelectorAll(`[data-permission^="${group}."]`);
+                        
+                        groupPermissions.forEach(permission => {
+                            permission.checked = checked;
+                        });
+                    });
+                });
+
+                // 单个权限复选框事件
+                document.querySelectorAll('[data-permission]').forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        this.updateGroupCheckbox();
+                    });
+                });
+            }
+
+            updateGroupCheckbox() {
+                document.querySelectorAll('.group-checkbox').forEach(groupCheckbox => {
+                    const group = groupCheckbox.dataset.group;
+                    const groupPermissions = document.querySelectorAll(`[data-permission^="${group}."]`);
+                    const checkedPermissions = document.querySelectorAll(`[data-permission^="${group}."]:checked`);
+                    
+                    if (checkedPermissions.length === 0) {
+                        groupCheckbox.checked = false;
+                        groupCheckbox.indeterminate = false;
+                    } else if (checkedPermissions.length === groupPermissions.length) {
+                        groupCheckbox.checked = true;
+                        groupCheckbox.indeterminate = false;
+                    } else {
+                        groupCheckbox.checked = false;
+                        groupCheckbox.indeterminate = true;
+                    }
+                });
+            }
+
+            loadRoles() {
+                console.log('加载角色列表');
+                // 这里可以从服务器加载角色数据
+            }
+
+            loadRolePermissions(roleCode) {
+                if (!roleCode) {
+                    this.clearPermissions();
+                    return;
+                }
+
+                console.log('加载角色权限:', roleCode);
+                this.currentRole = roleCode;
+
+                // 模拟不同角色的权限
+                const rolePermissions = {
+                    '超级管理员': ['system.dashboard', 'system.monitor', 'system.settings', 'system.logs', 'user.list', 'user.create', 'user.edit', 'user.delete', 'user.reset-password', 'department.list', 'department.create', 'department.edit', 'department.delete', 'audit.workbench', 'audit.pre', 'audit.in-process', 'audit.post', 'audit.approve', 'audit.reject', 'rule.config', 'rule.parameters', 'rule.knowledge', 'rule.import', 'report.rule-analysis', 'report.workload', 'report.department', 'report.export'],
+                    'enterprise-admin': ['system.dashboard', 'user.list', 'user.create', 'user.edit', 'department.list', 'department.create', 'department.edit', 'rule.config', 'rule.parameters', 'rule.knowledge', 'report.rule-analysis', 'report.workload'],
+                    'operator': ['audit.workbench', 'audit.pre', 'audit.in-process', 'audit.post', 'audit.approve', 'audit.reject', 'report.rule-analysis'],
+                    'viewer': ['system.dashboard', 'report.rule-analysis', 'report.workload', 'report.department']
+                };
+
+                this.setPermissions(rolePermissions[roleCode] || []);
+            }
+
+            setPermissions(permissions) {
+                // 清空所有权限
+                this.clearPermissions();
+
+                // 设置权限
+                permissions.forEach(permission => {
+                    const checkbox = document.querySelector(`[data-permission="${permission}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+
+                // 更新组权限状态
+                this.updateGroupCheckbox();
+            }
+
+            clearPermissions() {
+                document.querySelectorAll('[data-permission]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                document.querySelectorAll('.group-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.indeterminate = false;
+                });
+            }
+
+            savePermissions() {
+                if (!this.currentRole) {
+                    this.showMessage('请先选择角色', 'warning');
+                    return;
+                }
+
+                const permissions = [];
+                document.querySelectorAll('[data-permission]:checked').forEach(checkbox => {
+                    permissions.push(checkbox.dataset.permission);
+                });
+
+                console.log('保存权限:', this.currentRole, permissions);
+                this.showMessage('权限保存成功', 'success');
+            }
+
+            resetPermissions() {
+                if (this.currentRole) {
+                    this.loadRolePermissions(this.currentRole);
+                    this.showMessage('权限已重置', 'info');
+                }
+            }
+
+            showRoleDrawer(roleData = null) {
+                const drawer = document.getElementById('roleDrawer');
+                const title = document.getElementById('roleDrawerTitle');
+                
+                if (roleData) {
+                    title.textContent = '编辑角色';
+                    document.getElementById('roleName').value = roleData.name;
+                    document.getElementById('roleCode').value = roleData.code;
+                    document.getElementById('roleDescription').value = roleData.description;
+                    document.getElementById('roleStatus').value = roleData.status;
+                    document.getElementById('roleCode').disabled = true; // 编辑时禁用代码修改
+                } else {
+                    title.textContent = '新增角色';
+                    document.getElementById('roleForm').reset();
+                    document.getElementById('roleCode').disabled = false;
+                }
+                
+                drawer.style.display = 'flex';
+                
+                // 添加点击外部区域关闭抽屉的事件监听
+                setTimeout(() => {
+                    drawer.onclick = (e) => {
+                        if (e.target === drawer) {
+                            closeRoleDrawer();
+                        }
+                    };
+                }, 100);
+            }
+
+            showPermissionDrawer(roleCode) {
+                const drawer = document.getElementById('permissionDrawer');
+                const title = document.getElementById('permissionDrawerTitle');
+                const treeContainer = document.getElementById('drawerPermissionsTree');
+                
+                title.textContent = `权限管理 - ${this.getRoleName(roleCode)}`;
+                
+                // 生成权限树
+                treeContainer.innerHTML = this.generatePermissionTree();
+                
+                // 加载角色权限
+                this.loadDrawerRolePermissions(roleCode);
+                
+                drawer.style.display = 'flex';
+                this.currentDrawerRole = roleCode;
+                
+                // 添加点击外部区域关闭抽屉的事件监听
+                setTimeout(() => {
+                    drawer.onclick = (e) => {
+                        if (e.target === drawer) {
+                            closePermissionDrawer();
+                        }
+                    };
+                }, 100);
+            }
+
+            generatePermissionTree() {
+                const permissions = [
+                    {
+                        group: 'system',
+                        name: '系统管理',
+                        items: [
+                            { key: 'system.dashboard', name: '系统概览' },
+                            { key: 'system.monitor', name: '系统监控' },
+                            { key: 'system.settings', name: '系统设置' },
+                            { key: 'system.logs', name: '系统日志' }
+                        ]
+                    },
+                    {
+                        group: 'user',
+                        name: '用户管理',
+                        items: [
+                            { key: 'user.list', name: '用户列表' },
+                            { key: 'user.create', name: '新增用户' },
+                            { key: 'user.edit', name: '编辑用户' },
+                            { key: 'user.delete', name: '删除用户' },
+                            { key: 'user.reset-password', name: '重置密码' }
+                        ]
+                    },
+                    {
+                        group: 'department',
+                        name: '科室管理',
+                        items: [
+                            { key: 'department.list', name: '科室列表' },
+                            { key: 'department.create', name: '新增科室' },
+                            { key: 'department.edit', name: '编辑科室' },
+                            { key: 'department.delete', name: '删除科室' }
+                        ]
+                    },
+                    {
+                        group: 'audit',
+                        name: '审核管理',
+                        items: [
+                            { key: 'audit.workbench', name: '审核工作台' },
+                            { key: 'audit.pre', name: '事前审核' },
+                            { key: 'audit.in-process', name: '事中审核' },
+                            { key: 'audit.post', name: '事后审核' },
+                            { key: 'audit.approve', name: '审核通过' },
+                            { key: 'audit.reject', name: '审核拒绝' }
+                        ]
+                    },
+                    {
+                        group: 'rule',
+                        name: '规则管理',
+                        items: [
+                            { key: 'rule.config', name: '规则配置' },
+                            { key: 'rule.parameters', name: '规则参数' },
+                            { key: 'rule.knowledge', name: '知识库管理' },
+                            { key: 'rule.import', name: '知识库导入' }
+                        ]
+                    },
+                    {
+                        group: 'report',
+                        name: '报告分析',
+                        items: [
+                            { key: 'report.rule-analysis', name: '规则分析' },
+                            { key: 'report.workload', name: '工作量统计' },
+                            { key: 'report.department', name: '科室分析' },
+                            { key: 'report.export', name: '报告导出' }
+                        ]
+                    }
+                ];
+
+                let html = '';
+                permissions.forEach(group => {
+                    html += `
+                        <div class="permission-group">
+                            <div class="group-header">
+                                <label class="checkbox-item">
+                                    <input type="checkbox" class="group-checkbox" data-group="${group.group}">
+                                    <span>${group.name}</span>
+                                </label>
+                            </div>
+                            <div class="group-permissions">
+                    `;
+                    
+                    group.items.forEach(item => {
+                        html += `
+                            <label class="checkbox-item permission-item">
+                                <input type="checkbox" data-permission="${item.key}">
+                                <span>${item.name}</span>
+                            </label>
+                        `;
+                    });
+                    
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                return html;
+            }
+
+            loadDrawerRolePermissions(roleCode) {
+                const rolePermissions = {
+                    '超级管理员': ['system.dashboard', 'system.monitor', 'system.settings', 'system.logs', 'user.list', 'user.create', 'user.edit', 'user.delete', 'user.reset-password', 'department.list', 'department.create', 'department.edit', 'department.delete', 'audit.workbench', 'audit.pre', 'audit.in-process', 'audit.post', 'audit.approve', 'audit.reject', 'rule.config', 'rule.parameters', 'rule.knowledge', 'rule.import', 'report.rule-analysis', 'report.workload', 'report.department', 'report.export'],
+                    'enterprise-admin': ['system.dashboard', 'user.list', 'user.create', 'user.edit', 'department.list', 'department.create', 'department.edit', 'rule.config', 'rule.parameters', 'rule.knowledge', 'report.rule-analysis', 'report.workload'],
+                    'operator': ['audit.workbench', 'audit.pre', 'audit.in-process', 'audit.post', 'audit.approve', 'audit.reject', 'report.rule-analysis'],
+                    'viewer': ['system.dashboard', 'report.rule-analysis', 'report.workload', 'report.department']
+                };
+
+                this.setDrawerPermissions(rolePermissions[roleCode] || []);
+            }
+
+            setDrawerPermissions(permissions) {
+                // 清空所有权限
+                document.querySelectorAll('#drawerPermissionsTree [data-permission]').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                document.querySelectorAll('#drawerPermissionsTree .group-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.indeterminate = false;
+                });
+
+                // 设置权限
+                permissions.forEach(permission => {
+                    const checkbox = document.querySelector(`#drawerPermissionsTree [data-permission="${permission}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                });
+
+                // 更新组权限状态
+                this.updateDrawerGroupCheckbox();
+            }
+
+            updateDrawerGroupCheckbox() {
+                document.querySelectorAll('#drawerPermissionsTree .group-checkbox').forEach(groupCheckbox => {
+                    const group = groupCheckbox.dataset.group;
+                    const groupPermissions = document.querySelectorAll(`#drawerPermissionsTree [data-permission^="${group}."]`);
+                    const checkedPermissions = document.querySelectorAll(`#drawerPermissionsTree [data-permission^="${group}."]:checked`);
+                    
+                    if (checkedPermissions.length === 0) {
+                        groupCheckbox.checked = false;
+                        groupCheckbox.indeterminate = false;
+                    } else if (checkedPermissions.length === groupPermissions.length) {
+                        groupCheckbox.checked = true;
+                        groupCheckbox.indeterminate = false;
+                    } else {
+                        groupCheckbox.checked = false;
+                        groupCheckbox.indeterminate = true;
+                    }
+                });
+            }
+
+            getRoleName(roleCode) {
+                const roleNames = {
+                    '超级管理员': '超级管理员',
+                    'enterprise-admin': '企业管理员',
+                    'operator': '审核员',
+                    'viewer': '只读用户'
+                };
+                return roleNames[roleCode] || roleCode;
+            }
+            
+            getRoleDetails(roleCode) {
+                const roleDetails = {
+                    '超级管理员': {
+                        name: '超级管理员',
+                        code: '超级管理员',
+                        description: '拥有系统所有权限，可以管理平台的所有功能和数据',
+                        status: 'active',
+                        userCount: 3,
+                        permissionCount: 128,
+                        createTime: '2024-01-15 10:30:00'
+                    },
+                    'enterprise-admin': {
+                        name: '企业管理员',
+                        code: 'enterprise-admin',
+                        description: '管理企业内部用户、部门和基础配置',
+                        status: 'active',
+                        userCount: 15,
+                        permissionCount: 76,
+                        createTime: '2024-01-20 14:20:00'
+                    },
+                    'operator': {
+                        name: '审核员',
+                        code: 'operator',
+                        description: '负责医保数据的审核和处理工作',
+                        status: 'active',
+                        userCount: 89,
+                        permissionCount: 45,
+                        createTime: '2024-02-01 09:15:00'
+                    },
+                    'viewer': {
+                        name: '只读用户',
+                        code: 'viewer',
+                        description: '只能查看相关数据，无法进行修改操作',
+                        status: 'active',
+                        userCount: 156,
+                        permissionCount: 12,
+                        createTime: '2024-02-10 16:45:00'
+                    }
+                };
+                return roleDetails[roleCode] || {
+                    name: '未知角色',
+                    code: roleCode,
+                    description: '角色信息不存在',
+                    status: 'inactive',
+                    userCount: 0,
+                    permissionCount: 0,
+                    createTime: '未知'
+                };
+            }
+
+            showConfirmModal(title, message, callback) {
+                document.getElementById('confirmTitle').textContent = title;
+                document.getElementById('confirmMessage').textContent = message;
+                const modal = document.getElementById('confirmModal');
+                modal.style.display = 'flex';
+                this.confirmCallback = callback;
+                
+                // 添加点击外部区域关闭弹窗的事件监听
+                setTimeout(() => {
+                    modal.onclick = (e) => {
+                        if (e.target === modal) {
+                            this.closeConfirmModal();
+                        }
+                    };
+                }, 100);
+            }
+
+            closeConfirmModal() {
+                document.getElementById('confirmModal').style.display = 'none';
+                this.confirmCallback = null;
+            }
+
+            validateRoleForm() {
+                const roleName = document.getElementById('roleName').value.trim();
+                const roleCode = document.getElementById('roleCode').value.trim();
+                let isValid = true;
+
+                // 清除之前的错误
+                document.getElementById('roleNameError').textContent = '';
+                document.getElementById('roleCodeError').textContent = '';
+
+                if (!roleName) {
+                    document.getElementById('roleNameError').textContent = '请输入角色名称';
+                    isValid = false;
+                }
+
+                if (!roleCode) {
+                    document.getElementById('roleCodeError').textContent = '请输入角色代码';
+                    isValid = false;
+                } else if (!/^[a-zA-Z0-9-_]+$/.test(roleCode)) {
+                    document.getElementById('roleCodeError').textContent = '角色代码只能包含字母、数字、横线和下划线';
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            showMessage(message, type = 'info') {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message message-${type}`;
+                messageDiv.textContent = message;
+                messageDiv.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 12px 20px;
+                    background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : type === 'warning' ? '#ff9800' : '#2196F3'};
+                    color: white;
+                    border-radius: 4px;
+                    z-index: 10000;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                `;
+                
+                document.body.appendChild(messageDiv);
+                
+                setTimeout(() => {
+                    document.body.removeChild(messageDiv);
+                }, 3000);
+            }
+        }
+
+        // 全局函数
+        function editRole(roleCode) {
+            console.log('编辑角色:', roleCode);
+            // 模拟加载角色数据
+            const roleData = {
+                name: window.permissionManager.getRoleName(roleCode),
+                code: roleCode,
+                description: '角色描述信息',
+                status: 'active'
+            };
+            window.permissionManager.showRoleDrawer(roleData);
+        }
+
+        function managePermissions(roleCode) {
+            window.permissionManager.showPermissionDrawer(roleCode);
+        }
+
+        function toggleRoleStatus(roleCode, currentStatus) {
+            const action = currentStatus === 'active' ? '停用' : '启用';
+            const message = `确定要${action}角色"${window.permissionManager.getRoleName(roleCode)}"吗？`;
+            
+            window.permissionManager.showConfirmModal(
+                `${action}角色`,
+                message,
+                () => {
+                    console.log(`${action}角色:`, roleCode);
+                    window.permissionManager.showMessage(`角色${action}成功`, 'success');
+                    // 这里可以刷新页面或更新状态
+                }
+            );
+        }
+
+        // 抽屉相关函数
+        function closeRoleDrawer() {
+            document.getElementById('roleDrawer').style.display = 'none';
+        }
+
+        function closePermissionDrawer() {
+            document.getElementById('permissionDrawer').style.display = 'none';
+        }
+
+        function saveRole() {
+            if (window.permissionManager.validateRoleForm()) {
+                console.log('保存角色');
+                window.permissionManager.showMessage('角色保存成功', 'success');
+                closeRoleDrawer();
+            }
+        }
+
+        function resetDrawerPermissions() {
+            if (window.permissionManager.currentDrawerRole) {
+                window.permissionManager.loadDrawerRolePermissions(window.permissionManager.currentDrawerRole);
+                window.permissionManager.showMessage('权限已重置', 'info');
+            }
+        }
+
+        function saveDrawerPermissions() {
+            if (!window.permissionManager.currentDrawerRole) {
+                window.permissionManager.showMessage('请先选择角色', 'warning');
+                return;
+            }
+
+            const permissions = [];
+            document.querySelectorAll('#drawerPermissionsTree [data-permission]:checked').forEach(checkbox => {
+                permissions.push(checkbox.dataset.permission);
+            });
+
+            console.log('保存权限:', window.permissionManager.currentDrawerRole, permissions);
+            window.permissionManager.showMessage('权限保存成功', 'success');
+        }
+
+        // 确认弹窗相关函数
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+            window.permissionManager.confirmCallback = null;
+        }
+
+        function confirmAction() {
+            if (window.permissionManager.confirmCallback) {
+                window.permissionManager.confirmCallback();
+            }
+            closeConfirmModal();
+        }
+
+        // 兼容原有模态框函数
+        function closeRoleModal() {
+            document.getElementById('roleModal').style.display = 'none';
+        }
+
+        // 绑定抽屉权限树事件
+        function bindDrawerPermissionEvents() {
+            // 组权限复选框事件
+            document.querySelectorAll('#drawerPermissionsTree .group-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const group = e.target.dataset.group;
+                    const checked = e.target.checked;
+                    const groupPermissions = document.querySelectorAll(`#drawerPermissionsTree [data-permission^="${group}."]`);
+                    
+                    groupPermissions.forEach(permission => {
+                        permission.checked = checked;
+                    });
+                });
+            });
+
+            // 单个权限复选框事件
+            document.querySelectorAll('#drawerPermissionsTree [data-permission]').forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    window.permissionManager.updateDrawerGroupCheckbox();
+                });
+            });
+        }
+
+        // 视图切换函数
+        function switchView(viewType) {
+            const viewButtons = document.querySelectorAll('.view-btn');
+            viewButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.view === viewType) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const tableView = document.getElementById('tableView');
+            const cardView = document.getElementById('cardView');
+
+            if (viewType === 'table') {
+                if (tableView) tableView.style.display = 'block';
+                if (cardView) cardView.style.display = 'none';
+            } else {
+                if (tableView) tableView.style.display = 'none';
+                if (cardView) cardView.style.display = 'block';
+            }
+        }
+
+        // 查看角色详情函数
+         function viewRoleDetail(roleCode) {
+              console.log('查看角色详情:', roleCode);
+              const roleName = window.permissionManager.getRoleName(roleCode);
+              
+              // 获取角色详细信息
+              const roleDetails = window.permissionManager.getRoleDetails(roleCode);
+              
+              // 填充详情抽屉内容
+              document.getElementById('detailRoleName').textContent = roleDetails.name;
+              document.getElementById('detailRoleCode').textContent = roleDetails.code;
+              document.getElementById('detailRoleDescription').textContent = roleDetails.description;
+              document.getElementById('detailRoleStatus').textContent = roleDetails.status === 'active' ? '启用' : '禁用';
+              document.getElementById('detailUserCount').textContent = roleDetails.userCount;
+              document.getElementById('detailPermissionCount').textContent = roleDetails.permissionCount;
+              document.getElementById('detailCreateTime').textContent = roleDetails.createTime;
+              
+              // 显示详情抽屉
+              const drawer = document.getElementById('roleDetailDrawer');
+              drawer.style.display = 'flex';
+              
+              // 添加点击外部区域关闭抽屉的事件监听
+              setTimeout(() => {
+                  drawer.onclick = (e) => {
+                      if (e.target === drawer) {
+                          closeRoleDetailDrawer();
+                      }
+                  };
+              }, 100);
+          }
+          
+          function closeRoleDetailDrawer() {
+              document.getElementById('roleDetailDrawer').style.display = 'none';
+          }
+
+          // 页面加载完成后初始化
+          document.addEventListener('DOMContentLoaded', () => {
+              window.permissionManager = new PermissionManager();
+              
+              // 监听权限抽屉打开事件，绑定权限树事件
+              const permissionDrawer = document.getElementById('permissionDrawer');
+              const observer = new MutationObserver((mutations) => {
+                  mutations.forEach((mutation) => {
+                      if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                          if (permissionDrawer.style.display === 'flex') {
+                              setTimeout(() => {
+                                  bindDrawerPermissionEvents();
+                              }, 100);
+                          }
+                      }
+                  });
+              });
+              observer.observe(permissionDrawer, { attributes: true });
+          });
+    </script>
+
+    <style>
+        /* 左侧菜单样式 */
+        .sidebar {
+            width: 260px;
+            background: #1e293b;
+            color: white;
+            padding: 0;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid #334155;
+            text-align: left;
+        }
+
+        .sidebar-logo {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            padding-left: 8px;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 12px 20px;
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: #334155;
+            color: #3b82f6;
+        }
+
+        .nav-item.active {
+            background: #1e40af;
+            color: white;
+            border-right: 3px solid #3b82f6;
+        }
+
+        .nav-icon {
+            display: inline-block;
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        /* 统计卡片样式 */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .stat-card.total .stat-icon {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .stat-card.active .stat-icon {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .stat-card.revenue .stat-icon {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .stat-card.support .stat-icon {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .stat-trend {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .trend-value {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .trend-value.up {
+            color: #10b981;
+        }
+
+        .trend-value.down {
+            color: #ef4444;
+        }
+
+        .trend-label {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        /* 图标样式 */
+        .icon-tenants::before {
+            content: '●';
+            color: #ffffff !important;
+            font-size: 24px;
+        }
+
+        .icon-active::before {
+            content: '◆';
+            color: #ffffff !important;
+            font-size: 24px;
+        }
+
+        .icon-revenue::before {
+            content: '▲';
+            color: #ffffff !important;
+            font-size: 24px;
+        }
+
+        .icon-support::before {
+            content: '🛡️';
+            color: #ffffff !important;
+        }
+        
+        /* 确保图标元素本身也是白色 */
+        .stat-icon i {
+            color: #ffffff !important;
+        }
+
+        /* 面包屑导航 */
+        .breadcrumb {
+            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .breadcrumb a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .breadcrumb .separator {
+            margin: 0 8px;
+            color: #999;
+        }
+
+        .breadcrumb .current {
+            color: #333;
+        }
+
+        .permission-management-container {
+            padding: 20px;
+        }
+
+        .roles-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-box input {
+            width: 200px;
+        }
+
+        .role-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .role-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .role-code {
+            font-size: 12px;
+            color: #666;
+            font-family: monospace;
+        }
+
+        .permissions-tree {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .permission-group {
+            margin-bottom: 24px;
+        }
+
+        .group-header {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .group-header .checkbox-item {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .group-permissions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            padding-left: 24px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .permission-item {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .permissions-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+        }
+
+        .close {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 20px 24px;
+            border-top: 1px solid #eee;
+        }
+
+        /* 卡片视图样式 */
+        .role-card-view {
+            display: none;
+        }
+
+        .role-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .role-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .role-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .role-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .role-info {
+            display: flex;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .role-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .role-details h4 {
+            margin: 0 0 4px 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .role-details .role-code {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            color: #6b7280;
+            font-family: 'Monaco', 'Menlo', monospace;
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .role-details .role-desc {
+            margin: 0;
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .role-status {
+            flex-shrink: 0;
+        }
+
+        .role-card-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .role-card-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .role-card-actions .btn {
+            flex: 1;
+        }
+
+        .role-card-actions .dropdown {
+            position: relative;
+        }
+
+        /* 抽屉样式 */
+        .drawer-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .drawer-container {
+            background: white;
+            width: 500px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        .drawer-container.large {
+            width: 700px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #eee;
+            background: #f8f9fa;
+        }
+
+        .drawer-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .drawer-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .drawer-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 20px 24px;
+            border-top: 1px solid #eee;
+            background: #f8f9fa;
+        }
+
+        .drawer-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .drawer-form label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .drawer-form .required {
+            color: #e74c3c;
+        }
+
+        .drawer-form input,
+        .drawer-form textarea,
+        .drawer-form select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .drawer-form input:focus,
+        .drawer-form textarea:focus,
+        .drawer-form select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .drawer-form input:disabled {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .field-error {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 4px;
+            min-height: 16px;
+        }
+
+        /* 自定义确认弹窗样式 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-container {
+            background: white;
+            border-radius: 8px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeInScale 0.3s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-container .modal-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-container .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #3498db;
+        }
+
+        .modal-container .modal-content {
+            padding: 20px 24px;
+        }
+
+        .modal-container .modal-content p {
+            margin: 0;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .modal-container .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px 20px;
+            border-top: 1px solid #eee;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .btn-info {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #2563eb;
+        }
+
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #d97706;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .drawer-container {
+                width: 100%;
+            }
+
+            .drawer-container.large {
+                width: 100%;
+            }
+        }
+        
+        /* 角色详情弹窗样式 */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-item label {
+            font-weight: 500;
+            color: #666;
+            min-width: 100px;
+            margin-right: 16px;
+        }
+        
+        .detail-item span {
+            color: #333;
+            flex: 1;
+        }
+        
+        @media (min-width: 768px) {
+            .detail-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/permission-management.js"></script>
+    <!-- 加载统一菜单 -->
+<script>
+    // 加载统一菜单组件
+    fetch('../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+
+</body>
+</html>

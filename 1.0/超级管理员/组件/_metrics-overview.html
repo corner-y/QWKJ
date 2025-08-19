@@ -1,0 +1,64 @@
+
+
+
+<!-- 核心指标概览 -->
+<div class="metrics-overview">
+    <div class="metric-card total-tenants">
+        <div class="metric-icon">
+            <i class="icon-tenants"></i>
+        </div>
+        <div class="metric-info">
+            <div class="metric-value">156</div>
+            <div class="metric-label">活跃租户</div>
+        </div>
+        <div class="metric-detail">
+            <span class="detail-text">较上月 +12</span>
+            <div class="trend-chart mini">
+                <canvas id="tenantsTrend" width="60" height="20"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="metric-card total-revenue">
+        <div class="metric-icon">
+            <i class="icon-revenue"></i>
+        </div>
+        <div class="metric-info">
+            <div class="metric-value">¥2.34M</div>
+            <div class="metric-label">月度收入</div>
+        </div>
+        <div class="metric-detail">
+            <span class="detail-text">较上月 +18.5%</span>
+            <div class="trend-chart mini">
+                <canvas id="revenueTrend" width="60" height="20"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="metric-card system-health">
+        <div class="metric-icon">
+            <i class="icon-health"></i>
+        </div>
+        <div class="metric-info">
+            <div class="metric-value">99.8%</div>
+            <div class="metric-label">系统可用性</div>
+        </div>
+        <div class="metric-detail">
+            <span class="detail-text status-excellent">优秀</span>
+            <div class="health-indicator excellent"></div>
+        </div>
+    </div>
+    <div class="metric-card daily-audits">
+        <div class="metric-icon">
+            <i class="icon-audits"></i>
+        </div>
+        <div class="metric-info">
+            <div class="metric-value">1.2M</div>
+            <div class="metric-label">日审核量</div>
+        </div>
+        <div class="metric-detail">
+            <span class="detail-text">较昨日 +5.2%</span>
+            <div class="trend-chart mini">
+                <canvas id="auditsTrend" width="60" height="20"></canvas>
+            </div>
+        </div>
+    </div>
+</div>

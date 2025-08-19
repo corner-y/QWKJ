@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全局设置 - 医保审核系统</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/表单样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    </head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        
+<nav class="breadcrumb" aria-label="面包屑导航">
+    <a href="../工作台/平台运营看板.html">首页</a> > <a href="../1.0/">1.0</a> > <a href="../1.0/超级管理员/">超级管理员</a> > <a href="../1.0/超级管理员/系统管理/">系统管理</a> > <span class="current">全局设置</span>
+</nav>
+
+<h1 class="page-title">全局设置</h1>
+
+            <div class="global-settings-container">
+        <div class="page-header">
+            <h2>全局设置</h2>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="resetBtn">重置设置</button>
+                <button class="btn btn-primary" id="saveBtn">保存设置</button>
+            </div>
+        </div>
+
+        <div class="settings-content">
+            <!-- Tab导航 -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="basic">基础设置</button>
+                <button class="tab-btn" data-tab="security">安全设置</button>
+                <button class="tab-btn" data-tab="audit">审核规则</button>
+                <button class="tab-btn" data-tab="notification">通知设置</button>
+                <button class="tab-btn" data-tab="backup">数据备份</button>
+                <button class="tab-btn" data-tab="maintenance">系统维护</button>
+            </div>
+
+            <!-- Tab内容 -->
+            <div class="tab-content">
+                <!-- 系统基础设置 -->
+                <div class="tab-pane active" id="basicTab">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3>系统基础设置</h3>
+                            <p>配置系统的基本参数和运行环境</p>
+                        </div>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label for="systemName">系统名称</label>
+                        <input type="text" id="systemName" value="医保智能审核系统" placeholder="请输入系统名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="systemVersion">系统版本</label>
+                        <input type="text" id="systemVersion" value="v2.1.0" placeholder="请输入系统版本">
+                    </div>
+                    <div class="form-group">
+                        <label for="systemLogo">系统Logo</label>
+                        <div class="file-upload">
+                            <input type="file" id="systemLogo" accept="image/*">
+                            <div class="upload-preview">
+                                <img src="./assets/images/logo.svg" alt="当前Logo" class="logo-preview">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="systemDescription">系统描述</label>
+                        <textarea id="systemDescription" rows="3" placeholder="请输入系统描述">基于人工智能的医保费用智能审核系统，提供事前、事中、事后全流程审核服务</textarea>
+                    </div>
+                </div>
+                <button class="save-btn" id="saveBasicBtn">保存基础设置</button>
+            </div>
+                </div>
+
+                <!-- 安全设置 -->
+                <div class="tab-pane" id="securityTab">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3>安全设置</h3>
+                            <p>配置系统安全策略和访问控制</p>
+                        </div>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label for="sessionTimeout">会话超时时间（分钟）</label>
+                        <input type="number" id="sessionTimeout" value="30" min="5" max="480">
+                    </div>
+                    <div class="form-group">
+                        <label for="passwordPolicy">密码策略</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" checked>
+                                <span>至少8位字符</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" checked>
+                                <span>包含大小写字母</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" checked>
+                                <span>包含数字</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox">
+                                <span>包含特殊字符</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginAttempts">登录失败次数限制</label>
+                        <input type="number" id="loginAttempts" value="5" min="3" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="ipWhitelist">IP白名单</label>
+                        <textarea id="ipWhitelist" rows="3" placeholder="请输入允许访问的IP地址，每行一个">192.168.1.0/24
+10.0.0.0/8</textarea>
+                    </div>
+                </div>
+                        <button class="save-btn" id="saveSecurityBtn">保存安全设置</button>
+                    </div>
+                </div>
+
+                <!-- 审核规则设置 -->
+                <div class="tab-pane" id="auditTab">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3>审核规则设置</h3>
+                            <p>配置全局审核规则和阈值参数</p>
+                        </div>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label for="auditThreshold">自动审核阈值（元）</label>
+                        <input type="number" id="auditThreshold" value="1000" min="0" step="100">
+                    </div>
+                    <div class="form-group">
+                        <label for="riskLevel">风险等级阈值</label>
+                        <div class="risk-levels">
+                            <div class="risk-item">
+                                <label>低风险</label>
+                                <input type="number" value="30" min="0" max="100">%
+                            </div>
+                            <div class="risk-item">
+                                <label>中风险</label>
+                                <input type="number" value="60" min="0" max="100">%
+                            </div>
+                            <div class="risk-item">
+                                <label>高风险</label>
+                                <input type="number" value="80" min="0" max="100">%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="auditMode">审核模式</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="auditMode" value="strict" checked>
+                                <span>严格模式</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="auditMode" value="normal">
+                                <span>标准模式</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="auditMode" value="loose">
+                                <span>宽松模式</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                        <button class="save-btn" id="saveAuditBtn">保存审核规则</button>
+                    </div>
+                </div>
+
+                <!-- 通知设置 -->
+                <div class="tab-pane" id="notificationTab">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3>通知设置</h3>
+                            <p>配置系统通知和消息推送</p>
+                        </div>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label for="emailServer">邮件服务器</label>
+                        <input type="text" id="emailServer" value="smtp.company.com" placeholder="请输入SMTP服务器地址">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailPort">邮件端口</label>
+                        <input type="number" id="emailPort" value="587" placeholder="请输入SMTP端口">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailUser">邮件用户名</label>
+                        <input type="text" id="emailUser" value="system@company.com" placeholder="请输入邮件用户名">
+                    </div>
+                    <div class="form-group">
+                        <label for="smsProvider">短信服务商</label>
+                        <select id="smsProvider">
+                            <option value="aliyun">阿里云短信</option>
+                            <option value="tencent">腾讯云短信</option>
+                            <option value="huawei">华为云短信</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>通知类型</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" checked>
+                                <span>系统异常通知</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" checked>
+                                <span>审核结果通知</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox">
+                                <span>定期报告通知</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox">
+                                <span>维护通知</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                        <button class="save-btn" id="saveNotificationBtn">保存通知设置</button>
+                    </div>
+                </div>
+
+                <!-- 数据备份设置 -->
+                <div class="tab-pane" id="backupTab">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3>数据备份设置</h3>
+                            <p>配置数据备份策略和存储位置</p>
+                        </div>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label for="backupFrequency">备份频率</label>
+                        <select id="backupFrequency">
+                            <option value="daily" selected>每日备份</option>
+                            <option value="weekly">每周备份</option>
+                            <option value="monthly">每月备份</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="backupTime">备份时间</label>
+                        <input type="time" id="backupTime" value="02:00">
+                    </div>
+                    <div class="form-group">
+                        <label for="backupRetention">备份保留天数</label>
+                        <input type="number" id="backupRetention" value="30" min="7" max="365">
+                    </div>
+                    <div class="form-group">
+                        <label for="backupLocation">备份存储位置</label>
+                        <div class="radio-group">
+                            <label class="radio-item">
+                                <input type="radio" name="backupLocation" value="local" checked>
+                                <span>本地存储</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="backupLocation" value="cloud">
+                                <span>云存储</span>
+                            </label>
+                            <label class="radio-item">
+                                <input type="radio" name="backupLocation" value="both">
+                                <span>本地+云存储</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                        <button class="save-btn" id="saveBackupBtn">保存备份设置</button>
+                    </div>
+                </div>
+
+                <!-- 系统维护设置 -->
+                <div class="tab-pane" id="maintenanceTab">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <h3>系统维护设置</h3>
+                            <p>配置系统维护和性能优化参数</p>
+                        </div>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label for="maintenanceMode">维护模式</label>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="maintenanceMode">
+                            <label for="maintenanceMode" class="switch"></label>
+                            <span>启用维护模式</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="logLevel">日志级别</label>
+                        <select id="logLevel">
+                            <option value="debug">调试</option>
+                            <option value="info" selected>信息</option>
+                            <option value="warning">警告</option>
+                            <option value="error">错误</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cacheExpiry">缓存过期时间（小时）</label>
+                        <input type="number" id="cacheExpiry" value="24" min="1" max="168">
+                    </div>
+                    <div class="form-group">
+                        <label for="maxConnections">最大连接数</label>
+                        <input type="number" id="maxConnections" value="1000" min="100" max="10000">
+                    </div>
+                    </div>
+                        <button class="save-btn" id="saveMaintenanceBtn">保存维护设置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局设置功能
+        class GlobalSettings {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadSettings();
+                this.initTabs();
+            }
+
+            initTabs() {
+                // Tab切换功能
+                const tabBtns = document.querySelectorAll('.tab-btn');
+                const tabPanes = document.querySelectorAll('.tab-pane');
+
+                tabBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const targetTab = btn.getAttribute('data-tab');
+                        
+                        // 移除所有active类
+                        tabBtns.forEach(b => b.classList.remove('active'));
+                        tabPanes.forEach(p => p.classList.remove('active'));
+                        
+                        // 添加active类到当前tab
+                        btn.classList.add('active');
+                        document.getElementById(targetTab + 'Tab').classList.add('active');
+                    });
+                });
+            }
+
+            bindEvents() {
+                // 为每个tab的保存按钮添加事件监听器
+                document.getElementById('saveBasicBtn')?.addEventListener('click', () => {
+                    this.saveBasicSettings();
+                });
+                document.getElementById('saveSecurityBtn')?.addEventListener('click', () => {
+                    this.saveSecuritySettings();
+                });
+                document.getElementById('saveAuditBtn')?.addEventListener('click', () => {
+                    this.saveAuditSettings();
+                });
+                document.getElementById('saveNotificationBtn')?.addEventListener('click', () => {
+                    this.saveNotificationSettings();
+                });
+                document.getElementById('saveBackupBtn')?.addEventListener('click', () => {
+                    this.saveBackupSettings();
+                });
+                document.getElementById('saveMaintenanceBtn')?.addEventListener('click', () => {
+                    this.saveMaintenanceSettings();
+                });
+
+                document.getElementById('resetBtn')?.addEventListener('click', () => {
+                    this.resetSettings();
+                });
+
+                // 文件上传预览
+                document.getElementById('systemLogo')?.addEventListener('change', (e) => {
+                    this.previewLogo(e.target.files[0]);
+                });
+            }
+
+            loadSettings() {
+                console.log('加载全局设置');
+                // 这里可以从服务器加载设置数据
+            }
+
+            saveBasicSettings() {
+                const basicSettings = {
+                    name: document.getElementById('systemName')?.value,
+                    version: document.getElementById('systemVersion')?.value,
+                    description: document.getElementById('systemDescription')?.value
+                };
+                console.log('保存基础设置:', basicSettings);
+                this.showMessage('基础设置保存成功', 'success');
+            }
+
+            saveSecuritySettings() {
+                const securitySettings = {
+                    sessionTimeout: document.getElementById('sessionTimeout')?.value,
+                    loginAttempts: document.getElementById('loginAttempts')?.value,
+                    ipWhitelist: document.getElementById('ipWhitelist')?.value
+                };
+                console.log('保存安全设置:', securitySettings);
+                this.showMessage('安全设置保存成功', 'success');
+            }
+
+            saveAuditSettings() {
+                const auditSettings = {
+                    threshold: document.getElementById('auditThreshold')?.value,
+                    mode: document.querySelector('input[name="auditMode"]:checked')?.value
+                };
+                console.log('保存审核规则:', auditSettings);
+                this.showMessage('审核规则保存成功', 'success');
+            }
+
+            saveNotificationSettings() {
+                const notificationSettings = {
+                    emailServer: document.getElementById('emailServer')?.value,
+                    emailPort: document.getElementById('emailPort')?.value,
+                    emailUser: document.getElementById('emailUser')?.value,
+                    smsProvider: document.getElementById('smsProvider')?.value
+                };
+                console.log('保存通知设置:', notificationSettings);
+                this.showMessage('通知设置保存成功', 'success');
+            }
+
+            saveBackupSettings() {
+                const backupSettings = {
+                    frequency: document.getElementById('backupFrequency')?.value,
+                    time: document.getElementById('backupTime')?.value,
+                    retention: document.getElementById('backupRetention')?.value,
+                    location: document.querySelector('input[name="backupLocation"]:checked')?.value
+                };
+                console.log('保存备份设置:', backupSettings);
+                this.showMessage('备份设置保存成功', 'success');
+            }
+
+            saveMaintenanceSettings() {
+                const maintenanceSettings = {
+                    mode: document.getElementById('maintenanceMode')?.checked,
+                    logLevel: document.getElementById('logLevel')?.value,
+                    cacheExpiry: document.getElementById('cacheExpiry')?.value,
+                    maxConnections: document.getElementById('maxConnections')?.value
+                };
+                console.log('保存维护设置:', maintenanceSettings);
+                this.showMessage('维护设置保存成功', 'success');
+            }
+
+            resetSettings() {
+                if (confirm('确定要重置所有设置吗？此操作不可撤销。')) {
+                    console.log('重置设置');
+                    this.showMessage('设置已重置', 'info');
+                    location.reload();
+                }
+            }
+
+            collectSettings() {
+                return {
+                    system: {
+                        name: document.getElementById('systemName')?.value,
+                        version: document.getElementById('systemVersion')?.value,
+                        description: document.getElementById('systemDescription')?.value
+                    },
+                    security: {
+                        sessionTimeout: document.getElementById('sessionTimeout')?.value,
+                        loginAttempts: document.getElementById('loginAttempts')?.value,
+                        ipWhitelist: document.getElementById('ipWhitelist')?.value
+                    },
+                    audit: {
+                        threshold: document.getElementById('auditThreshold')?.value,
+                        mode: document.querySelector('input[name="auditMode"]:checked')?.value
+                    },
+                    notification: {
+                        emailServer: document.getElementById('emailServer')?.value,
+                        emailPort: document.getElementById('emailPort')?.value,
+                        emailUser: document.getElementById('emailUser')?.value,
+                        smsProvider: document.getElementById('smsProvider')?.value
+                    },
+                    backup: {
+                        frequency: document.getElementById('backupFrequency')?.value,
+                        time: document.getElementById('backupTime')?.value,
+                        retention: document.getElementById('backupRetention')?.value,
+                        location: document.querySelector('input[name="backupLocation"]:checked')?.value
+                    },
+                    maintenance: {
+                        mode: document.getElementById('maintenanceMode')?.checked,
+                        logLevel: document.getElementById('logLevel')?.value,
+                        cacheExpiry: document.getElementById('cacheExpiry')?.value,
+                        maxConnections: document.getElementById('maxConnections')?.value
+                    }
+                };
+            }
+
+            previewLogo(file) {
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const preview = document.querySelector('.logo-preview');
+                        if (preview) {
+                            preview.src = e.target.result;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            showMessage(message, type = 'info') {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message message-${type}`;
+                messageDiv.textContent = message;
+                messageDiv.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 12px 20px;
+                    background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+                    color: white;
+                    border-radius: 4px;
+                    z-index: 10000;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                `;
+                
+                document.body.appendChild(messageDiv);
+                
+                setTimeout(() => {
+                    document.body.removeChild(messageDiv);
+                }, 3000);
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            new GlobalSettings();
+        });
+    </script>
+
+    <style>
+        .global-settings-container {
+            padding: 20px;
+        }
+
+        .settings-content {
+            max-width: 800px;
+        }
+
+        /* Tab样式 */
+        .tab-navigation {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 24px;
+            background: white;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px 20px;
+            background: #f5f5f5;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn:hover {
+            background: #e8f4fd;
+            color: #1976d2;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: #1976d2;
+            border-bottom-color: #1976d2;
+        }
+
+        .tab-content {
+            /* background: white; */
+            /* border-radius: 0 0 8px 8px; */
+            min-height: 500px;
+        }
+
+        .tab-pane {
+            display: none;
+            padding: 24px;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .settings-section {
+            background: white;
+            padding: 24px;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 32px;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .settings-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .section-header h3 {
+            margin: 0 0 8px 0;
+            color: #333;
+        }
+
+        .section-header p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .file-upload {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .upload-preview {
+            width: 80px;
+            height: 80px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-preview {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .risk-levels {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .risk-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .risk-item label {
+            min-width: 60px;
+            font-size: 14px;
+        }
+
+        .risk-item input {
+            width: 80px;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        input[type="checkbox"]:checked + .switch {
+            background: var(--color-primary);
+        }
+
+        input[type="checkbox"]:checked + .switch::before {
+            transform: translateX(26px);
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        .save-btn {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            align-self: flex-start;
+            margin-top: 20px;
+        }
+
+        .save-btn:hover {
+            background: #1565c0;
+        }
+
+        .save-btn:active {
+            background: #0d47a1;
+        }
+    </style>
+            </div> <!-- 关闭 global-settings-container -->
+        </div> <!-- 关闭 main-content -->
+    </div> <!-- 关闭 dashboard-container -->
+    
+    <!-- 加载统一菜单 -->
+<script>
+    // 加载统一菜单组件
+    fetch('../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+
+<script>
+// 基础表单验证
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const inputs = form.querySelectorAll('input[required]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.borderColor = '#ff4d4f';
+                    isValid = false;
+                } else {
+                    input.style.borderColor = '';
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                alert('请填写所有必填字段');
+            }
+        });
+    });
+});
+</script>
+
+<script>
+// 无障碍访问增强
+document.addEventListener('DOMContentLoaded', function() {
+    // 为没有aria-label的按钮添加
+    const buttons = document.querySelectorAll('button:not([aria-label]):not([title])');
+    buttons.forEach(button => {
+        const text = button.textContent.trim() || button.innerHTML.replace(/<[^>]*>/g, '').trim();
+        if (text) {
+            button.setAttribute('aria-label', text);
+        }
+    });
+    
+    // 为表单输入添加基础的无障碍支持
+    const inputs = document.querySelectorAll('input:not([aria-label]):not([title])');
+    inputs.forEach(input => {
+        const placeholder = input.getAttribute('placeholder');
+        if (placeholder) {
+            input.setAttribute('aria-label', placeholder);
+        }
+    });
+});
+</script>
+
+<script>
+// 无障碍访问增强
+document.addEventListener('DOMContentLoaded', function() {
+    // 为没有aria-label的按钮添加
+    const buttons = document.querySelectorAll('button:not([aria-label]):not([title])');
+    buttons.forEach(button => {
+        const text = button.textContent.trim() || button.innerHTML.replace(/<[^>]*>/g, '').trim();
+        if (text) {
+            button.setAttribute('aria-label', text);
+        }
+    });
+    
+    // 为表单输入添加基础的无障碍支持
+    const inputs = document.querySelectorAll('input:not([aria-label]):not([title])');
+    inputs.forEach(input => {
+        const placeholder = input.getAttribute('placeholder');
+        if (placeholder) {
+            input.setAttribute('aria-label', placeholder);
+        }
+    });
+});
+</script>
+
+<script>
+// 无障碍访问增强
+document.addEventListener('DOMContentLoaded', function() {
+    // 为没有aria-label的按钮添加
+    const buttons = document.querySelectorAll('button:not([aria-label]):not([title])');
+    buttons.forEach(button => {
+        const text = button.textContent.trim() || button.innerHTML.replace(/<[^>]*>/g, '').trim();
+        if (text) {
+            button.setAttribute('aria-label', text);
+        }
+    });
+    
+    // 为表单输入添加基础的无障碍支持
+    const inputs = document.querySelectorAll('input:not([aria-label]):not([title])');
+    inputs.forEach(input => {
+        const placeholder = input.getAttribute('placeholder');
+        if (placeholder) {
+            input.setAttribute('aria-label', placeholder);
+        }
+    });
+});
+</script>
+
+<script>
+// 无障碍访问增强
+document.addEventListener('DOMContentLoaded', function() {
+    // 为没有aria-label的按钮添加
+    const buttons = document.querySelectorAll('button:not([aria-label]):not([title])');
+    buttons.forEach(button => {
+        const text = button.textContent.trim() || button.innerHTML.replace(/<[^>]*>/g, '').trim();
+        if (text) {
+            button.setAttribute('aria-label', text);
+        }
+    });
+    
+    // 为表单输入添加基础的无障碍支持
+    const inputs = document.querySelectorAll('input:not([aria-label]):not([title])');
+    inputs.forEach(input => {
+        const placeholder = input.getAttribute('placeholder');
+        if (placeholder) {
+            input.setAttribute('aria-label', placeholder);
+        }
+    });
+});
+</script>
+
+<script>
+// 无障碍访问增强
+document.addEventListener('DOMContentLoaded', function() {
+    // 为没有aria-label的按钮添加
+    const buttons = document.querySelectorAll('button:not([aria-label]):not([title])');
+    buttons.forEach(button => {
+        const text = button.textContent.trim() || button.innerHTML.replace(/<[^>]*>/g, '').trim();
+        if (text) {
+            button.setAttribute('aria-label', text);
+        }
+    });
+    
+    // 为表单输入添加基础的无障碍支持
+    const inputs = document.querySelectorAll('input:not([aria-label]):not([title])');
+    inputs.forEach(input => {
+        const placeholder = input.getAttribute('placeholder');
+        if (placeholder) {
+            input.setAttribute('aria-label', placeholder);
+        }
+    });
+});
+</script>
+</body>
+</html>

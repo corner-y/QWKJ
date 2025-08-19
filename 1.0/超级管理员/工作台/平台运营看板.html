@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医保审核系统 - 工作台</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/平台看板样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    <style>
+        /* 标签页样式 */
+        .tabs-container {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        
+        .tabs-header {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        .tab-item {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #6c757d;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-item:hover {
+            color: #007bff;
+            background: #e9ecef;
+        }
+        
+        .tab-item.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            background: #fff;
+        }
+        
+        .tab-close {
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+        
+        .tab-item:hover .tab-close {
+            opacity: 1;
+        }
+        
+        .tabs-content {
+            position: relative;
+            min-height: 600px;
+        }
+        
+        .tab-panel {
+            display: none;
+            padding: 0;
+        }
+        
+        .tab-panel.active {
+            display: block;
+        }
+        
+        .tab-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            min-height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="content-wrapper">
+                <!-- 页面头部 -->
+                <div class="page-header">
+                    <div class="header-left">
+                        <h2>工作台</h2>
+                        <div class="dashboard-meta">
+                            <span class="update-time">最后更新：2024-01-31 23:59</span>
+                            <span class="data-source">数据来源：实时监控</span>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="refreshDashboard()">刷新数据</button>
+                        <button class="btn btn-primary" onclick="openSettings()">设置</button>
+                    </div>
+                </div>
+                
+                <!-- 标签页容器 -->
+                <div class="tabs-container" id="tabsContainer">
+                    <div class="tabs-header" id="tabsHeader">
+                        <!-- 标签页将通过JavaScript动态生成 -->
+                    </div>
+                    <div class="tabs-content" id="tabsContent">
+                        <!-- 标签页内容将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+
+            <!-- 核心指标概览 -->
+            <div id="metrics-overview-container"></div>
+
+            <!-- 租户分析 -->
+            <div id="tenant-analysis-container"></div>
+
+            <!-- 收入分析 -->
+            <div id="revenue-analysis-container"></div>
+
+            <!-- 系统监控 -->
+            <div id="system-monitoring-container"></div>
+
+            <!-- 租户活跃度 -->
+            <div id="tenant-activity-container"></div>
+
+            <!-- 运营数据 -->
+            <div id="operation-data-container"></div>
+
+            <!-- 设置弹窗 -->
+            <div id="settings-modal-container"></div>
+            </div> <!-- /content-wrapper -->
+        </div> <!-- /main-content -->
+    </div> <!-- /dashboard-container -->
+
+    <!-- 加载统一菜单组件脚本 -->
+    <script>
+    // 加载统一菜单组件
+    fetch('../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+
+    <!-- 引入Chart.js图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- 引入图表管理器 -->
+    <script src="../脚本文件/图表.js"></script>
+    
+    <!-- 引入看板组件管理器 -->
+    <script src="../脚本文件/看板组件.js"></script>
+    
+    <script>
+        // 检查是否在iframe中运行
+        const isInIframe = window.self !== window.top;
+        
+        // 标签页管理对象 - 只在顶层窗口初始化
+        const tabsManager = {
+            tabs: [],
+            activeTabId: null,
+            
+            // 初始化标签页管理器
+            init() {
+                // 如果在iframe中运行，不初始化标签页管理器
+                if (isInIframe) {
+                    console.log('在iframe中运行，不初始化标签页管理器');
+                    return;
+                }
+                
+                // 创建默认标签页 - 使用绝对URL以避免路径问题
+                this.addTab({
+                    id: 'dashboard-overview',
+                    title: '平台运营看板',
+                    url: '/1.0/超级管理员/工作台/平台运营看板.html',
+                    isDefault: true
+                });
+                
+                // 监听侧边栏菜单点击事件（需要在侧边栏加载完成后）
+                document.addEventListener('DOMContentLoaded', () => {
+                    // 重写侧边栏菜单点击处理逻辑
+                    this.overrideSidebarNavigation();
+                });
+            },
+            
+            // 重写侧边栏导航逻辑
+            overrideSidebarNavigation() {
+                console.log('开始重写侧边栏导航逻辑');
+                
+                // 立即尝试重写导航，然后定期检查直到成功
+                this.tryOverrideNavigation();
+                
+                // 定期检查并重写导航，确保覆盖所有动态加载的菜单项
+                this.overrideInterval = setInterval(() => {
+                    this.tryOverrideNavigation();
+                }, 1000);
+            },
+            
+            // 尝试重写导航逻辑的具体实现
+            tryOverrideNavigation() {
+                // 获取所有菜单项的链接
+                const navItems = document.querySelectorAll('.nav-item[href]');
+                if (navItems.length === 0) {
+                    console.log('未找到菜单项，稍后再试...');
+                    return;
+                }
+                
+                console.log('找到菜单项数量:', navItems.length);
+                
+                navItems.forEach(item => {
+                    // 标记已处理的项目，避免重复处理
+                    if (item.dataset.tabProcessed) {
+                        return;
+                    }
+                    
+                    // 保存原始href
+                    let originalHref = item.getAttribute('href');
+                    
+                    // 检查是否是有效的链接
+                    if (originalHref && originalHref !== 'javascript:void(0)' && originalHref !== '#') {
+                        console.log('处理菜单项:', item.querySelector('.nav-text')?.textContent, '链接:', originalHref);
+                        
+                        // 强制清理重复目录 - 最简单直接的方案
+                        const cleanHref = originalHref.replace(/慢病管理\\慢病管理/g, '慢病管理').replace(/慢病管理\/慢病管理/g, '慢病管理');
+                        console.log('清理后的链接:', cleanHref);
+                        
+                        // 彻底移除所有事件监听器（通过克隆元素的方式）
+                        const newItem = item.cloneNode(true);
+                        item.parentNode.replaceChild(newItem, item);
+                        
+                        // 重新获取克隆后的元素
+                        const updatedItem = item.parentNode.querySelector('.nav-item[data-menu="' + item.getAttribute('data-menu') + '"]');
+                        if (updatedItem) {
+                            // 添加点击事件
+                            updatedItem.onclick = (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                
+                                // 获取菜单项文本和data-menu属性
+                                const menuText = updatedItem.querySelector('.nav-text').textContent.trim();
+                                const menuId = updatedItem.getAttribute('data-menu') || `tab-${Date.now()}`;
+                                
+                                // 再次清理路径，确保没有重复目录
+                                let finalUrl = cleanHref;
+                                
+                                // 确保是完整的URL
+                                if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+                                    // 确保路径格式正确
+                                    finalUrl = finalUrl.replace(/\\/g, '/');
+                                    
+                                    // 处理相对路径
+                                    if (!finalUrl.startsWith('/')) {
+                                        // 从当前路径构建完整路径
+                                        const currentPath = window.location.pathname.split('/').slice(0, -1).join('/');
+                                        finalUrl = currentPath + '/' + finalUrl;
+                                    }
+                                    
+                                    // 添加协议和域名
+                                    finalUrl = window.location.origin + finalUrl;
+                                }
+                                
+                                // 最后一次清理重复目录
+                                finalUrl = finalUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+                                
+                                console.log('最终确认的URL:', finalUrl);
+                                this.openInTab(menuId, menuText, finalUrl);
+                            };
+                            
+                            // 标记为已处理
+                            updatedItem.dataset.tabProcessed = 'true';
+                        }
+                    }
+                });
+            },
+            
+            // 超级增强版路径处理函数 - 确保完全解决重复目录问题
+            superConvertToAbsolutePath(url) {
+                console.log('[超级路径处理] 原始URL:', url);
+                
+                // 1. 预处理：移除前后空格，处理Windows路径分隔符
+                let processedUrl = url.trim().replace(/\\/g, '/');
+                console.log('[超级路径处理] 预处理后:', processedUrl);
+                
+                // 2. 检测并处理完整URL
+                if (processedUrl.startsWith('http://') || processedUrl.startsWith('https://')) {
+                    console.log('[超级路径处理] 已是完整URL');
+                    
+                    // 即使是完整URL，也检查并修复重复目录
+                    const cleanUrl = this.removeDuplicateDirs(processedUrl);
+                    console.log('[超级路径处理] 完整URL清理后:', cleanUrl);
+                    return cleanUrl;
+                }
+                
+                // 3. 构建基础URL（协议+域名+基础路径）
+                const baseUrl = window.location.origin + '/';
+                console.log('[超级路径处理] 使用的基础URL:', baseUrl);
+                
+                // 4. 处理相对路径或绝对路径
+                let fullPath;
+                
+                // 处理绝对路径（以/开头）
+                if (processedUrl.startsWith('/')) {
+                    fullPath = processedUrl;
+                } 
+                // 处理相对路径
+                else {
+                    // 获取当前页面的路径，用于构建相对路径
+                    const currentPath = window.location.pathname;
+                    // 构建相对路径
+                    fullPath = this.buildRelativePath(currentPath, processedUrl);
+                }
+                
+                console.log('[超级路径处理] 构建的完整路径:', fullPath);
+                
+                // 5. 移除重复目录
+                const cleanPath = this.removeDuplicateDirs(fullPath);
+                console.log('[超级路径处理] 移除重复目录后:', cleanPath);
+                
+                // 6. 构建最终的完整URL
+                const finalUrl = baseUrl + cleanPath.replace(/^\//, ''); // 移除开头的斜杠（如果有）
+                console.log('[超级路径处理] 最终完整URL:', finalUrl);
+                
+                // 7. 最后一次检查，确保没有重复目录
+                const superCleanUrl = this.removeDuplicateDirs(finalUrl);
+                console.log('[超级路径处理] 最终检查清理后:', superCleanUrl);
+                
+                return superCleanUrl;
+            },
+            
+            // 构建相对路径
+            buildRelativePath(basePath, relativePath) {
+                const baseParts = basePath.split('/').filter(Boolean);
+                const relParts = relativePath.split('/').filter(Boolean);
+                
+                // 移除基础路径的最后一部分（通常是文件名）
+                baseParts.pop();
+                
+                for (let i = 0; i < relParts.length; i++) {
+                    if (relParts[i] === '..') {
+                        // 向上一级目录
+                        if (baseParts.length > 0) {
+                            baseParts.pop();
+                        }
+                    } else if (relParts[i] !== '.') {
+                        // 添加当前目录
+                        baseParts.push(relParts[i]);
+                    }
+                    // 忽略 '.'
+                }
+                
+                return '/' + baseParts.join('/');
+            },
+            
+            // 移除重复目录的核心函数
+            removeDuplicateDirs(path) {
+                // 分割路径为协议、域名和路径部分
+                let protocol = '';
+                let domain = '';
+                let pathOnly = path;
+                
+                // 提取协议和域名
+                const protocolMatch = path.match(/^(https?:\/\/[^/]+)(.*)/);
+                if (protocolMatch) {
+                    protocol = protocolMatch[1];
+                    pathOnly = protocolMatch[2];
+                }
+                
+                // 分割路径部分为目录数组
+                const parts = pathOnly.split('/').filter(Boolean);
+                console.log('[超级路径处理] 路径分割为:', parts);
+                
+                // 特殊处理的目录列表
+                const specialDirs = ['慢病管理', '超级管理员'];
+                
+                // 移除重复的特殊目录
+                const cleanParts = [];
+                const seenSpecialDirs = new Set();
+                
+                for (const part of parts) {
+                    if (specialDirs.includes(part)) {
+                        if (!seenSpecialDirs.has(part)) {
+                            cleanParts.push(part);
+                            seenSpecialDirs.add(part);
+                            console.log('[超级路径处理] 保留特殊目录:', part);
+                        } else {
+                            console.log('[超级路径处理] 移除重复特殊目录:', part);
+                        }
+                    } else {
+                        // 对于非特殊目录，始终添加
+                        cleanParts.push(part);
+                    }
+                }
+                
+                // 重新组合路径
+                const cleanedPath = '/' + cleanParts.join('/');
+                
+                // 最终组合完整URL
+                return protocol ? (protocol + cleanedPath) : cleanedPath;
+            },
+            
+            // 在新标签页中打开链接
+            openInTab(id, title, url) {
+                // 将相对路径转换为绝对路径，避免iframe中路径解析错误
+                const absoluteUrl = this.convertToAbsolutePath(url);
+                
+                // 检查是否已经存在相同ID的标签页
+                const existingTab = this.tabs.find(tab => tab.id === id);
+                
+                if (existingTab) {
+                    // 如果存在，激活该标签页
+                    this.activateTab(id);
+                } else {
+                    // 如果不存在，添加新标签页
+                    this.addTab({ id, title, url: absoluteUrl });
+                }
+            },
+            
+            // 将相对路径转换为绝对路径 - 完整版
+            convertToAbsolutePath(relativeUrl) {
+                console.log('原始相对路径:', relativeUrl);
+                
+                // 移除前后空格
+                relativeUrl = relativeUrl.trim();
+                
+                // 检查是否是带有协议的完整URL
+                if (relativeUrl.startsWith('http://') || relativeUrl.startsWith('https://')) {
+                    console.log('已是完整URL，直接返回:', relativeUrl);
+                    return relativeUrl;
+                }
+                
+                // 检查是否是绝对路径但没有协议
+                if (relativeUrl.startsWith('/')) {
+                    // 为绝对路径添加当前页面的协议和域名
+                    const protocolAndDomain = window.location.origin;
+                    const fullUrl = protocolAndDomain + relativeUrl;
+                    console.log('为绝对路径添加协议和域名:', fullUrl);
+                    
+                    // 即使已经是绝对路径，也检查是否有重复目录
+                    if (fullUrl.includes('/慢病管理/慢病管理/')) {
+                        const cleanedUrl = fullUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+                        console.log('修复绝对路径中的重复慢病管理目录:', cleanedUrl);
+                        return cleanedUrl;
+                    }
+                    
+                    return fullUrl;
+                }
+                
+                // 分割URL为路径部分
+                const parts = relativeUrl.split('/');
+                
+                // 处理所有类型的URL中的路径重复问题
+                // 特别是针对慢病管理相关的URL，这些URL可能会出现路径重复
+                console.log('需要处理路径重复问题，路径分割前:', parts);
+                
+                // 改进的路径去重逻辑，移除所有重复的目录
+                const cleanParts = [];
+                const seenPaths = new Set();
+                
+                for (let i = 0; i < parts.length; i++) {
+                    // 如果当前部分不为空
+                    if (parts[i]) {
+                        // 特殊处理特定目录
+                        const specialDirs = ['慢病管理', '超级管理员'];
+                        
+                        if (specialDirs.includes(parts[i])) {
+                            // 只添加第一个出现的特殊目录
+                            if (!seenPaths.has(parts[i])) {
+                                cleanParts.push(parts[i]);
+                                seenPaths.add(parts[i]);
+                            } else {
+                                console.log('发现重复的特殊目录:', parts[i], '已移除');
+                            }
+                        } else {
+                            // 对于其他目录，只要不为空就添加
+                            cleanParts.push(parts[i]);
+                        }
+                    }
+                }
+                
+                // 重新组合路径
+                relativeUrl = cleanParts.join('/');
+                console.log('路径处理后:', relativeUrl);
+                
+                // 再次检查是否有重复的慢病管理目录（防止任何形式的重复）
+                if (relativeUrl.includes('慢病管理/慢病管理')) {
+                    relativeUrl = relativeUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+                    console.log('再次清理后的路径:', relativeUrl);
+                }
+                
+                console.log('最终处理后的URL:', relativeUrl);
+                
+                // 获取当前页面的基础URL（包含协议和域名）
+                const baseUrl = window.location.origin + window.location.pathname.replace(/[^/]+$/, '');
+                
+                // 使用URL对象来解析相对路径
+                try {
+                    let absoluteUrl = new URL(relativeUrl, baseUrl).href;
+                    console.log('转换后的绝对路径:', absoluteUrl);
+                    
+                    // 最后一次检查，确保没有重复的慢病管理目录
+                    if (absoluteUrl.includes('/慢病管理/慢病管理/')) {
+                        absoluteUrl = absoluteUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+                        console.log('最终修复的绝对路径:', absoluteUrl);
+                    }
+                    
+                    return absoluteUrl;
+                } catch (e) {
+                    console.error('路径转换失败:', e);
+                    // 作为最后的备选方案，直接拼接协议和域名
+                    let fallbackUrl = window.location.origin + '/' + relativeUrl;
+                    console.log('使用备选URL:', fallbackUrl);
+                    
+                    // 备选URL也进行重复目录检查
+                    if (fallbackUrl.includes('/慢病管理/慢病管理/')) {
+                        fallbackUrl = fallbackUrl.replace(/慢病管理\/慢病管理/g, '慢病管理');
+                        console.log('备选URL修复后:', fallbackUrl);
+                    }
+                    
+                    return fallbackUrl;
+                }
+            },
+            
+            // 添加新标签页
+            addTab(tabInfo) {
+                const { id, title, url, isDefault = false } = tabInfo;
+                
+                // 添加到标签页列表
+                this.tabs.push({ id, title, url });
+                
+                // 创建标签按钮
+                const tabHeader = document.getElementById('tabsHeader');
+                const tabItem = document.createElement('div');
+                tabItem.className = `tab-item ${!this.activeTabId ? 'active' : ''}`;
+                tabItem.dataset.tab = id;
+                tabItem.innerHTML = `
+                    <span class="tab-title">${title}</span>
+                    ${!isDefault ? '<span class="tab-close" onclick="tabsManager.closeTab(event, \'' + id + '\')">×</span>' : ''}
+                `;
+                
+                // 添加点击事件
+                tabItem.addEventListener('click', () => this.activateTab(id));
+                
+                // 添加到标签头
+                tabHeader.appendChild(tabItem);
+                
+                // 创建标签内容面板
+                const tabContent = document.getElementById('tabsContent');
+                const tabPanel = document.createElement('div');
+                tabPanel.id = `tab-panel-${id}`;
+                tabPanel.className = `tab-panel ${!this.activeTabId ? 'active' : ''}`;
+                
+                // 创建iframe加载内容
+                const iframe = document.createElement('iframe');
+                iframe.className = 'tab-iframe';
+                iframe.src = url;
+                iframe.title = title;
+                
+                // 监听iframe加载完成事件
+                iframe.onload = () => {
+                    try {
+                        // 尝试隐藏iframe中的侧边栏，避免重复显示
+                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        const sidebar = iframeDoc.getElementById('sidebar-container');
+                        if (sidebar) {
+                            sidebar.style.display = 'none';
+                        }
+                    } catch (e) {
+                        console.warn('无法修改iframe内容:', e);
+                    }
+                };
+                
+                // 添加到标签内容
+                tabPanel.appendChild(iframe);
+                tabContent.appendChild(tabPanel);
+                
+                // 如果是第一个标签页，设为激活状态
+                if (!this.activeTabId) {
+                    this.activeTabId = id;
+                }
+            },
+            
+            // 激活标签页
+            activateTab(id) {
+                // 取消当前激活的标签页
+                if (this.activeTabId) {
+                    const prevTabItem = document.querySelector(`.tab-item[data-tab="${this.activeTabId}"]`);
+                    const prevTabPanel = document.getElementById(`tab-panel-${this.activeTabId}`);
+                    
+                    if (prevTabItem) prevTabItem.classList.remove('active');
+                    if (prevTabPanel) prevTabPanel.classList.remove('active');
+                }
+                
+                // 激活新标签页
+                const tabItem = document.querySelector(`.tab-item[data-tab="${id}"]`);
+                const tabPanel = document.getElementById(`tab-panel-${id}`);
+                
+                if (tabItem) tabItem.classList.add('active');
+                if (tabPanel) tabPanel.classList.add('active');
+                
+                // 更新激活的标签页ID
+                this.activeTabId = id;
+            },
+            
+            // 关闭标签页
+            closeTab(event, id) {
+                // 阻止事件冒泡，避免触发标签页激活
+                event.stopPropagation();
+                
+                // 查找标签页索引
+                const tabIndex = this.tabs.findIndex(tab => tab.id === id);
+                
+                if (tabIndex === -1) return;
+                
+                // 检查是否是唯一的标签页或者默认标签页
+                const isDefault = this.tabs[tabIndex].isDefault;
+                const hasOtherTabs = this.tabs.length > 1;
+                
+                if (isDefault && hasOtherTabs) {
+                    // 不允许关闭默认标签页
+                    alert('平台运营看板是默认标签页，无法关闭');
+                    return;
+                }
+                
+                // 获取要激活的下一个标签页ID
+                let nextTabId = null;
+                if (hasOtherTabs) {
+                    // 如果有关闭的是当前激活的标签页，激活相邻的标签页
+                    if (id === this.activeTabId) {
+                        // 优先激活前一个标签页，如果没有则激活后一个
+                        if (tabIndex > 0) {
+                            nextTabId = this.tabs[tabIndex - 1].id;
+                        } else {
+                            nextTabId = this.tabs[tabIndex + 1].id;
+                        }
+                    }
+                }
+                
+                // 移除标签页
+                this.tabs.splice(tabIndex, 1);
+                
+                // 移除DOM元素
+                const tabItem = document.querySelector(`.tab-item[data-tab="${id}"]`);
+                const tabPanel = document.getElementById(`tab-panel-${id}`);
+                
+                if (tabItem) tabItem.remove();
+                if (tabPanel) tabPanel.remove();
+                
+                // 如果有关闭的是当前激活的标签页，激活下一个标签页
+                if (nextTabId) {
+                    this.activateTab(nextTabId);
+                }
+            }
+        };
+        
+        // 刷新仪表板数据
+        function refreshDashboard() {
+            console.log('刷新仪表板数据...');
+            // 模拟刷新操作
+            const updateTime = new Date().toLocaleString();
+            document.querySelector('.update-time').textContent = `最后更新：${updateTime}`;
+            
+            // 显示刷新动画
+            const refreshButton = document.querySelector('button[onclick="refreshDashboard()"]');
+            if (refreshButton) {
+                const originalText = refreshButton.textContent;
+                refreshButton.disabled = true;
+                refreshButton.textContent = '刷新中...';
+                
+                setTimeout(() => {
+                    refreshButton.disabled = false;
+                    refreshButton.textContent = originalText;
+                }, 1500);
+            }
+        }
+        
+        // 打开设置弹窗
+        function openSettings() {
+            console.log('打开设置弹窗...');
+            alert('设置功能待实现');
+        }
+        
+        // 页面加载完成后初始化标签页管理器
+        document.addEventListener('DOMContentLoaded', () => {
+            tabsManager.init();
+        });
+    </script>
+</body>
+</html>

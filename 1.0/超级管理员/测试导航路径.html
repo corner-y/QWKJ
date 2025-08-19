@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试导航路径 - 医保审核系统</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        p {
+            color: #666;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #eaeaea;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .test-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .test-link {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .test-link:hover {
+            background-color: #45a049;
+        }
+        .path-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .instructions {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-left: 4px solid #2196F3;
+            margin: 15px 0;
+        }
+        .log-section {
+            margin-top: 30px;
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+        }
+        .log-time {
+            color: #999;
+            margin-right: 10px;
+        }
+        .log-action {
+            color: #a6e22e;
+        }
+        .log-path {
+            color: #66d9ef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>导航路径测试页面</h1>
+        
+        <div class="instructions">
+            <p><strong>测试目的：</strong>验证多次点击导航菜单后是否会出现404错误</p>
+            <p><strong>测试方法：</strong>连续点击不同的导航链接，观察URL变化和页面加载情况</p>
+            <p><strong>重要提示：</strong>请打开浏览器控制台查看详细的路径转换日志</p>
+        </div>
+        
+        <div class="test-section">
+            <h2>1. 工作台导航</h2>
+            <div class="test-links">
+                <a href="/1.0/超级管理员/工作台/平台运营看板.html" class="test-link">平台运营看板</a>
+                <a href="/1.0/超级管理员/工作台/报告规则分析.html" class="test-link">报告规则分析</a>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>2. 规则管理导航</h2>
+            <div class="test-links">
+                <a href="javascript:void(0)" onclick="navigateToRuleCategory('drugs')" class="test-link">药品规则库</a>
+                <a href="javascript:void(0)" onclick="navigateToRuleCategory('chronic')" class="test-link">慢病规则库</a>
+                <a href="javascript:void(0)" onclick="navigateToRuleCategory('clinical')" class="test-link">诊疗规则库</a>
+                <a href="javascript:void(0)" onclick="navigateToRuleCategory('policy')" class="test-link">政策规则库</a>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>3. 审核管理导航</h2>
+            <div class="test-links">
+                <a href="/1.0/超级管理员/审核管理/审核流程/事前审核记录.html" class="test-link">事前审核记录</a>
+                <a href="/1.0/超级管理员/审核管理/审核流程/事中审核检查.html" class="test-link">事中审核检查</a>
+                <a href="/1.0/超级管理员/审核管理/审核流程/事后审核任务列表.html" class="test-link">事后审核任务</a>
+                <a href="/1.0/超级管理员/审核管理/审核结果/审核结果.html" class="test-link">审核结果</a>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>4. 用户权限管理导航</h2>
+            <div class="test-links">
+                <a href="/1.0/超级管理员/用户权限管理/用户管理/用户列表.html" class="test-link">用户管理</a>
+                <a href="/1.0/超级管理员/用户权限管理/权限管理/权限管理.html" class="test-link">权限管理</a>
+                <a href="/1.0/超级管理员/用户权限管理/组织管理/科室管理.html" class="test-link">科室管理</a>
+                <a href="/1.0/超级管理员/用户权限管理/组织管理/租户管理.html" class="test-link">租户管理</a>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h2>5. 系统管理导航</h2>
+            <div class="test-links">
+                <a href="/1.0/超级管理员/系统管理/全局设置.html" class="test-link">全局设置</a>
+                <a href="/1.0/超级管理员/系统管理/系统监控.html" class="test-link">系统监控</a>
+                <a href="/1.0/超级管理员/系统管理/知识库目录.html?catalog=drug" class="test-link">药品目录</a>
+            </div>
+        </div>
+        
+        <div class="path-info">
+            <h3>当前路径信息：</h3>
+            <div id="current-path"></div>
+            <div id="current-url"></div>
+        </div>
+        
+        <div class="log-section">
+            <h3 style="color: white; margin-top: 0;">导航历史记录</h3>
+            <div id="navigation-log"></div>
+        </div>
+    </div>
+    
+    <script>
+        // 规则管理导航函数
+        function navigateToRuleCategory(category) {
+            console.log('导航到规则管理分类:', category);
+            // 使用绝对路径确保导航正确性
+            window.location.href = '/1.0/超级管理员/规则管理/index.html#' + category;
+        }
+        
+        // 更新当前路径信息
+        function updatePathInfo() {
+            const pathElement = document.getElementById('current-path');
+            const urlElement = document.getElementById('current-url');
+            
+            pathElement.textContent = 'Pathname: ' + window.location.pathname;
+            urlElement.textContent = 'Full URL: ' + window.location.href;
+        }
+        
+        // 添加导航日志
+        function addNavigationLog(action, path) {
+            const logElement = document.getElementById('navigation-log');
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="log-time">${timeString}</span><span class="log-action">${action}</span>: <span class="log-path">${path}</span>`;
+            
+            logElement.prepend(logEntry);
+            
+            // 限制日志数量
+            if (logElement.children.length > 20) {
+                logElement.removeChild(logElement.lastChild);
+            }
+        }
+        
+        // 页面加载时执行
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePathInfo();
+            addNavigationLog('页面加载', window.location.pathname);
+            
+            // 为所有导航链接添加点击事件记录
+            document.querySelectorAll('a.test-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    const text = this.textContent;
+                    
+                    if (href && href !== 'javascript:void(0)') {
+                        addNavigationLog('点击导航', href);
+                    } else {
+                        addNavigationLog('点击导航', text);
+                    }
+                });
+            });
+            
+            console.log('导航路径测试页面已加载。\n' +
+                      '请连续点击不同的导航链接测试多次导航后是否会出现404错误。\n' +
+                      '通过强制使用绝对路径导航，这个修复应该能解决路径累积的问题。');
+        });
+        
+        // 监听页面加载完成事件
+        window.addEventListener('load', function() {
+            updatePathInfo();
+        });
+    </script>
+</body>
+</html>

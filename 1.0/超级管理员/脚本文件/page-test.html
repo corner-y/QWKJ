@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+<style>
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #1890ff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>页面测试程序</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .test-section {
+            margin-bottom: 30px;
+        }
+        .test-section h3 {
+            color: #333;
+            border-left: 4px solid #007bff;
+            padding-left: 10px;
+            margin-bottom: 15px;
+        }
+        .page-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .page-item {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            background: #fafafa;
+            transition: all 0.3s ease;
+        }
+        .page-item:hover {
+            background: #f0f8ff;
+            border-color: #007bff;
+        }
+        .page-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .page-path {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+        .test-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .test-btn.success {
+            background: #28a745;
+        }
+        .test-btn.error {
+            background: #dc3545;
+        }
+        .test-result {
+            margin-top: 8px;
+            font-size: 12px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .result-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .result-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .result-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .control-panel {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 6px;
+        }
+        .control-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 14px;
+        }
+        .control-btn:hover {
+            background: #545b62;
+        }
+        .control-btn.primary {
+            background: #007bff;
+        }
+        .control-btn.primary:hover {
+            background: #0056b3;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #007bff, #28a745);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .stat-item {
+            padding: 10px;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+</div>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>超级管理员页面测试程序</h1>
+            <p>自动检测所有页面的可访问性、菜单加载和样式文件</p>
+        </div>
+
+        <div class="control-panel">
+            <button class="control-btn primary" onclick="startFullTest()">开始全面测试</button>
+            <button class="control-btn" onclick="testMenuComponents()">测试菜单组件</button>
+            <button class="control-btn" onclick="testStyleFiles()">测试样式文件</button>
+            <button class="control-btn" onclick="clearResults()">清除结果</button>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number" id="totalPages">0</div>
+                <div class="stat-label">总页面数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="successPages">0</div>
+                <div class="stat-label">成功</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="errorPages">0</div>
+                <div class="stat-label">失败</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="warningPages">0</div>
+                <div class="stat-label">警告</div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>工作台模块</h3>
+            <div class="page-grid" id="dashboardPages"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>规则管理模块</h3>
+            <div class="page-grid" id="rulesPages"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>审核管理模块</h3>
+            <div class="page-grid" id="auditPages"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>用户权限管理模块</h3>
+            <div class="page-grid" id="userPages"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>系统管理模块</h3>
+            <div class="page-grid" id="systemPages"></div>
+        </div>
+    </div>
+
+    <script>
+        // 页面配置数据
+        const pageConfigs = {
+            dashboard: [
+                { title: '工作台', path: '../工作台/工作台.html', menu: 'dashboard' },
+                { title: '平台运营看板', path: '../工作台/平台运营看板.html', menu: 'dashboard-overview' },
+                { title: '报告规则分析', path: '../工作台/报告规则分析.html', menu: 'dashboard-analysis' }
+            ],
+            rules: [
+                { title: '规则管理主页', path: '../规则管理/规则列表/规则管理主页.html', menu: 'rules-main' },
+                { title: '门诊规则管理', path: '../规则管理/规则列表/门诊规则管理.html', menu: 'rules-outpatient' },
+                { title: '医保规则管理系统', path: '../规则管理/规则列表/医保规则管理系统v2.html', menu: 'rules-medical' },
+                { title: '规则详情', path: '../规则管理/规则详情/规则详情.html', menu: 'rules-detail-general' },
+                { title: '临床规则详情', path: '../规则管理/规则详情/临床规则详情.html', menu: 'rules-detail-clinical' },
+                { title: '慢病规则详情', path: '../规则管理/规则详情/慢病规则详情.html', menu: 'rules-detail-chronic' },
+                { title: '政策规则详情', path: '../规则管理/规则详情/政策规则详情.html', menu: 'rules-detail-policy' },
+                { title: '门诊规则详情', path: '../规则管理/规则详情/门诊规则详情.html', menu: 'rules-detail-outpatient' },
+                { title: '创建规则', path: '../规则管理/规则操作/创建规则.html', menu: 'rules-create' },
+                { title: '编辑规则', path: '../规则管理/规则操作/编辑规则.html', menu: 'rules-edit' },
+                { title: '规则参数配置', path: '../规则管理/规则操作/规则参数配置.html', menu: 'rules-config' },
+                { title: '规则管理完整版', path: '../规则管理/规则操作/规则管理完整版.html', menu: 'rules-full' }
+            ],
+            audit: [
+                { title: '事前审核记录', path: '../审核管理/审核流程/事前审核记录.html', menu: 'audit-pre' },
+                { title: '事中审核检查', path: '../审核管理/审核流程/事中审核检查.html', menu: 'audit-during' },
+                { title: '事后审核任务列表', path: '../审核管理/审核流程/事后审核任务列表.html', menu: 'audit-post' },
+                { title: '审核结果', path: '../审核管理/审核结果/审核结果.html', menu: 'audit-results' }
+            ],
+            user: [
+                { title: '用户列表', path: '../用户权限管理/用户管理/用户列表.html', menu: 'user-list' },
+                { title: '权限管理', path: '../用户权限管理/权限管理/权限管理.html', menu: 'permission' },
+                { title: '科室管理', path: '../用户权限管理/组织管理/科室管理.html', menu: 'department' },
+                { title: '租户管理', path: '../用户权限管理/组织管理/租户管理.html', menu: 'tenant' },
+                { title: '租户表单', path: '../用户权限管理/组织管理/租户表单.html', menu: 'tenant-form' },
+                { title: '企业详情', path: '../用户权限管理/组织管理/企业详情.html', menu: 'enterprise' }
+            ],
+            system: [
+                { title: '全局设置', path: '../系统管理/全局设置.html', menu: 'global-settings' },
+                { title: '系统监控', path: '../系统管理/系统监控.html', menu: 'system-monitor' },
+                { title: '知识库目录', path: '../系统管理/知识库目录.html', menu: 'knowledge-base' }
+            ]
+        };
+
+        let testResults = {};
+        let currentTestIndex = 0;
+        let totalTests = 0;
+
+        // 初始化页面
+        function initializePage() {
+            renderPageItems();
+            updateStats();
+        }
+
+        // 渲染页面项目
+        function renderPageItems() {
+            Object.keys(pageConfigs).forEach(category => {
+                const container = document.getElementById(category + 'Pages');
+                const pages = pageConfigs[category];
+                
+                container.innerHTML = pages.map(page => `
+                    <div class="page-item" id="item-${page.menu}">
+                        <div class="page-title">${page.title}</div>
+                        <div class="page-path">${page.path}</div>
+                        <button class="test-btn" onclick="testSinglePage('${page.menu}', '${page.path}', '${page.title}')">测试页面</button>
+                        <button class="test-btn" onclick="openPage('${page.path}')">打开页面</button>
+                        <div class="test-result" id="result-${page.menu}"></div>
+                    </div>
+                `).join('');
+            });
+            
+            totalTests = Object.values(pageConfigs).reduce((sum, pages) => sum + pages.length, 0);
+            document.getElementById('totalPages').textContent = totalTests;
+        }
+
+        // 测试单个页面
+        async function testSinglePage(menuId, path, title) {
+            const resultDiv = document.getElementById(`result-${menuId}`);
+            const itemDiv = document.getElementById(`item-${menuId}`);
+            
+            resultDiv.innerHTML = '<div class="result-warning">测试中...</div>';
+            
+            try {
+                // 增加超时控制和重试机制
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
+                
+                // 测试页面可访问性
+                const response = await fetch(path, { 
+                    method: 'HEAD',
+                    signal: controller.signal,
+                    cache: 'no-cache'
+                });
+                clearTimeout(timeoutId);
+                
+                if (response.ok) {
+                    // 测试页面内容
+                    const htmlController = new AbortController();
+                    const htmlTimeoutId = setTimeout(() => htmlController.abort(), 15000);
+                    
+                    const htmlResponse = await fetch(path, {
+                        signal: htmlController.signal,
+                        cache: 'no-cache'
+                    });
+                    clearTimeout(htmlTimeoutId);
+                    
+                    const htmlContent = await htmlResponse.text();
+                    
+                    const issues = [];
+                    
+                    // 检查是否包含统一菜单容器
+                    if (!htmlContent.includes('sidebar-container')) {
+                        issues.push('缺少统一菜单容器');
+                    }
+                    
+                    // 检查是否包含统一样式
+                    if (!htmlContent.includes('unified-sidebar.css')) {
+                        issues.push('缺少统一菜单样式');
+                    }
+                    
+                    // 检查是否包含菜单加载脚本
+                    if (!htmlContent.includes('_unified-sidebar.html')) {
+                        issues.push('缺少菜单加载脚本');
+                    }
+                    
+                    if (issues.length === 0) {
+                        resultDiv.innerHTML = '<div class="result-success">✓ 页面正常，所有检查通过</div>';
+                        testResults[menuId] = 'success';
+                        itemDiv.style.borderColor = '#28a745';
+                    } else {
+                        resultDiv.innerHTML = `<div class="result-warning">⚠ 页面可访问，但有问题：${issues.join(', ')}</div>`;
+                        testResults[menuId] = 'warning';
+                        itemDiv.style.borderColor = '#ffc107';
+                    }
+                } else {
+                    resultDiv.innerHTML = `<div class="result-error">✗ 页面无法访问 (${response.status})</div>`;
+                    testResults[menuId] = 'error';
+                    itemDiv.style.borderColor = '#dc3545';
+                }
+            } catch (error) {
+                let errorMessage = error.message;
+                if (error.name === 'AbortError') {
+                    errorMessage = '请求超时，请检查网络连接';
+                } else if (error.message.includes('ERR_ABORTED')) {
+                    errorMessage = '请求被中断，可能是网络问题';
+                }
+                resultDiv.innerHTML = `<div class="result-error">✗ 测试失败：${errorMessage}</div>`;
+                testResults[menuId] = 'error';
+                itemDiv.style.borderColor = '#dc3545';
+            }
+            
+            updateStats();
+        }
+
+        // 开始全面测试
+        async function startFullTest() {
+            clearResults();
+            currentTestIndex = 0;
+            
+            const allPages = Object.values(pageConfigs).flat();
+            
+            for (let i = 0; i < allPages.length; i++) {
+                const page = allPages[i];
+                
+                try {
+                    await testSinglePage(page.menu, page.path, page.title);
+                } catch (error) {
+                    console.error(`测试页面 ${page.title} 时出错:`, error);
+                }
+                
+                currentTestIndex++;
+                const progress = (currentTestIndex / totalTests) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+                
+                // 增加延迟避免请求过快导致ERR_ABORTED
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        // 测试菜单组件
+        async function testMenuComponents() {
+            try {
+                const response = await fetch('../组件/_unified-sidebar.html');
+                if (response.ok) {
+                    alert('✓ 统一菜单组件可正常访问');
+                } else {
+                    alert('✗ 统一菜单组件无法访问');
+                }
+            } catch (error) {
+                alert('✗ 菜单组件测试失败：' + error.message);
+            }
+        }
+
+        // 测试样式文件
+        async function testStyleFiles() {
+            const styleFiles = [
+                '../../样式文件/unified-sidebar.css',
+                '../../样式文件/通用样式.css'
+            ];
+            
+            let results = [];
+            
+            for (const file of styleFiles) {
+                try {
+                    const response = await fetch(file, { method: 'HEAD' });
+                    if (response.ok) {
+                        results.push(`✓ ${file.split('/').pop()}`);
+                    } else {
+                        results.push(`✗ ${file.split('/').pop()} (${response.status})`);
+                    }
+                } catch (error) {
+                    results.push(`✗ ${file.split('/').pop()} (错误)`);
+                }
+            }
+            
+            alert('样式文件测试结果：\n' + results.join('\n'));
+        }
+
+        // 打开页面
+        function openPage(path) {
+            window.open(path, '_blank');
+        }
+
+        // 清除结果
+        function clearResults() {
+            testResults = {};
+            document.querySelectorAll('.test-result').forEach(div => div.innerHTML = '');
+            document.querySelectorAll('.page-item').forEach(div => div.style.borderColor = '#ddd');
+            document.getElementById('progressFill').style.width = '0%';
+            updateStats();
+        }
+
+        // 更新统计
+        function updateStats() {
+            const success = Object.values(testResults).filter(r => r === 'success').length;
+            const error = Object.values(testResults).filter(r => r === 'error').length;
+            const warning = Object.values(testResults).filter(r => r === 'warning').length;
+            
+            document.getElementById('successPages').textContent = success;
+            document.getElementById('errorPages').textContent = error;
+            document.getElementById('warningPages').textContent = warning;
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+
+<script>
+// 加载状态管理
+function showLoading() {
+    document.getElementById('loadingOverlay').style.display = 'flex';
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+// 自动为fetch请求添加加载状态
+const originalFetch = window.fetch;
+window.fetch = function(...args) {
+    showLoading();
+    return originalFetch.apply(this, args)
+        .finally(() => hideLoading());
+};
+</script>
+</body>
+</html>

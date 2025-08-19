@@ -1,0 +1,43 @@
+<h1 class="page-title"> revenue-analysis</h1>
+
+<nav class="breadcrumb" aria-label="面包屑导航">
+    <a href="../工作台/平台运营看板.html">首页</a> > <a href="../1.0/">1.0</a> > <a href="../1.0/超级管理员/">超级管理员</a> > <a href="../1.0/超级管理员/组件/">组件</a> > <span class="current">_revenue-analysis</span>
+</nav>
+<!-- 收入分析 -->
+<div class="revenue-analysis">
+    <div class="analysis-header">
+        <h3>收入分析</h3>
+        <div class="revenue-controls">
+            <select class="form-select" id="revenueMetric" onchange="filterRevenueAnalysis()">
+                <option value="total">总收入</option>
+                <option value="subscription">订阅收入</option>
+                <option value="usage">使用量收入</option>
+                <option value="addon">增值服务</option>
+            </select>
+            <select class="form-select" id="revenuePeriod" onchange="filterRevenueAnalysis()">
+                <option value="month">按月</option>
+                <option value="week">按周</option>
+            </select>
+        </div>
+    </div>
+    <div class="revenue-grid">
+        <div class="revenue-trend">
+            <div class="chart-header">
+                <h4>月度收入趋势</h4>
+                <div class="revenue-summary">
+                    <div class="summary-item">
+                        <span class="label">本月收入：</span>
+                        <span class="value">¥2.34M</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="label">同比增长：</span>
+                        <span class="value growth">+28.5%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="revenue-chart-container">
+                <canvas id="revenueChart" width="600" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>

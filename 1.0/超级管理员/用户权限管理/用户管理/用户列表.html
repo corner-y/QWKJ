@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户管理</title>
+    <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/用户管理样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    </head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="user-management-container">
+        <div class="page-header">
+            <h2>用户管理</h2>
+            <div class="header-actions">
+                <button class="btn btn-primary" id="addUserBtn">新增用户</button>
+                <button class="btn btn-secondary" id="exportBtn">导出用户</button>
+            </div>
+        </div>
+
+        <!-- 搜索和筛选区域 -->
+        <div class="search-filter-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索用户名、姓名或手机号">
+                <button class="btn btn-search" id="searchBtn">搜索</button>
+            </div>
+            <div class="filter-options">
+                <select id="departmentFilter">
+                    <option value="">全部科室</option>
+                    <option value="cardiology">心内科</option>
+                    <option value="orthopedics">骨科</option>
+                    <option value="neurosurgery">神经外科</option>
+                    <option value="emergency">急诊科</option>
+                </select>
+                <select id="roleFilter">
+                    <option value="">全部角色</option>
+                    <option value="admin">管理员</option>
+                    <option value="auditor">审核员</option>
+                    <option value="doctor">医生</option>
+                    <option value="nurse">护士</option>
+                </select>
+                <select id="statusFilter">
+                    <option value="">全部状态</option>
+                    <option value="active">启用</option>
+                    <option value="inactive">禁用</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 用户列表表格 -->
+        <div class="table-container">
+            <table class="data-table" id="userTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>用户名</th>
+                        <th>真实姓名</th>
+                        <th>所属科室</th>
+                        <th>用户角色</th>
+                        <th>手机号</th>
+                        <th>邮箱</th>
+                        <th>状态</th>
+                        <th>创建时间</th>
+                        <th>最后登录</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="checkbox" class="row-select" data-id="1"></td>
+                        <td>zhangsan</td>
+                        <td>张三</td>
+                        <td>心内科</td>
+                        <td><span class="role-tag admin">管理员</span></td>
+                        <td>13800138001</td>
+                        <td>zhangsan@hospital.com</td>
+                        <td><span class="status-tag active">启用</span></td>
+                        <td>2024-01-10</td>
+                        <td>2024-01-15 14:30</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-primary" onclick="editUser(1)">编辑</button>
+                                <button class="btn btn-sm btn-warning" onclick="resetPassword(1)">重置密码</button>
+                                <button class="btn btn-sm btn-danger" onclick="toggleUserStatus(1)">禁用</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="row-select" data-id="2"></td>
+                        <td>lisi</td>
+                        <td>李四</td>
+                        <td>骨科</td>
+                        <td><span class="role-tag auditor">审核员</span></td>
+                        <td>13800138002</td>
+                        <td>lisi@hospital.com</td>
+                        <td><span class="status-tag active">启用</span></td>
+                        <td>2024-01-08</td>
+                        <td>2024-01-15 09:15</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-primary" onclick="editUser(2)">编辑</button>
+                                <button class="btn btn-sm btn-warning" onclick="resetPassword(2)">重置密码</button>
+                                <button class="btn btn-sm btn-danger" onclick="toggleUserStatus(2)">禁用</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="checkbox" class="row-select" data-id="3"></td>
+                        <td>wangwu</td>
+                        <td>王五</td>
+                        <td>神经外科</td>
+                        <td><span class="role-tag doctor">医生</span></td>
+                        <td>13800138003</td>
+                        <td>wangwu@hospital.com</td>
+                        <td><span class="status-tag inactive">禁用</span></td>
+                        <td>2024-01-05</td>
+                        <td>2024-01-12 16:45</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-primary" onclick="editUser(3)">编辑</button>
+                                <button class="btn btn-sm btn-warning" onclick="resetPassword(3)">重置密码</button>
+                                <button class="btn btn-sm btn-success" onclick="toggleUserStatus(3)">启用</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 批量操作栏 -->
+        <div class="batch-actions" id="batchActions" style="display: none;">
+            <span class="selected-count">已选择 <span id="selectedCount">0</span> 个用户</span>
+            <div class="batch-buttons">
+                <button class="btn btn-warning" id="batchResetPassword">批量重置密码</button>
+                <button class="btn btn-danger" id="batchDisable">批量禁用</button>
+                <button class="btn btn-success" id="batchEnable">批量启用</button>
+                <button class="btn btn-danger" id="batchDelete">批量删除</button>
+            </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination-container">
+            <div class="pagination-info">
+                显示第 1-10 条，共 156 条记录
+            </div>
+            <div class="pagination">
+                <button class="btn btn-sm" disabled>上一页</button>
+                <button class="btn btn-sm active">1</button>
+                <button class="btn btn-sm">2</button>
+                <button class="btn btn-sm">3</button>
+                <button class="btn btn-sm">...</button>
+                <button class="btn btn-sm">16</button>
+                <button class="btn btn-sm">下一页</button>
+            </div>
+        </div>
+    </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/user-management.js"></script>
+    
+    <!-- 加载统一菜单 -->
+<script>
+    // 加载统一菜单组件
+    fetch('../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+</script>
+</body>
+</html>

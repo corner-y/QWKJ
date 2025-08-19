@@ -1,0 +1,176 @@
+<!-- 设置弹窗 -->
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        
+<nav class="breadcrumb" aria-label="面包屑导航">
+    <a href="../工作台/平台运营看板.html">首页</a> > <a href="../1.0/">1.0</a> > <a href="../1.0/超级管理员/">超级管理员</a> > <a href="../1.0/超级管理员/组件/">组件</a> > <span class="current">_settings-modal</span>
+</nav>
+
+<h1 class="page-title"> settings-modal</h1>
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="settingsModalLabel">系统设置</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-tabs">
+                    <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="system-config-tab" data-bs-toggle="tab" data-bs-target="#system-config" type="button" role="tab" aria-controls="system-config" aria-selected="true">
+                                系统配置
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="notification-tab" data-bs-toggle="tab" data-bs-target="#notification" type="button" role="tab" aria-controls="notification" aria-selected="false">
+                                通知设置
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="user-preferences-tab" data-bs-toggle="tab" data-bs-target="#user-preferences" type="button" role="tab" aria-controls="user-preferences" aria-selected="false">
+                                用户偏好
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="settingsTabContent">
+                        <div class="tab-pane fade active" id="system-config" role="tabpanel" aria-labelledby="system-config-tab">
+                            <div class="settings-section">
+                                <h6>数据刷新设置</h6>
+                                <div class="form-group">
+                                    <label for="refreshInterval">自动刷新间隔</label>
+                                    <select class="form-select" id="refreshInterval">
+                                        <option value="30">30秒</option>
+                                        <option value="60" selected>1分钟</option>
+                                        <option value="300">5分钟</option>
+                                        <option value="600">10分钟</option>
+                                        <option value="0">关闭自动刷新</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="enableRealtime" checked>
+                                        <label class="form-check-label" for="enableRealtime">
+                                            启用实时数据推送
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="settings-section">
+                                <h6>显示设置</h6>
+                                <div class="form-group">
+                                    <label for="chartTheme">图表主题</label>
+                                    <select class="form-select" id="chartTheme">
+                                        <option value="light" selected>浅色主题</option>
+                                        <option value="dark">深色主题</option>
+                                        <option value="auto">跟随系统</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="defaultDateRange">默认时间范围</label>
+                                    <select class="form-select" id="defaultDateRange">
+                                        <option value="7">最近7天</option>
+                                        <option value="30" selected>最近30天</option>
+                                        <option value="90">最近90天</option>
+                                        <option value="365">最近一年</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="notification" role="tabpanel" aria-labelledby="notification-tab">
+                            <div class="settings-section">
+                                <h6>系统通知</h6>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="systemAlerts" checked>
+                                        <label class="form-check-label" for="systemAlerts">
+                                            系统异常告警
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="performanceAlerts" checked>
+                                        <label class="form-check-label" for="performanceAlerts">
+                                            性能监控告警
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="securityAlerts" checked>
+                                        <label class="form-check-label" for="securityAlerts">
+                                            安全事件通知
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="settings-section">
+                                <h6>业务通知</h6>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="tenantUpdates">
+                                        <label class="form-check-label" for="tenantUpdates">
+                                            租户状态变更
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="revenueAlerts">
+                                        <label class="form-check-label" for="revenueAlerts">
+                                            收入异常提醒
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="user-preferences" role="tabpanel" aria-labelledby="user-preferences-tab">
+                            <div class="settings-section">
+                                <h6>界面偏好</h6>
+                                <div class="form-group">
+                                    <label for="language">界面语言</label>
+                                    <select class="form-select" id="language">
+                                        <option value="zh-CN" selected>简体中文</option>
+                                        <option value="zh-TW">繁体中文</option>
+                                        <option value="en-US">English</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="timezone">时区设置</label>
+                                    <select class="form-select" id="timezone">
+                                        <option value="Asia/Shanghai" selected>北京时间 (UTC+8)</option>
+                                        <option value="Asia/Hong_Kong">香港时间 (UTC+8)</option>
+                                        <option value="Asia/Taipei">台北时间 (UTC+8)</option>
+                                        <option value="UTC">协调世界时 (UTC)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="settings-section">
+                                <h6>数据偏好</h6>
+                                <div class="form-group">
+                                    <label for="numberFormat">数字格式</label>
+                                    <select class="form-select" id="numberFormat">
+                                        <option value="zh-CN" selected>中文格式 (1,234.56)</option>
+                                        <option value="en-US">英文格式 (1,234.56)</option>
+                                        <option value="de-DE">德文格式 (1.234,56)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="currencyFormat">货币格式</label>
+                                    <select class="form-select" id="currencyFormat">
+                                        <option value="CNY" selected>人民币 (¥)</option>
+                                        <option value="USD">美元 ($)</option>
+                                        <option value="EUR">欧元 (€)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,71 @@
+{
+  "module": "登录",
+  "audit_time": "2025-08-15T21:34:53.889432",
+  "summary": {
+    "total_pages": 1,
+    "successful_audits": 1,
+    "pages_with_errors": 0,
+    "avg_navigation_score": 15.0
+  },
+  "pages": [
+    {
+      "page_info": {
+        "path": "登录.html",
+        "name": "登录.html",
+        "module": "登录",
+        "title": "登录 | 医保智能审核系统",
+        "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%99%BB%E5%BD%95.html",
+        "screenshot": "登录.html.png",
+        "audit_time": "2025-08-15T21:34:52.888171"
+      },
+      "menu_analysis": {
+        "exists": false,
+        "structure": {},
+        "active_items": [],
+        "expanded_groups": [],
+        "errors": [
+          "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"[id=\"sidebar-container\"]\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000104230ef8 chromedriver + 5918456\n1   chromedriver                        0x000000010422848a chromedriver + 5883018\n2   chromedriver                        0x0000000103cf4e20 chromedriver + 429600\n3   chromedriver                        0x0000000103d46ed4 chromedriver + 765652\n4   chromedriver                        0x0000000103d470f1 chromedriver + 766193\n5   chromedriver                        0x0000000103d96ce4 chromedriver + 1092836\n6   chromedriver                        0x0000000103d6cf3d chromedriver + 921405\n7   chromedriver                        0x0000000103d94024 chromedriver + 1081380\n8   chromedriver                        0x0000000103d6cce3 chromedriver + 920803\n9   chromedriver                        0x0000000103d3929b chromedriver + 709275\n10  chromedriver                        0x0000000103d39f81 chromedriver + 712577\n11  chromedriver                        0x00000001041edc00 chromedriver + 5643264\n12  chromedriver                        0x00000001041f1ab4 chromedriver + 5659316\n13  chromedriver                        0x00000001041c9472 chromedriver + 5493874\n14  chromedriver                        0x00000001041f255f chromedriver + 5662047\n15  chromedriver                        0x00000001041b8414 chromedriver + 5424148\n16  chromedriver                        0x0000000104215778 chromedriver + 5805944\n17  chromedriver                        0x0000000104215940 chromedriver + 5806400\n18  chromedriver                        0x0000000104228061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+        ]
+      },
+      "navigation_score": {
+        "total": 15,
+        "details": {
+          "menu_exists": 0,
+          "structure_match": 0,
+          "active_highlight": 0,
+          "expansion_logic": 0,
+          "link_validity": 15
+        },
+        "issues": [
+          "左侧菜单不存在或未正确加载",
+          "菜单结构为空",
+          "没有任何菜单项被高亮",
+          "当前模块(登录)的菜单组未正确展开"
+        ]
+      },
+      "error_logs": {
+        "count": 0,
+        "details": [],
+        "log_file": "登录.html.log"
+      },
+      "quality_indicators": {
+        "has_title": true,
+        "loads_successfully": true,
+        "menu_functional": false,
+        "error_free": true
+      }
+    }
+  ],
+  "issues_summary": {
+    "navigation_issues": [
+      "菜单结构为空",
+      "没有任何菜单项被高亮",
+      "当前模块(登录)的菜单组未正确展开",
+      "左侧菜单不存在或未正确加载"
+    ],
+    "common_errors": [],
+    "recommendations": [
+      "导航评分偏低，建议检查菜单高亮和展开逻辑"
+    ]
+  }
+}

@@ -1,0 +1,2770 @@
+{
+  "工作台": {
+    "module": "工作台",
+    "timestamp": "20250815_2229",
+    "pages": {
+      "工作台/平台运营看板.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/工作台/平台运营看板.html",
+        "url": "http://localhost:8000/1.0/超级管理员/工作台/平台运营看板.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [
+          {
+            "type": "chart_no_min_height",
+            "priority": "P1",
+            "description": "图表容器缺少最小高度设置"
+          }
+        ],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/工作台/平台运营看板.html",
+          "menu_structure": {
+            "exists": true,
+            "structure": {
+              "工作台": {
+                "level": 1,
+                "expanded": true,
+                "children": {
+                  "平台运营看板": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+                  },
+                  "报告规则分析": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+                  }
+                }
+              },
+              "规则管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": null,
+                    "children": {
+                      "": {
+                        "level": 3,
+                        "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                      }
+                    }
+                  }
+                }
+              },
+              "审核管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+                  }
+                }
+              },
+              "用户权限管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": null,
+                    "children": {
+                      "": {
+                        "level": 3,
+                        "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                      }
+                    }
+                  }
+                }
+              },
+              "系统管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+                  }
+                }
+              },
+              "知识库": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+                  }
+                }
+              }
+            },
+            "active_items": [
+              "工作台 > 平台运营看板"
+            ],
+            "expanded_groups": [
+              "工作台"
+            ],
+            "errors": [
+              "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x0000000109796b76 chromedriver + 715638\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x0000000109796a68 chromedriver + 715368\n8   chromedriver                        0x00000001097c90ce chromedriver + 921806\n9   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n10  chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n11  chromedriver                        0x000000010979529b chromedriver + 709275\n12  chromedriver                        0x0000000109795f81 chromedriver + 712577\n13  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n14  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n15  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n16  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n17  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n18  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n19  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n20  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 100,
+          "issues": [],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "工作台/平台运营看板.html",
+              "name": "平台运营看板.html",
+              "module": "工作台",
+              "title": "平台运营看板",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html",
+              "screenshot": "平台运营看板.html.png",
+              "audit_time": "2025-08-15T22:29:10.985221"
+            },
+            "menu_analysis": {
+              "exists": true,
+              "structure": {
+                "工作台": {
+                  "level": 1,
+                  "expanded": true,
+                  "children": {
+                    "平台运营看板": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+                    },
+                    "报告规则分析": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+                    }
+                  }
+                },
+                "规则管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": null,
+                      "children": {
+                        "": {
+                          "level": 3,
+                          "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                        }
+                      }
+                    }
+                  }
+                },
+                "审核管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+                    }
+                  }
+                },
+                "用户权限管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": null,
+                      "children": {
+                        "": {
+                          "level": 3,
+                          "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                        }
+                      }
+                    }
+                  }
+                },
+                "系统管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+                    }
+                  }
+                },
+                "知识库": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+                    }
+                  }
+                }
+              },
+              "active_items": [
+                "工作台 > 平台运营看板"
+              ],
+              "expanded_groups": [
+                "工作台"
+              ],
+              "errors": [
+                "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x0000000109796b76 chromedriver + 715638\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x0000000109796a68 chromedriver + 715368\n8   chromedriver                        0x00000001097c90ce chromedriver + 921806\n9   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n10  chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n11  chromedriver                        0x000000010979529b chromedriver + 709275\n12  chromedriver                        0x0000000109795f81 chromedriver + 712577\n13  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n14  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n15  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n16  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n17  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n18  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n19  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n20  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 100,
+              "details": {
+                "menu_exists": 20,
+                "structure_match": 25,
+                "active_highlight": 25,
+                "expansion_logic": 15,
+                "link_validity": 15
+              },
+              "issues": []
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/favicon.ico - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "平台运营看板.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": true,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [
+          "图表最小高度样式已存在"
+        ],
+        "total_issues": 1,
+        "total_fixes": 1
+      },
+      "工作台/报告规则分析.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/工作台/报告规则分析.html",
+        "url": "http://localhost:8000/1.0/超级管理员/工作台/报告规则分析.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [
+          {
+            "type": "chart_no_min_height",
+            "priority": "P1",
+            "description": "图表容器缺少最小高度设置"
+          }
+        ],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/工作台/报告规则分析.html",
+          "menu_structure": {
+            "exists": true,
+            "structure": {
+              "工作台": {
+                "level": 1,
+                "expanded": true,
+                "children": {
+                  "平台运营看板": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+                  },
+                  "报告规则分析": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+                  }
+                }
+              },
+              "规则管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": null,
+                    "children": {
+                      "": {
+                        "level": 3,
+                        "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                      }
+                    }
+                  }
+                }
+              },
+              "审核管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+                  }
+                }
+              },
+              "用户权限管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": null,
+                    "children": {
+                      "": {
+                        "level": 3,
+                        "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                      }
+                    }
+                  }
+                }
+              },
+              "系统管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+                  }
+                }
+              },
+              "知识库": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+                  }
+                }
+              }
+            },
+            "active_items": [
+              "工作台 > 报告规则分析"
+            ],
+            "expanded_groups": [
+              "工作台"
+            ],
+            "errors": [
+              "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x0000000109796b76 chromedriver + 715638\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x0000000109796a68 chromedriver + 715368\n8   chromedriver                        0x00000001097c90ce chromedriver + 921806\n9   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n10  chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n11  chromedriver                        0x000000010979529b chromedriver + 709275\n12  chromedriver                        0x0000000109795f81 chromedriver + 712577\n13  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n14  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n15  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n16  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n17  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n18  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n19  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n20  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 100,
+          "issues": [],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "工作台/报告规则分析.html",
+              "name": "报告规则分析.html",
+              "module": "工作台",
+              "title": "规则分析报告 - 医保审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html",
+              "screenshot": "报告规则分析.html.png",
+              "audit_time": "2025-08-15T22:29:16.601880"
+            },
+            "menu_analysis": {
+              "exists": true,
+              "structure": {
+                "工作台": {
+                  "level": 1,
+                  "expanded": true,
+                  "children": {
+                    "平台运营看板": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+                    },
+                    "报告规则分析": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+                    }
+                  }
+                },
+                "规则管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": null,
+                      "children": {
+                        "": {
+                          "level": 3,
+                          "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                        }
+                      }
+                    }
+                  }
+                },
+                "审核管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+                    }
+                  }
+                },
+                "用户权限管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": null,
+                      "children": {
+                        "": {
+                          "level": 3,
+                          "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                        }
+                      }
+                    }
+                  }
+                },
+                "系统管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+                    }
+                  }
+                },
+                "知识库": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+                    }
+                  }
+                }
+              },
+              "active_items": [
+                "工作台 > 报告规则分析"
+              ],
+              "expanded_groups": [
+                "工作台"
+              ],
+              "errors": [
+                "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x0000000109796b76 chromedriver + 715638\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x0000000109796a68 chromedriver + 715368\n8   chromedriver                        0x00000001097c90ce chromedriver + 921806\n9   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n10  chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n11  chromedriver                        0x000000010979529b chromedriver + 709275\n12  chromedriver                        0x0000000109795f81 chromedriver + 712577\n13  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n14  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n15  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n16  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n17  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n18  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n19  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n20  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 100,
+              "details": {
+                "menu_exists": 20,
+                "structure_match": 25,
+                "active_highlight": 25,
+                "expansion_logic": 15,
+                "link_validity": 15
+              },
+              "issues": []
+            },
+            "error_logs": {
+              "count": 0,
+              "details": [],
+              "log_file": "报告规则分析.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": true,
+              "error_free": true
+            }
+          }
+        },
+        "fixes_applied": [
+          "图表最小高度样式已存在"
+        ],
+        "total_issues": 1,
+        "total_fixes": 1
+      }
+    },
+    "summary": {
+      "total_pages": 2,
+      "error_pages": 2,
+      "avg_navigation_score": 100.0,
+      "total_issues_fixed": 2
+    }
+  },
+  "审核管理": {
+    "module": "审核管理",
+    "timestamp": "20250815_2229",
+    "pages": {
+      "审核管理/审核流程/事中审核检查.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/审核管理/审核流程/事中审核检查.html",
+        "url": "http://localhost:8000/1.0/超级管理员/审核管理/审核流程/事中审核检查.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/审核管理/审核流程/事中审核检查.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(审核管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "审核管理/审核流程/事中审核检查.html",
+              "name": "事中审核检查.html",
+              "module": "审核管理",
+              "title": "在院费用预审核",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E6%B5%81%E7%A8%8B/%E4%BA%8B%E4%B8%AD%E5%AE%A1%E6%A0%B8%E6%A3%80%E6%9F%A5.html",
+              "screenshot": "事中审核检查.html.png",
+              "audit_time": "2025-08-15T22:29:20.552487"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(审核管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "事中审核检查.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "审核管理/审核流程/事前审核记录.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/审核管理/审核流程/事前审核记录.html",
+        "url": "http://localhost:8000/1.0/超级管理员/审核管理/审核流程/事前审核记录.html",
+        "static_issues": [
+          {
+            "type": "js_404",
+            "resource": "../assets/js/pre-audit-records.js",
+            "resolved_path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/审核管理/assets/js/pre-audit-records.js",
+            "line": 380
+          }
+        ],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "navigation_score": 0,
+          "issues": [
+            "跳过浏览器审查"
+          ]
+        },
+        "fixes_applied": [],
+        "total_issues": 1,
+        "total_fixes": 0
+      },
+      "审核管理/审核流程/事后审核任务列表.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/审核管理/审核流程/事后审核任务列表.html",
+        "url": "http://localhost:8000/1.0/超级管理员/审核管理/审核流程/事后审核任务列表.html",
+        "static_issues": [
+          {
+            "type": "js_404",
+            "resource": "../assets/js/post-audit-task-list.js",
+            "resolved_path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/审核管理/assets/js/post-audit-task-list.js",
+            "line": 537
+          }
+        ],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "navigation_score": 0,
+          "issues": [
+            "跳过浏览器审查"
+          ]
+        },
+        "fixes_applied": [],
+        "total_issues": 1,
+        "total_fixes": 0
+      },
+      "审核管理/审核结果/审核结果.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/审核管理/审核结果/审核结果.html",
+        "url": "http://localhost:8000/1.0/超级管理员/审核管理/审核结果/审核结果.html",
+        "static_issues": [
+          {
+            "type": "css_404",
+            "resource": "../../样式文件/通用样式.css",
+            "resolved_path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/样式文件/通用样式.css",
+            "line": 7
+          },
+          {
+            "type": "js_404",
+            "resource": "../assets/js/audit-results.js",
+            "resolved_path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/审核管理/assets/js/audit-results.js",
+            "line": 543
+          }
+        ],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "navigation_score": 0,
+          "issues": [
+            "跳过浏览器审查"
+          ]
+        },
+        "fixes_applied": [
+          "未找到匹配的路径引用: ../../样式文件/通用样式.css"
+        ],
+        "total_issues": 2,
+        "total_fixes": 1
+      }
+    },
+    "summary": {
+      "total_pages": 4,
+      "error_pages": 3,
+      "avg_navigation_score": 3.75,
+      "total_issues_fixed": 1
+    }
+  },
+  "规则管理": {
+    "module": "规则管理",
+    "timestamp": "20250815_2229",
+    "pages": {
+      "规则管理/规则操作/规则参数配置.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则操作/规则参数配置.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则操作/规则参数配置.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则操作/规则参数配置.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则操作/规则参数配置.html",
+              "name": "规则参数配置.html",
+              "module": "规则管理",
+              "title": "规则参数配置",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE.html",
+              "screenshot": "规则参数配置.html.png",
+              "audit_time": "2025-08-15T22:29:24.491593"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "规则参数配置.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "规则管理/规则操作/创建规则.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则操作/创建规则.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则操作/创建规则.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则操作/创建规则.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则操作/创建规则.html",
+              "name": "创建规则.html",
+              "module": "规则管理",
+              "title": "创建规则 - 医保审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E5%88%9B%E5%BB%BA%E8%A7%84%E5%88%99.html",
+              "screenshot": "创建规则.html.png",
+              "audit_time": "2025-08-15T22:29:28.505980"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "创建规则.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "规则管理/规则操作/编辑规则.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则操作/编辑规则.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则操作/编辑规则.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则操作/编辑规则.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则操作/编辑规则.html",
+              "name": "编辑规则.html",
+              "module": "规则管理",
+              "title": "编辑规则 - 医保审核规则管理系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E7%BC%96%E8%BE%91%E8%A7%84%E5%88%99.html",
+              "screenshot": "编辑规则.html.png",
+              "audit_time": "2025-08-15T22:29:32.421606"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "编辑规则.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "规则管理/规则操作/规则管理完整版.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则操作/规则管理完整版.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则操作/规则管理完整版.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则操作/规则管理完整版.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则操作/规则管理完整版.html",
+              "name": "规则管理完整版.html",
+              "module": "规则管理",
+              "title": "医保规则管理系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html",
+              "screenshot": "规则管理完整版.html.png",
+              "audit_time": "2025-08-15T22:29:36.434892"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "规则管理完整版.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "规则管理/规则列表/规则管理主页.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则列表/规则管理主页.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则列表/规则管理主页.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则列表/规则管理主页.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则列表/规则管理主页.html",
+              "name": "规则管理主页.html",
+              "module": "规则管理",
+              "title": "规则管理 - 医保审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E5%88%97%E8%A1%A8/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E4%B8%BB%E9%A1%B5.html",
+              "screenshot": "规则管理主页.html.png",
+              "audit_time": "2025-08-15T22:29:40.340673"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E5%88%97%E8%A1%A8/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E4%B8%BB%E9%A1%B5.html 250:0 Uncaught SyntaxError: Unexpected token '<'"
+              ],
+              "log_file": "规则管理主页.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "规则管理/规则列表/门诊规则管理.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则列表/门诊规则管理.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则列表/门诊规则管理.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则列表/门诊规则管理.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则列表/门诊规则管理.html",
+              "name": "门诊规则管理.html",
+              "module": "规则管理",
+              "title": "门诊规则详情 - 医保审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E5%88%97%E8%A1%A8/%E9%97%A8%E8%AF%8A%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86.html",
+              "screenshot": "门诊规则管理.html.png",
+              "audit_time": "2025-08-15T22:29:44.367723"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "门诊规则管理.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "规则管理/规则列表/医保规则管理系统v2.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则列表/医保规则管理系统v2.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则列表/医保规则管理系统v2.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则列表/医保规则管理系统v2.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则列表/医保规则管理系统v2.html",
+              "name": "医保规则管理系统v2.html",
+              "module": "规则管理",
+              "title": "规则库 - 医保审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E5%88%97%E8%A1%A8/%E5%8C%BB%E4%BF%9D%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9Fv2.html",
+              "screenshot": "医保规则管理系统v2.html.png",
+              "audit_time": "2025-08-15T22:29:48.344156"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "医保规则管理系统v2.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "规则管理/规则详情/规则详情.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则详情/规则详情.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则详情/规则详情.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则详情/规则详情.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则详情/规则详情.html",
+              "name": "规则详情.html",
+              "module": "规则管理",
+              "title": "药品详情 - 医保审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E8%AF%A6%E6%83%85/%E8%A7%84%E5%88%99%E8%AF%A6%E6%83%85.html",
+              "screenshot": "规则详情.html.png",
+              "audit_time": "2025-08-15T22:29:52.291545"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "规则详情.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "规则管理/规则详情/门诊规则详情.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则详情/门诊规则详情.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则详情/门诊规则详情.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则详情/门诊规则详情.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则详情/门诊规则详情.html",
+              "name": "门诊规则详情.html",
+              "module": "规则管理",
+              "title": "门诊规则库 - 医保审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E8%AF%A6%E6%83%85/%E9%97%A8%E8%AF%8A%E8%A7%84%E5%88%99%E8%AF%A6%E6%83%85.html",
+              "screenshot": "门诊规则详情.html.png",
+              "audit_time": "2025-08-15T22:29:56.242081"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "门诊规则详情.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "规则管理/规则详情/临床规则详情.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则详情/临床规则详情.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则详情/临床规则详情.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则详情/临床规则详情.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则详情/临床规则详情.html",
+              "name": "临床规则详情.html",
+              "module": "规则管理",
+              "title": "诊疗规则详情 - 医保审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E8%AF%A6%E6%83%85/%E4%B8%B4%E5%BA%8A%E8%A7%84%E5%88%99%E8%AF%A6%E6%83%85.html",
+              "screenshot": "临床规则详情.html.png",
+              "audit_time": "2025-08-15T22:30:00.220954"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "临床规则详情.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "规则管理/规则详情/慢病规则详情.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则详情/慢病规则详情.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则详情/慢病规则详情.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则详情/慢病规则详情.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则详情/慢病规则详情.html",
+              "name": "慢病规则详情.html",
+              "module": "规则管理",
+              "title": "慢病详情 - 医保审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E8%AF%A6%E6%83%85/%E6%85%A2%E7%97%85%E8%A7%84%E5%88%99%E8%AF%A6%E6%83%85.html",
+              "screenshot": "慢病规则详情.html.png",
+              "audit_time": "2025-08-15T22:30:04.263466"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "慢病规则详情.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "规则管理/规则详情/政策规则详情.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/规则管理/规则详情/政策规则详情.html",
+        "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则详情/政策规则详情.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/规则管理/规则详情/政策规则详情.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(规则管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "规则管理/规则详情/政策规则详情.html",
+              "name": "政策规则详情.html",
+              "module": "规则管理",
+              "title": "政策规则详情 - 医保审核规则管理系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E8%AF%A6%E6%83%85/%E6%94%BF%E7%AD%96%E8%A7%84%E5%88%99%E8%AF%A6%E6%83%85.html",
+              "screenshot": "政策规则详情.html.png",
+              "audit_time": "2025-08-15T22:30:08.478861"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(规则管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "政策规则详情.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      }
+    },
+    "summary": {
+      "total_pages": 12,
+      "error_pages": 0,
+      "avg_navigation_score": 15.0,
+      "total_issues_fixed": 0
+    }
+  },
+  "用户权限管理": {
+    "module": "用户权限管理",
+    "timestamp": "20250815_2229",
+    "pages": {
+      "用户权限管理/用户管理/用户列表.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/用户权限管理/用户管理/用户列表.html",
+        "url": "http://localhost:8000/1.0/超级管理员/用户权限管理/用户管理/用户列表.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/用户权限管理/用户管理/用户列表.html",
+          "menu_structure": {
+            "exists": true,
+            "structure": {
+              "工作台": {
+                "level": 1,
+                "expanded": true,
+                "children": {
+                  "平台运营看板": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+                  },
+                  "报告规则分析": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+                  }
+                }
+              },
+              "规则管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": null,
+                    "children": {
+                      "": {
+                        "level": 3,
+                        "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                      }
+                    }
+                  }
+                }
+              },
+              "审核管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+                  }
+                }
+              },
+              "用户权限管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": null,
+                    "children": {
+                      "": {
+                        "level": 3,
+                        "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                      }
+                    }
+                  }
+                }
+              },
+              "系统管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+                  }
+                }
+              },
+              "知识库": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+                  }
+                }
+              }
+            },
+            "active_items": [],
+            "expanded_groups": [
+              "工作台"
+            ],
+            "errors": [
+              "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x0000000109796b76 chromedriver + 715638\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x0000000109796a68 chromedriver + 715368\n8   chromedriver                        0x00000001097c90ce chromedriver + 921806\n9   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n10  chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n11  chromedriver                        0x000000010979529b chromedriver + 709275\n12  chromedriver                        0x0000000109795f81 chromedriver + 712577\n13  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n14  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n15  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n16  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n17  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n18  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n19  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n20  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 60,
+          "issues": [
+            "没有任何菜单项被高亮",
+            "当前模块(用户权限管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "用户权限管理/用户管理/用户列表.html",
+              "name": "用户列表.html",
+              "module": "用户权限管理",
+              "title": "用户管理",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/%E7%94%A8%E6%88%B7%E5%88%97%E8%A1%A8.html",
+              "screenshot": "用户列表.html.png",
+              "audit_time": "2025-08-15T22:30:13.402607"
+            },
+            "menu_analysis": {
+              "exists": true,
+              "structure": {
+                "工作台": {
+                  "level": 1,
+                  "expanded": true,
+                  "children": {
+                    "平台运营看板": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+                    },
+                    "报告规则分析": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+                    }
+                  }
+                },
+                "规则管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": null,
+                      "children": {
+                        "": {
+                          "level": 3,
+                          "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                        }
+                      }
+                    }
+                  }
+                },
+                "审核管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+                    }
+                  }
+                },
+                "用户权限管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": null,
+                      "children": {
+                        "": {
+                          "level": 3,
+                          "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                        }
+                      }
+                    }
+                  }
+                },
+                "系统管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+                    }
+                  }
+                },
+                "知识库": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+                    }
+                  }
+                }
+              },
+              "active_items": [],
+              "expanded_groups": [
+                "工作台"
+              ],
+              "errors": [
+                "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x0000000109796b76 chromedriver + 715638\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x0000000109796a68 chromedriver + 715368\n8   chromedriver                        0x00000001097c90ce chromedriver + 921806\n9   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n10  chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n11  chromedriver                        0x000000010979529b chromedriver + 709275\n12  chromedriver                        0x0000000109795f81 chromedriver + 712577\n13  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n14  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n15  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n16  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n17  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n18  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n19  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n20  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 60,
+              "details": {
+                "menu_exists": 20,
+                "structure_match": 25,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "没有任何菜单项被高亮",
+                "当前模块(用户权限管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 0,
+              "details": [],
+              "log_file": "用户列表.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": true,
+              "error_free": true
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "用户权限管理/权限管理/权限管理.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/用户权限管理/权限管理/权限管理.html",
+        "url": "http://localhost:8000/1.0/超级管理员/用户权限管理/权限管理/权限管理.html",
+        "static_issues": [
+          {
+            "type": "css_404",
+            "resource": "../../样式文件/通用样式.css",
+            "resolved_path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/样式文件/通用样式.css",
+            "line": 7
+          }
+        ],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "navigation_score": 0,
+          "issues": [
+            "跳过浏览器审查"
+          ]
+        },
+        "fixes_applied": [
+          "未找到匹配的路径引用: ../../样式文件/通用样式.css"
+        ],
+        "total_issues": 1,
+        "total_fixes": 1
+      },
+      "用户权限管理/组织管理/科室管理.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/用户权限管理/组织管理/科室管理.html",
+        "url": "http://localhost:8000/1.0/超级管理员/用户权限管理/组织管理/科室管理.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/用户权限管理/组织管理/科室管理.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(用户权限管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "用户权限管理/组织管理/科室管理.html",
+              "name": "科室管理.html",
+              "module": "用户权限管理",
+              "title": "科室管理",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E7%A7%91%E5%AE%A4%E7%AE%A1%E7%90%86.html",
+              "screenshot": "科室管理.html.png",
+              "audit_time": "2025-08-15T22:30:17.471534"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(用户权限管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "科室管理.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "用户权限管理/组织管理/企业详情.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/用户权限管理/组织管理/企业详情.html",
+        "url": "http://localhost:8000/1.0/超级管理员/用户权限管理/组织管理/企业详情.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/用户权限管理/组织管理/企业详情.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(用户权限管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "用户权限管理/组织管理/企业详情.html",
+              "name": "企业详情.html",
+              "module": "用户权限管理",
+              "title": "企业详情 - 医保智能审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html",
+              "screenshot": "企业详情.html.png",
+              "audit_time": "2025-08-15T22:30:21.570412"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(用户权限管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "企业详情.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "用户权限管理/组织管理/租户管理.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/用户权限管理/组织管理/租户管理.html",
+        "url": "http://localhost:8000/1.0/超级管理员/用户权限管理/组织管理/租户管理.html",
+        "static_issues": [
+          {
+            "type": "js_404",
+            "resource": "../assets/js/tenant-list.js",
+            "resolved_path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/用户权限管理/assets/js/tenant-list.js",
+            "line": 875
+          }
+        ],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "navigation_score": 0,
+          "issues": [
+            "跳过浏览器审查"
+          ]
+        },
+        "fixes_applied": [],
+        "total_issues": 1,
+        "total_fixes": 0
+      },
+      "用户权限管理/组织管理/租户表单.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/用户权限管理/组织管理/租户表单.html",
+        "url": "http://localhost:8000/1.0/超级管理员/用户权限管理/组织管理/租户表单.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/用户权限管理/组织管理/租户表单.html",
+          "menu_structure": {
+            "exists": false,
+            "structure": {},
+            "active_items": [],
+            "expanded_groups": [],
+            "errors": [
+              "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 15,
+          "issues": [
+            "左侧菜单不存在或未正确加载",
+            "菜单结构为空",
+            "没有任何菜单项被高亮",
+            "当前模块(用户权限管理)的菜单组未正确展开"
+          ],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "用户权限管理/组织管理/租户表单.html",
+              "name": "租户表单.html",
+              "module": "用户权限管理",
+              "title": "租户信息",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E7%A7%9F%E6%88%B7%E8%A1%A8%E5%8D%95.html",
+              "screenshot": "租户表单.html.png",
+              "audit_time": "2025-08-15T22:30:25.638763"
+            },
+            "menu_analysis": {
+              "exists": false,
+              "structure": {},
+              "active_items": [],
+              "expanded_groups": [],
+              "errors": [
+                "抽取菜单结构失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"#sidebar-container .sidebar\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x00000001097f2ce4 chromedriver + 1092836\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n8   chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n9   chromedriver                        0x000000010979529b chromedriver + 709275\n10  chromedriver                        0x0000000109795f81 chromedriver + 712577\n11  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n12  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n13  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n14  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n15  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n16  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n17  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n18  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n19  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n20  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 15,
+              "details": {
+                "menu_exists": 0,
+                "structure_match": 0,
+                "active_highlight": 0,
+                "expansion_logic": 0,
+                "link_validity": 15
+              },
+              "issues": [
+                "左侧菜单不存在或未正确加载",
+                "菜单结构为空",
+                "没有任何菜单项被高亮",
+                "当前模块(用户权限管理)的菜单组未正确展开"
+              ]
+            },
+            "error_logs": {
+              "count": 1,
+              "details": [
+                "Console[SEVERE]: http://localhost:8000/1.0/%E7%BB%84%E4%BB%B6/_unified-sidebar.html - Failed to load resource: the server responded with a status of 404 (File not found)"
+              ],
+              "log_file": "租户表单.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": false,
+              "error_free": false
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      }
+    },
+    "summary": {
+      "total_pages": 6,
+      "error_pages": 2,
+      "avg_navigation_score": 17.5,
+      "total_issues_fixed": 1
+    }
+  },
+  "系统管理": {
+    "module": "系统管理",
+    "timestamp": "20250815_2229",
+    "pages": {
+      "系统管理/全局设置.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/全局设置.html",
+        "url": "http://localhost:8000/1.0/超级管理员/系统管理/全局设置.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/系统管理/全局设置.html",
+          "menu_structure": {
+            "exists": true,
+            "structure": {
+              "工作台": {
+                "level": 1,
+                "expanded": true,
+                "children": {
+                  "平台运营看板": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+                  },
+                  "报告规则分析": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+                  }
+                }
+              },
+              "规则管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": null,
+                    "children": {
+                      "": {
+                        "level": 3,
+                        "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                      }
+                    }
+                  }
+                }
+              },
+              "审核管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+                  }
+                }
+              },
+              "用户权限管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": null,
+                    "children": {
+                      "": {
+                        "level": 3,
+                        "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                      }
+                    }
+                  }
+                }
+              },
+              "系统管理": {
+                "level": 1,
+                "expanded": true,
+                "children": {
+                  "全局设置": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E5%85%A8%E5%B1%80%E8%AE%BE%E7%BD%AE.html"
+                  },
+                  "系统监控": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+                  }
+                }
+              },
+              "知识库": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+                  }
+                }
+              }
+            },
+            "active_items": [
+              "系统管理 > 全局设置"
+            ],
+            "expanded_groups": [
+              "工作台",
+              "系统管理"
+            ],
+            "errors": [
+              "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x0000000109796b76 chromedriver + 715638\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x0000000109796a68 chromedriver + 715368\n8   chromedriver                        0x00000001097c90ce chromedriver + 921806\n9   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n10  chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n11  chromedriver                        0x000000010979529b chromedriver + 709275\n12  chromedriver                        0x0000000109795f81 chromedriver + 712577\n13  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n14  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n15  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n16  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n17  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n18  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n19  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n20  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 100,
+          "issues": [],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "系统管理/全局设置.html",
+              "name": "全局设置.html",
+              "module": "系统管理",
+              "title": "全局设置 - 医保审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E5%85%A8%E5%B1%80%E8%AE%BE%E7%BD%AE.html",
+              "screenshot": "全局设置.html.png",
+              "audit_time": "2025-08-15T22:30:30.563463"
+            },
+            "menu_analysis": {
+              "exists": true,
+              "structure": {
+                "工作台": {
+                  "level": 1,
+                  "expanded": true,
+                  "children": {
+                    "平台运营看板": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+                    },
+                    "报告规则分析": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+                    }
+                  }
+                },
+                "规则管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": null,
+                      "children": {
+                        "": {
+                          "level": 3,
+                          "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                        }
+                      }
+                    }
+                  }
+                },
+                "审核管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+                    }
+                  }
+                },
+                "用户权限管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": null,
+                      "children": {
+                        "": {
+                          "level": 3,
+                          "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                        }
+                      }
+                    }
+                  }
+                },
+                "系统管理": {
+                  "level": 1,
+                  "expanded": true,
+                  "children": {
+                    "全局设置": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E5%85%A8%E5%B1%80%E8%AE%BE%E7%BD%AE.html"
+                    },
+                    "系统监控": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+                    }
+                  }
+                },
+                "知识库": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+                    }
+                  }
+                }
+              },
+              "active_items": [
+                "系统管理 > 全局设置"
+              ],
+              "expanded_groups": [
+                "工作台",
+                "系统管理"
+              ],
+              "errors": [
+                "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x0000000109796b76 chromedriver + 715638\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x0000000109796a68 chromedriver + 715368\n8   chromedriver                        0x00000001097c90ce chromedriver + 921806\n9   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n10  chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n11  chromedriver                        0x000000010979529b chromedriver + 709275\n12  chromedriver                        0x0000000109795f81 chromedriver + 712577\n13  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n14  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n15  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n16  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n17  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n18  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n19  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n20  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 100,
+              "details": {
+                "menu_exists": 20,
+                "structure_match": 25,
+                "active_highlight": 25,
+                "expansion_logic": 15,
+                "link_validity": 15
+              },
+              "issues": []
+            },
+            "error_logs": {
+              "count": 0,
+              "details": [],
+              "log_file": "全局设置.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": true,
+              "error_free": true
+            }
+          }
+        },
+        "fixes_applied": [],
+        "total_issues": 0,
+        "total_fixes": 0
+      },
+      "系统管理/系统监控.html": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/系统监控.html",
+        "url": "http://localhost:8000/1.0/超级管理员/系统管理/系统监控.html",
+        "static_issues": [],
+        "sidebar_issues": [],
+        "ui_issues": [
+          {
+            "type": "chart_no_min_height",
+            "priority": "P1",
+            "description": "图表容器缺少最小高度设置"
+          }
+        ],
+        "navigation_result": {
+          "url": "http://localhost:8000/1.0/超级管理员/系统管理/系统监控.html",
+          "menu_structure": {
+            "exists": true,
+            "structure": {
+              "工作台": {
+                "level": 1,
+                "expanded": true,
+                "children": {
+                  "平台运营看板": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+                  },
+                  "报告规则分析": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+                  }
+                }
+              },
+              "规则管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": null,
+                    "children": {
+                      "": {
+                        "level": 3,
+                        "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                      }
+                    }
+                  }
+                }
+              },
+              "审核管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+                  }
+                }
+              },
+              "用户权限管理": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": null,
+                    "children": {
+                      "": {
+                        "level": 3,
+                        "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                      }
+                    }
+                  }
+                }
+              },
+              "系统管理": {
+                "level": 1,
+                "expanded": true,
+                "children": {
+                  "全局设置": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E5%85%A8%E5%B1%80%E8%AE%BE%E7%BD%AE.html"
+                  },
+                  "系统监控": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+                  }
+                }
+              },
+              "知识库": {
+                "level": 1,
+                "expanded": false,
+                "children": {
+                  "": {
+                    "level": 2,
+                    "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+                  }
+                }
+              }
+            },
+            "active_items": [
+              "系统管理 > 系统监控"
+            ],
+            "expanded_groups": [
+              "工作台",
+              "系统管理"
+            ],
+            "errors": [
+              "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x0000000109796b76 chromedriver + 715638\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x0000000109796a68 chromedriver + 715368\n8   chromedriver                        0x00000001097c90ce chromedriver + 921806\n9   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n10  chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n11  chromedriver                        0x000000010979529b chromedriver + 709275\n12  chromedriver                        0x0000000109795f81 chromedriver + 712577\n13  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n14  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n15  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n16  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n17  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n18  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n19  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n20  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+            ]
+          },
+          "navigation_score": 100,
+          "issues": [],
+          "console_errors": [],
+          "network_errors": [],
+          "enhanced_result": {
+            "page_info": {
+              "path": "系统管理/系统监控.html",
+              "name": "系统监控.html",
+              "module": "系统管理",
+              "title": "系统监控 - 医保审核系统",
+              "url": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html",
+              "screenshot": "系统监控.html.png",
+              "audit_time": "2025-08-15T22:30:35.815607"
+            },
+            "menu_analysis": {
+              "exists": true,
+              "structure": {
+                "工作台": {
+                  "level": 1,
+                  "expanded": true,
+                  "children": {
+                    "平台运营看板": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E5%B9%B3%E5%8F%B0%E8%BF%90%E8%90%A5%E7%9C%8B%E6%9D%BF.html"
+                    },
+                    "报告规则分析": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%B7%A5%E4%BD%9C%E5%8F%B0/%E6%8A%A5%E5%91%8A%E8%A7%84%E5%88%99%E5%88%86%E6%9E%90.html"
+                    }
+                  }
+                },
+                "规则管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": null,
+                      "children": {
+                        "": {
+                          "level": 3,
+                          "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86/%E8%A7%84%E5%88%99%E6%93%8D%E4%BD%9C/%E8%A7%84%E5%88%99%E7%AE%A1%E7%90%86%E5%AE%8C%E6%95%B4%E7%89%88.html"
+                        }
+                      }
+                    }
+                  }
+                },
+                "审核管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E5%AE%A1%E6%A0%B8%E7%AE%A1%E7%90%86/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C/%E5%AE%A1%E6%A0%B8%E7%BB%93%E6%9E%9C.html"
+                    }
+                  }
+                },
+                "用户权限管理": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": null,
+                      "children": {
+                        "": {
+                          "level": 3,
+                          "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%94%A8%E6%88%B7%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/%E7%BB%84%E7%BB%87%E7%AE%A1%E7%90%86/%E4%BC%81%E4%B8%9A%E8%AF%A6%E6%83%85.html"
+                        }
+                      }
+                    }
+                  }
+                },
+                "系统管理": {
+                  "level": 1,
+                  "expanded": true,
+                  "children": {
+                    "全局设置": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E5%85%A8%E5%B1%80%E8%AE%BE%E7%BD%AE.html"
+                    },
+                    "系统监控": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%B3%BB%E7%BB%9F%E7%9B%91%E6%8E%A7.html"
+                    }
+                  }
+                },
+                "知识库": {
+                  "level": 1,
+                  "expanded": false,
+                  "children": {
+                    "": {
+                      "level": 2,
+                      "href": "http://localhost:8000/1.0/%E8%B6%85%E7%BA%A7%E7%AE%A1%E7%90%86%E5%91%98/%E7%B3%BB%E7%BB%9F%E7%AE%A1%E7%90%86/%E7%9F%A5%E8%AF%86%E5%BA%93%E7%9B%AE%E5%BD%95.html?catalog=material"
+                    }
+                  }
+                }
+              },
+              "active_items": [
+                "系统管理 > 系统监控"
+              ],
+              "expanded_groups": [
+                "工作台",
+                "系统管理"
+              ],
+              "errors": [
+                "解析菜单组失败: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".nav-level-1\"}\n  (Session info: chrome=139.0.7258.128); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\n0   chromedriver                        0x0000000109c8cef8 chromedriver + 5918456\n1   chromedriver                        0x0000000109c8448a chromedriver + 5883018\n2   chromedriver                        0x0000000109750e20 chromedriver + 429600\n3   chromedriver                        0x00000001097a2ed4 chromedriver + 765652\n4   chromedriver                        0x00000001097a30f1 chromedriver + 766193\n5   chromedriver                        0x0000000109796b76 chromedriver + 715638\n6   chromedriver                        0x00000001097c8f3d chromedriver + 921405\n7   chromedriver                        0x0000000109796a68 chromedriver + 715368\n8   chromedriver                        0x00000001097c90ce chromedriver + 921806\n9   chromedriver                        0x00000001097f0024 chromedriver + 1081380\n10  chromedriver                        0x00000001097c8ce3 chromedriver + 920803\n11  chromedriver                        0x000000010979529b chromedriver + 709275\n12  chromedriver                        0x0000000109795f81 chromedriver + 712577\n13  chromedriver                        0x0000000109c49c00 chromedriver + 5643264\n14  chromedriver                        0x0000000109c4dab4 chromedriver + 5659316\n15  chromedriver                        0x0000000109c25472 chromedriver + 5493874\n16  chromedriver                        0x0000000109c4e55f chromedriver + 5662047\n17  chromedriver                        0x0000000109c14414 chromedriver + 5424148\n18  chromedriver                        0x0000000109c71778 chromedriver + 5805944\n19  chromedriver                        0x0000000109c71940 chromedriver + 5806400\n20  chromedriver                        0x0000000109c84061 chromedriver + 5881953\n21  libsystem_pthread.dylib             0x00007ff800a55259 _pthread_start + 125\n22  libsystem_pthread.dylib             0x00007ff800a50c7b thread_start + 15\n"
+              ]
+            },
+            "navigation_score": {
+              "total": 100,
+              "details": {
+                "menu_exists": 20,
+                "structure_match": 25,
+                "active_highlight": 25,
+                "expansion_logic": 15,
+                "link_validity": 15
+              },
+              "issues": []
+            },
+            "error_logs": {
+              "count": 0,
+              "details": [],
+              "log_file": "系统监控.html.log"
+            },
+            "quality_indicators": {
+              "has_title": true,
+              "loads_successfully": true,
+              "menu_functional": true,
+              "error_free": true
+            }
+          }
+        },
+        "fixes_applied": [
+          "图表最小高度样式已存在"
+        ],
+        "total_issues": 1,
+        "total_fixes": 1
+      }
+    },
+    "summary": {
+      "total_pages": 2,
+      "error_pages": 1,
+      "avg_navigation_score": 100.0,
+      "total_issues_fixed": 1
+    }
+  },
+  "知识库": {
+    "module": "知识库",
+    "timestamp": "20250815_2229",
+    "pages": {
+      "系统管理/知识库目录.html?catalog=drug": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=drug",
+        "url": "http://localhost:8000/1.0/超级管理员/系统管理/知识库目录.html?catalog=drug",
+        "static_issues": [
+          {
+            "type": "file_not_found",
+            "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=drug"
+          }
+        ],
+        "sidebar_issues": [
+          {
+            "type": "file_not_found",
+            "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=drug"
+          }
+        ],
+        "ui_issues": [
+          {
+            "type": "file_not_found",
+            "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=drug"
+          }
+        ],
+        "navigation_result": {
+          "navigation_score": 0,
+          "issues": [
+            "跳过浏览器审查"
+          ]
+        },
+        "fixes_applied": [],
+        "total_issues": 3,
+        "total_fixes": 0
+      },
+      "系统管理/知识库目录.html?catalog=treatment": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=treatment",
+        "url": "http://localhost:8000/1.0/超级管理员/系统管理/知识库目录.html?catalog=treatment",
+        "static_issues": [
+          {
+            "type": "file_not_found",
+            "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=treatment"
+          }
+        ],
+        "sidebar_issues": [
+          {
+            "type": "file_not_found",
+            "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=treatment"
+          }
+        ],
+        "ui_issues": [
+          {
+            "type": "file_not_found",
+            "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=treatment"
+          }
+        ],
+        "navigation_result": {
+          "navigation_score": 0,
+          "issues": [
+            "跳过浏览器审查"
+          ]
+        },
+        "fixes_applied": [],
+        "total_issues": 3,
+        "total_fixes": 0
+      },
+      "系统管理/知识库目录.html?catalog=material": {
+        "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=material",
+        "url": "http://localhost:8000/1.0/超级管理员/系统管理/知识库目录.html?catalog=material",
+        "static_issues": [
+          {
+            "type": "file_not_found",
+            "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=material"
+          }
+        ],
+        "sidebar_issues": [
+          {
+            "type": "file_not_found",
+            "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=material"
+          }
+        ],
+        "ui_issues": [
+          {
+            "type": "file_not_found",
+            "path": "/Users/baiyumi/Mai/代码/chenyrweb/ybsh/1.0/超级管理员/系统管理/知识库目录.htmlcatalog=material"
+          }
+        ],
+        "navigation_result": {
+          "navigation_score": 0,
+          "issues": [
+            "跳过浏览器审查"
+          ]
+        },
+        "fixes_applied": [],
+        "total_issues": 3,
+        "total_fixes": 0
+      }
+    },
+    "summary": {
+      "total_pages": 3,
+      "error_pages": 3,
+      "avg_navigation_score": 0.0,
+      "total_issues_fixed": 0
+    }
+  }
+}

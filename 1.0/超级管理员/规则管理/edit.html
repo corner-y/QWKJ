@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑规则 - 医保审核规则管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .breadcrumb-item {
+            color: #3b82f6;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .breadcrumb-item:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 8px;
+            color: #94a3b8;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        /* 规则引擎样式 */
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .form-section h4 {
+            margin-bottom: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .condition-builder {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .condition-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .condition-item {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .condition-item .form-select,
+        .condition-item .form-input {
+            flex: 1;
+            margin: 0;
+        }
+
+        .condition-remove {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .condition-remove:hover {
+            background: #dc2626;
+        }
+
+        .btn-outline {
+            background: white;
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+
+        .btn-outline:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .action-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .action-type-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .action-type-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .action-type-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .action-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .action-desc {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .action-config {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .rule-type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .rule-type-item {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .rule-type-item:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .rule-type-item.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .rule-type-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .rule-type-icon {
+            width: 32px;
+            height: 32px;
+            background: #f3f4f6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .rule-type-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .rule-type-desc {
+            font-size: 14px;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .scope-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .checkmark {
+            width: 16px;
+            height: 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 3px;
+            position: relative;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked + .checkmark {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked + .checkmark::after {
+            content: '✓';
+            position: absolute;
+            top: -2px;
+            left: 2px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .check-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .tag {
+            padding: 4px 12px;
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .tag:hover {
+            background: #e5e7eb;
+        }
+
+        .tag.selected {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html" class="breadcrumb-item">规则管理</a>
+            <span class="breadcrumb-separator"> / </span>
+            <span class="breadcrumb-item">编辑规则</span>
+        </div>
+
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">编辑规则</h1>
+                <p class="page-subtitle">修改现有的医保审核规则</p>
+            </div>
+            <div>
+                <a href="index.html" class="btn btn-secondary">返回列表</a>
+                <button class="btn btn-primary" onclick="saveRule()">保存修改</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom: 20px;">基本信息</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">规则名称 *</label>
+                    <input type="text" class="form-input" id="editRuleName" placeholder="请输入规则名称">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">规则类型 *</label>
+                    <select class="form-select" id="editRuleType">
+                        <option value="">请选择规则类型</option>
+                        <option value="药品限性别">药品限性别</option>
+                        <option value="药品限年龄">药品限年龄</option>
+                        <option value="项目限性别">项目限性别</option>
+                        <option value="项目限年龄">项目限年龄</option>
+                        <option value="住院限定支付">住院限定支付</option>
+                        <option value="住院起付线">住院起付线</option>
+                        <option value="费用限额">费用限额</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">规则描述</label>
+                <textarea class="form-textarea" id="editRuleDesc" rows="3" placeholder="请输入规则描述"></textarea>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom: 20px;">执行配置</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">执行动作</label>
+                    <select class="form-select" id="editRuleAction">
+                        <option value="">请选择执行动作</option>
+                        <option value="拦截">拦截</option>
+                        <option value="警告">警告</option>
+                        <option value="提示">提示</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">优先级</label>
+                    <select class="form-select" id="editRulePriority">
+                        <option value="high">高</option>
+                        <option value="medium">中</option>
+                        <option value="low">低</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">提示信息</label>
+                <textarea class="form-textarea" id="editRuleMessage" rows="2" placeholder="请输入提示信息"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">备注</label>
+                <textarea class="form-textarea" id="editRuleRemark" rows="2" placeholder="请输入备注信息"></textarea>
+            </div>
+        </div>
+
+        <!-- 规则引擎配置 -->
+        <div class="card">
+            <h3 style="margin-bottom: 20px;">规则引擎配置</h3>
+            
+            <!-- IF 条件设置 -->
+            <div class="form-section">
+                <h4>IF 条件设置</h4>
+                <div class="condition-builder">
+                    <div class="condition-header">
+                        <span>当满足以下条件时：</span>
+                        <select id="logicOperator" class="form-select" style="width: auto; margin-left: 10px;">
+                            <option value="AND">AND (且)</option>
+                            <option value="OR">OR (或)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="condition-list" id="conditionList">
+                        <div class="condition-item">
+                            <select class="form-select">
+                                <option value="">选择字段</option>
+                                <option value="age">年龄</option>
+                                <option value="gender">性别</option>
+                                <option value="diagnosis">诊断</option>
+                                <option value="department">科室</option>
+                                <option value="drug_code">药品代码</option>
+                                <option value="item_code">项目代码</option>
+                                <option value="amount">金额</option>
+                            </select>
+                            <select class="form-select">
+                                <option value="">选择操作符</option>
+                                <option value="=">等于</option>
+                                <option value="!=">不等于</option>
+                                <option value=">">&gt;</option>
+                                <option value="<">&lt;</option>
+                                <option value=">=">&gt;=</option>
+                                <option value="<=">&lt;=</option>
+                                <option value="contains">包含</option>
+                                <option value="not_contains">不包含</option>
+                            </select>
+                            <input type="text" class="form-input" placeholder="输入值">
+                            <button type="button" class="condition-remove" onclick="removeCondition(this)">删除</button>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="btn btn-outline" onclick="addCondition()">+ 添加条件</button>
+                </div>
+            </div>
+
+            <!-- THEN 动作设置 -->
+            <div class="form-section">
+                <h4>THEN 动作设置</h4>
+                <div class="action-types">
+                    <div class="action-type-card" onclick="selectActionType('condition')">
+                        <div class="action-icon">IF</div>
+                        <div class="action-title">条件规则</div>
+                        <div class="action-desc">基于条件的简单规则</div>
+                    </div>
+                    <div class="action-type-card" onclick="selectActionType('table')">
+                        <div class="action-icon">表</div>
+                        <div class="action-title">决策表</div>
+                        <div class="action-desc">复杂的决策逻辑表</div>
+                    </div>
+                    <div class="action-type-card" onclick="selectActionType('workflow')">
+                        <div class="action-icon">流</div>
+                        <div class="action-title">工作流</div>
+                        <div class="action-desc">多步骤的业务流程</div>
+                    </div>
+                </div>
+                
+                <div class="action-config" id="actionConfig">
+                    <span>请选择上方的动作类型</span>
+                </div>
+            </div>
+
+            <!-- 规则类型配置 -->
+            <div class="form-section">
+                <h4>规则类型配置</h4>
+                <div class="rule-type-grid">
+                    <div class="rule-type-item" onclick="selectRuleType('condition')">
+                        <div class="rule-type-header">
+                            <div class="rule-type-icon">条</div>
+                            <div class="rule-type-title">条件规则</div>
+                        </div>
+                        <div class="rule-type-desc">基于IF-THEN逻辑的条件判断规则，适用于简单的业务逻辑</div>
+                    </div>
+                    <div class="rule-type-item" onclick="selectRuleType('score')">
+                        <div class="rule-type-header">
+                            <div class="rule-type-icon">分</div>
+                            <div class="rule-type-title">评分规则</div>
+                        </div>
+                        <div class="rule-type-desc">基于多个因素进行评分计算，适用于风险评估和等级划分</div>
+                    </div>
+                    <div class="rule-type-item" onclick="selectRuleType('function')">
+                        <div class="rule-type-header">
+                            <div class="rule-type-icon">函</div>
+                            <div class="rule-type-title">函数规则</div>
+                        </div>
+                        <div class="rule-type-desc">基于自定义函数的复杂计算规则，适用于复杂的业务计算</div>
+                    </div>
+                    <div class="rule-type-item" onclick="selectRuleType('frequency')">
+                        <div class="rule-type-header">
+                            <div class="rule-type-icon">频</div>
+                            <div class="rule-type-title">频次规则</div>
+                        </div>
+                        <div class="rule-type-desc">基于时间和频次的限制规则，适用于使用频率控制</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 适用范围 -->
+            <div class="form-section">
+                <div class="scope-section">
+                    <h4>适用范围</h4>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="pre_audit">
+                            <span class="checkmark"></span>
+                            <div>
+                                <strong>事前审核</strong>
+                                <div style="font-size: 12px; color: #6b7280;">在医疗服务提供前进行审核</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="real_time">
+                            <span class="checkmark"></span>
+                            <div>
+                                <strong>事中审核</strong>
+                                <div style="font-size: 12px; color: #6b7280;">在医疗服务提供过程中进行实时审核</div>
+                            </div>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="post_audit">
+                            <span class="checkmark"></span>
+                            <div>
+                                <strong>事后审核</strong>
+                                <div style="font-size: 12px; color: #6b7280;">在医疗服务完成后进行审核</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 检查字段和标签 -->
+            <div class="form-section">
+                <div class="scope-section">
+                    <h4>检查字段</h4>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="patient_info">
+                            <span class="checkmark"></span>
+                            <span>患者信息</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="diagnosis_info">
+                            <span class="checkmark"></span>
+                            <span>诊断信息</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="prescription">
+                            <span class="checkmark"></span>
+                            <span>处方信息</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" value="cost_info">
+                            <span class="checkmark"></span>
+                            <span>费用信息</span>
+                        </label>
+                    </div>
+                    
+                    <div class="check-tags">
+                        <span class="tag" onclick="toggleTag(this)">年龄检查</span>
+                        <span class="tag" onclick="toggleTag(this)">性别检查</span>
+                        <span class="tag" onclick="toggleTag(this)">药品检查</span>
+                        <span class="tag" onclick="toggleTag(this)">项目检查</span>
+                        <span class="tag" onclick="toggleTag(this)">费用检查</span>
+                        <span class="tag" onclick="toggleTag(this)">频次检查</span>
+                        <span class="tag" onclick="toggleTag(this)">科室检查</span>
+                        <span class="tag" onclick="toggleTag(this)">诊断检查</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script>
+        // 模拟规则数据
+        const rulesData = [
+            {
+                id: 1,
+                name: '药品限性别规则',
+                type: '药品限性别',
+                description: '限制特定性别使用的药品',
+                action: '拦截',
+                message: '该药品不适用于当前性别',
+                priority: 'high',
+                remark: '严格执行性别限制'
+            },
+            {
+                id: 2,
+                name: '药品限年龄规则',
+                type: '药品限年龄',
+                description: '限制特定年龄段使用的药品',
+                action: '警告',
+                message: '该药品不适用于当前年龄段',
+                priority: 'medium',
+                remark: '需要医生确认'
+            }
+        ];
+
+        // 页面加载时获取规则ID并填充数据
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ruleId = urlParams.get('id');
+            
+            if (ruleId) {
+                const rule = rulesData.find(r => r.id == ruleId);
+                if (rule) {
+                    fillEditForm(rule);
+                }
+            }
+        };
+
+        // 规则引擎相关函数
+        function addCondition() {
+            const conditionList = document.getElementById('conditionList');
+            const newCondition = document.createElement('div');
+            newCondition.className = 'condition-item';
+            newCondition.innerHTML = `
+                <select class="form-select">
+                    <option value="">选择字段</option>
+                    <option value="age">年龄</option>
+                    <option value="gender">性别</option>
+                    <option value="diagnosis">诊断</option>
+                    <option value="department">科室</option>
+                    <option value="drug_code">药品代码</option>
+                    <option value="item_code">项目代码</option>
+                    <option value="amount">金额</option>
+                </select>
+                <select class="form-select">
+                    <option value="">选择操作符</option>
+                    <option value="=">等于</option>
+                    <option value="!=">不等于</option>
+                    <option value=">">&gt;</option>
+                    <option value="<">&lt;</option>
+                    <option value=">=">&gt;=</option>
+                    <option value="<=">&lt;=</option>
+                    <option value="contains">包含</option>
+                    <option value="not_contains">不包含</option>
+                </select>
+                <input type="text" class="form-input" placeholder="输入值">
+                <button type="button" class="condition-remove" onclick="removeCondition(this)">删除</button>
+            `;
+            conditionList.appendChild(newCondition);
+        }
+
+        function removeCondition(button) {
+            const conditionList = document.getElementById('conditionList');
+            if (conditionList.children.length > 1) {
+                button.parentElement.remove();
+            }
+        }
+
+        function selectActionType(type) {
+            // 移除所有选中状态
+            document.querySelectorAll('.action-type-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            // 添加选中状态
+            event.target.closest('.action-type-card').classList.add('selected');
+            
+            const actionConfig = document.getElementById('actionConfig');
+            
+            switch(type) {
+                case 'condition':
+                    actionConfig.innerHTML = `
+                        <div class="form-group">
+                            <label class="form-label">执行动作</label>
+                            <select class="form-select">
+                                <option value="block">拦截</option>
+                                <option value="warn">警告</option>
+                                <option value="info">提示</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">提示消息</label>
+                            <textarea class="form-textarea" rows="2" placeholder="请输入提示消息"></textarea>
+                        </div>
+                    `;
+                    break;
+                case 'table':
+                    actionConfig.innerHTML = `
+                        <div class="form-group">
+                            <label class="form-label">决策表配置</label>
+                            <textarea class="form-textarea" rows="4" placeholder="请配置决策表规则"></textarea>
+                        </div>
+                    `;
+                    break;
+                case 'workflow':
+                    actionConfig.innerHTML = `
+                        <div class="form-group">
+                            <label class="form-label">工作流步骤</label>
+                            <textarea class="form-textarea" rows="4" placeholder="请配置工作流步骤"></textarea>
+                        </div>
+                    `;
+                    break;
+            }
+        }
+
+        function selectRuleType(type) {
+            // 移除所有选中状态
+            document.querySelectorAll('.rule-type-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // 添加选中状态
+            event.target.closest('.rule-type-item').classList.add('selected');
+        }
+
+        function toggleTag(tag) {
+            tag.classList.toggle('selected');
+        }
+
+        function fillEditForm(rule) {
+            document.getElementById('editRuleName').value = rule.name || '';
+            document.getElementById('editRuleType').value = rule.type || '';
+            document.getElementById('editRuleDesc').value = rule.description || '';
+            document.getElementById('editRuleAction').value = rule.action || '';
+            document.getElementById('editRuleMessage').value = rule.message || '';
+            document.getElementById('editRulePriority').value = rule.priority || 'medium';
+            document.getElementById('editRuleRemark').value = rule.remark || '';
+        }
+
+        function saveRule() {
+            const ruleName = document.getElementById('editRuleName').value.trim();
+            const ruleType = document.getElementById('editRuleType').value;
+            const ruleDesc = document.getElementById('editRuleDesc').value.trim();
+            const ruleAction = document.getElementById('editRuleAction').value;
+            const ruleMessage = document.getElementById('editRuleMessage').value.trim();
+            const rulePriority = document.getElementById('editRulePriority').value;
+            const ruleRemark = document.getElementById('editRuleRemark').value.trim();
+
+            if (!ruleName) {
+                showToast('请输入规则名称', 'error');
+                return;
+            }
+
+            if (!ruleType) {
+                showToast('请选择规则类型', 'error');
+                return;
+            }
+
+            if (!ruleDesc) {
+                showToast('请输入规则描述', 'error');
+                return;
+            }
+
+            // 验证动态配置项
+            const dynamicConfig = validateDynamicConfig(ruleType);
+            if (!dynamicConfig.valid) {
+                showToast(dynamicConfig.message, 'error');
+                return;
+            }
+
+            // 这里应该调用后端API保存规则
+            console.log('保存规则:', {
+                name: ruleName,
+                type: ruleType,
+                description: ruleDesc,
+                action: ruleAction,
+                message: ruleMessage,
+                priority: rulePriority,
+                remark: ruleRemark,
+                config: dynamicConfig.data
+            });
+
+            showToast('规则修改成功', 'success');
+            
+            // 延迟跳转回列表页
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        }
+
+        // 验证动态配置项
+        function validateDynamicConfig(ruleType) {
+            const result = { valid: true, message: '', data: {} };
+            
+            switch(ruleType) {
+                case '药品限性别':
+                case '项目限性别':
+                    const gender = document.getElementById('configGender')?.value;
+                    if (!gender) {
+                        result.valid = false;
+                        result.message = '请选择适用性别';
+                        return result;
+                    }
+                    result.data = {
+                        gender: gender,
+                        code: document.getElementById('configCode')?.value || '',
+                        description: document.getElementById('configDescription')?.value || ''
+                    };
+                    break;
+                    
+                case '药品限年龄':
+                case '项目限年龄':
+                    const minAge = document.getElementById('configMinAge')?.value;
+                    const maxAge = document.getElementById('configMaxAge')?.value;
+                    if (!minAge && !maxAge) {
+                        result.valid = false;
+                        result.message = '请至少设置最小年龄或最大年龄';
+                        return result;
+                    }
+                    result.data = {
+                        minAge: minAge || null,
+                        maxAge: maxAge || null,
+                        code: document.getElementById('configCode')?.value || '',
+                        ageUnit: document.getElementById('configAgeUnit')?.value || 'year',
+                        description: document.getElementById('configDescription')?.value || ''
+                    };
+                    break;
+                    
+                case '住院限定支付':
+                    result.data = {
+                        deptCode: document.getElementById('configDeptCode')?.value || '',
+                        diagCode: document.getElementById('configDiagCode')?.value || '',
+                        payRatio: document.getElementById('configPayRatio')?.value || '',
+                        condition: document.getElementById('configCondition')?.value || '',
+                        description: document.getElementById('configDescription')?.value || ''
+                    };
+                    break;
+                    
+                case '住院起付线':
+                    const deductible = document.getElementById('configDeductible')?.value;
+                    if (!deductible) {
+                        result.valid = false;
+                        result.message = '请输入起付线金额';
+                        return result;
+                    }
+                    result.data = {
+                        deductible: parseFloat(deductible),
+                        hospitalLevel: document.getElementById('configHospitalLevel')?.value || '',
+                        population: document.getElementById('configPopulation')?.value || 'all',
+                        cycle: document.getElementById('configCycle')?.value || 'single',
+                        description: document.getElementById('configDescription')?.value || ''
+                    };
+                    break;
+                    
+                case '费用限额':
+                    const limitAmount = document.getElementById('configLimitAmount')?.value;
+                    if (!limitAmount) {
+                        result.valid = false;
+                        result.message = '请输入限额金额';
+                        return result;
+                    }
+                    result.data = {
+                        limitAmount: parseFloat(limitAmount),
+                        limitType: document.getElementById('configLimitType')?.value || '',
+                        scope: document.getElementById('configScope')?.value || '',
+                        overLimitAction: document.getElementById('configOverLimitAction')?.value || 'reject',
+                        description: document.getElementById('configDescription')?.value || ''
+                    };
+                    break;
+            }
+            
+            return result;
+        }
+        
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            
+            if (type === 'error') {
+                toast.style.background = '#ef4444';
+            } else {
+                toast.style.background = '#10b981';
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

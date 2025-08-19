@@ -1,0 +1,4511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医保审核规则管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 顶部导航栏 */
+        .header {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 0 20px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+        }
+
+        /* 主容器 */
+        .main-container {
+            display: flex;
+            height: 100vh;
+            padding-top: 60px;
+        }
+
+        /* 左侧菜单 */
+        .sidebar {
+            width: 280px;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .menu-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .menu-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .menu-item:hover {
+            background: #f8f9fa;
+        }
+
+        .menu-item.active {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .menu-item-title {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .menu-item-count {
+            background: #f0f0f0;
+            color: #666;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .menu-item.active .menu-item-count {
+            background: #2196f3;
+            color: white;
+        }
+
+        .menu-item-desc {
+            font-size: 12px;
+            color: #999;
+        }
+
+
+
+        .sidebar-header {
+            margin-bottom: 20px;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* 右侧内容区域 */
+        .content-area {
+            flex: 1;
+            background: #f5f5f5;
+            overflow-y: auto;
+            display: flex;
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            transition: all 0.3s ease;
+        }
+        
+
+
+        .content-header {
+            background: #fff;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .breadcrumb {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 8px;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .content-subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+            padding: 20px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 开发中页面 */
+        .dev-placeholder {
+            background: #fff;
+            border-radius: 8px;
+            padding: 60px;
+            text-align: center;
+            color: #666;
+        }
+
+        /* 药品列表页面样式 */
+        .drug-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2196f3;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .drug-controls {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .filter-select {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #fff;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #2196f3;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1976d2;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #2196f3;
+            border: 1px solid #2196f3;
+        }
+
+        .btn-sm {
+             padding: 6px 12px;
+             font-size: 12px;
+         }
+
+         /* 视图切换 */
+         .view-toggle {
+             display: flex;
+             background: #f5f5f5;
+             border-radius: 4px;
+             padding: 2px;
+             margin-right: 12px;
+         }
+
+         .view-btn {
+             padding: 8px 16px;
+             border: none;
+             background: transparent;
+             border-radius: 3px;
+             cursor: pointer;
+             font-size: 14px;
+             color: #666;
+             transition: all 0.2s;
+         }
+
+         .view-btn.active {
+             background: #fff;
+             color: #2196f3;
+             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+         }
+
+         .view-btn:hover:not(.active) {
+             color: #333;
+         }
+
+         /* 药品网格视图 */
+         .drugs-grid {
+             display: none;
+             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+             gap: 16px;
+         }
+
+         .drugs-grid.active {
+             display: grid;
+         }
+
+        .drug-card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.2s;
+        }
+
+        .drug-card:hover {
+            border-color: #2196f3;
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);
+        }
+
+        .drug-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .drug-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .drug-code {
+            font-size: 12px;
+            color: #666;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .drug-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status-inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        /* 诊疗类型标签样式 */
+        .type-tag {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .type-outpatient {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .type-inpatient {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .drug-info {
+            margin-bottom: 12px;
+        }
+
+        .drug-info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .drug-info-label {
+            color: #666;
+        }
+
+        .drug-info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .drug-rules-summary {
+            margin-bottom: 12px;
+        }
+
+        .rules-title {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+
+        .rule-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .rule-tag {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .rule-tag.insurance {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .rule-tag.age {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .rule-tag.gender {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        /* 慢病严重程度样式 */
+        .severity-轻度 {
+            color: #4caf50;
+            font-weight: 500;
+        }
+
+        .severity-中度 {
+            color: #ff9800;
+            font-weight: 500;
+        }
+
+        .severity-重度 {
+            color: #f44336;
+            font-weight: 500;
+        }
+
+        .drug-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+             margin-bottom: 8px;
+             color: #333;
+         }
+
+         /* 列表视图 */
+         .drugs-list {
+             display: block;
+             background: #fff;
+             border-radius: 8px;
+             border: 1px solid #e0e0e0;
+             overflow: hidden;
+         }
+
+         .drugs-list.hidden {
+             display: none;
+         }
+
+         .drugs-table {
+             width: 100%;
+             border-collapse: collapse;
+         }
+
+         .drugs-table th,
+         .drugs-table td {
+             padding: 12px 16px;
+             text-align: left;
+             border-bottom: 1px solid #f0f0f0;
+         }
+
+         .drugs-table th {
+             background: #f8f9fa;
+             font-weight: 600;
+             color: #333;
+             font-size: 14px;
+         }
+
+         .drugs-table tr:hover {
+             background: #f8f9fa;
+         }
+
+         .drugs-table .drug-name {
+             font-weight: 600;
+             color: #333;
+         }
+
+         .drugs-table .drug-code {
+             font-size: 12px;
+             color: #666;
+             background: #f5f5f5;
+             padding: 2px 6px;
+             border-radius: 3px;
+             margin-left: 8px;
+         }
+
+         .drugs-table .drug-status {
+             padding: 4px 8px;
+             border-radius: 12px;
+             font-size: 12px;
+             font-weight: 500;
+         }
+
+         .drugs-table .status-active {
+             background: #e8f5e8;
+             color: #2e7d32;
+         }
+
+         .drugs-table .status-inactive {
+             background: #ffebee;
+             color: #c62828;
+         }
+
+         .drugs-table .table-actions {
+             display: flex;
+             gap: 8px;
+         }
+
+         .drugs-table .btn-sm {
+             padding: 4px 8px;
+             font-size: 12px;
+         }
+
+         /* 视图切换逻辑 */
+         .drugs-grid.hidden {
+             display: none;
+         }
+
+         /* 分页样式 */
+         .pagination-container {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             padding: 16px 20px;
+             border-top: 1px solid #f0f0f0;
+             background: #fafafa;
+         }
+
+         .pagination-info {
+             color: #666;
+             font-size: 14px;
+         }
+
+         .pagination {
+             display: flex;
+             align-items: center;
+             gap: 8px;
+         }
+
+         .pagination-btn {
+             padding: 8px 16px;
+             border: 1px solid #ddd;
+             background: #fff;
+             border-radius: 4px;
+             cursor: pointer;
+             font-size: 14px;
+             color: #333;
+             transition: all 0.2s;
+         }
+
+         .pagination-btn:hover:not(:disabled) {
+             background: #f5f5f5;
+             border-color: #2196f3;
+         }
+
+         .pagination-btn:disabled {
+             background: #f5f5f5;
+             color: #999;
+             cursor: not-allowed;
+         }
+
+         .pagination-numbers {
+             display: flex;
+             gap: 4px;
+         }
+
+         .page-number {
+             padding: 8px 12px;
+             border: 1px solid #ddd;
+             background: #fff;
+             border-radius: 4px;
+             cursor: pointer;
+             font-size: 14px;
+             color: #333;
+             transition: all 0.2s;
+             min-width: 36px;
+             text-align: center;
+         }
+
+         .page-number:hover {
+             background: #f5f5f5;
+             border-color: #2196f3;
+         }
+
+         .page-number.active {
+             background: #2196f3;
+             color: white;
+             border-color: #2196f3;
+         }
+
+         .page-ellipsis {
+             padding: 8px 4px;
+             color: #999;
+             font-size: 14px;
+         }
+
+        /* 工具栏样式 */
+        .toolbar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-left {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .toolbar-right {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #2196f3;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* 卡片容器 */
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 统计信息 */
+        .category-stats {
+            display: flex;
+            gap: 24px;
+            margin-top: 16px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2196f3;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar-header {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 内容区域 */
+        .content-body {
+            padding: 20px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb-item {
+            color: #666;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 8px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .toolbar-left {
+                min-width: auto;
+            }
+
+            .toolbar-right {
+                justify-content: stretch;
+                flex-wrap: wrap;
+            }
+
+            .drugs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-stats {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+
+        /* 模态框样式 */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #1f2937;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close {
+            color: #6b7280;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            color: #374151;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* 表单样式 */
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 6px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* 筛选条件样式 */
+        .filter-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+            min-width: 150px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .search-box {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            min-width: 200px;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .reset-btn {
+            padding: 8px 16px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: #5a6268;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .filter-select,
+            .search-box {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="header">
+        <div class="logo">医保审核规则管理系统</div>
+        <div class="user-info">
+            <span>管理员</span>
+            <div class="user-avatar">管</div>
+        </div>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 左侧菜单 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">规则分类</div>
+                <div class="sidebar-subtitle">按类型管理各种审核规则</div>
+            </div>
+            <div class="menu-list">
+                <!-- 药品规则库 -->
+                <div class="menu-item active" onclick="showCategory('drugs', this)">
+                    <div class="menu-item-header">
+                        <div class="menu-item-title">药品规则库</div>
+                        <div class="menu-item-count">156</div>
+                    </div>
+                    <div class="menu-item-desc">药品相关审核规则管理</div>
+                </div>
+                
+                <!-- 慢病规则库 -->
+                <div class="menu-item" onclick="showCategory('chronic', this)">
+                    <div class="menu-item-header">
+                        <div class="menu-item-title">慢病规则库</div>
+                        <div class="menu-item-count">89</div>
+                    </div>
+                    <div class="menu-item-desc">慢性疾病审核规则管理</div>
+                </div>
+                
+                <!-- 诊疗规则库 -->
+                <div class="menu-item" onclick="showCategory('clinical', this)">
+                    <div class="menu-item-header">
+                        <div class="menu-item-title">诊疗规则库</div>
+                        <div class="menu-item-count">327</div>
+                    </div>
+                    <div class="menu-item-desc">门诊和住院疾病审核规则管理</div>
+                </div>
+                
+                <!-- 相关政策规则库 -->
+                <div class="menu-item" onclick="showCategory('policy', this)">
+                    <div class="menu-item-header">
+                        <div class="menu-item-title">相关政策规则库</div>
+                        <div class="menu-item-count">67</div>
+                    </div>
+                    <div class="menu-item-desc">政策相关审核规则管理</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧内容区域 -->
+        <div class="content-area">
+            <!-- 主内容区域 -->
+            <div class="main-content">
+                <div class="content-header">
+                <!-- 面包屑导航 -->
+                <div class="breadcrumb" id="breadcrumb">
+                    <span class="breadcrumb-item">规则管理</span>
+                    <span class="breadcrumb-separator">></span>
+                    <span class="breadcrumb-item">药品相关规则</span>
+                </div>
+                <div class="content-title" id="contentTitle">药品相关规则</div>
+                <div class="content-subtitle" id="contentSubtitle">管理药品使用限制和审核规则</div>
+
+            </div>
+            <div class="content-body">
+                
+                <!-- 药品列表页面 -->
+                <div class="page active" id="drugListPage">
+                    <!-- 工具栏 -->
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <div class="search-box">
+                                <input type="text" class="search-input" placeholder="搜索药品名称、编码..." id="searchInput">
+                                <span class="search-icon">搜索</span>
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <select class="filter-select" id="categoryFilter">
+                                <option value="">全部分类</option>
+                                <option value="西药">西药</option>
+                                <option value="中成药">中成药</option>
+                                <option value="中药饮片">中药饮片</option>
+                            </select>
+                            <select class="filter-select" id="insuranceFilter">
+                                <option value="">全部医保类型</option>
+                                <option value="甲类">甲类</option>
+                                <option value="乙类">乙类</option>
+                                <option value="丙类">丙类</option>
+                            </select>
+                            <div class="view-toggle">
+                            <button class="view-btn" data-view="grid" onclick="switchView('grid')">
+                                <span>卡片</span>
+                            </button>
+                            <button class="view-btn active" data-view="list" onclick="switchView('list')">
+                                <span>列表</span>
+                            </button>
+                        </div>
+                            <button class="btn btn-secondary" onclick="downloadDrugTemplate()">下载药品模板</button>
+                            <button class="btn btn-secondary" onclick="importDrugs()">批量导入药品</button>
+                            <button class="btn btn-primary" onclick="addNewDrug()">新增药品</button>
+                        </div>
+                    </div>
+
+                    <!-- 药品列表 -->
+                    <div class="card">
+                        <!-- 网格视图 -->
+                        <div class="drugs-grid" id="drugsGrid">
+                            <!-- 药品卡片将在这里动态生成 -->
+                        </div>
+
+                        <!-- 列表视图 -->
+                        <div class="drugs-list" id="drugsList">
+                            <table class="drugs-table">
+                                <thead>
+                                    <tr>
+                                        <th>药品名称</th>
+                                        <th>生产厂家</th>
+                                        <th>医保类型</th>
+                                        <th>状态</th>
+                                        <th>规则数量</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="drugsTableBody">
+                                    <!-- 药品列表将通过JavaScript动态生成 -->
+                                </tbody>
+                         </table>
+                         
+                         <!-- 分页 -->
+                         <div class="pagination-container">
+                             <div class="pagination-info">
+                                 <span id="paginationInfo">显示 1-10 条，共 50 条记录</span>
+                             </div>
+                             <div class="pagination">
+                                 <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)" disabled>
+                                     上一页
+                                 </button>
+                                 <div class="pagination-numbers" id="paginationNumbers">
+                                     <!-- 页码按钮将通过JavaScript生成 -->
+                                 </div>
+                                 <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
+                                     下一页
+                                 </button>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                </div>
+
+                <!-- 慢病列表页面 -->
+                <div class="page" id="chronicListPage">
+                    <!-- 工具栏 -->
+                    <div class="toolbar">
+                        <div class="toolbar-left">
+                            <div class="search-box">
+                                <input type="text" class="search-input" placeholder="搜索疾病名称、编码..." id="chronicSearchInput">
+                                <span class="search-icon">搜索</span>
+                            </div>
+                        </div>
+                        <div class="toolbar-right">
+                            <select class="filter-select" id="chronicCategoryFilter">
+                                <option value="">全部分类</option>
+                                <option value="内分泌系统">内分泌系统</option>
+                                <option value="心血管系统">心血管系统</option>
+                                <option value="呼吸系统">呼吸系统</option>
+                                <option value="泌尿系统">泌尿系统</option>
+                            </select>
+                            <select class="filter-select" id="chronicSeverityFilter">
+                                <option value="">全部严重程度</option>
+                                <option value="轻度">轻度</option>
+                                <option value="中度">中度</option>
+                                <option value="重度">重度</option>
+                            </select>
+                            <div class="view-toggle">
+                            <button class="view-btn" data-view="grid" onclick="switchChronicView('grid')">
+                                <span>卡片</span>
+                            </button>
+                            <button class="view-btn active" data-view="list" onclick="switchChronicView('list')">
+                                <span>列表</span>
+                            </button>
+                        </div>
+                            <button class="btn btn-secondary" onclick="downloadChronicTemplate()">下载疾病模板</button>
+                            <button class="btn btn-secondary" onclick="importChronicDiseases()">批量导入疾病</button>
+                            <button class="btn btn-primary" onclick="addNewChronicDisease()">新增疾病</button>
+                        </div>
+                    </div>
+
+                    <!-- 慢病列表 -->
+                    <div class="card">
+                        <!-- 网格视图 -->
+                        <div class="drugs-grid" id="chronicGrid">
+                            <!-- 疾病卡片将在这里动态生成 -->
+                        </div>
+
+                        <!-- 列表视图 -->
+                        <div class="drugs-list" id="chronicList">
+                            <table class="drugs-table">
+                                <thead>
+                                    <tr>
+                                        <th>疾病名称</th>
+                                        <th>疾病编码</th>
+                                        <th>疾病分类</th>
+                                        <th>严重程度</th>
+                                        <th>状态</th>
+                                        <th>规则数量</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="chronicTableBody">
+                                    <!-- 疾病列表将通过JavaScript动态生成 -->
+                                </tbody>
+                         </table>
+                         
+                         <!-- 分页 -->
+                         <div class="pagination-container">
+                             <div class="pagination-info">
+                                 <span id="chronicPaginationInfo">显示 1-10 条，共 50 条记录</span>
+                             </div>
+                             <div class="pagination">
+                                 <button class="pagination-btn" id="chronicPrevBtn" onclick="changeChronicPage(-1)" disabled>
+                                     上一页
+                                 </button>
+                                 <div class="pagination-numbers" id="chronicPaginationNumbers">
+                                     <!-- 页码按钮将通过JavaScript生成 -->
+                                 </div>
+                                 <button class="pagination-btn" id="chronicNextBtn" onclick="changeChronicPage(1)">
+                                     下一页
+                                 </button>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                </div>
+
+                <!-- 诊疗规则库页面 -->
+                <div class="page" id="clinicalListPage">
+                    <!-- 筛选区域 -->
+                    <div class="filter-section">
+                        <div class="filter-title">筛选条件</div>
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label>诊疗类型</label>
+                                <select class="filter-select" id="clinicalTypeFilter" onchange="filterClinicalDiseases()">
+                                    <option value="">全部类型</option>
+                                    <option value="outpatient">门诊</option>
+                                    <option value="inpatient">住院</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>一级科室</label>
+                                <select class="filter-select" id="clinicalPrimaryDepartmentFilter" onchange="updateClinicalSecondaryDepartments()">
+                                    <option value="">全部科室</option>
+                                    <option value="内科">内科</option>
+                                    <option value="外科">外科</option>
+                                    <option value="儿科">儿科</option>
+                                    <option value="妇产科">妇产科</option>
+                                    <option value="眼科">眼科</option>
+                                    <option value="耳鼻喉科">耳鼻喉科</option>
+                                    <option value="皮肤科">皮肤科</option>
+                                    <option value="神经科">神经科</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>二级科室</label>
+                                <select class="filter-select" id="clinicalSecondaryDepartmentFilter" onchange="filterClinicalDiseases()">
+                                    <option value="">全部二级科室</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>疾病状态</label>
+                                <select class="filter-select" id="clinicalStatusFilter" onchange="filterClinicalDiseases()">
+                                    <option value="">全部状态</option>
+                                    <option value="active">启用</option>
+                                    <option value="inactive">停用</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>搜索</label>
+                                <input type="text" class="search-box" placeholder="搜索疾病名称或编码..." id="clinicalSearchInput" oninput="filterClinicalDiseases()">
+                            </div>
+                            <button class="btn btn-primary" onclick="resetClinicalFilters()">重置</button>
+                        </div>
+                    </div>
+
+                    <!-- 疾病列表 -->
+                    <div class="card">
+                        <div class="toolbar">
+                            <div class="toolbar-left">
+                                <h3>诊疗疾病规则库</h3>
+                                <span class="record-count">共 <span id="clinicalRecordCount">0</span> 条记录</span>
+                            </div>
+                            <div class="toolbar-center">
+                                <div class="view-toggle">
+                                    <button class="view-btn" data-view="grid" onclick="switchClinicalView('grid')">
+                                        <i class="icon-grid"></i>
+                                        卡片视图
+                                    </button>
+                                    <button class="view-btn active" data-view="list" onclick="switchClinicalView('list')">
+                                        <i class="icon-list"></i>
+                                        列表视图
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="toolbar-right">
+                                <button class="btn btn-secondary" onclick="downloadClinicalTemplate()">下载模板</button>
+                                <button class="btn btn-secondary" onclick="importClinicalRules()">导入规则</button>
+                                <button class="btn btn-primary" onclick="addClinicalDisease()">添加疾病</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 网格视图 -->
+                        <div id="clinicalGrid" class="drugs-grid hidden">
+                            <!-- 动态加载网格内容 -->
+                        </div>
+                        
+                        <!-- 列表视图 -->
+                        <div id="clinicalList" class="drugs-list">
+                            <table class="drugs-table">
+                                <thead>
+                                    <tr>
+                                        <th>疾病信息</th>
+                                        <th>科室</th>
+                                        <th>规则数量</th>
+                                        <th>状态</th>
+                                        <th>最后更新</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clinicalTableBody">
+                                    <!-- 疾病数据将通过JavaScript动态加载 -->
+                                </tbody>
+                            </table>
+                            
+                            <!-- 分页 -->
+                            <div class="pagination-container">
+                                <div class="pagination-info">
+                                    <span id="clinicalPaginationInfo">显示 1-10 条，共 50 条记录</span>
+                                </div>
+                                <div class="pagination">
+                                    <button class="pagination-btn" id="clinicalPrevBtn" onclick="changeClinicalPage(-1)" disabled>
+                                        上一页
+                                    </button>
+                                    <div class="pagination-numbers" id="clinicalPaginationNumbers">
+                                        <!-- 页码按钮将通过JavaScript生成 -->
+                                    </div>
+                                    <button class="pagination-btn" id="clinicalNextBtn" onclick="changeClinicalPage(1)">
+                                        下一页
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 其他分类页面 -->
+                <div class="page" id="serviceListPage">
+                    <div class="empty-state">
+                        <h3>项目相关规则</h3>
+                        <p>此功能正在开发中...</p>
+                    </div>
+                </div>
+
+
+
+                <div class="page" id="costListPage">
+                    <div class="empty-state">
+                        <h3>费用相关规则</h3>
+                        <p>此功能正在开发中...</p>
+                    </div>
+                </div>
+
+                <!-- 政策规则库页面 -->
+                <div class="page" id="policyListPage">
+                    <!-- 筛选区域 -->
+                    <div class="filter-section">
+                        <div class="filter-title">筛选条件</div>
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label>政策类型</label>
+                                <select class="filter-select" id="policyTypeFilter" onchange="filterPolicyRules()">
+                                    <option value="">全部类型</option>
+                                    <option value="医保政策">医保政策</option>
+                                    <option value="药品政策">药品政策</option>
+                                    <option value="诊疗政策">诊疗政策</option>
+                                    <option value="收费政策">收费政策</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>省份</label>
+                                <select class="filter-select" id="policyProvinceFilter" onchange="onProvinceChange()">
+                                    <option value="">全部省份</option>
+                                    <option value="北京市">北京市</option>
+                                    <option value="上海市">上海市</option>
+                                    <option value="天津市">天津市</option>
+                                    <option value="重庆市">重庆市</option>
+                                    <option value="河北省">河北省</option>
+                                    <option value="山西省">山西省</option>
+                                    <option value="辽宁省">辽宁省</option>
+                                    <option value="吉林省">吉林省</option>
+                                    <option value="黑龙江省">黑龙江省</option>
+                                    <option value="江苏省">江苏省</option>
+                                    <option value="浙江省">浙江省</option>
+                                    <option value="安徽省">安徽省</option>
+                                    <option value="福建省">福建省</option>
+                                    <option value="江西省">江西省</option>
+                                    <option value="山东省">山东省</option>
+                                    <option value="河南省">河南省</option>
+                                    <option value="湖北省">湖北省</option>
+                                    <option value="湖南省">湖南省</option>
+                                    <option value="广东省">广东省</option>
+                                    <option value="海南省">海南省</option>
+                                    <option value="四川省">四川省</option>
+                                    <option value="贵州省">贵州省</option>
+                                    <option value="云南省">云南省</option>
+                                    <option value="陕西省">陕西省</option>
+                                    <option value="甘肃省">甘肃省</option>
+                                    <option value="青海省">青海省</option>
+                                    <option value="台湾省">台湾省</option>
+                                    <option value="内蒙古自治区">内蒙古自治区</option>
+                                    <option value="广西壮族自治区">广西壮族自治区</option>
+                                    <option value="西藏自治区">西藏自治区</option>
+                                    <option value="宁夏回族自治区">宁夏回族自治区</option>
+                                    <option value="新疆维吾尔自治区">新疆维吾尔自治区</option>
+                                    <option value="香港特别行政区">香港特别行政区</option>
+                                    <option value="澳门特别行政区">澳门特别行政区</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>城市</label>
+                                <select class="filter-select" id="policyCityFilter" onchange="filterPolicyRules()">
+                                    <option value="">全部城市</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>政策状态</label>
+                                <select class="filter-select" id="policyStatusFilter" onchange="filterPolicyRules()">
+                                    <option value="">全部状态</option>
+                                    <option value="active">生效</option>
+                                    <option value="inactive">失效</option>
+                                    <option value="draft">草案</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>搜索</label>
+                                <input type="text" class="search-box" placeholder="搜索政策名称或编号..." id="policySearchInput" oninput="filterPolicyRules()">
+                            </div>
+                            <button class="btn btn-primary" onclick="resetPolicyFilters()">重置</button>
+                        </div>
+                    </div>
+
+                    <!-- 政策列表 -->
+                    <div class="card">
+                        <div class="toolbar">
+                            <div class="toolbar-left">
+                                <h3>政策规则列表</h3>
+                                <span class="record-count">共 <span id="policyRecordCount">0</span> 条记录</span>
+                            </div>
+                            <div class="toolbar-center">
+                                <div class="view-toggle">
+                                    <button class="view-btn" data-view="grid" onclick="switchPolicyView('grid')">
+                                        <i class="icon-grid"></i>
+                                        卡片视图
+                                    </button>
+                                    <button class="view-btn active" data-view="list" onclick="switchPolicyView('list')">
+                                        <i class="icon-list"></i>
+                                        列表视图
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="toolbar-right">
+                                <button class="btn btn-secondary" onclick="downloadPolicyTemplate()">下载模板</button>
+                                <button class="btn btn-secondary" onclick="importPolicyRules()">导入政策</button>
+                                <button class="btn btn-primary" onclick="addPolicyRule()">添加政策</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 网格视图 -->
+                        <div id="policyGrid" class="drugs-grid hidden">
+                            <!-- 动态加载网格内容 -->
+                        </div>
+                        
+                        <!-- 列表视图 -->
+                        <div id="policyList" class="drugs-list">
+                            <table class="drugs-table">
+                                <thead>
+                                    <tr>
+                                        <th>政策信息</th>
+                                        <th>类型</th>
+                                        <th>省市</th>
+                                        <th>生效日期</th>
+                                        <th>状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="policyTableBody">
+                                    <!-- 动态生成内容 -->
+                                </tbody>
+                            </table>
+                            
+                            <!-- 分页 -->
+                            <div class="pagination-container">
+                                <div class="pagination-info">
+                                    <span id="policyPaginationInfo">显示 1-10 条，共 0 条记录</span>
+                                </div>
+                                <div class="pagination">
+                                    <button class="pagination-btn" id="policyPrevBtn" onclick="changePolicyPage(-1)" disabled>
+                                        上一页
+                                    </button>
+                                    <div class="pagination-numbers" id="policyPaginationNumbers">
+                                        <!-- 页码按钮将通过JavaScript生成 -->
+                                    </div>
+                                    <button class="pagination-btn" id="policyNextBtn" onclick="changePolicyPage(1)">
+                                        下一页
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 药品编辑模态框 -->
+    <div id="drugModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="drugModalTitle">新增药品</h3>
+                <span class="close" onclick="closeDrugModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="drugForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="drugName">药品名称 *</label>
+                            <input type="text" id="drugName" name="drugName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="drugCode">药品编码 *</label>
+                            <input type="text" id="drugCode" name="drugCode" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="drugCategory">药品分类 *</label>
+                            <select id="drugCategory" name="drugCategory" required>
+                                <option value="">请选择分类</option>
+                                <option value="西药">西药</option>
+                                <option value="中成药">中成药</option>
+                                <option value="中药饮片">中药饮片</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="drugInsurance">医保类型 *</label>
+                            <select id="drugInsurance" name="drugInsurance" required>
+                                <option value="">请选择医保类型</option>
+                                <option value="甲类">甲类</option>
+                                <option value="乙类">乙类</option>
+                                <option value="丙类">丙类</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="drugManufacturer">生产厂家</label>
+                            <input type="text" id="drugManufacturer" name="drugManufacturer">
+                        </div>
+                        <div class="form-group">
+                            <label for="drugSpec">规格</label>
+                            <input type="text" id="drugSpec" name="drugSpec">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="drugPrice">参考价格</label>
+                            <input type="number" id="drugPrice" name="drugPrice" step="0.01" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="drugUnit">单位</label>
+                            <input type="text" id="drugUnit" name="drugUnit">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="drugDescription">药品描述</label>
+                        <textarea id="drugDescription" name="drugDescription" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeDrugModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveDrug()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 隐藏的文件输入 -->
+    <input type="file" id="drugImportInput" accept=".xlsx,.xls" style="display: none;" onchange="handleDrugImport(event)">
+    <input type="file" id="ruleImportInput" accept=".xlsx,.xls" style="display: none;" onchange="handleRuleImport(event)">
+
+    <script>
+        // 模拟药品数据
+        const drugsData = [
+            {
+                id: 1,
+                name: "阿莫西林胶囊",
+                code: "A01AA01",
+                manufacturer: "华北制药",
+                category: "西药",
+                insuranceType: "甲类",
+                price: 15.80,
+                status: "active",
+                rules: [
+                    { type: "insurance", name: "医保限制" },
+                    { type: "age", name: "年龄限制" }
+                ]
+            },
+            {
+                id: 2,
+                name: "布洛芬缓释胶囊",
+                code: "M01AE01",
+                manufacturer: "扬子江药业",
+                category: "西药",
+                insuranceType: "乙类",
+                price: 28.50,
+                status: "active",
+                rules: [
+                    { type: "insurance", name: "医保限制" },
+                    { type: "gender", name: "性别限制" }
+                ]
+            },
+            {
+                id: 3,
+                name: "复方丹参滴丸",
+                code: "C01EB02",
+                manufacturer: "天士力",
+                category: "中成药",
+                insuranceType: "乙类",
+                price: 45.20,
+                status: "active",
+                rules: [
+                    { type: "insurance", name: "医保限制" }
+                ]
+            },
+            {
+                id: 4,
+                name: "甘草片",
+                code: "R05CA03",
+                manufacturer: "同仁堂",
+                category: "中药饮片",
+                insuranceType: "甲类",
+                price: 8.90,
+                status: "inactive",
+                rules: [
+                    { type: "age", name: "年龄限制" }
+                ]
+            },
+            {
+                id: 5,
+                name: "头孢克肟胶囊",
+                code: "J01DD08",
+                manufacturer: "齐鲁制药",
+                category: "西药",
+                insuranceType: "乙类",
+                price: 32.60,
+                status: "active",
+                rules: [
+                    { type: "insurance", name: "医保限制" },
+                    { type: "age", name: "年龄限制" },
+                    { type: "gender", name: "性别限制" }
+                ]
+            },
+            {
+                id: 6,
+                name: "感冒清热颗粒",
+                code: "R05X001",
+                manufacturer: "同仁堂",
+                category: "中成药",
+                insuranceType: "甲类",
+                price: 12.30,
+                status: "active",
+                rules: [
+                    { type: "insurance", name: "医保限制" }
+                ]
+            }
+        ];
+
+        // 模拟慢病数据
+        const chronicData = [
+            {
+                id: 1,
+                name: "糖尿病",
+                code: "E11",
+                category: "内分泌系统",
+                severity: "中度",
+                status: "active",
+                description: "2型糖尿病",
+                rules: [
+                    { type: "medication", name: "用药限制" },
+                    { type: "monitoring", name: "监测要求" },
+                    { type: "dosage", name: "剂量调整" }
+                ]
+            },
+            {
+                id: 2,
+                name: "高血压",
+                code: "I10",
+                category: "心血管系统",
+                severity: "轻度",
+                status: "active",
+                description: "原发性高血压",
+                rules: [
+                    { type: "medication", name: "用药限制" },
+                    { type: "monitoring", name: "监测要求" }
+                ]
+            },
+            {
+                id: 3,
+                name: "冠心病",
+                code: "I25",
+                category: "心血管系统",
+                severity: "重度",
+                status: "active",
+                description: "慢性缺血性心脏病",
+                rules: [
+                    { type: "medication", name: "用药限制" },
+                    { type: "monitoring", name: "监测要求" },
+                    { type: "contraindication", name: "禁忌症" },
+                    { type: "interaction", name: "药物相互作用" }
+                ]
+            },
+            {
+                id: 4,
+                name: "慢性阻塞性肺疾病",
+                code: "J44",
+                category: "呼吸系统",
+                severity: "中度",
+                status: "active",
+                description: "COPD",
+                rules: [
+                    { type: "medication", name: "用药限制" },
+                    { type: "monitoring", name: "监测要求" }
+                ]
+            },
+            {
+                id: 5,
+                name: "慢性肾脏病",
+                code: "N18",
+                category: "泌尿系统",
+                severity: "重度",
+                status: "active",
+                description: "慢性肾功能不全",
+                rules: [
+                    { type: "medication", name: "用药限制" },
+                    { type: "monitoring", name: "监测要求" },
+                    { type: "dosage", name: "剂量调整" }
+                ]
+            },
+            {
+                id: 6,
+                name: "类风湿关节炎",
+                code: "M06",
+                category: "骨骼肌肉系统",
+                severity: "中度",
+                status: "inactive",
+                description: "血清阳性类风湿关节炎",
+                rules: [
+                    { type: "medication", name: "用药限制" }
+                ]
+            }
+        ];
+
+        // 科室层级映射
+        const departmentHierarchy = {
+            '内科': ['呼吸内科', '消化内科', '心血管内科', '内分泌科', '肾内科', '血液内科', '风湿免疫科'],
+            '外科': ['普通外科', '骨科', '泌尿外科', '胸外科', '神经外科', '整形外科'],
+            '儿科': ['新生儿科', '小儿内科', '小儿外科', '小儿心脏科'],
+            '妇产科': ['妇科', '产科', '计划生育科'],
+            '眼科': ['眼科门诊', '眼底病科', '青光眼科'],
+            '耳鼻喉科': ['耳科', '鼻科', '咽喉科'],
+            '皮肤科': ['皮肤科门诊', '皮肤美容科'],
+            '神经科': ['神经内科', '神经外科']
+        };
+
+        // 模拟诊疗疾病数据（合并门诊和住院）
+        const clinicalData = [
+            // 门诊疾病数据
+            {
+                id: 1,
+                name: "急性上呼吸道感染",
+                code: "J06.9",
+                primaryDepartment: "内科",
+                department: "呼吸内科",
+                status: "active",
+                description: "普通感冒，病毒性上呼吸道感染",
+                ruleCount: 12,
+                lastUpdated: "2024-01-15",
+                type: "outpatient"
+            },
+            {
+                id: 2,
+                name: "急性胃肠炎",
+                code: "K59.1",
+                primaryDepartment: "内科",
+                department: "消化内科",
+                status: "active",
+                description: "急性胃肠道炎症",
+                ruleCount: 8,
+                lastUpdated: "2024-01-10",
+                type: "outpatient"
+            },
+            {
+                id: 3,
+                name: "外伤性骨折",
+                code: "S72.0",
+                primaryDepartment: "外科",
+                department: "骨科",
+                status: "active",
+                description: "四肢骨折，需要手术治疗",
+                ruleCount: 15,
+                lastUpdated: "2024-01-12",
+                type: "outpatient"
+            },
+            {
+                id: 4,
+                name: "小儿发热",
+                code: "R50.9",
+                primaryDepartment: "儿科",
+                department: "小儿内科",
+                status: "active",
+                description: "儿童发热症状",
+                ruleCount: 10,
+                lastUpdated: "2024-01-08",
+                type: "outpatient"
+            },
+            {
+                id: 5,
+                name: "妊娠期糖尿病",
+                code: "O24.4",
+                primaryDepartment: "妇产科",
+                department: "产科",
+                status: "active",
+                description: "妊娠期间发生的糖尿病",
+                ruleCount: 18,
+                lastUpdated: "2024-01-14",
+                type: "outpatient"
+            },
+            {
+                id: 6,
+                name: "结膜炎",
+                code: "H10.9",
+                primaryDepartment: "眼科",
+                department: "眼科门诊",
+                status: "inactive",
+                description: "眼部结膜炎症",
+                ruleCount: 6,
+                lastUpdated: "2024-01-05",
+                type: "outpatient"
+            },
+            {
+                id: 7,
+                name: "中耳炎",
+                code: "H66.9",
+                primaryDepartment: "耳鼻喉科",
+                department: "耳科",
+                status: "active",
+                description: "急性中耳炎",
+                ruleCount: 9,
+                lastUpdated: "2024-01-11",
+                type: "outpatient"
+            },
+            {
+                id: 8,
+                name: "湿疹",
+                code: "L30.9",
+                primaryDepartment: "皮肤科",
+                department: "皮肤科门诊",
+                status: "active",
+                description: "皮肤湿疹",
+                ruleCount: 7,
+                lastUpdated: "2024-01-09",
+                type: "outpatient"
+            },
+            {
+                id: 9,
+                name: "偏头痛",
+                code: "G43.9",
+                primaryDepartment: "神经科",
+                department: "神经内科",
+                status: "active",
+                description: "原发性偏头痛",
+                ruleCount: 11,
+                lastUpdated: "2024-01-13",
+                type: "outpatient"
+            },
+            {
+                id: 10,
+                name: "急性咽炎",
+                code: "J02.9",
+                primaryDepartment: "耳鼻喉科",
+                department: "咽喉科",
+                status: "inactive",
+                description: "急性咽部炎症",
+                ruleCount: 5,
+                lastUpdated: "2024-01-06",
+                type: "outpatient"
+            },
+            // 住院疾病数据
+            {
+                id: 11,
+                name: "急性心肌梗死",
+                code: "I21.9",
+                primaryDepartment: "内科",
+                department: "心血管内科",
+                status: "active",
+                description: "急性ST段抬高型心肌梗死",
+                ruleCount: 25,
+                lastUpdated: "2024-01-15",
+                type: "inpatient"
+            },
+            {
+                id: 12,
+                name: "脑梗死",
+                code: "I63.9",
+                primaryDepartment: "神经科",
+                department: "神经内科",
+                status: "active",
+                description: "急性脑梗死",
+                ruleCount: 30,
+                lastUpdated: "2024-01-14",
+                type: "inpatient"
+            },
+            {
+                id: 13,
+                name: "胆囊切除术",
+                code: "K80.2",
+                primaryDepartment: "外科",
+                department: "普通外科",
+                status: "active",
+                description: "腹腔镜胆囊切除术",
+                ruleCount: 20,
+                lastUpdated: "2024-01-13",
+                type: "inpatient"
+            },
+            {
+                id: 14,
+                name: "肺炎",
+                code: "J18.9",
+                primaryDepartment: "内科",
+                department: "呼吸内科",
+                status: "active",
+                description: "社区获得性肺炎",
+                ruleCount: 18,
+                lastUpdated: "2024-01-12",
+                type: "inpatient"
+            },
+            {
+                id: 15,
+                name: "剖宫产",
+                code: "O82.9",
+                primaryDepartment: "妇产科",
+                department: "产科",
+                status: "active",
+                description: "剖宫产分娩",
+                ruleCount: 22,
+                lastUpdated: "2024-01-11",
+                type: "inpatient"
+            },
+            {
+                id: 16,
+                name: "白内障手术",
+                code: "H25.9",
+                primaryDepartment: "眼科",
+                department: "眼科门诊",
+                status: "active",
+                description: "白内障超声乳化术",
+                ruleCount: 15,
+                lastUpdated: "2024-01-10",
+                type: "inpatient"
+            },
+            {
+                id: 17,
+                name: "阑尾炎手术",
+                code: "K35.9",
+                primaryDepartment: "外科",
+                department: "普通外科",
+                status: "active",
+                description: "急性阑尾炎切除术",
+                ruleCount: 16,
+                lastUpdated: "2024-01-09",
+                type: "inpatient"
+            },
+            {
+                id: 18,
+                name: "糖尿病酮症酸中毒",
+                code: "E10.1",
+                primaryDepartment: "内科",
+                department: "内分泌科",
+                status: "active",
+                description: "1型糖尿病伴酮症酸中毒",
+                ruleCount: 28,
+                lastUpdated: "2024-01-08",
+                type: "inpatient"
+            }
+        ];
+
+
+
+        // 模拟政策规则数据
+        const policyData = [
+            {
+                id: 1,
+                name: "基本医疗保险药品目录管理办法",
+                code: "YB-2023-001",
+                type: "医保政策",
+                province: "全国",
+                city: "",
+                status: "active",
+                description: "规范基本医疗保险药品目录的制定、调整和管理",
+                effectiveDate: "2023-01-01",
+                lastUpdated: "2024-01-15"
+            },
+            {
+                id: 2,
+                name: "医疗服务价格管理规定",
+                code: "YB-2023-002",
+                type: "收费政策",
+                province: "北京市",
+                city: "朝阳区",
+                status: "active",
+                description: "医疗服务项目价格制定和调整管理",
+                effectiveDate: "2023-03-01",
+                lastUpdated: "2024-01-14"
+            },
+            {
+                id: 3,
+                name: "门诊慢特病管理办法",
+                code: "YB-2023-003",
+                type: "医保政策",
+                province: "上海市",
+                city: "浦东新区",
+                status: "active",
+                description: "门诊慢性病和特殊疾病医保管理",
+                effectiveDate: "2023-06-01",
+                lastUpdated: "2024-01-13"
+            },
+            {
+                id: 4,
+                name: "抗菌药物临床应用管理办法",
+                code: "YB-2023-004",
+                type: "药品政策",
+                province: "全国",
+                city: "",
+                status: "active",
+                description: "抗菌药物合理使用和管理规定",
+                effectiveDate: "2023-04-01",
+                lastUpdated: "2024-01-12"
+            },
+            {
+                id: 5,
+                name: "医疗机构检查检验结果互认管理办法",
+                code: "YB-2023-005",
+                type: "诊疗政策",
+                province: "广东省",
+                city: "广州市",
+                status: "active",
+                description: "医疗机构间检查检验结果互认规定",
+                effectiveDate: "2023-07-01",
+                lastUpdated: "2024-01-11"
+            },
+            {
+                id: 6,
+                name: "住院医疗费用控制管理规定",
+                code: "YB-2023-006",
+                type: "医保政策",
+                province: "江苏省",
+                city: "南京市",
+                status: "draft",
+                description: "住院医疗费用总额控制和管理",
+                effectiveDate: "2024-01-01",
+                lastUpdated: "2024-01-10"
+            },
+            {
+                id: 7,
+                name: "医保基金监管办法",
+                code: "YB-2022-007",
+                type: "医保政策",
+                province: "全国",
+                city: "",
+                status: "inactive",
+                description: "医保基金使用监督管理规定",
+                effectiveDate: "2022-01-01",
+                lastUpdated: "2024-01-09"
+            },
+            {
+                id: 8,
+                name: "高值医用耗材集中采购管理办法",
+                code: "YB-2023-008",
+                type: "收费政策",
+                province: "浙江省",
+                city: "杭州市",
+                status: "active",
+                description: "高值医用耗材集中采购和使用管理",
+                effectiveDate: "2023-09-01",
+                lastUpdated: "2024-01-08"
+            }
+        ];
+
+        let filteredDrugs = [...drugsData];
+        let filteredChronic = [...chronicData];
+        let filteredClinical = [...clinicalData];
+        let filteredPolicy = [...policyData];
+        let currentCategory = 'drugs';
+        let currentPage = 1;
+        let chronicCurrentPage = 1;
+        let clinicalCurrentPage = 1;
+        
+        let policyCurrentPage = 1;
+        let pageSize = 10;
+        let totalPages = 1;
+        let chronicTotalPages = 1;
+        let clinicalTotalPages = 1;
+        
+        let policyTotalPages = 1;
+        
+        // 视图状态变量
+        let chronicCurrentView = 'list';
+        let clinicalCurrentView = 'list';
+        let policyCurrentView = 'list';
+
+        // 显示分类内容
+        // 全局导航函数，用于从统一侧边栏导航到规则分类
+        window.navigateToRuleCategory = function(category) {
+            // 如果当前页面不是规则管理页面，则跳转到规则管理页面
+            if (!window.location.pathname.includes('规则管理/index.html')) {
+                window.location.href = `index.html#${category}`;
+                return;
+            }
+            
+            // 如果已经在规则管理页面，直接切换分类
+            showCategory(category);
+        };
+
+        function showCategory(category, element) {
+            // 更新菜单激活状态
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            if (element) {
+                element.closest('.menu-item').classList.add('active');
+            } else {
+                // 默认激活药品相关规则
+                const drugMenuItem = document.querySelector('[data-menu="rules-drugs"]');
+                if (drugMenuItem) {
+                    drugMenuItem.classList.add('active');
+                }
+            }
+
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+
+            // 显示对应页面
+            const pageMap = {
+                'drugs': 'drugListPage',
+                'chronic': 'chronicListPage',
+                'clinical': 'clinicalListPage',
+                'outpatient': 'outpatientListPage',
+                'service': 'serviceListPage',
+                'inpatient': 'inpatientListPage',
+                'cost': 'costListPage',
+                'policy': 'policyListPage'
+            };
+
+            const targetPage = document.getElementById(pageMap[category]);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            // 更新内容标题
+            const titleMap = {
+                'drugs': { title: '药品相关规则', subtitle: '管理药品使用限制和审核规则' },
+                'chronic': { title: '慢病规则库', subtitle: '管理慢性疾病审核规则' },
+                'clinical': { title: '诊疗规则库', subtitle: '管理门诊和住院疾病审核规则' },
+                'service': { title: '项目相关规则', subtitle: '管理医疗项目限制和审核规则' },
+                'cost': { title: '费用相关规则', subtitle: '管理费用控制和限额规则' },
+                'policy': { title: '政策相关规则', subtitle: '管理政策执行和监控规则' }
+            };
+
+            const titleInfo = titleMap[category];
+            document.getElementById('contentTitle').textContent = titleInfo.title;
+            document.getElementById('contentSubtitle').textContent = titleInfo.subtitle;
+
+            // 更新面包屑
+            const breadcrumb = document.getElementById('breadcrumb');
+            breadcrumb.innerHTML = `
+                <span class="breadcrumb-item">规则管理</span>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-item">${titleInfo.title}</span>
+            `;
+
+            currentCategory = category;
+
+            // 如果是药品分类，渲染药品列表
+            if (category === 'drugs') {
+                renderDrugs();
+            }
+            // 如果是慢病分类，渲染慢病列表
+            else if (category === 'chronic') {
+                renderChronic();
+            }
+            // 如果是诊疗分类，渲染诊疗疾病列表
+            else if (category === 'clinical') {
+                renderClinical();
+            }
+            // 如果是政策分类，渲染政策规则列表
+            else if (category === 'policy') {
+                renderPolicy();
+            }
+        }
+
+        // 渲染药品列表
+        function renderDrugs(drugs = filteredDrugs) {
+            const drugsGrid = document.getElementById('drugsGrid');
+            const drugsTableBody = document.getElementById('drugsTableBody');
+            
+            if (drugs.length === 0) {
+                drugsGrid.innerHTML = '<div class="empty-state"><h3>未找到匹配的药品</h3><p>请尝试调整搜索条件</p></div>';
+                drugsTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #666;">未找到匹配的药品</td></tr>';
+                return;
+            }
+            
+            // 分页处理
+            const startIndex = (currentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const paginatedDrugs = drugs.slice(startIndex, endIndex);
+
+            // 渲染网格视图
+            drugsGrid.innerHTML = paginatedDrugs.map(drug => `
+                <div class="drug-card">
+                    <div class="drug-header">
+                        <div>
+                            <div class="drug-name">${drug.name}</div>
+                            <div class="drug-code">${drug.code}</div>
+                        </div>
+                        <div class="drug-status status-${drug.status}">
+                            ${drug.status === 'active' ? '启用' : '停用'}
+                        </div>
+                    </div>
+                    <div class="drug-info">
+                        <div class="drug-info-item">
+                            <span class="drug-info-label">厂商:</span>
+                            <span class="drug-info-value">${drug.manufacturer}</span>
+                        </div>
+                        <div class="drug-info-item">
+                            <span class="drug-info-label">分类:</span>
+                            <span class="drug-info-value">${drug.category}</span>
+                        </div>
+                        <div class="drug-info-item">
+                            <span class="drug-info-label">医保:</span>
+                            <span class="drug-info-value">${drug.insuranceType}</span>
+                        </div>
+                        <div class="drug-info-item">
+                            <span class="drug-info-label">价格:</span>
+                            <span class="drug-info-value">¥${drug.price}</span>
+                        </div>
+                    </div>
+                    <div class="drug-rules-summary">
+                        <div class="rules-title">关联规则 (${drug.rules.length})</div>
+                        <div class="rule-tags">
+                            ${drug.rules.map(rule => `<span class="rule-tag ${rule.type}">${rule.name}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="drug-actions">
+                        <button class="btn btn-sm btn-outline" onclick="openDrugDetail(${drug.id})">查看详情</button>
+                        <button class="btn btn-sm btn-secondary" onclick="editDrug(${drug.id})">编辑</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // 渲染列表视图
+            drugsTableBody.innerHTML = paginatedDrugs.map(drug => `
+                <tr>
+                    <td>
+                        <div class="drug-name">${drug.name}</div>
+                        <span class="drug-code">${drug.code}</span>
+                    </td>
+                    <td>${drug.manufacturer}</td>
+                    <td>${drug.insuranceType}</td>
+                    <td>
+                        <span class="drug-status status-${drug.status}">
+                            ${drug.status === 'active' ? '启用' : '停用'}
+                        </span>
+                    </td>
+                    <td>${drug.rules.length}</td>
+                    <td>
+                        <div class="table-actions">
+                            <button class="btn btn-sm btn-outline" onclick="openDrugDetail(${drug.id})">详情</button>
+                            <button class="btn btn-sm btn-secondary" onclick="editDrug(${drug.id})">编辑</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            // 更新分页信息
+            totalPages = Math.ceil(drugs.length / pageSize);
+            updatePagination(drugs.length);
+        }
+
+        // 视图切换功能
+        function switchView(viewType) {
+            const gridView = document.getElementById('drugsGrid');
+            const listView = document.getElementById('drugsList');
+            const gridBtn = document.querySelector('[data-view="grid"]');
+            const listBtn = document.querySelector('[data-view="list"]');
+
+            if (viewType === 'grid') {
+                gridView.classList.remove('hidden');
+                listView.classList.add('hidden');
+                gridBtn.classList.add('active');
+                listBtn.classList.remove('active');
+            } else {
+                gridView.classList.add('hidden');
+                listView.classList.remove('hidden');
+                listBtn.classList.add('active');
+                gridBtn.classList.remove('active');
+            }
+        }
+
+        // 统计信息功能已移除
+
+        // 跳转到药品详情页
+        function openDrugDetail(drugId) {
+            window.location.href = `detail.html?id=${drugId}`;
+        }
+
+        // 编辑药品
+        function editDrug(drugId) {
+            const drug = drugsData.find(d => d.id === drugId);
+            if (drug) {
+                showDrugModal(drug);
+            }
+        }
+
+        // 新增药品
+        function addNewDrug() {
+            window.location.href = '创建规则.html?type=drug';
+        }
+
+        // 创建规则
+        function createRule(drugId) {
+            window.location.href = `创建规则.html?drugId=${drugId}&mode=rule`;
+        }
+
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            filteredDrugs = drugsData.filter(drug => 
+                drug.name.toLowerCase().includes(searchTerm) ||
+                drug.code.toLowerCase().includes(searchTerm) ||
+                drug.manufacturer.toLowerCase().includes(searchTerm)
+            );
+            applyFilters();
+        });
+
+        // 分类筛选
+        document.getElementById('categoryFilter').addEventListener('change', function(e) {
+            applyFilters();
+        });
+
+        // 医保类型筛选
+        document.getElementById('insuranceFilter').addEventListener('change', function(e) {
+            applyFilters();
+        });
+
+        // 应用筛选
+        function applyFilters() {
+            let filtered = [...filteredDrugs];
+            
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            if (categoryFilter) {
+                filtered = filtered.filter(drug => drug.category === categoryFilter);
+            }
+            
+            const insuranceFilter = document.getElementById('insuranceFilter').value;
+            if (insuranceFilter) {
+                filtered = filtered.filter(drug => drug.insuranceType === insuranceFilter);
+            }
+            
+            currentPage = 1;
+            totalPages = Math.ceil(filtered.length / pageSize);
+            renderDrugs(filtered);
+            updatePagination(filtered.length);
+        }
+
+        // 分页功能
+        function changePage(direction) {
+            const newPage = currentPage + direction;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                applyFilters();
+            }
+        }
+
+        function goToPage(page) {
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                applyFilters();
+            }
+        }
+
+        function updatePagination(totalItems) {
+            const paginationInfo = document.getElementById('paginationInfo');
+            const paginationNumbers = document.getElementById('paginationNumbers');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            const startItem = (currentPage - 1) * pageSize + 1;
+            const endItem = Math.min(currentPage * pageSize, totalItems);
+            
+            paginationInfo.textContent = `显示 ${startItem}-${endItem} 条，共 ${totalItems} 条记录`;
+            
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+            
+            // 生成页码按钮
+            let paginationHTML = '';
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            if (startPage > 1) {
+                paginationHTML += `<button class="page-number" onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) {
+                    paginationHTML += `<span class="page-ellipsis">...</span>`;
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `<button class="page-number ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHTML += `<span class="page-ellipsis">...</span>`;
+                }
+                paginationHTML += `<button class="page-number" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+            
+            paginationNumbers.innerHTML = paginationHTML;
+        }
+
+        // 显示药品模态框
+        function showDrugModal(drug = null) {
+            const modal = document.getElementById('drugModal');
+            const title = document.getElementById('drugModalTitle');
+            const form = document.getElementById('drugForm');
+            
+            if (drug) {
+                title.textContent = '编辑药品';
+                document.getElementById('drugName').value = drug.name;
+                document.getElementById('drugCode').value = drug.code;
+                document.getElementById('drugCategory').value = drug.category;
+                document.getElementById('drugInsurance').value = drug.insuranceType;
+                document.getElementById('drugManufacturer').value = drug.manufacturer;
+                document.getElementById('drugSpec').value = drug.spec || '';
+                document.getElementById('drugPrice').value = drug.price || '';
+                document.getElementById('drugUnit').value = drug.unit || '';
+                document.getElementById('drugDescription').value = drug.description || '';
+                form.dataset.drugId = drug.id;
+            } else {
+                title.textContent = '新增药品';
+                form.reset();
+                delete form.dataset.drugId;
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        // 关闭药品模态框
+        function closeDrugModal() {
+            const modal = document.getElementById('drugModal');
+            modal.style.display = 'none';
+        }
+
+        // 保存药品
+        function saveDrug() {
+            const form = document.getElementById('drugForm');
+            const formData = new FormData(form);
+            
+            // 验证必填字段
+            const requiredFields = ['drugName', 'drugCode', 'drugCategory', 'drugInsurance'];
+            for (let field of requiredFields) {
+                if (!formData.get(field)) {
+                    alert('请填写所有必填字段');
+                    return;
+                }
+            }
+            
+            const drugData = {
+                name: formData.get('drugName'),
+                code: formData.get('drugCode'),
+                category: formData.get('drugCategory'),
+                insuranceType: formData.get('drugInsurance'),
+                manufacturer: formData.get('drugManufacturer') || '',
+                spec: formData.get('drugSpec') || '',
+                price: formData.get('drugPrice') || '',
+                unit: formData.get('drugUnit') || '',
+                description: formData.get('drugDescription') || '',
+                status: 'active',
+                rules: []
+            };
+            
+            if (form.dataset.drugId) {
+                // 编辑模式
+                const drugId = parseInt(form.dataset.drugId);
+                const drugIndex = drugsData.findIndex(d => d.id === drugId);
+                if (drugIndex !== -1) {
+                    drugsData[drugIndex] = { ...drugsData[drugIndex], ...drugData };
+                }
+            } else {
+                // 新增模式
+                const newId = Math.max(...drugsData.map(d => d.id)) + 1;
+                drugsData.push({ id: newId, ...drugData });
+            }
+            
+            // 重新渲染列表
+            filteredDrugs = [...drugsData];
+            applyFilters();
+            closeDrugModal();
+            alert('药品保存成功！');
+        }
+
+        // 批量导入药品
+        function importDrugs() {
+            document.getElementById('drugImportInput').click();
+        }
+
+        // 处理药品导入
+        function handleDrugImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // 这里应该使用实际的Excel解析库，如SheetJS
+            alert('药品导入功能需要集成Excel解析库，当前为演示模式');
+            
+            // 重置文件输入
+            event.target.value = '';
+        }
+
+        // 处理规则导入
+        function handleRuleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            alert('规则导入功能需要集成Excel解析库，当前为演示模式');
+            
+            // 重置文件输入
+            event.target.value = '';
+        }
+
+        // 下载药品Excel模板
+        function downloadDrugTemplate() {
+            // 创建模拟的Excel数据
+            const templateData = [
+                ['药品名称*', '药品编码*', '药品分类*', '医保类型*', '生产厂家', '规格', '参考价格', '单位', '药品描述'],
+                ['阿莫西林胶囊', 'AMX001', '西药', '乙类', '华北制药', '0.25g*24粒', '15.80', '盒', '青霉素类抗生素'],
+                ['复方甘草片', 'FGCP002', '中成药', '甲类', '太极集团', '24片', '8.50', '盒', '镇咳祛痰药']
+            ];
+            
+            // 创建CSV内容
+            const csvContent = templateData.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '药品导入模板.csv';
+            link.click();
+        }
+
+        // 下载规则Excel模板
+        function downloadRuleTemplate() {
+            // 创建模拟的Excel数据
+            const templateData = [
+                ['规则名称*', '类型*', '条件*', '操作符*', '值*', '动作*', '优先级', '状态*', '生效日期', '失效日期', '描述'],
+                ['年龄限制规则', '年龄限制', '患者年龄', '小于', '18', '禁用', '高', '启用', '2024-01-01', '2024-12-31', '18岁以下患者禁用此药品'],
+                ['用量限制规则', '用量限制', '日用量', '大于', '6', '警告', '中', '启用', '2024-01-01', '2024-12-31', '日用量超过6片时给出警告']
+            ];
+            
+            // 创建CSV内容
+            const csvContent = templateData.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '规则导入模板.csv';
+            link.click();
+        }
+
+
+
+
+        // 导航到门诊规则库页面
+        function navigateToOutpatient() {
+            // 保存当前菜单状态
+            localStorage.setItem('sidebarExpanded', 'true');
+            localStorage.setItem('activeMenuItem', 'outpatient');
+            
+            // 跳转到门诊规则库详情页面
+            window.location.href = 'outpatient-detail.html';
+        }
+
+        // 显示开发中页面
+        function showDevelopmentPage(title) {
+            // 创建或更新开发中页面
+            let devPage = document.getElementById('developmentPage');
+            if (!devPage) {
+                devPage = document.createElement('div');
+                devPage.id = 'developmentPage';
+                devPage.className = 'page';
+                devPage.innerHTML = `
+                    <div class="dev-placeholder">
+                        <h2 id="devTitle">${title}</h2>
+                        <p>该功能正在开发中，敬请期待...</p>
+                        <div style="margin-top: 20px; color: #999;">
+                            <p>功能包括：</p>
+                            <ul style="text-align: left; display: inline-block; margin-top: 10px;">
+                                <li>基本信息管理</li>
+                                <li>用药规则配置</li>
+                                <li>检查检验规则</li>
+                                <li>政策规则设置</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                document.querySelector('.content-body').appendChild(devPage);
+            } else {
+                document.getElementById('devTitle').textContent = title;
+            }
+            devPage.classList.add('active');
+        }
+
+        // ========== 慢病相关函数 ==========
+        
+        // 渲染慢病列表
+        function renderChronic() {
+            const tableBody = document.getElementById('chronicTableBody');
+            const startIndex = (chronicCurrentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const pageData = filteredChronic.slice(startIndex, endIndex);
+            
+            tableBody.innerHTML = '';
+            
+            pageData.forEach(disease => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="drug-name">
+                            <strong>${disease.name}</strong>
+                            <div class="drug-desc">${disease.description}</div>
+                        </div>
+                    </td>
+                    <td>${disease.code}</td>
+                    <td><span class="category-tag">${disease.category}</span></td>
+                    <td><span class="severity-${disease.severity}">${disease.severity}</span></td>
+                    <td>
+                        <span class="status-badge ${disease.status === 'active' ? 'status-active' : 'status-inactive'}">
+                            ${disease.status === 'active' ? '启用' : '停用'}
+                        </span>
+                    </td>
+                    <td><span class="rule-count">${disease.rules.length}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-outline btn-small" onclick="viewChronicDetail(${disease.id})">查看</button>
+                            <button class="btn btn-outline btn-small" onclick="editChronic(${disease.id})">编辑</button>
+                            <button class="btn btn-outline btn-small ${disease.status === 'active' ? 'btn-danger' : 'btn-success'}" 
+                                    onclick="toggleChronicStatus(${disease.id})">
+                                ${disease.status === 'active' ? '停用' : '启用'}
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            updateChronicPagination();
+        }
+        
+        // 更新慢病分页
+        function updateChronicPagination() {
+            chronicTotalPages = Math.ceil(filteredChronic.length / pageSize);
+            
+            const paginationInfo = document.getElementById('chronicPaginationInfo');
+            const startIndex = (chronicCurrentPage - 1) * pageSize + 1;
+            const endIndex = Math.min(chronicCurrentPage * pageSize, filteredChronic.length);
+            paginationInfo.textContent = `显示 ${startIndex}-${endIndex} 条，共 ${filteredChronic.length} 条记录`;
+            
+            const prevBtn = document.getElementById('chronicPrevBtn');
+            const nextBtn = document.getElementById('chronicNextBtn');
+            
+            prevBtn.disabled = chronicCurrentPage === 1;
+            nextBtn.disabled = chronicCurrentPage === chronicTotalPages || chronicTotalPages === 0;
+            
+            // 生成页码按钮
+            const paginationNumbers = document.getElementById('chronicPaginationNumbers');
+            paginationNumbers.innerHTML = '';
+            
+            for (let i = 1; i <= chronicTotalPages; i++) {
+                if (i === 1 || i === chronicTotalPages || (i >= chronicCurrentPage - 2 && i <= chronicCurrentPage + 2)) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.className = `pagination-btn ${i === chronicCurrentPage ? 'active' : ''}`;
+                    pageBtn.textContent = i;
+                    pageBtn.onclick = () => {
+                        chronicCurrentPage = i;
+                        renderChronic();
+                    };
+                    paginationNumbers.appendChild(pageBtn);
+                } else if (i === chronicCurrentPage - 3 || i === chronicCurrentPage + 3) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'pagination-ellipsis';
+                    ellipsis.textContent = '...';
+                    paginationNumbers.appendChild(ellipsis);
+                }
+            }
+        }
+        
+        // 切换慢病页面
+        function changeChronicPage(direction) {
+            const newPage = chronicCurrentPage + direction;
+            if (newPage >= 1 && newPage <= chronicTotalPages) {
+                chronicCurrentPage = newPage;
+                renderChronic();
+            }
+        }
+        
+        // 切换慢病视图
+        function switchChronicView(view) {
+            const gridView = document.getElementById('chronicGrid');
+            const listView = document.getElementById('chronicList');
+            const gridBtn = document.querySelector('#chronicListPage .view-btn[data-view="grid"]');
+            const listBtn = document.querySelector('#chronicListPage .view-btn[data-view="list"]');
+            
+            chronicCurrentView = view;
+            
+            if (view === 'grid') {
+                gridView.classList.remove('hidden');
+                listView.classList.add('hidden');
+                gridBtn.classList.add('active');
+                listBtn.classList.remove('active');
+            } else {
+                gridView.classList.add('hidden');
+                listView.classList.remove('hidden');
+                listBtn.classList.add('active');
+                gridBtn.classList.remove('active');
+            }
+        }
+        
+        // 切换诊疗视图
+        function switchClinicalView(view) {
+            const gridView = document.getElementById('clinicalGrid');
+            const listView = document.getElementById('clinicalList');
+            const gridBtn = document.querySelector('#clinicalListPage .view-btn[data-view="grid"]');
+            const listBtn = document.querySelector('#clinicalListPage .view-btn[data-view="list"]');
+
+            clinicalCurrentView = view;
+
+            if (view === 'grid') {
+                gridView.classList.remove('hidden');
+                listView.classList.add('hidden');
+                if (gridBtn) gridBtn.classList.add('active');
+                if (listBtn) listBtn.classList.remove('active');
+            } else {
+                gridView.classList.add('hidden');
+                listView.classList.remove('hidden');
+                if (listBtn) listBtn.classList.add('active');
+                if (gridBtn) gridBtn.classList.remove('active');
+            }
+
+            // 重新渲染以适配分页和容器
+            renderClinical();
+        }
+
+        // 切换政策视图
+        function switchPolicyView(view) {
+            const gridView = document.getElementById('policyGrid');
+            const listView = document.getElementById('policyList');
+            const gridBtn = document.querySelector('#policyListPage .view-btn[data-view="grid"]');
+            const listBtn = document.querySelector('#policyListPage .view-btn[data-view="list"]');
+
+            policyCurrentView = view;
+
+            if (view === 'grid') {
+                gridView.classList.remove('hidden');
+                listView.classList.add('hidden');
+                if (gridBtn) gridBtn.classList.add('active');
+                if (listBtn) listBtn.classList.remove('active');
+            } else {
+                gridView.classList.add('hidden');
+                listView.classList.remove('hidden');
+                if (listBtn) listBtn.classList.add('active');
+                if (gridBtn) gridBtn.classList.remove('active');
+            }
+
+            // 重新渲染
+            renderPolicy();
+        }
+        
+        // 查看慢病详情
+        function viewChronicDetail(id) {
+            window.location.href = `chronic-detail.html?id=${id}`;
+        }
+        
+        // 编辑慢病
+        function editChronic(id) {
+            const disease = chronicData.find(d => d.id === id);
+            if (!disease) {
+                alert('未找到该疾病信息');
+                return;
+            }
+            
+            // 创建编辑疾病模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            modal.innerHTML = `
+                <div class="modal-content" style="
+                    background: white;
+                    border-radius: 8px;
+                    padding: 0;
+                    max-width: 600px;
+                    width: 90%;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                ">
+                    <div class="modal-header" style="
+                        padding: 20px 24px;
+                        border-bottom: 1px solid #e0e0e0;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    ">
+                        <h3 style="margin: 0; font-size: 18px; font-weight: 600;">编辑慢性疾病</h3>
+                        <button class="modal-close" onclick="closeChronicModal()" style="
+                            background: none;
+                            border: none;
+                            font-size: 24px;
+                            cursor: pointer;
+                            color: #666;
+                            padding: 0;
+                            width: 30px;
+                            height: 30px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        ">&times;</button>
+                    </div>
+                    <div class="modal-body" style="padding: 24px;">
+                        <form id="editChronicDiseaseForm">
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="editDiseaseName" style="display: block; margin-bottom: 6px; font-weight: 500;">疾病名称 *</label>
+                                <input type="text" id="editDiseaseName" required placeholder="请输入疾病名称" value="${disease.name}" style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                ">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="editDiseaseCode" style="display: block; margin-bottom: 6px; font-weight: 500;">疾病编码 *</label>
+                                <input type="text" id="editDiseaseCode" required placeholder="请输入疾病编码（如：E11）" value="${disease.code}" style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                ">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="editDiseaseCategory" style="display: block; margin-bottom: 6px; font-weight: 500;">疾病分类 *</label>
+                                <select id="editDiseaseCategory" required style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                    background: white;
+                                ">
+                                    <option value="">请选择疾病分类</option>
+                                    <option value="内分泌系统" ${disease.category === '内分泌系统' ? 'selected' : ''}>内分泌系统</option>
+                                    <option value="心血管系统" ${disease.category === '心血管系统' ? 'selected' : ''}>心血管系统</option>
+                                    <option value="呼吸系统" ${disease.category === '呼吸系统' ? 'selected' : ''}>呼吸系统</option>
+                                    <option value="泌尿系统" ${disease.category === '泌尿系统' ? 'selected' : ''}>泌尿系统</option>
+                                    <option value="神经系统" ${disease.category === '神经系统' ? 'selected' : ''}>神经系统</option>
+                                    <option value="消化系统" ${disease.category === '消化系统' ? 'selected' : ''}>消化系统</option>
+                                    <option value="血液系统" ${disease.category === '血液系统' ? 'selected' : ''}>血液系统</option>
+                                    <option value="免疫系统" ${disease.category === '免疫系统' ? 'selected' : ''}>免疫系统</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="editDiseaseSeverity" style="display: block; margin-bottom: 6px; font-weight: 500;">严重程度 *</label>
+                                <select id="editDiseaseSeverity" required style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                    background: white;
+                                ">
+                                    <option value="">请选择严重程度</option>
+                                    <option value="轻度" ${disease.severity === '轻度' ? 'selected' : ''}>轻度</option>
+                                    <option value="中度" ${disease.severity === '中度' ? 'selected' : ''}>中度</option>
+                                    <option value="重度" ${disease.severity === '重度' ? 'selected' : ''}>重度</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="editDiseaseDescription" style="display: block; margin-bottom: 6px; font-weight: 500;">疾病描述</label>
+                                <textarea id="editDiseaseDescription" rows="3" placeholder="请输入疾病描述信息" style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                    resize: vertical;
+                                ">${disease.description || ''}</textarea>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="editDiseaseStatus" style="display: block; margin-bottom: 6px; font-weight: 500;">状态</label>
+                                <select id="editDiseaseStatus" style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                    background: white;
+                                ">
+                                    <option value="active" ${disease.status === 'active' ? 'selected' : ''}>启用</option>
+                                    <option value="inactive" ${disease.status === 'inactive' ? 'selected' : ''}>停用</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer" style="
+                        padding: 16px 24px;
+                        border-top: 1px solid #e0e0e0;
+                        display: flex;
+                        justify-content: flex-end;
+                        gap: 12px;
+                    ">
+                        <button class="btn btn-outline" onclick="closeChronicModal()" style="
+                            padding: 8px 16px;
+                            border: 1px solid #ddd;
+                            background: white;
+                            color: #333;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">取消</button>
+                        <button class="btn btn-primary" onclick="saveEditChronicDisease(${id})" style="
+                            padding: 8px 16px;
+                            border: none;
+                            background: #2196f3;
+                            color: white;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">保存</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        // 保存编辑的慢性疾病
+        function saveEditChronicDisease(id) {
+            const formData = {
+                name: document.getElementById('editDiseaseName').value,
+                code: document.getElementById('editDiseaseCode').value,
+                category: document.getElementById('editDiseaseCategory').value,
+                severity: document.getElementById('editDiseaseSeverity').value,
+                description: document.getElementById('editDiseaseDescription').value,
+                status: document.getElementById('editDiseaseStatus').value
+            };
+            
+            // 验证必填字段
+            if (!formData.name || !formData.code || !formData.category || !formData.severity) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 检查疾病编码是否重复（排除当前编辑的疾病）
+            const existingDisease = chronicData.find(d => d.code === formData.code && d.id !== id);
+            if (existingDisease) {
+                alert('疾病编码已存在，请使用其他编码');
+                return;
+            }
+            
+            // 更新疾病信息
+            const diseaseIndex = chronicData.findIndex(d => d.id === id);
+            if (diseaseIndex !== -1) {
+                chronicData[diseaseIndex] = {
+                    ...chronicData[diseaseIndex],
+                    name: formData.name,
+                    code: formData.code,
+                    category: formData.category,
+                    severity: formData.severity,
+                    description: formData.description,
+                    status: formData.status
+                };
+                
+                filteredChronic = [...chronicData];
+                
+                closeChronicModal();
+                alert('慢性疾病更新成功');
+                
+                // 重新渲染列表
+                renderChronic();
+            }
+        }
+        
+        // 切换慢病状态
+        function toggleChronicStatus(id) {
+            const disease = chronicData.find(d => d.id === id);
+            if (!disease) {
+                alert('未找到该疾病信息');
+                return;
+            }
+            
+            const newStatus = disease.status === 'active' ? 'inactive' : 'active';
+            const action = newStatus === 'active' ? '启用' : '停用';
+            
+            if (confirm(`确定要${action}疾病 "${disease.name}" 吗？`)) {
+                disease.status = newStatus;
+                filteredChronic = [...chronicData];
+                renderChronic();
+                
+                // 显示成功消息
+                const successMsg = document.createElement('div');
+                successMsg.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${newStatus === 'active' ? '#d4edda' : '#f8d7da'};
+                    color: ${newStatus === 'active' ? '#155724' : '#721c24'};
+                    padding: 12px 20px;
+                    border-radius: 4px;
+                    border: 1px solid ${newStatus === 'active' ? '#c3e6cb' : '#f5c6cb'};
+                    z-index: 1001;
+                    font-size: 14px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                `;
+                successMsg.textContent = `疾病 "${disease.name}" 已${action}`;
+                document.body.appendChild(successMsg);
+                
+                setTimeout(() => {
+                    if (successMsg.parentNode) {
+                        successMsg.parentNode.removeChild(successMsg);
+                    }
+                }, 3000);
+            }
+        }
+        
+        // 新增慢病
+        function addNewChronicDisease() {
+            window.location.href = '创建规则.html?type=chronic';
+        }
+        
+        // 新增诊疗规则
+        function addNewClinicalRule() {
+            window.location.href = '创建规则.html?type=clinical';
+        }
+        
+        // 新增政策规则
+        function addNewPolicyRule() {
+            window.location.href = '创建规则.html?type=policy';
+        }
+        
+        // 原有的新增慢病模态框函数（保留以防其他地方使用）
+        function addNewChronicDiseaseModal() {
+            // 创建新增疾病模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            `;
+            modal.innerHTML = `
+                <div class="modal-content" style="
+                    background: white;
+                    border-radius: 8px;
+                    padding: 0;
+                    max-width: 600px;
+                    width: 90%;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+                ">
+                    <div class="modal-header" style="
+                        padding: 20px 24px;
+                        border-bottom: 1px solid #e0e0e0;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    ">
+                        <h3 style="margin: 0; font-size: 18px; font-weight: 600;">新增慢性疾病</h3>
+                        <button class="modal-close" onclick="closeChronicModal()" style="
+                            background: none;
+                            border: none;
+                            font-size: 24px;
+                            cursor: pointer;
+                            color: #666;
+                            padding: 0;
+                            width: 30px;
+                            height: 30px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        ">&times;</button>
+                    </div>
+                    <div class="modal-body" style="padding: 24px;">
+                        <form id="addChronicDiseaseForm">
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="newDiseaseName" style="display: block; margin-bottom: 6px; font-weight: 500;">疾病名称 *</label>
+                                <input type="text" id="newDiseaseName" required placeholder="请输入疾病名称" style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                ">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="newDiseaseCode" style="display: block; margin-bottom: 6px; font-weight: 500;">疾病编码 *</label>
+                                <input type="text" id="newDiseaseCode" required placeholder="请输入疾病编码（如：E11）" style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                ">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="newDiseaseCategory" style="display: block; margin-bottom: 6px; font-weight: 500;">疾病分类 *</label>
+                                <select id="newDiseaseCategory" required style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                    background: white;
+                                ">
+                                    <option value="">请选择疾病分类</option>
+                                    <option value="内分泌系统">内分泌系统</option>
+                                    <option value="心血管系统">心血管系统</option>
+                                    <option value="呼吸系统">呼吸系统</option>
+                                    <option value="泌尿系统">泌尿系统</option>
+                                    <option value="神经系统">神经系统</option>
+                                    <option value="消化系统">消化系统</option>
+                                    <option value="血液系统">血液系统</option>
+                                    <option value="免疫系统">免疫系统</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="newDiseaseSeverity" style="display: block; margin-bottom: 6px; font-weight: 500;">严重程度 *</label>
+                                <select id="newDiseaseSeverity" required style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                    background: white;
+                                ">
+                                    <option value="">请选择严重程度</option>
+                                    <option value="轻度">轻度</option>
+                                    <option value="中度">中度</option>
+                                    <option value="重度">重度</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="newDiseaseDescription" style="display: block; margin-bottom: 6px; font-weight: 500;">疾病描述</label>
+                                <textarea id="newDiseaseDescription" rows="3" placeholder="请输入疾病描述信息" style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                    resize: vertical;
+                                "></textarea>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 16px;">
+                                <label for="newDiseaseStatus" style="display: block; margin-bottom: 6px; font-weight: 500;">状态</label>
+                                <select id="newDiseaseStatus" style="
+                                    width: 100%;
+                                    padding: 10px 12px;
+                                    border: 1px solid #ddd;
+                                    border-radius: 4px;
+                                    font-size: 14px;
+                                    background: white;
+                                ">
+                                    <option value="active">启用</option>
+                                    <option value="inactive">停用</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer" style="
+                        padding: 16px 24px;
+                        border-top: 1px solid #e0e0e0;
+                        display: flex;
+                        justify-content: flex-end;
+                        gap: 12px;
+                    ">
+                        <button class="btn btn-outline" onclick="closeChronicModal()" style="
+                            padding: 8px 16px;
+                            border: 1px solid #ddd;
+                            background: white;
+                            color: #333;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">取消</button>
+                        <button class="btn btn-primary" onclick="saveNewChronicDisease()" style="
+                            padding: 8px 16px;
+                            border: none;
+                            background: #2196f3;
+                            color: white;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">保存</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        // 保存新增慢性疾病
+        function saveNewChronicDisease() {
+            const formData = {
+                name: document.getElementById('newDiseaseName').value,
+                code: document.getElementById('newDiseaseCode').value,
+                category: document.getElementById('newDiseaseCategory').value,
+                severity: document.getElementById('newDiseaseSeverity').value,
+                description: document.getElementById('newDiseaseDescription').value,
+                status: document.getElementById('newDiseaseStatus').value
+            };
+            
+            // 验证必填字段
+            if (!formData.name || !formData.code || !formData.category || !formData.severity) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 检查疾病编码是否重复
+            const existingDisease = chronicData.find(d => d.code === formData.code);
+            if (existingDisease) {
+                alert('疾病编码已存在，请使用其他编码');
+                return;
+            }
+            
+            // 生成新的疾病ID
+            const newId = Math.max(...chronicData.map(d => d.id)) + 1;
+            
+            // 创建新疾病对象
+            const newDisease = {
+                id: newId,
+                name: formData.name,
+                code: formData.code,
+                category: formData.category,
+                severity: formData.severity,
+                description: formData.description || '',
+                status: formData.status,
+                rules: [] // 初始化空规则数组
+            };
+            
+            // 添加到数据中
+            chronicData.push(newDisease);
+            filteredChronic = [...chronicData];
+            
+            closeChronicModal();
+            alert('慢性疾病添加成功');
+            
+            // 重新渲染列表
+            renderChronic();
+        }
+        
+        // 保存编辑的慢病
+        function saveEditChronicDisease(id) {
+            const form = document.getElementById('editChronicDiseaseForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const name = document.getElementById('editDiseaseName').value.trim();
+            const code = document.getElementById('editDiseaseCode').value.trim();
+            const category = document.getElementById('editDiseaseCategory').value;
+            const severity = document.getElementById('editDiseaseSeverity').value;
+            const description = document.getElementById('editDiseaseDescription').value.trim();
+            const status = document.getElementById('editDiseaseStatus').value;
+            
+            // 验证必填字段
+            if (!name || !code || !category || !severity) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 检查编码是否与其他疾病重复
+            const existingDisease = chronicData.find(d => d.code === code && d.id !== id);
+            if (existingDisease) {
+                alert(`疾病编码 ${code} 已存在，请使用其他编码`);
+                return;
+            }
+            
+            // 更新疾病信息
+            const disease = chronicData.find(d => d.id === id);
+            if (disease) {
+                disease.name = name;
+                disease.code = code;
+                disease.category = category;
+                disease.severity = severity;
+                disease.description = description;
+                disease.status = status;
+                
+                // 更新显示
+                filteredChronic = [...chronicData];
+                renderChronic();
+                
+                // 关闭模态框
+                closeChronicModal();
+                
+                // 显示成功消息
+                const successMsg = document.createElement('div');
+                successMsg.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #d4edda;
+                    color: #155724;
+                    padding: 12px 20px;
+                    border-radius: 4px;
+                    border: 1px solid #c3e6cb;
+                    z-index: 1001;
+                    font-size: 14px;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                `;
+                successMsg.textContent = `疾病 "${name}" 更新成功`;
+                document.body.appendChild(successMsg);
+                
+                setTimeout(() => {
+                    if (successMsg.parentNode) {
+                        successMsg.parentNode.removeChild(successMsg);
+                    }
+                }, 3000);
+            }
+        }
+        
+        // 保存新增的慢病
+        function saveNewChronicDisease() {
+            const form = document.getElementById('addChronicDiseaseForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const name = document.getElementById('newDiseaseName').value.trim();
+            const code = document.getElementById('newDiseaseCode').value.trim();
+            const category = document.getElementById('newDiseaseCategory').value;
+            const severity = document.getElementById('newDiseaseSeverity').value;
+            const description = document.getElementById('newDiseaseDescription').value.trim();
+            const status = document.getElementById('newDiseaseStatus').value;
+            
+            // 验证必填字段
+            if (!name || !code || !category || !severity) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 检查编码是否重复
+            const existingDisease = chronicData.find(d => d.code === code);
+            if (existingDisease) {
+                alert(`疾病编码 ${code} 已存在，请使用其他编码`);
+                return;
+            }
+            
+            // 创建新疾病
+            const newId = Math.max(...chronicData.map(d => d.id), 0) + 1;
+            const newDisease = {
+                id: newId,
+                name: name,
+                code: code,
+                category: category,
+                severity: severity,
+                description: description,
+                status: status,
+                rules: []
+            };
+            
+            // 添加到数据中
+            chronicData.push(newDisease);
+            
+            // 更新显示
+            filteredChronic = [...chronicData];
+            renderChronic();
+            
+            // 关闭模态框
+            closeChronicModal();
+            
+            // 显示成功消息
+            const successMsg = document.createElement('div');
+            successMsg.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #d4edda;
+                color: #155724;
+                padding: 12px 20px;
+                border-radius: 4px;
+                border: 1px solid #c3e6cb;
+                z-index: 1001;
+                font-size: 14px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            `;
+            successMsg.textContent = `疾病 "${name}" 添加成功`;
+            document.body.appendChild(successMsg);
+            
+            setTimeout(() => {
+                if (successMsg.parentNode) {
+                    successMsg.parentNode.removeChild(successMsg);
+                }
+            }, 3000);
+        }
+        
+        // 关闭慢病模态框
+        function closeChronicModal() {
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        // 下载慢病模板
+        function downloadChronicTemplate() {
+            const templateData = [
+                ['疾病名称*', '疾病编码*', '疾病分类*', '严重程度*', '状态*', '疾病描述'],
+                ['糖尿病', 'E11', '内分泌系统', '中度', '启用', '2型糖尿病'],
+                ['高血压', 'I10', '心血管系统', '轻度', '启用', '原发性高血压']
+            ];
+            
+            const csvContent = templateData.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '慢性疾病导入模板.csv';
+            link.click();
+        }
+        
+        // 批量导入慢病
+        function importChronicDiseases() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv,.xlsx,.xls';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                // 模拟文件解析和导入过程
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        // 这里应该使用实际的Excel/CSV解析库
+                        // 目前使用模拟数据演示功能
+                        const mockImportData = [
+                            {
+                                name: '慢性胃炎',
+                                code: 'K29',
+                                category: '消化系统',
+                                severity: '轻度',
+                                description: '慢性胃炎是指胃黏膜的慢性炎症',
+                                status: 'active'
+                            },
+                            {
+                                name: '慢性支气管炎',
+                                code: 'J42',
+                                category: '呼吸系统',
+                                severity: '中度',
+                                description: '慢性支气管炎是指气管、支气管黏膜及其周围组织的慢性非特异性炎症',
+                                status: 'active'
+                            }
+                        ];
+                        
+                        let successCount = 0;
+                        let errorCount = 0;
+                        const errors = [];
+                        
+                        mockImportData.forEach((item, index) => {
+                            // 验证数据
+                            if (!item.name || !item.code || !item.category || !item.severity) {
+                                errorCount++;
+                                errors.push(`第${index + 1}行：缺少必填字段`);
+                                return;
+                            }
+                            
+                            // 检查编码是否重复
+                            const existingDisease = chronicData.find(d => d.code === item.code);
+                            if (existingDisease) {
+                                errorCount++;
+                                errors.push(`第${index + 1}行：疾病编码 ${item.code} 已存在`);
+                                return;
+                            }
+                            
+                            // 添加新疾病
+                            const newId = Math.max(...chronicData.map(d => d.id), 0) + 1;
+                            chronicData.push({
+                                id: newId,
+                                name: item.name,
+                                code: item.code,
+                                category: item.category,
+                                severity: item.severity,
+                                description: item.description || '',
+                                status: item.status || 'active',
+                                rules: []
+                            });
+                            successCount++;
+                        });
+                        
+                        // 更新显示
+                        filteredChronic = [...chronicData];
+                        renderChronic();
+                        
+                        // 显示导入结果
+                        let message = `导入完成！\n成功导入：${successCount} 条\n失败：${errorCount} 条`;
+                        if (errors.length > 0) {
+                            message += '\n\n错误详情：\n' + errors.join('\n');
+                        }
+                        alert(message);
+                        
+                    } catch (error) {
+                        alert('文件解析失败，请检查文件格式是否正确');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // 诊疗规则库相关函数
+        function renderClinical(diseases = filteredClinical) {
+            const clinicalGrid = document.getElementById('clinicalGrid');
+            const tableBody = document.getElementById('clinicalTableBody');
+            
+            if (diseases.length === 0) {
+                if (clinicalCurrentView === 'grid') {
+                    clinicalGrid.innerHTML = '<div class="empty-state"><h3>未找到匹配的诊疗疾病</h3><p>请尝试调整搜索条件</p></div>';
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #666;">未找到匹配的疾病</td></tr>';
+                }
+                // 更新记录计数
+                document.getElementById('clinicalRecordCount').textContent = '0';
+                return;
+            }
+            
+            // 分页处理
+            const startIndex = (clinicalCurrentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const paginatedDiseases = diseases.slice(startIndex, endIndex);
+            
+            // 渲染网格视图
+            if (clinicalCurrentView === 'grid') {
+                clinicalGrid.innerHTML = paginatedDiseases.map(disease => `
+                    <div class="drug-card">
+                        <div class="drug-header">
+                            <div>
+                                <div class="drug-name">${disease.name}</div>
+                                <div class="drug-code">${disease.code}</div>
+                            </div>
+                            <div class="drug-status status-${disease.status}">
+                                ${disease.status === 'active' ? '启用' : '停用'}
+                            </div>
+                        </div>
+                        <div class="drug-info">
+                            <div class="drug-info-item">
+                                <span class="drug-info-label">科室:</span>
+                                <span class="drug-info-value">${disease.department}</span>
+                            </div>
+                            <div class="drug-info-item">
+                                <span class="drug-info-label">类型:</span>
+                                <span class="drug-info-value">${disease.type === 'outpatient' ? '门诊' : '住院'}</span>
+                            </div>
+                            <div class="drug-info-item">
+                                <span class="drug-info-label">规则数:</span>
+                                <span class="drug-info-value">${disease.ruleCount}条</span>
+                            </div>
+                            <div class="drug-info-item">
+                                <span class="drug-info-label">更新时间:</span>
+                                <span class="drug-info-value">${disease.lastUpdated}</span>
+                            </div>
+                        </div>
+                        <div class="drug-rules-summary">
+                            <div class="rules-title">描述</div>
+                            <div class="rule-tags">
+                                <span class="rule-tag">${disease.description}</span>
+                            </div>
+                        </div>
+                        <div class="drug-actions">
+                            <button class="btn btn-sm btn-outline" onclick="viewClinicalDisease(${disease.id})">查看详情</button>
+                            <button class="btn btn-sm btn-secondary" onclick="editClinicalDisease(${disease.id})">编辑</button>
+                            <button class="btn btn-sm ${disease.status === 'active' ? 'btn-outline' : 'btn-primary'}" onclick="toggleClinicalStatus(${disease.id})">
+                                ${disease.status === 'active' ? '停用' : '启用'}
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                // 渲染列表视图
+                tableBody.innerHTML = paginatedDiseases.map(disease => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500; color: #333;">${disease.name}</div>
+                            <div style="font-size: 12px; color: #666; margin-top: 2px;">${disease.code}</div>
+                            <div style="font-size: 12px; color: #999; margin-top: 2px;">${disease.description}</div>
+                        </td>
+                        <td>${disease.department}</td>
+                        <td>${disease.ruleCount}</td>
+                        <td>
+                            <span class="status status-${disease.status}">
+                                ${disease.status === 'active' ? '启用' : '停用'}
+                            </span>
+                        </td>
+                        <td>${disease.lastUpdated}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline" onclick="viewClinicalDisease(${disease.id})" style="margin-right: 8px;">查看</button>
+                            <button class="btn btn-sm btn-outline" onclick="editClinicalDisease(${disease.id})" style="margin-right: 8px;">编辑</button>
+                            <button class="btn btn-sm ${disease.status === 'active' ? 'btn-outline' : 'btn-primary'}" onclick="toggleClinicalStatus(${disease.id})">
+                                ${disease.status === 'active' ? '停用' : '启用'}
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            // 更新记录计数
+            document.getElementById('clinicalRecordCount').textContent = diseases.length;
+            
+            updateClinicalPagination();
+        }
+        
+        // 更新二级科室选项
+        function updateClinicalSecondaryDepartments() {
+            const primaryDepartment = document.getElementById('clinicalPrimaryDepartmentFilter').value;
+            const secondarySelect = document.getElementById('clinicalSecondaryDepartmentFilter');
+            
+            // 清空二级科室选项
+            secondarySelect.innerHTML = '<option value="">全部二级科室</option>';
+            
+            // 如果选择了一级科室，添加对应的二级科室选项
+            if (primaryDepartment && departmentHierarchy[primaryDepartment]) {
+                departmentHierarchy[primaryDepartment].forEach(secondaryDept => {
+                    const option = document.createElement('option');
+                    option.value = secondaryDept;
+                    option.textContent = secondaryDept;
+                    secondarySelect.appendChild(option);
+                });
+            }
+            
+            // 触发筛选
+            filterClinicalDiseases();
+        }
+        
+        function filterClinicalDiseases() {
+            const primaryDepartmentFilter = document.getElementById('clinicalPrimaryDepartmentFilter').value;
+            const secondaryDepartmentFilter = document.getElementById('clinicalSecondaryDepartmentFilter').value;
+            const statusFilter = document.getElementById('clinicalStatusFilter').value;
+            const typeFilter = document.getElementById('clinicalTypeFilter').value;
+            const searchInput = document.getElementById('clinicalSearchInput').value.toLowerCase();
+            
+            filteredClinical = clinicalData.filter(disease => {
+                const matchesPrimaryDepartment = !primaryDepartmentFilter || disease.primaryDepartment === primaryDepartmentFilter;
+                const matchesSecondaryDepartment = !secondaryDepartmentFilter || disease.department === secondaryDepartmentFilter;
+                const matchesStatus = !statusFilter || disease.status === statusFilter;
+                const matchesType = !typeFilter || disease.type === typeFilter;
+                const matchesSearch = !searchInput || 
+                    disease.name.toLowerCase().includes(searchInput) ||
+                    disease.code.toLowerCase().includes(searchInput) ||
+                    disease.description.toLowerCase().includes(searchInput);
+                
+                return matchesPrimaryDepartment && matchesSecondaryDepartment && matchesStatus && matchesType && matchesSearch;
+            });
+            
+            clinicalCurrentPage = 1;
+            renderClinical();
+        }
+        
+        function resetClinicalFilters() {
+            document.getElementById('clinicalPrimaryDepartmentFilter').value = '';
+            document.getElementById('clinicalSecondaryDepartmentFilter').innerHTML = '<option value="">全部二级科室</option>';
+            document.getElementById('clinicalStatusFilter').value = '';
+            document.getElementById('clinicalTypeFilter').value = '';
+            document.getElementById('clinicalSearchInput').value = '';
+            filteredClinical = [...clinicalData];
+            clinicalCurrentPage = 1;
+            renderClinical();
+        }
+        
+        function updateClinicalPagination() {
+            clinicalTotalPages = Math.ceil(filteredClinical.length / pageSize);
+            const paginationInfo = document.getElementById('clinicalPaginationInfo');
+            const paginationNumbers = document.getElementById('clinicalPaginationNumbers');
+            const prevBtn = document.getElementById('clinicalPrevBtn');
+            const nextBtn = document.getElementById('clinicalNextBtn');
+            
+            const startIndex = (clinicalCurrentPage - 1) * pageSize + 1;
+            const endIndex = Math.min(clinicalCurrentPage * pageSize, filteredClinical.length);
+            
+            paginationInfo.textContent = `显示 ${startIndex}-${endIndex} 条，共 ${filteredClinical.length} 条记录`;
+            
+            prevBtn.disabled = clinicalCurrentPage === 1;
+            nextBtn.disabled = clinicalCurrentPage === clinicalTotalPages;
+            
+            let paginationHTML = '';
+            for (let i = 1; i <= clinicalTotalPages; i++) {
+                if (i === clinicalCurrentPage) {
+                    paginationHTML += `<button class="pagination-number active">${i}</button>`;
+                } else {
+                    paginationHTML += `<button class="pagination-number" onclick="goToClinicalPage(${i})">${i}</button>`;
+                }
+            }
+            paginationNumbers.innerHTML = paginationHTML;
+        }
+        
+        function changeClinicalPage(direction) {
+            const newPage = clinicalCurrentPage + direction;
+            if (newPage >= 1 && newPage <= clinicalTotalPages) {
+                clinicalCurrentPage = newPage;
+                renderClinical();
+            }
+        }
+        
+        function goToClinicalPage(page) {
+            clinicalCurrentPage = page;
+            renderClinical();
+        }
+        
+        function viewClinicalDisease(id) {
+            const disease = clinicalData.find(d => d.id === id);
+            if (disease) {
+                const params = new URLSearchParams({
+                    id: disease.id,
+                    name: disease.name,
+                    department: disease.department,
+                    type: disease.type
+                });
+                window.location.href = `clinical-detail.html?${params.toString()}`;
+            }
+        }
+        
+        function editClinicalDisease(id) {
+            const disease = clinicalData.find(d => d.id === id);
+            if (disease) {
+                showClinicalModal(disease);
+            }
+        }
+        
+        function toggleClinicalStatus(id) {
+            const disease = clinicalData.find(d => d.id === id);
+            if (disease) {
+                disease.status = disease.status === 'active' ? 'inactive' : 'active';
+                filteredClinical = [...clinicalData];
+                renderClinical();
+                alert(`疾病 ${disease.name} 已${disease.status === 'active' ? '启用' : '停用'}`);
+            }
+        }
+        
+        function addClinicalDisease() {
+            window.location.href = '创建规则.html?type=clinical';
+        }
+        
+        function downloadClinicalTemplate() {
+            alert('下载诊疗疾病模板功能正在开发中...');
+        }
+        
+        function importClinicalRules() {
+            alert('导入诊疗规则功能正在开发中...');
+        }
+
+
+        
+        // 省市数据
+        const cityData = {
+            '北京市': ['东城区', '西城区', '朝阳区', '丰台区', '石景山区', '海淀区', '门头沟区', '房山区', '通州区', '顺义区', '昌平区', '大兴区', '怀柔区', '平谷区', '密云区', '延庆区'],
+            '上海市': ['黄浦区', '徐汇区', '长宁区', '静安区', '普陀区', '虹口区', '杨浦区', '闵行区', '宝山区', '嘉定区', '浦东新区', '金山区', '松江区', '青浦区', '奉贤区', '崇明区'],
+            '天津市': ['和平区', '河东区', '河西区', '南开区', '河北区', '红桥区', '东丽区', '西青区', '津南区', '北辰区', '武清区', '宝坻区', '滨海新区', '宁河区', '静海区', '蓟州区'],
+            '重庆市': ['万州区', '涪陵区', '渝中区', '大渡口区', '江北区', '沙坪坝区', '九龙坡区', '南岸区', '北碚区', '綦江区', '大足区', '渝北区', '巴南区', '黔江区', '长寿区', '江津区', '合川区', '永川区', '南川区', '璧山区', '铜梁区', '潼南区', '荣昌区', '开州区', '梁平区', '武隆区'],
+            '河北省': ['石家庄市', '唐山市', '秦皇岛市', '邯郸市', '邢台市', '保定市', '张家口市', '承德市', '沧州市', '廊坊市', '衡水市'],
+            '山西省': ['太原市', '大同市', '阳泉市', '长治市', '晋城市', '朔州市', '晋中市', '运城市', '忻州市', '临汾市', '吕梁市'],
+            '辽宁省': ['沈阳市', '大连市', '鞍山市', '抚顺市', '本溪市', '丹东市', '锦州市', '营口市', '阜新市', '辽阳市', '盘锦市', '铁岭市', '朝阳市', '葫芦岛市'],
+            '吉林省': ['长春市', '吉林市', '四平市', '辽源市', '通化市', '白山市', '松原市', '白城市', '延边朝鲜族自治州'],
+            '黑龙江省': ['哈尔滨市', '齐齐哈尔市', '鸡西市', '鹤岗市', '双鸭山市', '大庆市', '伊春市', '佳木斯市', '七台河市', '牡丹江市', '黑河市', '绥化市', '大兴安岭地区'],
+            '江苏省': ['南京市', '无锡市', '徐州市', '常州市', '苏州市', '南通市', '连云港市', '淮安市', '盐城市', '扬州市', '镇江市', '泰州市', '宿迁市'],
+            '浙江省': ['杭州市', '宁波市', '温州市', '嘉兴市', '湖州市', '绍兴市', '金华市', '衢州市', '舟山市', '台州市', '丽水市'],
+            '安徽省': ['合肥市', '芜湖市', '蚌埠市', '淮南市', '马鞍山市', '淮北市', '铜陵市', '安庆市', '黄山市', '滁州市', '阜阳市', '宿州市', '六安市', '亳州市', '池州市', '宣城市'],
+            '福建省': ['福州市', '厦门市', '莆田市', '三明市', '泉州市', '漳州市', '南平市', '龙岩市', '宁德市'],
+            '江西省': ['南昌市', '景德镇市', '萍乡市', '九江市', '新余市', '鹰潭市', '赣州市', '吉安市', '宜春市', '抚州市', '上饶市'],
+            '山东省': ['济南市', '青岛市', '淄博市', '枣庄市', '东营市', '烟台市', '潍坊市', '济宁市', '泰安市', '威海市', '日照市', '临沂市', '德州市', '聊城市', '滨州市', '菏泽市'],
+            '河南省': ['郑州市', '开封市', '洛阳市', '平顶山市', '安阳市', '鹤壁市', '新乡市', '焦作市', '濮阳市', '许昌市', '漯河市', '三门峡市', '南阳市', '商丘市', '信阳市', '周口市', '驻马店市', '济源市'],
+            '湖北省': ['武汉市', '黄石市', '十堰市', '宜昌市', '襄阳市', '鄂州市', '荆门市', '孝感市', '荆州市', '黄冈市', '咸宁市', '随州市', '恩施土家族苗族自治州', '仙桃市', '潜江市', '天门市', '神农架林区'],
+            '湖南省': ['长沙市', '株洲市', '湘潭市', '衡阳市', '邵阳市', '岳阳市', '常德市', '张家界市', '益阳市', '郴州市', '永州市', '怀化市', '娄底市', '湘西土家族苗族自治州'],
+            '广东省': ['广州市', '韶关市', '深圳市', '珠海市', '汕头市', '佛山市', '江门市', '湛江市', '茂名市', '肇庆市', '惠州市', '梅州市', '汕尾市', '河源市', '阳江市', '清远市', '东莞市', '中山市', '潮州市', '揭阳市', '云浮市'],
+            '海南省': ['海口市', '三亚市', '三沙市', '儋州市', '五指山市', '琼海市', '文昌市', '万宁市', '东方市', '定安县', '屯昌县', '澄迈县', '临高县', '白沙黎族自治县', '昌江黎族自治县', '乐东黎族自治县', '陵水黎族自治县', '保亭黎族苗族自治县', '琼中黎族苗族自治县'],
+            '四川省': ['成都市', '自贡市', '攀枝花市', '泸州市', '德阳市', '绵阳市', '广元市', '遂宁市', '内江市', '乐山市', '南充市', '眉山市', '宜宾市', '广安市', '达州市', '雅安市', '巴中市', '资阳市', '阿坝藏族羌族自治州', '甘孜藏族自治州', '凉山彝族自治州'],
+            '贵州省': ['贵阳市', '六盘水市', '遵义市', '安顺市', '毕节市', '铜仁市', '黔西南布依族苗族自治州', '黔东南苗族侗族自治州', '黔南布依族苗族自治州'],
+            '云南省': ['昆明市', '曲靖市', '玉溪市', '保山市', '昭通市', '丽江市', '普洱市', '临沧市', '楚雄彝族自治州', '红河哈尼族彝族自治州', '文山壮族苗族自治州', '西双版纳傣族自治州', '大理白族自治州', '德宏傣族景颇族自治州', '怒江傈僳族自治州', '迪庆藏族自治州'],
+            '陕西省': ['西安市', '铜川市', '宝鸡市', '咸阳市', '渭南市', '延安市', '汉中市', '榆林市', '安康市', '商洛市'],
+            '甘肃省': ['兰州市', '嘉峪关市', '金昌市', '白银市', '天水市', '武威市', '张掖市', '平凉市', '酒泉市', '庆阳市', '定西市', '陇南市', '临夏回族自治州', '甘南藏族自治州'],
+            '青海省': ['西宁市', '海东市', '海北藏族自治州', '黄南藏族自治州', '海南藏族自治州', '果洛藏族自治州', '玉树藏族自治州', '海西蒙古族藏族自治州'],
+             '台湾省': ['台北市', '高雄市', '基隆市', '台中市', '台南市', '新竹市', '嘉义市', '新北市', '宜兰县', '新竹县', '桃园县', '苗栗县', '台中县', '彰化县', '南投县', '嘉义县', '云林县', '台南县', '高雄县', '屏东县', '台东县', '花莲县', '澎湖县'],
+             '内蒙古自治区': ['呼和浩特市', '包头市', '乌海市', '赤峰市', '通辽市', '鄂尔多斯市', '呼伦贝尔市', '巴彦淖尔市', '乌兰察布市', '兴安盟', '锡林郭勒盟', '阿拉善盟'],
+             '广西壮族自治区': ['南宁市', '柳州市', '桂林市', '梧州市', '北海市', '防城港市', '钦州市', '贵港市', '玉林市', '百色市', '贺州市', '河池市', '来宾市', '崇左市'],
+             '西藏自治区': ['拉萨市', '日喀则市', '昌都市', '林芝市', '山南市', '那曲市', '阿里地区'],
+             '宁夏回族自治区': ['银川市', '石嘴山市', '吴忠市', '固原市', '中卫市'],
+             '新疆维吾尔自治区': ['乌鲁木齐市', '克拉玛依市', '吐鲁番市', '哈密市', '昌吉回族自治州', '博尔塔拉蒙古自治州', '巴音郭楞蒙古自治州', '阿克苏地区', '克孜勒苏柯尔克孜自治州', '喀什地区', '和田地区', '伊犁哈萨克自治州', '塔城地区', '阿勒泰地区', '石河子市', '阿拉尔市', '图木舒克市', '五家渠市', '北屯市', '铁门关市', '双河市', '可克达拉市', '昆玉市', '胡杨河市'],
+             '香港特别行政区': ['中西区', '湾仔区', '东区', '南区', '油尖旺区', '深水埗区', '九龙城区', '黄大仙区', '观塘区', '荃湾区', '屯门区', '元朗区', '北区', '大埔区', '沙田区', '西贡区', '葵青区', '离岛区'],
+             '澳门特别行政区': ['澳门半岛', '氹仔', '路环']
+         };
+         
+         // 省市联动函数
+         function onProvinceChange() {
+             const provinceSelect = document.getElementById('policyProvinceFilter');
+             const citySelect = document.getElementById('policyCityFilter');
+             const selectedProvince = provinceSelect.value;
+             
+             // 清空城市选项
+             citySelect.innerHTML = '<option value="">全部城市</option>';
+             
+             if (selectedProvince && cityData[selectedProvince]) {
+                 cityData[selectedProvince].forEach(city => {
+                     const option = document.createElement('option');
+                     option.value = city;
+                     option.textContent = city;
+                     citySelect.appendChild(option);
+                 });
+             }
+             
+             // 触发筛选
+             filterPolicyRules();
+         }
+         
+         // 政策规则库相关函数
+         function renderPolicy(policies = filteredPolicy) {
+             const policyGrid = document.getElementById('policyGrid');
+             const tableBody = document.getElementById('policyTableBody');
+            
+            if (policies.length === 0) {
+                if (policyCurrentView === 'grid') {
+                    policyGrid.innerHTML = '<div class="empty-state"><h3>未找到匹配的政策</h3><p>请尝试调整搜索条件</p></div>';
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #666;">未找到匹配的政策</td></tr>';
+                }
+                // 更新记录计数
+                document.getElementById('policyRecordCount').textContent = '0';
+                return;
+            }
+            
+            // 分页处理
+            const startIndex = (policyCurrentPage - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const paginatedPolicies = policies.slice(startIndex, endIndex);
+            
+            if (policyCurrentView === 'grid') {
+                // 渲染网格视图
+                policyGrid.innerHTML = paginatedPolicies.map(policy => `
+                    <div class="drug-card">
+                        <div class="drug-header">
+                            <div>
+                                <div class="drug-name">${policy.name}</div>
+                                <div class="drug-code">${policy.code}</div>
+                            </div>
+                            <div class="drug-status status-${policy.status}">
+                                ${policy.status === 'active' ? '生效' : policy.status === 'inactive' ? '失效' : '草案'}
+                            </div>
+                        </div>
+                        <div class="drug-info">
+                            <div class="drug-info-item">
+                                <span class="drug-info-label">类型:</span>
+                                <span class="drug-info-value">${policy.type}</span>
+                            </div>
+                            <div class="drug-info-item">
+                                <span class="drug-info-label">地域:</span>
+                                <span class="drug-info-value">${policy.province === '全国' ? '全国' : policy.province + (policy.city ? ' - ' + policy.city : '')}</span>
+                            </div>
+                            <div class="drug-info-item">
+                                <span class="drug-info-label">生效:</span>
+                                <span class="drug-info-value">${policy.effectiveDate}</span>
+                            </div>
+                            <div class="drug-info-item">
+                                <span class="drug-info-label">更新:</span>
+                                <span class="drug-info-value">${policy.lastUpdated}</span>
+                            </div>
+                        </div>
+                        <div class="drug-rules-summary">
+                            <div class="rules-title">描述</div>
+                            <div class="rule-tags">
+                                <span class="rule-tag">${policy.description}</span>
+                            </div>
+                        </div>
+                        <div class="drug-actions">
+                            <button class="btn btn-sm btn-outline" onclick="viewPolicyDetail(${policy.id})">查看</button>
+                            <button class="btn btn-sm btn-secondary" onclick="editPolicy(${policy.id})">编辑</button>
+                            <button class="btn btn-sm ${policy.status === 'active' ? 'btn-outline' : 'btn-primary'}" onclick="togglePolicyStatus(${policy.id})">
+                                ${policy.status === 'active' ? '停用' : '启用'}
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                // 渲染列表视图
+                tableBody.innerHTML = paginatedPolicies.map(policy => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500; color: #333;">${policy.name}</div>
+                            <div style="font-size: 12px; color: #666; margin-top: 2px;">${policy.code}</div>
+                            <div style="font-size: 12px; color: #999; margin-top: 2px;">${policy.description}</div>
+                        </td>
+                        <td>${policy.type}</td>
+                        <td>${policy.province === '全国' ? '全国' : policy.province + (policy.city ? ' - ' + policy.city : '')}</td>
+                        <td>${policy.effectiveDate}</td>
+                        <td>
+                            <span class="status status-${policy.status}">
+                                ${policy.status === 'active' ? '生效' : policy.status === 'inactive' ? '失效' : '草案'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline" onclick="viewPolicyDetail(${policy.id})" style="margin-right: 8px;">查看</button>
+                            <button class="btn btn-sm btn-outline" onclick="editPolicy(${policy.id})" style="margin-right: 8px;">编辑</button>
+                            <button class="btn btn-sm ${policy.status === 'active' ? 'btn-outline' : 'btn-primary'}" onclick="togglePolicyStatus(${policy.id})">
+                                ${policy.status === 'active' ? '停用' : '启用'}
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+            
+            // 更新记录计数
+            document.getElementById('policyRecordCount').textContent = policies.length;
+            
+            updatePolicyPagination();
+        }
+        
+        function filterPolicyRules() {
+            const typeFilter = document.getElementById('policyTypeFilter').value;
+            const provinceFilter = document.getElementById('policyProvinceFilter').value;
+            const cityFilter = document.getElementById('policyCityFilter').value;
+            const statusFilter = document.getElementById('policyStatusFilter').value;
+            const searchInput = document.getElementById('policySearchInput').value.toLowerCase();
+            
+            filteredPolicy = policyData.filter(policy => {
+                const matchesType = !typeFilter || policy.type === typeFilter;
+                const matchesProvince = !provinceFilter || policy.province === provinceFilter;
+                const matchesCity = !cityFilter || policy.city === cityFilter;
+                const matchesStatus = !statusFilter || policy.status === statusFilter;
+                const matchesSearch = !searchInput || 
+                    policy.name.toLowerCase().includes(searchInput) || 
+                    policy.code.toLowerCase().includes(searchInput) ||
+                    policy.description.toLowerCase().includes(searchInput);
+                
+                return matchesType && matchesProvince && matchesCity && matchesStatus && matchesSearch;
+            });
+            
+            policyCurrentPage = 1;
+            policyTotalPages = Math.ceil(filteredPolicy.length / pageSize);
+            renderPolicy();
+        }
+        
+        function resetPolicyFilters() {
+            document.getElementById('policyTypeFilter').value = '';
+            document.getElementById('policyProvinceFilter').value = '';
+            document.getElementById('policyCityFilter').value = '';
+            document.getElementById('policyStatusFilter').value = '';
+            document.getElementById('policySearchInput').value = '';
+            
+            // 重置城市选项
+            document.getElementById('policyCityFilter').innerHTML = '<option value="">全部城市</option>';
+            
+            filteredPolicy = [...policyData];
+            policyCurrentPage = 1;
+            policyTotalPages = Math.ceil(filteredPolicy.length / pageSize);
+            renderPolicy();
+        }
+        
+        function updatePolicyPagination() {
+            const paginationInfo = document.getElementById('policyPaginationInfo');
+            const paginationNumbers = document.getElementById('policyPaginationNumbers');
+            const prevBtn = document.getElementById('policyPrevBtn');
+            const nextBtn = document.getElementById('policyNextBtn');
+            
+            const startIndex = (policyCurrentPage - 1) * pageSize + 1;
+            const endIndex = Math.min(policyCurrentPage * pageSize, filteredPolicy.length);
+            
+            paginationInfo.textContent = `显示 ${startIndex}-${endIndex} 条，共 ${filteredPolicy.length} 条记录`;
+            
+            prevBtn.disabled = policyCurrentPage === 1;
+            nextBtn.disabled = policyCurrentPage === policyTotalPages;
+            
+            let paginationHTML = '';
+            for (let i = 1; i <= policyTotalPages; i++) {
+                if (i === policyCurrentPage) {
+                    paginationHTML += `<button class="pagination-number active">${i}</button>`;
+                } else {
+                    paginationHTML += `<button class="pagination-number" onclick="goToPolicyPage(${i})">${i}</button>`;
+                }
+            }
+            paginationNumbers.innerHTML = paginationHTML;
+        }
+        
+        function changePolicyPage(direction) {
+            const newPage = policyCurrentPage + direction;
+            if (newPage >= 1 && newPage <= policyTotalPages) {
+                policyCurrentPage = newPage;
+                renderPolicy();
+            }
+        }
+        
+        function goToPolicyPage(page) {
+            if (!page) {
+                const input = document.getElementById('policyPageInput');
+                page = parseInt(input.value);
+                input.value = '';
+            }
+            
+            if (page >= 1 && page <= policyTotalPages) {
+                policyCurrentPage = page;
+                renderPolicy();
+            }
+        }
+        
+        // 政策操作函数
+        function addPolicyRule() {
+            window.location.href = '创建规则.html?type=policy';
+        }
+
+        function downloadPolicyTemplate() {
+            alert('下载政策模板功能正在开发中...');
+        }
+
+        function importPolicyRules() {
+            alert('导入政策规则功能正在开发中...');
+        }
+
+        function viewPolicy(id) {
+            alert(`查看政策 ID: ${id}`);
+        }
+
+        function editPolicy(id) {
+            const policy = policyData.find(p => p.id === id);
+            if (policy) {
+                showPolicyModal(policy);
+            }
+        }
+        
+        function togglePolicyStatus(id) {
+            const policy = policyData.find(p => p.id === id);
+            if (policy) {
+                policy.status = policy.status === 'active' ? 'inactive' : 'active';
+                filterPolicyRules();
+            }
+        }
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化药品数据
+            filteredDrugs = [...drugsData];
+            totalPages = Math.ceil(filteredDrugs.length / pageSize);
+            
+            // 初始化慢病数据
+            filteredChronic = [...chronicData];
+            chronicTotalPages = Math.ceil(filteredChronic.length / pageSize);
+            
+            // 初始化诊疗数据
+            filteredClinical = [...clinicalData];
+            clinicalTotalPages = Math.ceil(filteredClinical.length / pageSize);
+            
+            // 初始化政策规则数据
+            filteredPolicy = [...policyData];
+            policyTotalPages = Math.ceil(filteredPolicy.length / pageSize);
+            
+            // 设置默认视图为列表
+            const gridView = document.getElementById('drugsGrid');
+            const listView = document.getElementById('drugsList');
+            const gridBtn = document.querySelector('.view-btn[data-view="grid"]');
+            const listBtn = document.querySelector('.view-btn[data-view="list"]');
+            
+            gridView.classList.add('hidden');
+            listView.classList.remove('hidden');
+            listBtn.classList.add('active');
+            gridBtn.classList.remove('active');
+            
+            // 默认显示药品规则库页面
+            showCategory('drugs');
+        });
+
+        // 诊疗规则库模态框函数
+        function showClinicalModal(disease = null) {
+            const modal = document.getElementById('clinicalModal');
+            const modalTitle = document.getElementById('clinicalModalTitle');
+            const form = document.getElementById('clinicalForm');
+            
+            if (disease) {
+                modalTitle.textContent = '编辑诊疗疾病';
+                document.getElementById('clinicalName').value = disease.name;
+                document.getElementById('clinicalCode').value = disease.code;
+                document.getElementById('clinicalType').value = disease.type;
+                document.getElementById('clinicalPrimaryDepartment').value = disease.primaryDepartment;
+                document.getElementById('clinicalSecondaryDepartment').value = disease.secondaryDepartment;
+                document.getElementById('clinicalStatus').value = disease.status;
+                document.getElementById('clinicalDescription').value = disease.description || '';
+                form.dataset.editId = disease.id;
+            } else {
+                modalTitle.textContent = '添加诊疗疾病';
+                form.reset();
+                delete form.dataset.editId;
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        function saveClinicalDisease() {
+            const form = document.getElementById('clinicalForm');
+            const name = document.getElementById('clinicalName').value;
+            const code = document.getElementById('clinicalCode').value;
+            const type = document.getElementById('clinicalType').value;
+            const primaryDepartment = document.getElementById('clinicalPrimaryDepartment').value;
+            const secondaryDepartment = document.getElementById('clinicalSecondaryDepartment').value;
+            const status = document.getElementById('clinicalStatus').value;
+            const description = document.getElementById('clinicalDescription').value;
+            
+            if (!name || !code || !type || !primaryDepartment) {
+                alert('请填写必填字段');
+                return;
+            }
+            
+            const diseaseData = {
+                name,
+                code,
+                type,
+                primaryDepartment,
+                secondaryDepartment,
+                status,
+                description
+            };
+            
+            if (form.dataset.editId) {
+                // 编辑模式
+                const disease = clinicalData.find(d => d.id == form.dataset.editId);
+                if (disease) {
+                    Object.assign(disease, diseaseData);
+                    alert('疾病信息已更新');
+                }
+            } else {
+                // 新增模式
+                const newDisease = {
+                    id: Date.now(),
+                    ...diseaseData
+                };
+                clinicalData.push(newDisease);
+                alert('疾病已添加');
+            }
+            
+            filteredClinical = [...clinicalData];
+            renderClinical();
+            closeClinicalModal();
+        }
+
+        function closeClinicalModal() {
+            document.getElementById('clinicalModal').style.display = 'none';
+        }
+
+        // 相关政策库模态框函数
+        function showPolicyModal(policy = null) {
+            const modal = document.getElementById('policyModal');
+            const modalTitle = document.getElementById('policyModalTitle');
+            const form = document.getElementById('policyForm');
+            
+            if (policy) {
+                modalTitle.textContent = '编辑政策规则';
+                document.getElementById('policyName').value = policy.name;
+                document.getElementById('policyCode').value = policy.code;
+                document.getElementById('policyType').value = policy.type;
+                document.getElementById('policyProvince').value = policy.province;
+                document.getElementById('policyCity').value = policy.city || '';
+                document.getElementById('policyStatus').value = policy.status;
+                document.getElementById('policyEffectiveDate').value = policy.effectiveDate;
+                document.getElementById('policyDescription').value = policy.description || '';
+                form.dataset.editId = policy.id;
+            } else {
+                modalTitle.textContent = '添加政策规则';
+                form.reset();
+                delete form.dataset.editId;
+            }
+            
+            modal.style.display = 'flex';
+        }
+
+        function savePolicyRule() {
+            const form = document.getElementById('policyForm');
+            const name = document.getElementById('policyName').value;
+            const code = document.getElementById('policyCode').value;
+            const type = document.getElementById('policyType').value;
+            const province = document.getElementById('policyProvince').value;
+            const city = document.getElementById('policyCity').value;
+            const status = document.getElementById('policyStatus').value;
+            const effectiveDate = document.getElementById('policyEffectiveDate').value;
+            const description = document.getElementById('policyDescription').value;
+            
+            if (!name || !code || !type || !province || !effectiveDate) {
+                alert('请填写必填字段');
+                return;
+            }
+            
+            const policyRuleData = {
+                name,
+                code,
+                type,
+                province,
+                city,
+                status,
+                effectiveDate,
+                description
+            };
+            
+            if (form.dataset.editId) {
+                // 编辑模式
+                const policy = policyData.find(p => p.id == form.dataset.editId);
+                if (policy) {
+                    Object.assign(policy, policyRuleData);
+                    alert('政策规则已更新');
+                }
+            } else {
+                // 新增模式
+                const newPolicy = {
+                    id: Date.now(),
+                    ...policyRuleData
+                };
+                policyData.push(newPolicy);
+                alert('政策规则已添加');
+            }
+            
+            filteredPolicy = [...policyData];
+            renderPolicy();
+            closePolicyModal();
+        }
+
+        function closePolicyModal() {
+            document.getElementById('policyModal').style.display = 'none';
+        }
+        
+        // 查看政策详情
+        function viewPolicyDetail(id) {
+            window.location.href = `policy-detail.html?id=${id}`;
+        }
+        
+
+    </script>
+    
+            </div>
+
+        </div>
+
+    <!-- 诊疗规则库模态框 -->
+    <div id="clinicalModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="clinicalModalTitle">添加诊疗疾病</h3>
+                <span class="close" onclick="closeClinicalModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="clinicalForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clinicalName">疾病名称 *</label>
+                            <input type="text" id="clinicalName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="clinicalCode">疾病编码 *</label>
+                            <input type="text" id="clinicalCode" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clinicalType">诊疗类型 *</label>
+                            <select id="clinicalType" required>
+                                <option value="">请选择</option>
+                                <option value="门诊">门诊</option>
+                                <option value="住院">住院</option>
+                                <option value="急诊">急诊</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="clinicalStatus">状态</label>
+                            <select id="clinicalStatus">
+                                <option value="active">启用</option>
+                                <option value="inactive">停用</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clinicalPrimaryDepartment">一级科室 *</label>
+                            <select id="clinicalPrimaryDepartment" required>
+                                <option value="">请选择</option>
+                                <option value="内科">内科</option>
+                                <option value="外科">外科</option>
+                                <option value="妇产科">妇产科</option>
+                                <option value="儿科">儿科</option>
+                                <option value="眼科">眼科</option>
+                                <option value="耳鼻喉科">耳鼻喉科</option>
+                                <option value="口腔科">口腔科</option>
+                                <option value="皮肤科">皮肤科</option>
+                                <option value="神经科">神经科</option>
+                                <option value="精神科">精神科</option>
+                                <option value="肿瘤科">肿瘤科</option>
+                                <option value="急诊科">急诊科</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="clinicalSecondaryDepartment">二级科室</label>
+                            <select id="clinicalSecondaryDepartment">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="clinicalDescription">疾病描述</label>
+                        <textarea id="clinicalDescription" rows="3" placeholder="请输入疾病描述"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeClinicalModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="saveClinicalDisease()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 相关政策库模态框 -->
+    <div id="policyModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="policyModalTitle">添加政策规则</h3>
+                <span class="close" onclick="closePolicyModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="policyForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="policyName">政策名称 *</label>
+                            <input type="text" id="policyName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="policyCode">政策编号 *</label>
+                            <input type="text" id="policyCode" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="policyType">政策类型 *</label>
+                            <select id="policyType" required>
+                                <option value="">请选择</option>
+                                <option value="医保政策">医保政策</option>
+                                <option value="药品政策">药品政策</option>
+                                <option value="诊疗政策">诊疗政策</option>
+                                <option value="收费政策">收费政策</option>
+                                <option value="监管政策">监管政策</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="policyStatus">状态</label>
+                            <select id="policyStatus">
+                                <option value="active">生效</option>
+                                <option value="inactive">失效</option>
+                                <option value="draft">草案</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="policyProvince">省份 *</label>
+                            <select id="policyProvince" required>
+                                <option value="">请选择</option>
+                                <option value="全国">全国</option>
+                                <option value="北京市">北京市</option>
+                                <option value="上海市">上海市</option>
+                                <option value="天津市">天津市</option>
+                                <option value="重庆市">重庆市</option>
+                                <option value="河北省">河北省</option>
+                                <option value="山西省">山西省</option>
+                                <option value="辽宁省">辽宁省</option>
+                                <option value="吉林省">吉林省</option>
+                                <option value="黑龙江省">黑龙江省</option>
+                                <option value="江苏省">江苏省</option>
+                                <option value="浙江省">浙江省</option>
+                                <option value="安徽省">安徽省</option>
+                                <option value="福建省">福建省</option>
+                                <option value="江西省">江西省</option>
+                                <option value="山东省">山东省</option>
+                                <option value="河南省">河南省</option>
+                                <option value="湖北省">湖北省</option>
+                                <option value="湖南省">湖南省</option>
+                                <option value="广东省">广东省</option>
+                                <option value="海南省">海南省</option>
+                                <option value="四川省">四川省</option>
+                                <option value="贵州省">贵州省</option>
+                                <option value="云南省">云南省</option>
+                                <option value="陕西省">陕西省</option>
+                                <option value="甘肃省">甘肃省</option>
+                                <option value="青海省">青海省</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="policyCity">城市</label>
+                            <select id="policyCity">
+                                <option value="">请选择</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="policyEffectiveDate">生效日期 *</label>
+                            <input type="date" id="policyEffectiveDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="policyDescription">政策描述</label>
+                        <textarea id="policyDescription" rows="3" placeholder="请输入政策描述"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closePolicyModal()">取消</button>
+                <button type="button" class="btn btn-primary" onclick="savePolicyRule()">保存</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

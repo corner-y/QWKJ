@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航诊断测试</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .test-container {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input {
+            padding: 8px;
+            width: 600px;
+            margin-right: 10px;
+        }
+        pre {
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .test-case {
+            margin-bottom: 15px;
+        }
+        .tabs-demo {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        .tabs-header {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .tab-item {
+            padding: 10px 15px;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+        .tab-item.active {
+            background: #fff;
+            border-bottom: 2px solid #007bff;
+        }
+        .tabs-content {
+            min-height: 200px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>导航诊断测试</h1>
+    
+    <div class="test-container">
+        <h2>1. 路径转换测试</h2>
+        <div class="test-case">
+            <input id="pathInput" type="text" placeholder="输入路径进行测试">
+            <button onclick="testPath()">测试路径转换</button>
+        </div>
+        <pre id="pathResult"></pre>
+    </div>
+    
+    <div class="test-container">
+        <h2>2. 导航事件监听测试</h2>
+        <div id="navTest">
+            <a href="../慢病管理/慢病资格评审/index.html" class="test-link">慢病资格评审 (测试链接)</a>
+        </div>
+        <pre id="eventResult"></pre>
+    </div>
+    
+    <div class="test-container">
+        <h2>3. 标签页功能演示</h2>
+        <div class="tabs-demo">
+            <div class="tabs-header">
+                <button class="tab-item active" onclick="switchTab(1)">标签页1</button>
+                <button class="tab-item" onclick="switchTab(2)">标签页2</button>
+                <button class="tab-item" onclick="addTab()">添加标签页</button>
+            </div>
+            <div class="tabs-content">
+                <div id="tab1" style="display:block;">标签页1 内容</div>
+                <div id="tab2" style="display:none;">标签页2 内容</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟tabsManager对象
+        const tabsManager = {
+            // 将相对路径转换为绝对路径 - 改进版
+            convertToAbsolutePath(relativeUrl) {
+                console.log('原始相对路径:', relativeUrl);
+                
+                // 移除前后空格
+                relativeUrl = relativeUrl.trim();
+                
+                // 如果已经是绝对路径，直接返回
+                if (relativeUrl.startsWith('/') || relativeUrl.startsWith('http://') || relativeUrl.startsWith('https://')) {
+                    console.log('已是绝对路径，直接返回:', relativeUrl);
+                    return relativeUrl;
+                }
+                
+                // 处理所有类型的URL中的路径重复问题
+                // 1. 分割URL为路径部分
+                const parts = relativeUrl.split('/');
+                
+                // 2. 高级路径去重逻辑 - 移除所有重复的目录
+                const pathSet = new Set();
+                const cleanParts = [];
+                
+                for (let i = 0; i < parts.length; i++) {
+                    // 跳过空部分
+                    if (!parts[i]) continue;
+                    
+                    // 特殊处理慢病管理目录
+                    if (parts[i] === '慢病管理') {
+                        // 如果这是第一个慢病管理目录，添加到清理后的数组
+                        if (!pathSet.has('慢病管理')) {
+                            cleanParts.push(parts[i]);
+                            pathSet.add('慢病管理');
+                        } else {
+                            console.log('发现重复的慢病管理目录，已移除');
+                        }
+                    } else {
+                        // 对于其他目录，直接添加
+                        cleanParts.push(parts[i]);
+                    }
+                }
+                
+                // 重新组合路径
+                const processedPath = cleanParts.join('/');
+                console.log('路径处理后:', processedPath);
+                
+                // 获取当前页面的基础URL
+                const baseUrl = window.location.origin + window.location.pathname.replace(/[^/]+$/, '');
+                
+                // 使用URL对象来解析相对路径
+                try {
+                    const absoluteUrl = new URL(processedPath, baseUrl).href;
+                    console.log('转换后的绝对路径:', absoluteUrl);
+                    return absoluteUrl;
+                } catch (e) {
+                    console.error('路径转换失败:', e);
+                    return relativeUrl;
+                }
+            },
+            
+            // 在新标签页中打开链接
+            openInTab(id, title, url) {
+                console.log('在标签页中打开:', title, 'URL:', url);
+                alert(`将在标签页中打开: ${title}\nURL: ${url}`);
+                
+                // 这里应该是实际的标签页打开逻辑
+                // 为了演示，我们只是显示一个提示
+            }
+        };
+        
+        // 测试路径转换
+        function testPath() {
+            const input = document.getElementById('pathInput').value;
+            if (!input) return;
+            
+            try {
+                const result = tabsManager.convertToAbsolutePath(input);
+                const log = `原始路径: ${input}\n处理后路径: ${result}\n\n详细日志请查看浏览器控制台`;
+                document.getElementById('pathResult').textContent = log;
+            } catch (e) {
+                document.getElementById('pathResult').textContent = `错误: ${e.message}`;
+            }
+        }
+        
+        // 测试导航事件监听
+        document.addEventListener('DOMContentLoaded', () => {
+            const testLink = document.querySelector('.test-link');
+            if (testLink) {
+                testLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const href = this.getAttribute('href');
+                    const text = this.textContent;
+                    
+                    console.log('捕获点击事件:', text, href);
+                    document.getElementById('eventResult').textContent = `捕获点击事件:\n文本: ${text}\n链接: ${href}\n阻止了默认跳转行为`;
+                    
+                    // 调用标签页打开方法
+                    const absoluteUrl = tabsManager.convertToAbsolutePath(href);
+                    tabsManager.openInTab(`tab-${Date.now()}`, text, absoluteUrl);
+                });
+            }
+        });
+        
+        // 标签页切换演示
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('#tab1, #tab2').forEach(tab => tab.style.display = 'none');
+            
+            document.querySelector(`.tab-item:nth-child(${tabId})`).classList.add('active');
+            document.getElementById(`tab${tabId}`).style.display = 'block';
+        }
+        
+        function addTab() {
+            alert('添加标签页功能演示');
+        }
+    </script>
+</body>
+</html>

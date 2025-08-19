@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简化导航测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        h1 { color: #333; }
+        h2 { color: #555; margin-top: 30px; }
+        .test-links {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        a {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        a:hover { background-color: #45a049; }
+        .log {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            font-family: monospace;
+            white-space: pre-wrap;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>简化导航测试页面</h1>
+    <p>本页面用于测试导航路径问题，所有链接都使用绝对路径。</p>
+    <p>请打开浏览器控制台查看完整的导航过程日志。</p>
+    
+    <div class="test-links">
+        <h2>绝对路径导航测试</h2>
+        <a href="/1.0/超级管理员/工作台/平台运营看板.html" onclick="logNavigation(event, this)">平台运营看板 (绝对路径)</a>
+        <a href="/1.0/超级管理员/工作台/报告规则分析.html" onclick="logNavigation(event, this)">报告规则分析 (绝对路径)</a>
+        <a href="/1.0/超级管理员/规则管理/index.html" onclick="logNavigation(event, this)">规则管理主页 (绝对路径)</a>
+    </div>
+    
+    <div id="navigation-log" class="log">
+        导航日志将显示在这里...
+    </div>
+    
+    <script>
+        // 记录页面加载信息
+        function log(message) {
+            const logElement = document.getElementById('navigation-log');
+            const now = new Date();
+            const timeString = now.toLocaleTimeString() + ':' + now.getMilliseconds().toString().padStart(3, '0');
+            logElement.innerHTML += `[${timeString}] ${message}\n`;
+            console.log(`[${timeString}] ${message}`);
+        }
+        
+        // 记录导航事件
+        function logNavigation(event, link) {
+            event.preventDefault(); // 阻止默认导航行为
+            const href = link.getAttribute('href');
+            const text = link.textContent;
+            
+            log(`点击链接: ${text}`);
+            log(`链接HREF: ${href}`);
+            log(`当前URL: ${window.location.href}`);
+            log(`当前pathname: ${window.location.pathname}`);
+            
+            // 创建链接元素验证路径解析
+            const a = document.createElement('a');
+            a.href = href;
+            log(`解析后的pathname: ${a.pathname}`);
+            log(`解析后的完整URL: ${a.href}`);
+            
+            // 延迟执行导航，以便查看日志
+            setTimeout(() => {
+                log(`执行导航到: ${href}`);
+                window.location.href = href;
+            }, 1000);
+        }
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            log('页面已加载');
+            log(`初始URL: ${window.location.href}`);
+            log(`初始pathname: ${window.location.pathname}`);
+        });
+    </script>
+</body>
+</html>

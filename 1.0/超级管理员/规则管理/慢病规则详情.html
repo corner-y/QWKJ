@@ -1,0 +1,3015 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>慢病规则详情 - 医保审核系统</title>
+    <link rel="stylesheet" href="../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../样式文件/unified-sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .page-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .disease-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .disease-title h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .disease-code {
+            font-size: 14px;
+            color: #666;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .disease-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .disease-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #007bff;
+            color: #007bff;
+        }
+
+        .btn-outline:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .detail-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .main-tab-navigation {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .main-tab-item {
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .main-tab-item:hover {
+            color: #007bff;
+            background: #e9ecef;
+        }
+
+        .main-tab-item.active {
+            color: #007bff;
+            border-bottom-color: #007bff;
+            background: white;
+        }
+
+        .main-tab-contents {
+            padding: 24px;
+        }
+
+        .main-tab-content {
+            display: none;
+        }
+
+        .main-tab-content.active {
+            display: block;
+        }
+
+        .info-card, .rules-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #eee;
+            background: #f8f9fa;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .info-item label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item span {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .severity-轻度 {
+            color: #4caf50;
+            font-weight: 600;
+        }
+
+        .severity-中度 {
+            color: #ff9800;
+            font-weight: 600;
+        }
+
+        .severity-重度 {
+            color: #f44336;
+            font-weight: 600;
+        }
+
+        .stats-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #007bff;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        /* 垂直Tab样式 */
+        .rules-layout {
+            display: flex;
+            gap: 24px;
+            min-height: 500px;
+        }
+
+        .vertical-tab-navigation {
+            min-width: 200px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        .vertical-tab-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .vertical-tab-item:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .vertical-tab-item.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .tab-count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .vertical-tab-item.active .tab-count {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .rules-content {
+            flex: 1;
+        }
+
+        .vertical-tab-contents {
+            height: 100%;
+        }
+
+        .vertical-tab-content {
+            display: none;
+        }
+
+        .vertical-tab-content.active {
+            display: block;
+        }
+
+        .rules-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .rules-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 0;
+        }
+
+        .rules-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .rule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .rule-item:hover {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .rule-info {
+            flex: 1;
+        }
+
+        .rule-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .rule-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .rule-meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .rule-priority {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-low {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .priority-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .priority-high {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .priority-critical {
+            background: #f5c6cb;
+            color: #721c24;
+        }
+
+        .rule-status {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .rule-status.active {
+            color: #28a745;
+        }
+
+        .rule-status.inactive {
+            color: #dc3545;
+        }
+
+        .rule-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 20px 0;
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #666;
+            margin: 0 10px;
+        }
+
+        .pagination .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 政策文献布局样式 */
+        .policy-layout {
+            display: flex;
+            gap: 24px;
+            height: 600px;
+        }
+
+        .policy-sidebar {
+            width: 300px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .policy-search {
+            margin-bottom: 16px;
+        }
+
+        .policy-search input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .policy-list {
+            list-style: none;
+        }
+
+        .policy-item {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .policy-item:hover {
+            background: #e9ecef;
+        }
+
+        .policy-item.active {
+            background: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+
+        .policy-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .policy-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .policy-item.active .policy-meta {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .policy-content {
+            flex: 1;
+            background: white;
+            border-radius: 6px;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .policy-content-header {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .policy-content-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .policy-content-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .policy-content-body {
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .policy-content-body h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 24px 0 12px 0;
+            color: #333;
+        }
+
+        .policy-content-body p {
+            margin-bottom: 16px;
+        }
+
+        .policy-content-body ul {
+            margin-bottom: 16px;
+            padding-left: 20px;
+        }
+
+        .policy-content-body li {
+            margin-bottom: 8px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        /* 规则详情样式 */
+        .rule-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .detail-row label {
+            font-weight: bold;
+            color: #333;
+            min-width: 80px;
+            flex-shrink: 0;
+        }
+        
+        .detail-row span {
+            color: #666;
+            flex: 1;
+            word-break: break-word;
+        }
+        
+        .status.active {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        .status.inactive {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #1f2937;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            color: #6b7280;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .modal-close:hover {
+            color: #374151;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px 24px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        /* 表单样式 */
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label,
+        .form-label {
+            margin-bottom: 6px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea,
+        .form-input,
+        .form-select,
+        .form-textarea {
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus,
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group textarea,
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 页面内容 -->
+        <div class="page-content">
+            <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">首页</a> > 
+            <a href="index.html#chronic">慢病规则库</a> > 
+            <span id="diseaseName">糖尿病</span>
+        </div>
+
+        <div class="page-header">
+            <div class="header-content">
+                <div class="disease-title">
+                    <h1 id="diseaseTitle">糖尿病</h1>
+                    <span class="disease-code" id="diseaseCode">E11</span>
+                    <span class="disease-status status-active" id="diseaseStatus">启用</span>
+                </div>
+                <div class="disease-actions">
+                    <button class="btn btn-outline" onclick="editDisease()">编辑疾病</button>
+                    <button class="btn btn-secondary" onclick="toggleDiseaseStatus()">停用</button>
+                    <!-- 新增规则按钮已隐藏 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-container">
+            <div class="main-tab-navigation">
+                <button class="main-tab-item active" onclick="switchMainTab('basic')">基本信息</button>
+                <button class="main-tab-item" onclick="switchMainTab('insurance')">医保规则</button>
+                <button class="main-tab-item" onclick="switchMainTab('rational')">合理用药规则</button>
+                <button class="main-tab-item" onclick="switchMainTab('policy')">相关政策</button>
+                <button class="main-tab-item" onclick="switchMainTab('literature')">文献指南</button>
+            </div>
+
+            <div class="main-tab-contents">
+                <!-- 基本信息Tab -->
+                <div id="basic-tab" class="main-tab-content active">
+                    <div class="info-card">
+                        <div class="card-header">
+                            <h3>基本信息</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="info-grid" id="diseaseInfoGrid">
+                                <!-- 疾病信息将通过JavaScript动态填充 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-bar">
+                        <div class="stats-grid" id="statsGrid">
+                            <!-- 统计信息将通过JavaScript动态填充 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 医保规则Tab -->
+                <div id="insurance-tab" class="main-tab-content">
+                    <div class="rules-layout">
+                        <div class="vertical-tab-navigation">
+                            <button class="vertical-tab-item active" onclick="switchInsuranceTab('basic')">
+                                基本医保 <span class="tab-count">15</span>
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchInsuranceTab('special')">
+                                特殊医保 <span class="tab-count">8</span>
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchInsuranceTab('limit')">
+                                限制使用 <span class="tab-count">5</span>
+                            </button>
+                        </div>
+                        <div class="rules-content">
+                            <div class="vertical-tab-contents">
+                                <div id="basic-insurance" class="vertical-tab-content active">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">基本医保规则</h3>
+                                        <div class="rules-actions">
+                                            <input type="text" class="search-input" placeholder="搜索规则..." id="basicInsuranceSearch" oninput="searchInsuranceRules('basic')" style="margin-right: 12px; width: 200px;">
+                                            <button class="btn btn-outline btn-small" onclick="downloadInsuranceTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importInsuranceRules()">导入规则</button>
+                                            <button class="btn btn-primary btn-small" onclick="addRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    <div id="basicInsuranceRules">
+                                        <!-- 基本医保规则列表 -->
+                                    </div>
+                                </div>
+                                <div id="special-insurance" class="vertical-tab-content">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">特殊医保规则</h3>
+                                        <div class="rules-actions">
+                                            <input type="text" class="search-input" placeholder="搜索规则..." id="specialInsuranceSearch" oninput="searchInsuranceRules('special')" style="margin-right: 12px; width: 200px;">
+                                            <button class="btn btn-outline btn-small" onclick="downloadInsuranceTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importInsuranceRules()">导入规则</button>
+                                            <button class="btn btn-primary btn-small" onclick="addRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    <div id="specialInsuranceRules">
+                                        <!-- 特殊医保规则列表 -->
+                                    </div>
+                                </div>
+                                <div id="limit-insurance" class="vertical-tab-content">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">限制使用规则</h3>
+                                        <div class="rules-actions">
+                                            <input type="text" class="search-input" placeholder="搜索规则..." id="limitInsuranceSearch" oninput="searchInsuranceRules('limit')" style="margin-right: 12px; width: 200px;">
+                                            <button class="btn btn-outline btn-small" onclick="downloadInsuranceTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importInsuranceRules()">导入规则</button>
+                                            <button class="btn btn-primary btn-small" onclick="addRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    <div id="limitInsuranceRules">
+                                        <!-- 限制使用规则列表 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 合理用药规则Tab -->
+                <div id="rational-tab" class="main-tab-content">
+                    <div class="rules-layout">
+                        <div class="vertical-tab-navigation">
+                            <button class="vertical-tab-item active" onclick="switchRationalTab('dosage')">
+                                用药剂量 <span class="tab-count">12</span>
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchRationalTab('interaction')">
+                                药物相互作用 <span class="tab-count">6</span>
+                            </button>
+                            <button class="vertical-tab-item" onclick="switchRationalTab('contraindication')">
+                                禁忌症 <span class="tab-count">9</span>
+                            </button>
+                        </div>
+                        <div class="rules-content">
+                            <div class="vertical-tab-contents">
+                                <div id="dosage-rational" class="vertical-tab-content active">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">用药剂量规则</h3>
+                                        <div class="rules-actions">
+                                            <input type="text" class="search-input" placeholder="搜索规则..." id="dosageRationalSearch" oninput="searchRationalRules('dosage')" style="margin-right: 12px; width: 200px;">
+                                            <button class="btn btn-outline btn-small" onclick="downloadRationalTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importRationalRules()">导入规则</button>
+                                            <button class="btn btn-primary btn-small" onclick="addRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    <div id="dosageRationalRules">
+                                        <!-- 用药剂量规则列表 -->
+                                    </div>
+                                </div>
+                                <div id="interaction-rational" class="vertical-tab-content">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">药物相互作用规则</h3>
+                                        <div class="rules-actions">
+                                            <input type="text" class="search-input" placeholder="搜索规则..." id="interactionRationalSearch" oninput="searchRationalRules('interaction')" style="margin-right: 12px; width: 200px;">
+                                            <button class="btn btn-outline btn-small" onclick="downloadRationalTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importRationalRules()">导入规则</button>
+                                            <button class="btn btn-primary btn-small" onclick="addRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    <div id="interactionRationalRules">
+                                        <!-- 药物相互作用规则列表 -->
+                                    </div>
+                                </div>
+                                <div id="contraindication-rational" class="vertical-tab-content">
+                                    <div class="rules-header">
+                                        <h3 class="rules-title">禁忌症规则</h3>
+                                        <div class="rules-actions">
+                                            <input type="text" class="search-input" placeholder="搜索规则..." id="contraindicationRationalSearch" oninput="searchRationalRules('contraindication')" style="margin-right: 12px; width: 200px;">
+                                            <button class="btn btn-outline btn-small" onclick="downloadRationalTemplate()">下载模板</button>
+                                            <button class="btn btn-outline btn-small" onclick="importRationalRules()">导入规则</button>
+                                            <button class="btn btn-primary btn-small" onclick="addRule()">创建规则</button>
+                                        </div>
+                                    </div>
+                                    <div id="contraindicationRationalRules">
+                                        <!-- 禁忌症规则列表 -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 相关政策Tab -->
+                <div id="policy-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" placeholder="搜索政策..." id="policySearchInput" oninput="searchPolicies()">
+                            </div>
+                            <ul class="policy-list" id="policyList">
+                                <!-- 政策列表将通过JavaScript动态填充 -->
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="policyContent">
+                            <div class="empty-state">
+                                <h3>选择政策查看详情</h3>
+                                <p>请从左侧列表中选择一个政策文件查看详细内容</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+
+                <!-- 文献指南Tab -->
+                <div id="literature-tab" class="main-tab-content">
+                    <div class="policy-layout">
+                        <div class="policy-sidebar">
+                            <div class="policy-search">
+                                <input type="text" placeholder="搜索文献..." id="literatureSearchInput" oninput="searchLiterature()">
+                            </div>
+                            <ul class="policy-list" id="literatureList">
+                                <!-- 文献列表将通过JavaScript动态填充 -->
+                            </ul>
+                        </div>
+                        <div class="policy-content" id="literatureContent">
+                            <div class="empty-state">
+                                <h3>选择文献查看详情</h3>
+                                <p>请从左侧列表中选择一个文献指南查看详细内容</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟疾病数据库
+        const chronicDatabase = {
+            diseases: [
+                {
+                    id: 1,
+                    name: '糖尿病',
+                    code: 'E11',
+                    category: '内分泌系统疾病',
+                    severity: '中度',
+                    status: 'active',
+                    description: '2型糖尿病是一种慢性代谢性疾病，以高血糖为特征，由胰岛素抵抗和胰岛素分泌不足引起。',
+                    icd10: 'E11.9',
+                    ageGroup: '成人',
+                    riskFactors: ['肥胖', '家族史', '高血压', '血脂异常'],
+                    complications: ['糖尿病肾病', '糖尿病视网膜病变', '糖尿病足', '心血管疾病'],
+                    createdAt: '2024-01-15',
+                    updatedAt: '2024-03-20'
+                },
+                {
+                    id: 2,
+                    name: '高血压',
+                    code: 'I10',
+                    category: '循环系统疾病',
+                    severity: '轻度',
+                    status: 'active',
+                    description: '原发性高血压是一种以血压升高为主要临床表现的慢性疾病，是心脑血管疾病的主要危险因素。',
+                    icd10: 'I10',
+                    ageGroup: '成人',
+                    riskFactors: ['年龄', '肥胖', '高盐饮食', '缺乏运动', '遗传因素'],
+                    complications: ['心肌梗死', '脑卒中', '心力衰竭', '肾功能不全'],
+                    createdAt: '2024-01-10',
+                    updatedAt: '2024-03-18'
+                },
+                {
+                    id: 3,
+                    name: '冠心病',
+                    code: 'I25',
+                    category: '循环系统疾病',
+                    severity: '重度',
+                    status: 'active',
+                    description: '冠状动脉粥样硬化性心脏病，是由于冠状动脉血管发生动脉粥样硬化病变而引起血管腔狭窄或阻塞。',
+                    icd10: 'I25.9',
+                    ageGroup: '中老年',
+                    riskFactors: ['高血压', '糖尿病', '血脂异常', '吸烟', '肥胖'],
+                    complications: ['心肌梗死', '心律失常', '心力衰竭', '猝死'],
+                    createdAt: '2024-01-20',
+                    updatedAt: '2024-03-15'
+                }
+            ]
+        };
+
+        // 获取当前疾病数据
+        function getCurrentDiseaseData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const diseaseId = parseInt(urlParams.get('id')) || 1;
+            return chronicDatabase.diseases.find(d => d.id === diseaseId) || chronicDatabase.diseases[0];
+        }
+
+        // 当前疾病数据
+        let diseaseData = getCurrentDiseaseData();
+
+        // 模拟规则数据
+        const insuranceRules = {
+            basic: [
+                {
+                    id: 1,
+                    name: '糖尿病基本用药医保规则',
+                    description: '糖尿病患者基本用药的医保报销规则',
+                    level: '强制',
+                    status: 'active',
+                    createdAt: '2024-01-15'
+                },
+                {
+                    id: 2,
+                    name: '血糖监测医保规则',
+                    description: '糖尿病患者血糖监测设备的医保报销规则',
+                    level: '警告',
+                    status: 'active',
+                    createdAt: '2024-01-20'
+                }
+            ],
+            special: [
+                {
+                    id: 3,
+                    name: '胰岛素泵特殊医保规则',
+                    description: '符合条件的糖尿病患者使用胰岛素泵的特殊医保规则',
+                    level: '强制',
+                    status: 'active',
+                    createdAt: '2024-02-01'
+                }
+            ],
+            limit: [
+                {
+                    id: 4,
+                    name: '新型降糖药限制使用规则',
+                    description: '新型降糖药物的限制使用条件和医保规则',
+                    level: '警告',
+                    status: 'active',
+                    createdAt: '2024-02-15'
+                }
+            ]
+        };
+
+        const rationalRules = {
+            dosage: [
+                {
+                    id: 5,
+                    name: '二甲双胍剂量规则',
+                    description: '二甲双胍在糖尿病治疗中的剂量使用规则',
+                    level: '强制',
+                    status: 'active',
+                    createdAt: '2024-01-10'
+                }
+            ],
+            interaction: [
+                {
+                    id: 6,
+                    name: '降糖药与其他药物相互作用',
+                    description: '降糖药物与常见药物的相互作用规则',
+                    level: '强制',
+                    status: 'active',
+                    createdAt: '2024-01-25'
+                }
+            ],
+            contraindication: [
+                {
+                    id: 7,
+                    name: '糖尿病用药禁忌症',
+                    description: '糖尿病患者用药的禁忌症规则',
+                    level: '强制',
+                    status: 'active',
+                    createdAt: '2024-02-05'
+                }
+            ]
+        };
+
+        // 模拟政策数据
+        const policyData = [
+            {
+                id: 1,
+                title: '国家基本医疗保险糖尿病用药目录',
+                type: '政策文件',
+                date: '2024-01-01',
+                department: '国家医保局',
+                content: `
+                    <h3>一、总则</h3>
+                    <p>为规范糖尿病患者的医保用药管理，确保医保基金合理使用，制定本目录。</p>
+                    
+                    <h3>二、适用范围</h3>
+                    <p>本目录适用于所有参加基本医疗保险的糖尿病患者。</p>
+                    
+                    <h3>三、用药原则</h3>
+                    <ul>
+                        <li>优先使用基本医保目录内药品</li>
+                        <li>遵循临床诊疗指南</li>
+                        <li>注重药物经济学评价</li>
+                        <li>确保用药安全有效</li>
+                    </ul>
+                    
+                    <h3>四、报销比例</h3>
+                    <p>甲类药品：按基本医保规定比例报销</p>
+                    <p>乙类药品：个人先自付10%，余额按基本医保规定比例报销</p>
+                `
+            },
+            {
+                id: 2,
+                title: '糖尿病门诊特殊病种管理办法',
+                type: '管理办法',
+                date: '2024-02-15',
+                department: '省医保局',
+                content: `
+                    <h3>一、申请条件</h3>
+                    <p>符合糖尿病诊断标准，需要长期用药治疗的参保人员。</p>
+                    
+                    <h3>二、申请材料</h3>
+                    <ul>
+                        <li>门诊特殊病种申请表</li>
+                        <li>相关检查报告</li>
+                        <li>医院诊断证明</li>
+                        <li>身份证复印件</li>
+                    </ul>
+                    
+                    <h3>三、待遇标准</h3>
+                    <p>门诊医疗费用按住院标准报销，年度限额内费用报销比例不低于70%。</p>
+                `
+            }
+        ];
+
+        // 模拟文献数据
+        const literatureData = [
+            {
+                id: 1,
+                title: '中国2型糖尿病防治指南（2020年版）',
+                type: '临床指南',
+                date: '2020-12-01',
+                author: '中华医学会糖尿病学分会',
+                content: `
+                    <h3>诊断标准</h3>
+                    <p>糖尿病的诊断标准包括以下任意一项：</p>
+                    <ul>
+                        <li>空腹血糖≥7.0 mmol/L</li>
+                        <li>OGTT 2小时血糖≥11.1 mmol/L</li>
+                        <li>随机血糖≥11.1 mmol/L伴典型症状</li>
+                        <li>HbA1c≥6.5%</li>
+                    </ul>
+                    
+                    <h3>治疗目标</h3>
+                    <p>大多数成年2型糖尿病患者HbA1c目标值为<7.0%。</p>
+                    
+                    <h3>药物治疗</h3>
+                    <p>二甲双胍为首选药物，如无禁忌症应一直保留在糖尿病的药物治疗方案中。</p>
+                `
+            },
+            {
+                id: 2,
+                title: 'ADA糖尿病医学诊疗标准（2024）',
+                type: '国际指南',
+                date: '2024-01-01',
+                author: '美国糖尿病协会',
+                content: `
+                    <h3>血糖控制目标</h3>
+                    <p>大多数非妊娠成人糖尿病患者的HbA1c目标为<7%。</p>
+                    
+                    <h3>个体化治疗</h3>
+                    <p>应根据患者的年龄、预期寿命、合并症等因素制定个体化的治疗目标。</p>
+                    
+                    <h3>新药推荐</h3>
+                    <p>对于有心血管疾病或慢性肾脏病的患者，推荐使用SGLT2抑制剂或GLP-1受体激动剂。</p>
+                `
+            }
+        ];
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDiseaseInfo();
+            loadStats();
+            loadInsuranceRules('basic');
+            loadRationalRules('dosage');
+            loadLiteratureList();
+            loadPolicyList();
+        });
+
+        // 加载疾病信息
+        function loadDiseaseInfo() {
+            document.getElementById('diseaseTitle').textContent = diseaseData.name;
+            document.getElementById('diseaseName').textContent = diseaseData.name;
+            document.getElementById('diseaseCode').textContent = diseaseData.code;
+            document.getElementById('diseaseStatus').textContent = diseaseData.status === 'active' ? '启用' : '停用';
+            document.getElementById('diseaseStatus').className = `disease-status ${diseaseData.status === 'active' ? 'status-active' : 'status-inactive'}`;
+
+            const infoGrid = document.getElementById('diseaseInfoGrid');
+            infoGrid.innerHTML = `
+                <div class="info-item">
+                    <label>疾病名称</label>
+                    <span>${diseaseData.name}</span>
+                </div>
+                <div class="info-item">
+                    <label>疾病编码</label>
+                    <span>${diseaseData.code}</span>
+                </div>
+                <div class="info-item">
+                    <label>ICD-10编码</label>
+                    <span>${diseaseData.icd10}</span>
+                </div>
+                <div class="info-item">
+                    <label>疾病分类</label>
+                    <span>${diseaseData.category}</span>
+                </div>
+                <div class="info-item">
+                    <label>严重程度</label>
+                    <span class="severity-${diseaseData.severity}">${diseaseData.severity}</span>
+                </div>
+                <div class="info-item">
+                    <label>主要年龄组</label>
+                    <span>${diseaseData.ageGroup}</span>
+                </div>
+                <div class="info-item">
+                    <label>状态</label>
+                    <span class="${diseaseData.status === 'active' ? 'severity-轻度' : 'severity-重度'}">${diseaseData.status === 'active' ? '启用' : '停用'}</span>
+                </div>
+                <div class="info-item full-width">
+                    <label>疾病描述</label>
+                    <span>${diseaseData.description}</span>
+                </div>
+                <div class="info-item full-width">
+                    <label>危险因素</label>
+                    <span>${diseaseData.riskFactors.join('、')}</span>
+                </div>
+                <div class="info-item full-width">
+                    <label>主要并发症</label>
+                    <span>${diseaseData.complications.join('、')}</span>
+                </div>
+                <div class="info-item">
+                    <label>创建时间</label>
+                    <span>${diseaseData.createdAt}</span>
+                </div>
+                <div class="info-item">
+                    <label>更新时间</label>
+                    <span>${diseaseData.updatedAt}</span>
+                </div>
+            `;
+        }
+
+        // 加载统计信息
+        function loadStats() {
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-item">
+                    <span class="stat-number">28</span>
+                    <span class="stat-label">总规则数</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">25</span>
+                    <span class="stat-label">启用规则</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">停用规则</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">15</span>
+                    <span class="stat-label">医保规则</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">13</span>
+                    <span class="stat-label">用药规则</span>
+                </div>
+            `;
+        }
+
+        // 主Tab切换
+        function switchMainTab(tabName) {
+            // 移除所有active类
+            document.querySelectorAll('.main-tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.main-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // 添加active类到当前tab
+            document.querySelector(`[onclick="switchMainTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // 医保规则Tab切换
+        function switchInsuranceTab(tabName) {
+            document.querySelectorAll('#insurance-tab .vertical-tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('#insurance-tab .vertical-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            document.querySelector(`#insurance-tab [onclick="switchInsuranceTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName + '-insurance').classList.add('active');
+            
+            loadInsuranceRules(tabName);
+        }
+
+        // 合理用药规则Tab切换
+        function switchRationalTab(tabName) {
+            document.querySelectorAll('#rational-tab .vertical-tab-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('#rational-tab .vertical-tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            document.querySelector(`#rational-tab [onclick="switchRationalTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName + '-rational').classList.add('active');
+            
+            loadRationalRules(tabName);
+        }
+
+        // 分页配置
+        const pageSize = 10;
+        let currentInsurancePage = {};
+        let currentRationalPage = {};
+
+        // 加载医保规则
+        function loadInsuranceRules(type, page = 1) {
+            const rules = insuranceRules[type] || [];
+            const containerId = type + 'InsuranceRules';
+            const container = document.getElementById(containerId);
+            
+            currentInsurancePage[type] = page;
+            
+            if (rules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>暂无规则</h3><p>该分类下暂无规则数据</p></div>';
+                return;
+            }
+
+            const totalPages = Math.ceil(rules.length / pageSize);
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const paginatedRules = rules.slice(startIndex, endIndex);
+
+            const rulesHtml = paginatedRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name" onclick="showPdfPreview('${rule.id}', '${rule.name}')">${rule.name}</div>
+                        <div class="rule-desc">${rule.description}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.level || rule.priority}">${rule.level || rule.priority}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createdAt}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="showPdfPreview('${rule.id}', '${rule.name}')">预览</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule(${rule.id})">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus(${rule.id})">切换状态</button>
+                    </div>
+                </div>
+            `).join('');
+
+            const paginationHtml = totalPages > 1 ? `
+                <div class="pagination">
+                    <button class="btn btn-outline btn-small" onclick="loadInsuranceRules('${type}', ${page - 1})" ${page === 1 ? 'disabled' : ''}>上一页</button>
+                    <span class="page-info">第 ${page} 页，共 ${totalPages} 页</span>
+                    <button class="btn btn-outline btn-small" onclick="loadInsuranceRules('${type}', ${page + 1})" ${page === totalPages ? 'disabled' : ''}>下一页</button>
+                </div>
+            ` : '';
+
+            container.innerHTML = rulesHtml + paginationHtml;
+        }
+
+        // 加载合理用药规则
+        function loadRationalRules(type, page = 1) {
+            const rules = rationalRules[type] || [];
+            const containerId = type + 'RationalRules';
+            const container = document.getElementById(containerId);
+            
+            currentRationalPage[type] = page;
+            
+            if (rules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>暂无规则</h3><p>该分类下暂无规则数据</p></div>';
+                return;
+            }
+
+            const totalPages = Math.ceil(rules.length / pageSize);
+            const startIndex = (page - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const paginatedRules = rules.slice(startIndex, endIndex);
+
+            const rulesHtml = paginatedRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name">${rule.name}</div>
+                        <div class="rule-desc">${rule.description}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.level || rule.priority}">${rule.level || rule.priority}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createdAt}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="viewRule(${rule.id})">查看</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule(${rule.id})">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus(${rule.id})">切换状态</button>
+                    </div>
+                </div>
+            `).join('');
+
+            const paginationHtml = totalPages > 1 ? `
+                <div class="pagination">
+                    <button class="btn btn-outline btn-small" onclick="loadRationalRules('${type}', ${page - 1})" ${page === 1 ? 'disabled' : ''}>上一页</button>
+                    <span class="page-info">第 ${page} 页，共 ${totalPages} 页</span>
+                    <button class="btn btn-outline btn-small" onclick="loadRationalRules('${type}', ${page + 1})" ${page === totalPages ? 'disabled' : ''}>下一页</button>
+                </div>
+            ` : '';
+
+            container.innerHTML = rulesHtml + paginationHtml;
+        }
+
+        // 加载政策列表
+        function loadPolicyList() {
+            const policyList = document.getElementById('policyList');
+            policyList.innerHTML = policyData.map((policy, index) => `
+                <li class="policy-item ${index === 0 ? 'active' : ''}" onclick="showPolicyContent(${policy.id})">
+                    <div class="policy-title">${policy.title}</div>
+                    <div class="policy-meta">${policy.type} • ${policy.date} • ${policy.department}</div>
+                </li>
+            `).join('');
+            
+            // 默认显示第一个政策内容
+            if (policyData.length > 0) {
+                showPolicyContentById(policyData[0].id);
+            }
+        }
+
+        // 加载文献列表
+        function loadLiteratureList() {
+            const literatureList = document.getElementById('literatureList');
+            literatureList.innerHTML = literatureData.map((literature, index) => `
+                <li class="policy-item ${index === 0 ? 'active' : ''}" onclick="showLiteratureContent(${literature.id})">
+                    <div class="policy-title">${literature.title}</div>
+                    <div class="policy-meta">${literature.type} • ${literature.date} • ${literature.author}</div>
+                </li>
+            `).join('');
+            
+            // 默认显示第一个文献内容
+            if (literatureData.length > 0) {
+                showLiteratureContentById(literatureData[0].id);
+            }
+        }
+
+        // 显示政策内容
+        function showPolicyContent(policyId) {
+            const policy = policyData.find(p => p.id === policyId);
+            if (!policy) return;
+
+            // 更新选中状态
+            document.querySelectorAll('#policyList .policy-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.policy-item').classList.add('active');
+
+            showPolicyContentById(policyId);
+        }
+
+        // 根据ID显示政策内容（不更新选中状态）
+        function showPolicyContentById(policyId) {
+            const policy = policyData.find(p => p.id === policyId);
+            if (!policy) return;
+
+            // 显示内容
+            const policyContent = document.getElementById('policyContent');
+            policyContent.innerHTML = `
+                <div class="policy-content-header">
+                    <div class="policy-content-title">${policy.title}</div>
+                    <div class="policy-content-meta">
+                        <span>类型：${policy.type}</span>
+                        <span>发布日期：${policy.date}</span>
+                        <span>发布部门：${policy.department}</span>
+                    </div>
+                </div>
+                <div class="policy-content-body">
+                    ${policy.content}
+                </div>
+            `;
+        }
+
+        // 显示文献内容
+        function showLiteratureContent(literatureId) {
+            const literature = literatureData.find(l => l.id === literatureId);
+            if (!literature) return;
+
+            // 更新选中状态
+            document.querySelectorAll('#literatureList .policy-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.policy-item').classList.add('active');
+
+            showLiteratureContentById(literatureId);
+        }
+
+        // 根据ID显示文献内容（不更新选中状态）
+        function showLiteratureContentById(literatureId) {
+            const literature = literatureData.find(l => l.id === literatureId);
+            if (!literature) return;
+
+            // 显示内容
+            const literatureContent = document.getElementById('literatureContent');
+            literatureContent.innerHTML = `
+                <div class="policy-content-header">
+                    <div class="policy-content-title">${literature.title}</div>
+                    <div class="policy-content-meta">
+                        <span>类型：${literature.type}</span>
+                        <span>发布日期：${literature.date}</span>
+                        <span>作者：${literature.author}</span>
+                    </div>
+                </div>
+                <div class="policy-content-body">
+                    ${literature.content}
+                </div>
+            `;
+        }
+
+        // 搜索政策
+        function searchPolicies() {
+            const searchTerm = document.getElementById('policySearchInput').value.toLowerCase();
+            const filteredPolicies = policyData.filter(policy => 
+                policy.title.toLowerCase().includes(searchTerm) ||
+                policy.type.toLowerCase().includes(searchTerm) ||
+                policy.department.toLowerCase().includes(searchTerm)
+            );
+
+            const policyList = document.getElementById('policyList');
+            policyList.innerHTML = filteredPolicies.map(policy => `
+                <li class="policy-item" onclick="showPolicyContent(${policy.id})">
+                    <div class="policy-title">${policy.title}</div>
+                    <div class="policy-meta">${policy.type} • ${policy.date} • ${policy.department}</div>
+                </li>
+            `).join('');
+        }
+
+        // 搜索文献
+        function searchLiterature() {
+            const searchTerm = document.getElementById('literatureSearchInput').value.toLowerCase();
+            const filteredLiterature = literatureData.filter(literature => 
+                literature.title.toLowerCase().includes(searchTerm) ||
+                literature.type.toLowerCase().includes(searchTerm) ||
+                literature.author.toLowerCase().includes(searchTerm)
+            );
+
+            const literatureList = document.getElementById('literatureList');
+            literatureList.innerHTML = filteredLiterature.map(literature => `
+                <li class="policy-item" onclick="showLiteratureContent(${literature.id})">
+                    <div class="policy-title">${literature.title}</div>
+                    <div class="policy-meta">${literature.type} • ${literature.date} • ${literature.author}</div>
+                </li>
+            `).join('');
+        }
+
+        // 功能函数
+        function getDiseaseIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return parseInt(urlParams.get('id')) || 1;
+        }
+        
+        function getDiseaseInfo(diseaseId) {
+            return chronicDatabase.diseases.find(d => d.id === diseaseId) || chronicDatabase.diseases[0];
+        }
+        
+        function editDisease() {
+            const diseaseId = getDiseaseIdFromUrl();
+            const disease = getDiseaseInfo(diseaseId);
+            
+            // 创建编辑疾病模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3>编辑疾病信息</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editDiseaseForm">
+                            <div class="form-group">
+                                <label for="diseaseName">疾病名称 *</label>
+                                <input type="text" id="editDiseaseName" value="${disease.name}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="diseaseCode">疾病编码 *</label>
+                                <input type="text" id="editDiseaseCode" value="${disease.code}" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="diseaseCategory">疾病分类 *</label>
+                                <select id="editDiseaseCategory" required>
+                                    <option value="内分泌系统" ${disease.category === '内分泌系统' ? 'selected' : ''}>内分泌系统</option>
+                                    <option value="心血管系统" ${disease.category === '心血管系统' ? 'selected' : ''}>心血管系统</option>
+                                    <option value="呼吸系统" ${disease.category === '呼吸系统' ? 'selected' : ''}>呼吸系统</option>
+                                    <option value="泌尿系统" ${disease.category === '泌尿系统' ? 'selected' : ''}>泌尿系统</option>
+                                    <option value="神经系统" ${disease.category === '神经系统' ? 'selected' : ''}>神经系统</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="diseaseSeverity">严重程度 *</label>
+                                <select id="editDiseaseSeverity" required>
+                                    <option value="轻度" ${disease.severity === '轻度' ? 'selected' : ''}>轻度</option>
+                                    <option value="中度" ${disease.severity === '中度' ? 'selected' : ''}>中度</option>
+                                    <option value="重度" ${disease.severity === '重度' ? 'selected' : ''}>重度</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="diseaseDescription">疾病描述</label>
+                                <textarea id="editDiseaseDescription" rows="3">${disease.description || ''}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="diseaseStatus">状态</label>
+                                <select id="editDiseaseStatus">
+                                    <option value="active" ${disease.status === 'active' ? 'selected' : ''}>启用</option>
+                                    <option value="inactive" ${disease.status === 'inactive' ? 'selected' : ''}>停用</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn btn-primary" onclick="saveDiseaseChanges()">保存</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        // 保存疾病修改
+        function saveDiseaseChanges() {
+            const updatedDisease = {
+                name: document.getElementById('editDiseaseName').value,
+                code: document.getElementById('editDiseaseCode').value,
+                category: document.getElementById('editDiseaseCategory').value,
+                severity: document.getElementById('editDiseaseSeverity').value,
+                description: document.getElementById('editDiseaseDescription').value,
+                status: document.getElementById('editDiseaseStatus').value
+            };
+            
+            // 验证必填字段
+            if (!updatedDisease.name || !updatedDisease.code || !updatedDisease.category || !updatedDisease.severity) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 获取当前疾病ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const diseaseId = parseInt(urlParams.get('id'));
+            
+            // 更新数据库中的疾病信息
+            const diseaseIndex = chronicDatabase.diseases.findIndex(d => d.id === diseaseId);
+            if (diseaseIndex !== -1) {
+                chronicDatabase.diseases[diseaseIndex] = {
+                    ...chronicDatabase.diseases[diseaseIndex],
+                    ...updatedDisease
+                };
+            }
+            
+            // 更新页面显示
+            document.getElementById('diseaseTitle').textContent = updatedDisease.name;
+            document.getElementById('diseaseCode').textContent = updatedDisease.code;
+            document.getElementById('diseaseStatus').textContent = updatedDisease.status === 'active' ? '启用' : '停用';
+            document.getElementById('diseaseStatus').className = `disease-status ${updatedDisease.status === 'active' ? 'status-active' : 'status-inactive'}`;
+            document.getElementById('diseaseName').textContent = updatedDisease.name;
+            
+            // 重新加载疾病信息
+            loadDiseaseInfo();
+            
+            closeModal();
+            alert('疾病信息已更新');
+        }
+        
+        // 关闭模态框
+        function closeModal() {
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function toggleDiseaseStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const diseaseId = parseInt(urlParams.get('id'));
+            
+            if (!diseaseId) {
+                alert('疾病ID不存在');
+                return;
+            }
+            
+            // 查找疾病数据
+            const disease = chronicDatabase.diseases.find(d => d.id === diseaseId);
+            if (!disease) {
+                alert('疾病不存在');
+                return;
+            }
+            
+            // 切换状态
+            const newStatus = disease.status === 'active' ? 'inactive' : 'active';
+            const actionText = newStatus === 'active' ? '启用' : '停用';
+            
+            if (confirm(`确定要${actionText}疾病"${disease.name}"吗？`)) {
+                // 更新疾病状态
+                disease.status = newStatus;
+                
+                // 更新页面显示
+                const statusElement = document.getElementById('diseaseStatus');
+                const toggleButton = document.querySelector('.btn-secondary');
+                
+                statusElement.textContent = newStatus === 'active' ? '启用' : '停用';
+                statusElement.className = `disease-status ${newStatus === 'active' ? 'status-active' : 'status-inactive'}`;
+                toggleButton.textContent = newStatus === 'active' ? '停用' : '启用';
+                
+                // 重新加载疾病信息
+                loadDiseaseInfo();
+                
+                alert(`疾病"${disease.name}"已${actionText}`);
+            }
+        }
+
+        function addRule() {
+            // 获取当前选中的标签页
+            const activeMainTab = document.querySelector('.main-tab.active');
+            const activeSubTab = document.querySelector('.sub-tab.active');
+            
+            if (!activeMainTab || !activeSubTab) {
+                alert('请先选择规则类型');
+                return;
+            }
+            
+            const mainTabType = activeMainTab.textContent.includes('医保') ? 'insurance' : 'rational';
+            const subTabType = activeSubTab.getAttribute('data-type');
+            
+            if (mainTabType === 'insurance') {
+                createInsuranceRule(subTabType);
+            } else {
+                createRationalRule(subTabType);
+            }
+        }
+        
+        function createInsuranceRule(type) {
+            // 创建新增医保规则模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.setAttribute('data-mode', 'create');
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h3>新增医保规则</h3>
+                        <button class="modal-close" onclick="closeRuleModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editRuleForm">
+                            <div class="form-group">
+                                <label for="editRuleName">规则名称 *</label>
+                                <input type="text" id="editRuleName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleType">规则类型 *</label>
+                                <select id="editRuleType" required>
+                                    <option value="基本医保">基本医保</option>
+                                    <option value="特殊医保">特殊医保</option>
+                                    <option value="限制医保">限制医保</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleCondition">适用条件</label>
+                                <textarea id="editRuleCondition" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleContent">规则内容 *</label>
+                                <textarea id="editRuleContent" rows="4" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleLevel">规则级别 *</label>
+                                <select id="editRuleLevel" required>
+                                    <option value="强制">强制</option>
+                                    <option value="警告">警告</option>
+                                    <option value="提示">提示</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editEffectiveDate">生效日期 *</label>
+                                <input type="date" id="editEffectiveDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editExpiryDate">失效日期</label>
+                                <input type="date" id="editExpiryDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleStatus">状态 *</label>
+                                <select id="editRuleStatus" required>
+                                    <option value="active">激活</option>
+                                    <option value="inactive">非激活</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeRuleModal()">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="saveEditRule(null, 'insurance')">保存</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        function createRationalRule(type) {
+            // 创建新增合理用药规则模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.setAttribute('data-mode', 'create');
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h3>新增合理用药规则</h3>
+                        <button class="modal-close" onclick="closeRuleModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editRuleForm">
+                            <div class="form-group">
+                                <label for="editRuleName">规则名称 *</label>
+                                <input type="text" id="editRuleName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleType">规则类型 *</label>
+                                <select id="editRuleType" required>
+                                    <option value="用药禁忌">用药禁忌</option>
+                                    <option value="剂量限制">剂量限制</option>
+                                    <option value="相互作用">相互作用</option>
+                                    <option value="适应症">适应症</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editTargetDrug">目标药物</label>
+                                <input type="text" id="editTargetDrug">
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleCondition">适用条件</label>
+                                <textarea id="editRuleCondition" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleContent">规则内容 *</label>
+                                <textarea id="editRuleContent" rows="4" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleLevel">规则级别 *</label>
+                                <select id="editRuleLevel" required>
+                                    <option value="强制">强制</option>
+                                    <option value="警告">警告</option>
+                                    <option value="提示">提示</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editEffectiveDate">生效日期 *</label>
+                                <input type="date" id="editEffectiveDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editExpiryDate">失效日期</label>
+                                <input type="date" id="editExpiryDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleStatus">状态 *</label>
+                                <select id="editRuleStatus" required>
+                                    <option value="active">激活</option>
+                                    <option value="inactive">非激活</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeRuleModal()">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="saveEditRule(null, 'rational')">保存</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function viewRule(ruleId) {
+            // 查找规则数据
+            let ruleData = null;
+            let ruleType = '';
+            
+            // 在医保规则中查找
+            for (const subType in insuranceRules) {
+                const rule = insuranceRules[subType].find(r => r.id === ruleId);
+                if (rule) {
+                    ruleData = rule;
+                    ruleType = '医保规则';
+                    break;
+                }
+            }
+            
+            // 在合理用药规则中查找
+            if (!ruleData) {
+                for (const subType in rationalRules) {
+                    const rule = rationalRules[subType].find(r => r.id === ruleId);
+                    if (rule) {
+                        ruleData = rule;
+                        ruleType = '合理用药规则';
+                        break;
+                    }
+                }
+            }
+            
+            if (!ruleData) {
+                alert('未找到规则信息');
+                return;
+            }
+            
+            // 创建查看规则模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h3>查看${ruleType}</h3>
+                        <button class="modal-close" onclick="closeRuleModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="rule-detail">
+                            <div class="detail-row">
+                                <label>规则名称：</label>
+                                <span>${ruleData.name}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>规则描述：</label>
+                                <span>${ruleData.description || '无'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>规则级别：</label>
+                                <span>${ruleData.level}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>创建日期：</label>
+                                <span>${ruleData.createdAt}</span>
+                            </div>
+                            <div class="detail-row">
+                                <label>状态：</label>
+                                <span class="status ${ruleData.status}">${ruleData.status === 'active' ? '启用' : '停用'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeRuleModal()">关闭</button>
+                        <button class="btn btn-primary" onclick="closeRuleModal(); editRule(${ruleId})">编辑</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function editRule(ruleId) {
+            // 查找规则数据
+            let ruleData = null;
+            let ruleType = '';
+            
+            // 在医保规则中查找
+            for (const subType in insuranceRules) {
+                const rule = insuranceRules[subType].find(r => r.id === ruleId);
+                if (rule) {
+                    ruleData = rule;
+                    ruleType = 'insurance';
+                    break;
+                }
+            }
+            
+            // 在合理用药规则中查找
+            if (!ruleData) {
+                for (const subType in rationalRules) {
+                    const rule = rationalRules[subType].find(r => r.id === ruleId);
+                    if (rule) {
+                        ruleData = rule;
+                        ruleType = 'rational';
+                        break;
+                    }
+                }
+            }
+            
+
+            
+            if (!ruleData) {
+                alert('未找到规则信息');
+                return;
+            }
+            
+            // 创建编辑规则模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 700px;">
+                    <div class="modal-header">
+                        <h3>编辑${ruleType === 'insurance' ? '医保规则' : '合理用药规则'}</h3>
+                        <button class="modal-close" onclick="closeRuleModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editRuleForm">
+                            <div class="form-group">
+                                <label for="editRuleName">规则名称 *</label>
+                                <input type="text" id="editRuleName" required value="${ruleData.name}">
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleDescription">规则描述 *</label>
+                                <textarea id="editRuleDescription" rows="4" required placeholder="请输入规则的详细描述">${ruleData.description || ''}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleLevel">规则级别 *</label>
+                                <select id="editRuleLevel" required>
+                                    <option value="强制" ${ruleData.level === '强制' ? 'selected' : ''}>强制</option>
+                                    <option value="警告" ${ruleData.level === '警告' ? 'selected' : ''}>警告</option>
+                                    <option value="提示" ${ruleData.level === '提示' ? 'selected' : ''}>提示</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editCreatedAt">创建日期</label>
+                                <input type="date" id="editCreatedAt" readonly value="${ruleData.createdAt || ''}" style="background-color: #f8f9fa;">
+                            </div>
+                            <div class="form-group">
+                                <label for="editRuleStatus">状态</label>
+                                <select id="editRuleStatus">
+                                    <option value="active" ${ruleData.status === 'active' ? 'selected' : ''}>启用</option>
+                                    <option value="inactive" ${ruleData.status === 'inactive' ? 'selected' : ''}>停用</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeRuleModal()">取消</button>
+                        <button class="btn btn-primary" onclick="saveEditRule(${ruleId}, '${ruleType}')">保存</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        // 保存编辑的规则
+        function saveEditRule(ruleId, ruleType) {
+            const modal = document.querySelector('.modal-overlay');
+            const mode = modal ? modal.getAttribute('data-mode') : 'edit';
+            
+            const formData = {
+                name: document.getElementById('editRuleName').value,
+                description: document.getElementById('editRuleDescription').value,
+                level: document.getElementById('editRuleLevel').value,
+                status: document.getElementById('editRuleStatus').value
+            };
+            
+            // 验证必填字段
+            if (!formData.name || !formData.description || !formData.level) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            if (mode === 'create') {
+                // 创建新规则
+                const newRule = {
+                    id: Date.now(),
+                    ...formData,
+                    createdAt: new Date().toISOString().split('T')[0],
+                    updatedAt: new Date().toISOString().split('T')[0]
+                };
+                
+                // 获取当前活跃的子标签页类型
+                const activeSubTab = document.querySelector('.sub-tab.active');
+                const subTabType = activeSubTab ? activeSubTab.getAttribute('data-type') : 'basic';
+                
+                if (ruleType === 'insurance') {
+                    if (!insuranceRules[subTabType]) {
+                        insuranceRules[subTabType] = [];
+                    }
+                    insuranceRules[subTabType].push(newRule);
+                } else {
+                    if (!rationalRules[subTabType]) {
+                        rationalRules[subTabType] = [];
+                    }
+                    rationalRules[subTabType].push(newRule);
+                }
+                
+                alert('规则创建成功');
+            } else {
+                // 更新现有规则
+                if (ruleType === 'insurance') {
+                    const ruleIndex = chronicDatabase.insuranceRules.findIndex(r => r.id === ruleId);
+                    if (ruleIndex !== -1) {
+                        chronicDatabase.insuranceRules[ruleIndex] = {
+                            ...chronicDatabase.insuranceRules[ruleIndex],
+                            ...formData,
+                            updatedAt: new Date().toISOString().split('T')[0]
+                        };
+                    }
+                } else {
+                    const ruleIndex = chronicDatabase.rationalRules.findIndex(r => r.id === ruleId);
+                    if (ruleIndex !== -1) {
+                        chronicDatabase.rationalRules[ruleIndex] = {
+                            ...chronicDatabase.rationalRules[ruleIndex],
+                            ...formData,
+                            updatedAt: new Date().toISOString().split('T')[0]
+                        };
+                    }
+                }
+                
+                alert('规则更新成功');
+            }
+            
+            closeRuleModal();
+            
+            // 重新加载规则列表
+            const activeSubTab = document.querySelector('.sub-tab.active');
+            const subTabType = activeSubTab ? activeSubTab.getAttribute('data-type') : 'basic';
+            
+            if (ruleType === 'insurance') {
+                loadInsuranceRules(subTabType);
+            } else {
+                loadRationalRules(subTabType);
+            }
+        }
+        
+        // 关闭规则模态框
+        function closeRuleModal() {
+            const modal = document.querySelector('.modal-overlay');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        function toggleRuleStatus(ruleId) {
+            // 查找规则数据
+            let ruleData = null;
+            let ruleType = '';
+            let ruleSubType = '';
+            
+            // 在医保规则中查找
+            for (const subType in insuranceRules) {
+                const rule = insuranceRules[subType].find(r => r.id === ruleId);
+                if (rule) {
+                    ruleData = rule;
+                    ruleType = '医保规则';
+                    ruleSubType = subType;
+                    break;
+                }
+            }
+            
+            // 在合理用药规则中查找
+            if (!ruleData) {
+                for (const subType in rationalRules) {
+                    const rule = rationalRules[subType].find(r => r.id === ruleId);
+                    if (rule) {
+                        ruleData = rule;
+                        ruleType = '合理用药规则';
+                        ruleSubType = subType;
+                        break;
+                    }
+                }
+            }
+            
+            if (!ruleData) {
+                alert('规则不存在');
+                return;
+            }
+            
+            // 切换状态
+            const newStatus = ruleData.status === 'active' ? 'inactive' : 'active';
+            const actionText = newStatus === 'active' ? '启用' : '停用';
+            
+            if (confirm(`确定要${actionText}${ruleType}"${ruleData.name}"吗？`)) {
+                // 更新规则状态
+                ruleData.status = newStatus;
+                
+                // 重新加载规则列表
+                if (ruleType === '医保规则') {
+                    loadInsuranceRules(ruleSubType);
+                } else {
+                    loadRationalRules(ruleSubType);
+                }
+                
+                alert(`${ruleType}"${ruleData.name}"已${actionText}`);
+            }
+        }
+
+        function downloadInsuranceTemplate() {
+            // 创建CSV模板内容
+            const csvContent = [
+                '规则名称,规则类型,适用条件,规则内容,优先级,生效日期,失效日期,状态,描述',
+                '示例规则,基本医保,年龄>=18,报销比例80%,高,2024-01-01,2024-12-31,active,成人基本医保规则示例',
+                '儿童规则,基本医保,年龄<18,报销比例90%,高,2024-01-01,2024-12-31,active,儿童基本医保规则示例'
+            ].join('\n');
+            
+            // 创建下载链接
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', '医保规则模板.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('医保规则模板已下载');
+        }
+
+        function importInsuranceRules() {
+            // 创建文件输入元素
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const csv = e.target.result;
+                        const lines = csv.split('\n');
+                        const headers = lines[0].split(',');
+                        
+                        let importCount = 0;
+                        for (let i = 1; i < lines.length; i++) {
+                            const line = lines[i].trim();
+                            if (!line) continue;
+                            
+                            const values = line.split(',');
+                            if (values.length >= 9) {
+                                const newRule = {
+                                    id: Date.now() + i,
+                                    name: values[0],
+                                    type: values[1],
+                                    conditions: values[2],
+                                    content: values[3],
+                                    level: values[4],
+                                    effectiveDate: values[5],
+                                    expiryDate: values[6],
+                                    status: values[7],
+                                    description: values[8],
+                                    createdAt: new Date().toLocaleDateString()
+                                };
+                                
+                                chronicDatabase.insuranceRules.push(newRule);
+                                importCount++;
+                            }
+                        }
+                        
+                        if (importCount > 0) {
+                            loadInsuranceRules();
+                            alert(`成功导入 ${importCount} 条医保规则`);
+                        } else {
+                            alert('未找到有效的规则数据');
+                        }
+                    } catch (error) {
+                        alert('文件格式错误，请检查CSV文件格式');
+                    }
+                };
+                reader.readAsText(file, 'UTF-8');
+            };
+            input.click();
+        }
+
+        function createInsuranceRule() {
+            // 创建医保规则模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 800px;">
+                    <div class="modal-header">
+                        <h3>创建医保规则</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="createInsuranceRuleForm">
+                            <div class="form-group">
+                                <label for="ruleName">规则名称 *</label>
+                                <input type="text" id="ruleName" required placeholder="请输入规则名称">
+                            </div>
+                            <div class="form-group">
+                                <label for="ruleType">规则类型 *</label>
+                                <select id="ruleType" required>
+                                    <option value="">请选择规则类型</option>
+                                    <option value="基本医保">基本医保</option>
+                                    <option value="特殊医保">特殊医保</option>
+                                    <option value="限制使用">限制使用</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ruleCondition">适用条件 *</label>
+                                <textarea id="ruleCondition" rows="3" required placeholder="请输入规则适用条件"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="ruleContent">规则内容 *</label>
+                                <textarea id="ruleContent" rows="4" required placeholder="请输入具体规则内容"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="ruleLevel">规则级别 *</label>
+                                <select id="ruleLevel" required>
+                                    <option value="">请选择规则级别</option>
+                                    <option value="强制">强制</option>
+                                    <option value="警告">警告</option>
+                                    <option value="提示">提示</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="effectiveDate">生效日期 *</label>
+                                <input type="date" id="effectiveDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="expiryDate">失效日期</label>
+                                <input type="date" id="expiryDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="ruleStatus">状态</label>
+                                <select id="ruleStatus">
+                                    <option value="active">启用</option>
+                                    <option value="inactive">停用</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn btn-primary" onclick="saveInsuranceRule()">保存</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        // 保存医保规则
+        function saveInsuranceRule() {
+            const form = document.getElementById('createInsuranceRuleForm');
+            const formData = {
+                name: document.getElementById('ruleName').value,
+                type: document.getElementById('ruleType').value,
+                condition: document.getElementById('ruleCondition').value,
+                content: document.getElementById('ruleContent').value,
+                level: document.getElementById('ruleLevel').value,
+                effectiveDate: document.getElementById('effectiveDate').value,
+                expiryDate: document.getElementById('expiryDate').value,
+                status: document.getElementById('ruleStatus').value
+            };
+            
+            // 验证必填字段
+            if (!formData.name || !formData.type || !formData.condition || !formData.content || !formData.level || !formData.effectiveDate) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 模拟保存规则
+            console.log('保存医保规则:', formData);
+            
+            closeModal();
+            alert('医保规则创建成功');
+            
+            // 重新加载规则列表
+            loadInsuranceRules();
+        }
+
+        function downloadRationalTemplate() {
+            // 创建CSV模板内容
+            const csvContent = [
+                '规则名称,规则类型,目标药物,适用条件,规则内容,优先级,生效日期,失效日期,状态,描述',
+                '成人剂量规则,剂量限制,阿莫西林,年龄>=18,每日最大剂量3g,高,2024-01-01,2024-12-31,active,成人阿莫西林剂量限制',
+                '儿童剂量规则,剂量限制,阿莫西林,年龄<18,按体重20-40mg/kg/日,高,2024-01-01,2024-12-31,active,儿童阿莫西林剂量计算',
+                '药物相互作用,相互作用,华法林+阿司匹林,同时使用,增加出血风险,中,2024-01-01,2024-12-31,active,华法林与阿司匹林相互作用警告'
+            ].join('\n');
+            
+            // 创建下载链接
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', '合理用药规则模板.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert('合理用药规则模板已下载');
+        }
+
+        function importRationalRules() {
+            // 创建文件输入元素
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.csv';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const csv = e.target.result;
+                        const lines = csv.split('\n');
+                        const headers = lines[0].split(',');
+                        
+                        let importCount = 0;
+                        for (let i = 1; i < lines.length; i++) {
+                            const line = lines[i].trim();
+                            if (!line) continue;
+                            
+                            const values = line.split(',');
+                            if (values.length >= 10) {
+                                const newRule = {
+                                    id: Date.now() + i,
+                                    name: values[0],
+                                    type: values[1],
+                                    targetDrug: values[2],
+                                    conditions: values[3],
+                                    content: values[4],
+                                    level: values[5],
+                                    effectiveDate: values[6],
+                                    expiryDate: values[7],
+                                    status: values[8],
+                                    description: values[9],
+                                    createdAt: new Date().toLocaleDateString()
+                                };
+                                
+                                chronicDatabase.rationalRules.push(newRule);
+                                importCount++;
+                            }
+                        }
+                        
+                        if (importCount > 0) {
+                            loadRationalRules();
+                            alert(`成功导入 ${importCount} 条合理用药规则`);
+                        } else {
+                            alert('未找到有效的规则数据');
+                        }
+                    } catch (error) {
+                        alert('文件格式错误，请检查CSV文件格式');
+                    }
+                };
+                reader.readAsText(file, 'UTF-8');
+            };
+            input.click();
+        }
+
+        function createRationalRule() {
+            // 创建合理用药规则模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 800px;">
+                    <div class="modal-header">
+                        <h3>创建合理用药规则</h3>
+                        <button class="modal-close" onclick="closeModal()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="createRationalRuleForm">
+                            <div class="form-group">
+                                <label for="rationalRuleName">规则名称 *</label>
+                                <input type="text" id="rationalRuleName" required placeholder="请输入规则名称">
+                            </div>
+                            <div class="form-group">
+                                <label for="rationalRuleType">规则类型 *</label>
+                                <select id="rationalRuleType" required>
+                                    <option value="">请选择规则类型</option>
+                                    <option value="剂量规则">剂量规则</option>
+                                    <option value="相互作用">相互作用</option>
+                                    <option value="禁忌症">禁忌症</option>
+                                    <option value="适应症">适应症</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="targetDrug">目标药物</label>
+                                <input type="text" id="targetDrug" placeholder="请输入药物名称或编码">
+                            </div>
+                            <div class="form-group">
+                                <label for="rationalRuleCondition">适用条件 *</label>
+                                <textarea id="rationalRuleCondition" rows="3" required placeholder="请输入规则适用条件"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="rationalRuleContent">规则内容 *</label>
+                                <textarea id="rationalRuleContent" rows="4" required placeholder="请输入具体规则内容"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="rationalRuleLevel">规则级别 *</label>
+                                <select id="rationalRuleLevel" required>
+                                    <option value="">请选择规则级别</option>
+                                    <option value="强制">强制</option>
+                                    <option value="警告">警告</option>
+                                    <option value="提示">提示</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="rationalEffectiveDate">生效日期 *</label>
+                                <input type="date" id="rationalEffectiveDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="rationalExpiryDate">失效日期</label>
+                                <input type="date" id="rationalExpiryDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="rationalRuleStatus">状态</label>
+                                <select id="rationalRuleStatus">
+                                    <option value="active">启用</option>
+                                    <option value="inactive">停用</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="closeModal()">取消</button>
+                        <button class="btn btn-primary" onclick="saveRationalRule()">保存</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+        
+        // 保存合理用药规则
+        function saveRationalRule() {
+            const formData = {
+                name: document.getElementById('rationalRuleName').value,
+                type: document.getElementById('rationalRuleType').value,
+                targetDrug: document.getElementById('targetDrug').value,
+                condition: document.getElementById('rationalRuleCondition').value,
+                content: document.getElementById('rationalRuleContent').value,
+                level: document.getElementById('rationalRuleLevel').value,
+                effectiveDate: document.getElementById('rationalEffectiveDate').value,
+                expiryDate: document.getElementById('rationalExpiryDate').value,
+                status: document.getElementById('rationalRuleStatus').value
+            };
+            
+            // 验证必填字段
+            if (!formData.name || !formData.type || !formData.condition || !formData.content || !formData.level || !formData.effectiveDate) {
+                alert('请填写所有必填字段');
+                return;
+            }
+            
+            // 模拟保存规则
+            console.log('保存合理用药规则:', formData);
+            
+            closeModal();
+            alert('合理用药规则创建成功');
+            
+            // 重新加载规则列表
+            loadRationalRules();
+        }
+
+        // 搜索医保规则
+        function searchInsuranceRules(type) {
+            const searchInput = document.getElementById(type + 'InsuranceSearch');
+            const searchTerm = searchInput.value.toLowerCase();
+            const rules = insuranceRules[type] || [];
+            
+            const filteredRules = rules.filter(rule => 
+                rule.name.toLowerCase().includes(searchTerm) ||
+                rule.description.toLowerCase().includes(searchTerm)
+            );
+            
+            const containerId = type + 'InsuranceRules';
+            const container = document.getElementById(containerId);
+            
+            if (filteredRules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>未找到匹配的规则</h3><p>请尝试其他搜索关键词</p></div>';
+                return;
+            }
+
+            container.innerHTML = filteredRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name" onclick="showPdfPreview('${rule.id}', '${rule.name}')">${rule.name}</div>
+                        <div class="rule-desc">${rule.description}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${rule.priority}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createdAt}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="showPdfPreview('${rule.id}', '${rule.name}')">预览</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule(${rule.id})">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus(${rule.id})">切换状态</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 搜索合理用药规则
+        function searchRationalRules(type) {
+            const searchInput = document.getElementById(type + 'RationalSearch');
+            const searchTerm = searchInput.value.toLowerCase();
+            const rules = rationalRules[type] || [];
+            
+            const filteredRules = rules.filter(rule => 
+                rule.name.toLowerCase().includes(searchTerm) ||
+                rule.description.toLowerCase().includes(searchTerm)
+            );
+            
+            const containerId = type + 'RationalRules';
+            const container = document.getElementById(containerId);
+            
+            if (filteredRules.length === 0) {
+                container.innerHTML = '<div class="empty-state"><h3>未找到匹配的规则</h3><p>请尝试其他搜索关键词</p></div>';
+                return;
+            }
+
+            container.innerHTML = filteredRules.map(rule => `
+                <div class="rule-item">
+                    <div class="rule-info">
+                        <div class="rule-name">${rule.name}</div>
+                        <div class="rule-desc">${rule.description}</div>
+                        <div class="rule-meta">
+                            <span class="rule-priority priority-${rule.priority}">${rule.priority}</span>
+                            <span class="rule-status ${rule.status}">${rule.status === 'active' ? '启用' : '停用'}</span>
+                            <span style="font-size: 12px; color: #999;">创建时间：${rule.createdAt}</span>
+                        </div>
+                    </div>
+                    <div class="rule-actions">
+                        <button class="btn btn-outline btn-small" onclick="viewRule(${rule.id})">查看</button>
+                        <button class="btn btn-outline btn-small" onclick="editRule(${rule.id})">编辑</button>
+                        <button class="btn btn-outline btn-small" onclick="toggleRuleStatus(${rule.id})">切换状态</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 相关政策Tab切换函数（已改为左右分栏布局，不再需要Tab切换）
+        function switchPolicyTab(tabId) {
+            console.log('政策Tab已改为左右分栏布局，不再需要Tab切换功能');
+        }
+        
+        // PDF预览功能
+        function showPdfPreview(ruleId, ruleName) {
+            const modal = document.getElementById('pdfPreviewModal');
+            const title = document.getElementById('pdfPreviewTitle');
+            const viewer = document.getElementById('pdfViewer');
+            
+            title.textContent = ruleName;
+            
+            // 模拟PDF内容
+            viewer.innerHTML = `
+                <div class="pdf-page">
+                    <h2>${ruleName}</h2>
+                    <div class="pdf-content">
+                        <h3>规则概述</h3>
+                        <p>这是${ruleName}的详细内容。本规则用于指导慢病医保规则的执行和管理。</p>
+                        
+                        <h3>适用范围</h3>
+                        <p>本规则适用于所有慢性病患者的医保报销场景，包括但不限于门诊治疗、住院治疗、药品报销等。</p>
+                        
+                        <h3>执行标准</h3>
+                        <p>1. 严格按照医保政策执行报销标准</p>
+                        <p>2. 确保患者信息和诊断准确无误</p>
+                        <p>3. 定期进行规则有效性检查</p>
+                        
+                        <h3>注意事项</h3>
+                        <p>在执行过程中需要特别注意医保政策的变化，及时更新规则内容，确保规则的时效性和准确性。</p>
+                        
+                        <div class="watermark">仅供内部使用 - 禁止复制</div>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closePdfPreview() {
+            document.getElementById('pdfPreviewModal').style.display = 'none';
+        }
+
+        // 防止PDF内容复制
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('selectstart', function(e) {
+                if (e.target.closest('#pdfViewer')) {
+                    e.preventDefault();
+                }
+            });
+            
+            document.addEventListener('contextmenu', function(e) {
+                if (e.target.closest('#pdfViewer')) {
+                    e.preventDefault();
+                }
+            });
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.target.closest('#pdfViewer') && (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'a' || e.key === 's')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+
+    <!-- PDF预览模态框 -->
+    <div id="pdfPreviewModal" class="pdf-preview-layout" style="display: none;">
+        <div class="pdf-sidebar">
+            <div class="pdf-toolbar">
+                <h3 id="pdfPreviewTitle">规则预览</h3>
+                <button class="pdf-close-btn" onclick="closePdfPreview()">&times;</button>
+            </div>
+            <div class="pdf-navigation">
+                <div class="pdf-nav-item active">第1页</div>
+            </div>
+        </div>
+        <div class="pdf-content">
+            <div class="pdf-controls">
+                <div class="pdf-zoom-controls">
+                    <button class="btn btn-outline btn-small">-</button>
+                    <span class="pdf-zoom-level">100%</span>
+                    <button class="btn btn-outline btn-small">+</button>
+                </div>
+                <div class="pdf-page-info">
+                    <span>第 1 页，共 1 页</span>
+                </div>
+            </div>
+            <div id="pdfViewer" class="pdf-viewer">
+                <!-- PDF内容将在这里动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* PDF预览样式 */
+        .pdf-preview-layout {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            z-index: 10000;
+        }
+
+        .pdf-sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pdf-content {
+            flex: 1;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pdf-toolbar {
+            padding: 20px;
+            border-bottom: 1px solid #34495e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pdf-toolbar h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .pdf-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pdf-close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .pdf-navigation {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .pdf-nav-item {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .pdf-nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .pdf-nav-item.active {
+            background: #3498db;
+        }
+
+        .pdf-controls {
+            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pdf-zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pdf-zoom-level {
+            min-width: 50px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .pdf-page-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .pdf-viewer {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: white;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .pdf-page {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            line-height: 1.6;
+            font-size: 14px;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .pdf-page h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        .pdf-page h3 {
+            color: #34495e;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        .pdf-page p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        .pdf-content .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 48px;
+            color: rgba(0, 0, 0, 0.05);
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+    
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载统一菜单组件 -->
+    <script>
+        // 加载统一侧边栏
+        fetch('../组件/_unified-sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const sidebarContainer = document.getElementById('sidebar-container');
+                sidebarContainer.innerHTML = html;
+                // 手动执行插入的脚本
+                const scripts = sidebarContainer.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.head.appendChild(newScript);
+                    script.remove();
+                });
+                // 等待脚本执行后再初始化菜单
+                setTimeout(() => {
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    }
+                    // 设置当前页面的菜单项为激活状态
+                    if (typeof setActiveMenu === 'function') {
+                        setActiveMenu();
+                    }
+                }, 100);
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+</body>
+</html>

@@ -1,0 +1,2290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创建规则 - 医保审核系统</title>
+    <link rel="stylesheet" href="../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../样式文件/unified-sidebar.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .page-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .breadcrumb a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .drug-info {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .drug-info h4 {
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        .drug-info p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .rule-type-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .rule-type-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .rule-type-card:hover {
+            border-color: #3b82f6;
+            background: #f8fafc;
+        }
+
+        .rule-type-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .rule-type-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .rule-type-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .rule-type-desc {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .condition-builder {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .condition-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .condition-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .condition-field {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .condition-operator {
+            flex: 0 0 100px;
+        }
+
+        .condition-value {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .condition-actions {
+            flex: 0 0 auto;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-info {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #0284c7;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+        }
+
+        .btn-add {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #059669;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .preview-section {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .preview-title {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        .preview-content {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin: 0;
+        }
+
+        .checkbox-item label {
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Excel样式表格 */
+        .excel-container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* 筛选工具栏样式 */
+        .filter-toolbar {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-group label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            white-space: nowrap;
+        }
+        
+        .filter-group select,
+        .filter-group input {
+            padding: 6px 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+            min-width: 120px;
+        }
+        
+        .filter-group input[type="text"] {
+            min-width: 150px;
+            width: 150px;
+        }
+        
+        .filter-group button {
+            padding: 6px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background-color: #f9fafb;
+            color: #374151;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+            min-width: auto;
+        }
+        
+        .filter-group button:hover {
+            background-color: #f3f4f6;
+            border-color: #d1d5db;
+            color: #111827;
+        }
+        
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+
+        .excel-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        .toolbar-left, .toolbar-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        .excel-table-container {
+            overflow: auto;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            max-height: calc(100vh - 200px);
+            position: relative;
+        }
+
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: white;
+            table-layout: fixed;
+        }
+
+        .excel-table th {
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            padding: 8px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #24292f;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            resize: horizontal;
+            overflow: hidden;
+            user-select: none;
+        }
+        
+        .excel-table th:hover {
+            border-right: 2px solid #0969da;
+            cursor: col-resize;
+        }
+        
+        .excel-table th::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            cursor: col-resize;
+            background: transparent;
+        }
+        
+        .excel-table th::after:hover {
+            background: #0969da;
+        }
+
+        .excel-table td {
+            border: 1px solid #d0d7de;
+            padding: 6px 12px;
+            background: white;
+            position: relative;
+        }
+
+        .excel-table tbody tr:hover {
+            background: #f6f8fa;
+        }
+
+        .excel-table tbody tr.selected {
+            background: #dbeafe;
+        }
+
+        .excel-table input[type="text"], 
+        .excel-table select, 
+        .excel-table input[type="date"] {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 4px;
+            font-size: 13px;
+        }
+
+        .excel-table input[type="text"]:focus, 
+        .excel-table select:focus, 
+        .excel-table input[type="date"]:focus {
+            outline: 2px solid #0969da;
+            background: white;
+        }
+
+        .checkbox-col { width: 40px; }
+        .row-number-col { width: 50px; background: #f6f8fa; }
+        .rule-name-col { width: 150px; }
+        .rule-type-col { width: 120px; }
+        .condition-col { width: 120px; }
+        .operator-col { width: 100px; }
+        .value-col { width: 120px; }
+        .action-col { width: 100px; }
+        .priority-col { width: 80px; }
+        .status-col { width: 80px; }
+        .effective-date-col { width: 120px; }
+        .expiry-date-col { width: 120px; }
+        .description-col { width: 200px; }
+        .actions-col { width: 100px; }
+
+        .excel-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-top: 20px;
+        }
+
+        .footer-info {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: #656d76;
+        }
+
+        .footer-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90%;
+            overflow: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        /* 状态标签样式 */
+        .status-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .status-active { background: #d1f2eb; color: #0f5132; }
+        .status-inactive { background: #f8d7da; color: #721c24; }
+        .status-draft { background: #fff3cd; color: #856404; }
+
+        /* 优先级标签样式 */
+        .priority-badge {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .priority-high { background: #f8d7da; color: #721c24; }
+        .priority-medium { background: #fff3cd; color: #856404; }
+        .priority-low { background: #d1ecf1; color: #0c5460; }
+
+        /* 操作按钮样式 */
+        .action-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .action-btn.edit { background: #e7f3ff; color: #0969da; }
+        .action-btn.delete { background: #ffebe9; color: #cf222e; }
+        .action-btn.copy { background: #f6f8fa; color: #656d76; }
+    </style>
+</head>
+<body>
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 页面内容 -->
+        <div class="page-content">
+            <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">药品管理</a> > 
+            <a href="#" id="drugDetailLink">药品详情</a> > 
+            <span>创建规则</span>
+        </div>
+
+        <div class="page-header">
+            <h1 class="page-title">创建审核规则</h1>
+            <p class="page-subtitle">为指定药品创建新的审核规则</p>
+            
+            <div class="drug-info" id="drugInfo">
+                <!-- 药品信息将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- Excel样式的规则配置表格 -->
+        <div class="excel-container">
+            <!-- 筛选工具栏 -->
+            <div class="filter-toolbar">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label>分类筛选:</label>
+                        <select id="categoryFilter">
+                            <option value="">全部分类</option>
+                            <option value="disease">疾病相关</option>
+                            <option value="population">人群相关</option>
+                            <option value="drug">药品相关</option>
+                            <option value="safety">安全性</option>
+                            <option value="dosage">剂量相关</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>规则类型:</label>
+                        <select id="typeFilter">
+                            <option value="">全部类型</option>
+                            <option value="insurance">医保规则</option>
+                            <option value="dosage">剂量规则</option>
+                            <option value="interaction">药物相互作用</option>
+                            <option value="contraindication">禁忌症</option>
+                            <option value="indication">适应症</option>
+                            <option value="age_limit">年龄限制</option>
+                            <option value="gender_limit">性别限制</option>
+                            <option value="pregnancy">妊娠期用药</option>
+                            <option value="lactation">哺乳期用药</option>
+                            <option value="renal_function">肾功能不全</option>
+                            <option value="hepatic_function">肝功能不全</option>
+                            <option value="allergy">过敏反应</option>
+                            <option value="duplicate_therapy">重复用药</option>
+                            <option value="frequency">用药频次</option>
+                            <option value="duration">疗程限制</option>
+                            <option value="route">给药途径</option>
+                            <option value="monitoring">监测要求</option>
+                            <option value="special_population">特殊人群</option>
+                            <option value="instruction">说明书规则</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>状态:</label>
+                        <select id="statusFilter">
+                            <option value="">全部状态</option>
+                            <option value="active">启用</option>
+                            <option value="inactive">停用</option>
+                            <option value="draft">草稿</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>搜索:</label>
+                        <input type="text" id="searchInput" placeholder="搜索规则名称或描述">
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn btn-secondary" id="clearFilters">清除筛选</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="excel-toolbar">
+                <div class="toolbar-left">
+                    <button class="btn btn-primary" onclick="addRow()">+ 添加行</button>
+                    <button class="btn btn-secondary" onclick="deleteSelectedRows()">删除选中</button>
+                    <button class="btn btn-secondary" onclick="copyRows()">复制</button>
+                    <button class="btn btn-secondary" onclick="pasteRows()">粘贴</button>
+                </div>
+                <div class="toolbar-right">
+                    <button class="btn btn-info" onclick="toggleFullscreen()" id="fullscreenBtn" title="表格全屏显示">表格全屏</button>
+                    <button class="btn btn-success" onclick="saveRules()">保存规则</button>
+                    <button class="btn btn-secondary" onclick="exportExcel()">导出Excel</button>
+                    <button class="btn btn-secondary" onclick="downloadRuleTemplate()">下载模板</button>
+                    <button class="btn btn-secondary" onclick="importExcel()">导入Excel</button>
+                </div>
+            </div>
+            
+            <div class="excel-table-container">
+                <table class="excel-table" id="rulesTable">
+                    <thead>
+                        <tr>
+                            <th class="checkbox-col">
+                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            </th>
+                            <th class="row-number-col">#</th>
+                            <th class="rule-name-col">规则名称</th>
+                            <th class="rule-type-col">规则类型</th>
+                            <th class="condition-col">触发条件</th>
+                            <th class="operator-col">操作符</th>
+                            <th class="value-col">条件值</th>
+                            <th class="action-col">执行动作</th>
+                            <th class="priority-col">优先级</th>
+                            <th class="status-col">状态</th>
+                            <th class="effective-date-col">生效日期</th>
+                            <th class="expiry-date-col">失效日期</th>
+                            <th class="description-col">描述</th>
+                            <th class="actions-col">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rulesTableBody">
+                        <!-- 表格行将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="excel-footer">
+                <div class="footer-info">
+                    <span id="statistics">共 0 行规则 已选择 0 行</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 规则详情编辑弹窗 -->
+        <div class="modal" id="ruleModal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>编辑规则详情</h3>
+                    <button class="modal-close" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="ruleDetailForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>规则名称</label>
+                                <input type="text" id="modalRuleName" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>规则类型</label>
+                                <select id="modalRuleType" class="form-select">
+                                    <option value="insurance">医保规则</option>
+                                    <option value="dosage">剂量规则</option>
+                                    <option value="interaction">相互作用</option>
+                                    <option value="contraindication">禁忌症</option>
+                                    <option value="instruction">说明书规则</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>触发条件</label>
+                                <input type="text" id="modalCondition" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>操作符</label>
+                                <select id="modalOperator" class="form-select">
+                                    <option value="equals">等于</option>
+                                    <option value="not_equals">不等于</option>
+                                    <option value="greater_than">大于</option>
+                                    <option value="less_than">小于</option>
+                                    <option value="contains">包含</option>
+                                    <option value="not_contains">不包含</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>条件值</label>
+                                <input type="text" id="modalValue" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>执行动作</label>
+                                <select id="modalAction" class="form-select">
+                                    <option value="reject">拦截</option>
+                                    <option value="warning">警告</option>
+                                    <option value="approve">通过</option>
+                                    <option value="manual">人工审核</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>优先级</label>
+                                <select id="modalPriority" class="form-select">
+                                    <option value="high">高</option>
+                                    <option value="medium">中</option>
+                                    <option value="low">低</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>状态</label>
+                                <select id="modalStatus" class="form-select">
+                                    <option value="active">启用</option>
+                                    <option value="inactive">停用</option>
+                                    <option value="draft">草稿</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>生效日期</label>
+                                <input type="date" id="modalEffectiveDate" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>失效日期</label>
+                                <input type="date" id="modalExpiryDate" class="form-input">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>规则描述</label>
+                            <textarea id="modalDescription" class="form-textarea" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" onclick="closeModal()">取消</button>
+                    <button class="btn btn-primary" onclick="saveRuleDetail()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟药品数据
+        const drugsData = {
+            1: {
+                id: 1,
+                name: "阿莫西林胶囊",
+                code: "H20051234",
+                manufacturer: "华北制药集团有限责任公司",
+                category: "抗生素类",
+                insuranceType: "甲类"
+            },
+            2: {
+                id: 2,
+                name: "布洛芬缓释胶囊",
+                code: "H20052345",
+                manufacturer: "扬子江药业集团有限公司",
+                category: "解热镇痛抗炎药",
+                insuranceType: "乙类"
+            }
+        };
+
+        // 全局变量
+        let rulesData = [];
+        let selectedRows = new Set();
+        let editingRowIndex = -1;
+        let clipboard = [];
+        let conditionCount = 0;
+        let selectedRuleType = '';
+
+        function getDrugIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('drugId') || '1';
+        }
+
+        function getRuleTypeFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('type');
+        }
+
+        function getSubTypeFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('subType');
+        }
+
+        function loadDrugInfo() {
+            const drugId = getDrugIdFromUrl();
+            const drug = drugsData[drugId];
+
+            if (!drug) {
+                document.getElementById('drugInfo').innerHTML = '<p style="color: #ef4444;">未找到药品信息</p>';
+                return;
+            }
+
+            // 更新面包屑链接
+            document.getElementById('drugDetailLink').href = `detail.html?id=${drugId}`;
+            document.getElementById('drugDetailLink').textContent = drug.name;
+
+            // 显示药品信息
+            document.getElementById('drugInfo').innerHTML = `
+                <h4>${drug.name}</h4>
+                <p>药品编码：${drug.code} | 生产厂商：${drug.manufacturer} | 分类：${drug.category} | 医保类型：${drug.insuranceType}</p>
+            `;
+        }
+
+        function selectRuleType(type) {
+            // 清除之前的选择
+            document.querySelectorAll('.rule-type-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // 选择当前类型
+            document.querySelector(`[data-type="${type}"]`).classList.add('selected');
+            document.getElementById('ruleType').value = type;
+            selectedRuleType = type;
+
+            // 更新条件构建器
+            updateConditionBuilder();
+            updatePreview();
+        }
+
+        function updateConditionBuilder() {
+            const builder = document.getElementById('conditionBuilder');
+            
+            if (!selectedRuleType) {
+                builder.innerHTML = '<p style="color: #64748b;">请先选择规则类型</p>';
+                return;
+            }
+
+            // 根据规则类型显示不同的条件选项
+            let conditionOptions = [];
+            
+            switch (selectedRuleType) {
+                case 'insurance':
+                    conditionOptions = [
+                        { value: 'insuranceType', label: '医保类型' },
+                        { value: 'reimbursementRatio', label: '报销比例' },
+                        { value: 'paymentStandard', label: '支付标准' },
+                        { value: 'patientType', label: '患者类型' }
+                    ];
+                    break;
+                case 'limit':
+                    conditionOptions = [
+                        { value: 'age', label: '年龄' },
+                        { value: 'gender', label: '性别' },
+                        { value: 'diagnosis', label: '诊断' },
+                        { value: 'dosage', label: '用量' },
+                        { value: 'duration', label: '疗程' }
+                    ];
+                    break;
+                case 'interaction':
+                    conditionOptions = [
+                        { value: 'concurrentDrug', label: '并用药品' },
+                        { value: 'drugClass', label: '药品类别' },
+                        { value: 'activeIngredient', label: '活性成分' },
+                        { value: 'administration', label: '给药途径' }
+                    ];
+                    break;
+                case 'dosage':
+                    conditionOptions = [
+                        { value: 'weight', label: '体重' },
+                        { value: 'age', label: '年龄' },
+                        { value: 'renalFunction', label: '肾功能' },
+                        { value: 'hepaticFunction', label: '肝功能' },
+                        { value: 'indication', label: '适应症' }
+                    ];
+                    break;
+            }
+
+            if (conditionCount === 0) {
+                addCondition(conditionOptions);
+            }
+        }
+
+        function addCondition(options = null) {
+            conditionCount++;
+            const builder = document.getElementById('conditionBuilder');
+            
+            // 如果没有传入选项，根据当前规则类型获取
+            if (!options) {
+                switch (selectedRuleType) {
+                    case 'insurance':
+                        options = [
+                            { value: 'insuranceType', label: '医保类型' },
+                            { value: 'reimbursementRatio', label: '报销比例' },
+                            { value: 'paymentStandard', label: '支付标准' },
+                            { value: 'patientType', label: '患者类型' }
+                        ];
+                        break;
+                    case 'limit':
+                        options = [
+                            { value: 'age', label: '年龄' },
+                            { value: 'gender', label: '性别' },
+                            { value: 'diagnosis', label: '诊断' },
+                            { value: 'dosage', label: '用量' },
+                            { value: 'duration', label: '疗程' }
+                        ];
+                        break;
+                    case 'interaction':
+                        options = [
+                            { value: 'concurrentDrug', label: '并用药品' },
+                            { value: 'drugClass', label: '药品类别' },
+                            { value: 'activeIngredient', label: '活性成分' },
+                            { value: 'administration', label: '给药途径' }
+                        ];
+                        break;
+                    case 'dosage':
+                        options = [
+                            { value: 'weight', label: '体重' },
+                            { value: 'age', label: '年龄' },
+                            { value: 'renalFunction', label: '肾功能' },
+                            { value: 'hepaticFunction', label: '肝功能' },
+                            { value: 'indication', label: '适应症' }
+                        ];
+                        break;
+                    default:
+                        options = [{ value: 'custom', label: '自定义条件' }];
+                }
+            }
+
+            const conditionRow = document.createElement('div');
+            conditionRow.className = 'condition-row';
+            conditionRow.id = `condition-${conditionCount}`;
+
+            conditionRow.innerHTML = `
+                <div class="condition-field">
+                    <select class="form-select" name="conditionField[]" onchange="updatePreview()">
+                        <option value="">选择字段</option>
+                        ${options.map(opt => `<option value="${opt.value}">${opt.label}</option>`).join('')}
+                    </select>
+                </div>
+                <div class="condition-operator">
+                    <select class="form-select" name="conditionOperator[]" onchange="updatePreview()">
+                        <option value="">操作符</option>
+                        <option value="equals">等于</option>
+                        <option value="not_equals">不等于</option>
+                        <option value="greater_than">大于</option>
+                        <option value="less_than">小于</option>
+                        <option value="contains">包含</option>
+                        <option value="not_contains">不包含</option>
+                    </select>
+                </div>
+                <div class="condition-value">
+                    <input type="text" class="form-input" name="conditionValue[]" placeholder="条件值" onchange="updatePreview()">
+                </div>
+                <div class="condition-actions">
+                    <button type="button" class="btn btn-danger btn-small" onclick="removeCondition(${conditionCount})">删除</button>
+                </div>
+            `;
+
+            builder.appendChild(conditionRow);
+            updatePreview();
+        }
+
+        function removeCondition(id) {
+            const conditionRow = document.getElementById(`condition-${id}`);
+            if (conditionRow) {
+                conditionRow.remove();
+                updatePreview();
+            }
+        }
+
+        function updatePreview() {
+            const preview = document.getElementById('rulePreview');
+            const form = document.getElementById('ruleForm');
+            const formData = new FormData(form);
+
+            const ruleName = formData.get('ruleName') || '未命名规则';
+            const ruleType = getRuleTypeName(selectedRuleType);
+            const action = getActionName(formData.get('action'));
+            const priority = getPriorityName(formData.get('priority'));
+            const message = formData.get('message') || '无提示信息';
+
+            // 构建条件描述
+            const conditions = [];
+            const fields = formData.getAll('conditionField[]');
+            const operators = formData.getAll('conditionOperator[]');
+            const values = formData.getAll('conditionValue[]');
+
+            for (let i = 0; i < fields.length; i++) {
+                if (fields[i] && operators[i] && values[i]) {
+                    conditions.push(`${getFieldName(fields[i])} ${getOperatorName(operators[i])} ${values[i]}`);
+                }
+            }
+
+            const conditionsText = conditions.length > 0 ? conditions.join(' 且 ') : '无条件';
+
+            preview.innerHTML = `
+                <strong>规则名称：</strong>${ruleName}<br>
+                <strong>规则类型：</strong>${ruleType}<br>
+                <strong>触发条件：</strong>${conditionsText}<br>
+                <strong>执行动作：</strong>${action}<br>
+                <strong>优先级：</strong>${priority}<br>
+                <strong>提示信息：</strong>${message}
+            `;
+        }
+
+        function getRuleTypeName(type) {
+            const typeMap = {
+                'insurance': '医保规则',
+                'limit': '限制规则',
+                'interaction': '相互作用',
+                'dosage': '用量规则'
+            };
+            return typeMap[type] || '未选择';
+        }
+
+        function getActionName(action) {
+            const actionMap = {
+                'reject': '拦截',
+                'warning': '警告',
+                'approve': '通过',
+                'manual': '人工审核'
+            };
+            return actionMap[action] || '未选择';
+        }
+
+        function getPriorityName(priority) {
+            const priorityMap = {
+                'high': '高',
+                'medium': '中',
+                'low': '低'
+            };
+            return priorityMap[priority] || '未选择';
+        }
+
+        function getFieldName(field) {
+            const fieldMap = {
+                'insuranceType': '医保类型',
+                'reimbursementRatio': '报销比例',
+                'paymentStandard': '支付标准',
+                'patientType': '患者类型',
+                'age': '年龄',
+                'gender': '性别',
+                'diagnosis': '诊断',
+                'dosage': '用量',
+                'duration': '疗程',
+                'concurrentDrug': '并用药品',
+                'drugClass': '药品类别',
+                'activeIngredient': '活性成分',
+                'administration': '给药途径',
+                'weight': '体重',
+                'renalFunction': '肾功能',
+                'hepaticFunction': '肝功能',
+                'indication': '适应症'
+            };
+            return fieldMap[field] || field;
+        }
+
+        function getOperatorName(operator) {
+            const operatorMap = {
+                'equals': '等于',
+                'not_equals': '不等于',
+                'greater_than': '大于',
+                'less_than': '小于',
+                'contains': '包含',
+                'not_contains': '不包含'
+            };
+            return operatorMap[operator] || operator;
+        }
+
+        function goBack() {
+            const drugId = getDrugIdFromUrl();
+            window.location.href = `detail.html?id=${drugId}`;
+        }
+
+        function saveDraft() {
+            alert('草稿已保存');
+        }
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDrugInfo();
+            
+            // 获取URL参数
+            const ruleType = getRuleTypeFromUrl();
+            const subType = getSubTypeFromUrl();
+            
+            // 初始化表格
+            initializeTable(ruleType);
+            
+            // 更新统计信息
+            updateStats();
+        });
+        
+        // 初始化表格
+        function initializeTable(defaultType = null) {
+            // 添加一些示例数据
+            if (rulesData.length === 0) {
+                addSampleData(defaultType);
+            }
+            // 初始化筛选功能
+            initializeFilters();
+            // 初始化列宽调整功能
+            initializeColumnResize();
+            renderTable();
+        }
+        
+        // 添加示例数据
+        function addSampleData(defaultType) {
+            const sampleRules = [
+                {
+                    name: '阿莫西林胶囊-儿童年龄限制',
+                    type: 'age_limit',
+                    condition: '年龄',
+                    operator: 'less_than',
+                    value: '3',
+                    action: 'reject',
+                    priority: 'high',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '3岁以下儿童禁用阿莫西林胶囊',
+                    category: 'population'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童剂量检查',
+                    type: 'dosage',
+                    condition: '年龄',
+                    operator: 'less_than',
+                    value: '12',
+                    action: 'warning',
+                    priority: 'high',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '12岁以下儿童使用阿莫西林需要按体重计算剂量',
+                    category: 'dosage'
+                },
+                {
+                    name: '阿莫西林胶囊-青霉素过敏史',
+                    type: 'allergy',
+                    condition: '过敏史',
+                    operator: 'contains',
+                    value: '青霉素',
+                    action: 'reject',
+                    priority: 'high',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '青霉素过敏患者禁用阿莫西林',
+                    category: 'safety'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童体重剂量计算',
+                    type: 'dosage',
+                    condition: '体重',
+                    operator: 'less_than',
+                    value: '40',
+                    action: 'manual',
+                    priority: 'high',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '体重40kg以下儿童需要按20-40mg/kg/日计算剂量',
+                    category: 'dosage'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童单次剂量限制',
+                    type: 'dosage',
+                    condition: '单次剂量',
+                    operator: 'greater_than',
+                    value: '500',
+                    action: 'reject',
+                    priority: 'high',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '儿童单次剂量不得超过500mg',
+                    category: 'dosage'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童日剂量上限',
+                    type: 'dosage',
+                    condition: '日总剂量',
+                    operator: 'greater_than',
+                    value: '2000',
+                    action: 'reject',
+                    priority: 'high',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '儿童日总剂量不得超过2000mg',
+                    category: 'dosage'
+                },
+                {
+                    name: '阿莫西林胶囊-新生儿禁用',
+                    type: 'age_limit',
+                    condition: '年龄',
+                    operator: 'less_than',
+                    value: '0.25',
+                    action: 'reject',
+                    priority: 'high',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '3个月以下新生儿禁用阿莫西林胶囊',
+                    category: 'population'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童给药间隔',
+                    type: 'frequency',
+                    condition: '给药间隔',
+                    operator: 'less_than',
+                    value: '8',
+                    action: 'warning',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '儿童给药间隔不应少于8小时',
+                    category: 'dosage'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童肝功能监测',
+                    type: 'monitoring',
+                    condition: '用药天数',
+                    operator: 'greater_than',
+                    value: '7',
+                    action: 'warning',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '儿童连续用药超过7天需监测肝功能',
+                    category: 'safety'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童肾功能评估',
+                    type: 'renal_function',
+                    condition: '肌酐清除率',
+                    operator: 'less_than',
+                    value: '50',
+                    action: 'warning',
+                    priority: 'high',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '儿童肾功能不全时需要调整剂量',
+                    category: 'safety'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童过敏反应监测',
+                    type: 'monitoring',
+                    condition: '首次用药',
+                    operator: 'equals',
+                    value: '是',
+                    action: 'warning',
+                    priority: 'high',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '儿童首次使用需密切观察过敏反应',
+                    category: 'safety'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童用药疗程',
+                    type: 'duration',
+                    condition: '用药天数',
+                    operator: 'greater_than',
+                    value: '10',
+                    action: 'warning',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '儿童连续用药超过10天需要重新评估',
+                    category: 'dosage'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童呼吸道感染适应症',
+                    type: 'indication',
+                    condition: '诊断',
+                    operator: 'contains',
+                    value: '儿童呼吸道感染',
+                    action: 'approve',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '适用于儿童敏感菌引起的呼吸道感染',
+                    category: 'disease'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童中耳炎适应症',
+                    type: 'indication',
+                    condition: '诊断',
+                    operator: 'contains',
+                    value: '急性中耳炎',
+                    action: 'approve',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '适用于儿童急性中耳炎治疗',
+                    category: 'disease'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童泌尿系感染',
+                    type: 'indication',
+                    condition: '诊断',
+                    operator: 'contains',
+                    value: '泌尿系感染',
+                    action: 'approve',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '适用于儿童敏感菌引起的泌尿系感染',
+                    category: 'disease'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童皮肤软组织感染',
+                    type: 'indication',
+                    condition: '诊断',
+                    operator: 'contains',
+                    value: '皮肤软组织感染',
+                    action: 'approve',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '适用于儿童轻中度皮肤软组织感染',
+                    category: 'disease'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童发热时用药',
+                    type: 'monitoring',
+                    condition: '体温',
+                    operator: 'greater_than',
+                    value: '38.5',
+                    action: 'warning',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '儿童高热时使用需加强监测',
+                    category: 'safety'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童胃肠道反应',
+                    type: 'monitoring',
+                    condition: '胃肠道症状',
+                    operator: 'equals',
+                    value: '有',
+                    action: 'warning',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '儿童出现胃肠道反应时需调整用药',
+                    category: 'safety'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童免疫缺陷',
+                    type: 'contraindication',
+                    condition: '免疫状态',
+                    operator: 'equals',
+                    value: '免疫缺陷',
+                    action: 'warning',
+                    priority: 'high',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '免疫缺陷儿童使用需谨慎评估',
+                    category: 'population'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童哮喘患者',
+                    type: 'contraindication',
+                    condition: '诊断',
+                    operator: 'contains',
+                    value: '哮喘',
+                    action: 'warning',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '哮喘儿童使用需注意过敏反应',
+                    category: 'disease'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童重复用药检查',
+                    type: 'duplicate_therapy',
+                    condition: '同类药品',
+                    operator: 'contains',
+                    value: '青霉素类',
+                    action: 'warning',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '避免儿童同时使用多种青霉素类抗生素',
+                    category: 'drug'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童传染性单核细胞增多症',
+                    type: 'contraindication',
+                    condition: '诊断',
+                    operator: 'contains',
+                    value: '传染性单核细胞增多症',
+                    action: 'reject',
+                    priority: 'high',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '传染性单核细胞增多症儿童禁用阿莫西林',
+                    category: 'disease'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童用药频次检查',
+                    type: 'frequency',
+                    condition: '每日次数',
+                    operator: 'greater_than',
+                    value: '3',
+                    action: 'warning',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '儿童每日给药次数不宜超过3次',
+                    category: 'dosage'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童空腹用药',
+                    type: 'instruction',
+                    condition: '用药时间',
+                    operator: 'equals',
+                    value: '空腹',
+                    action: 'warning',
+                    priority: 'low',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '儿童空腹服用可能增加胃肠道反应',
+                    category: 'safety'
+                },
+                {
+                    name: '阿莫西林胶囊-儿童药物相互作用',
+                    type: 'interaction',
+                    condition: '合并用药',
+                    operator: 'contains',
+                    value: '丙磺舒',
+                    action: 'warning',
+                    priority: 'medium',
+                    status: 'active',
+                    effectiveDate: '2024-01-01',
+                    expiryDate: '',
+                    description: '与丙磺舒合用可能增加阿莫西林血药浓度',
+                    category: 'drug'
+                }
+            ];
+            rulesData.push(...sampleRules);
+        }
+        
+        // 筛选相关变量
+        let currentFilters = {
+            category: '',
+            type: '',
+            status: '',
+            search: ''
+        };
+
+        // 筛选规则数据
+        function filterRules() {
+            let filteredData = rulesData;
+            
+            // 按分类筛选
+            if (currentFilters.category) {
+                filteredData = filteredData.filter(rule => rule.category === currentFilters.category);
+            }
+            
+            // 按类型筛选
+            if (currentFilters.type) {
+                filteredData = filteredData.filter(rule => rule.type === currentFilters.type);
+            }
+            
+            // 按状态筛选
+            if (currentFilters.status) {
+                filteredData = filteredData.filter(rule => rule.status === currentFilters.status);
+            }
+            
+            // 按搜索关键词筛选
+            if (currentFilters.search) {
+                const searchTerm = currentFilters.search.toLowerCase();
+                filteredData = filteredData.filter(rule => 
+                    rule.name.toLowerCase().includes(searchTerm) ||
+                    rule.description.toLowerCase().includes(searchTerm) ||
+                    rule.condition.toLowerCase().includes(searchTerm) ||
+                    rule.value.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            return filteredData;
+        }
+
+        // 渲染表格
+        function renderTable() {
+            const tbody = document.getElementById('rulesTableBody');
+            tbody.innerHTML = '';
+            
+            const filteredData = filterRules();
+            
+            filteredData.forEach((rule, index) => {
+                const originalIndex = rulesData.indexOf(rule);
+                const row = createTableRow(rule, originalIndex);
+                tbody.appendChild(row);
+            });
+            
+            updateStats(filteredData.length);
+        }
+
+        // 更新统计信息
+        function updateStats(filteredCount = null) {
+            const totalCount = rulesData.length;
+            const displayCount = filteredCount !== null ? filteredCount : totalCount;
+            const selectedCount = selectedRows.size;
+            
+            const statsText = filteredCount !== null && filteredCount !== totalCount 
+                ? `共 ${totalCount} 行规则 筛选显示 ${displayCount} 行 已选择 ${selectedCount} 行`
+                : `共 ${totalCount} 行规则 已选择 ${selectedCount} 行`;
+            
+            document.getElementById('statistics').textContent = statsText;
+            
+            // 更新全选复选框状态
+            const selectAllCheckbox = document.getElementById('selectAll');
+            if (rulesData.length === 0) {
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.checked = false;
+            } else if (selectedRows.size === rulesData.length) {
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.checked = true;
+            } else if (selectedRows.size > 0) {
+                selectAllCheckbox.indeterminate = true;
+            } else {
+                selectAllCheckbox.indeterminate = false;
+                selectAllCheckbox.checked = false;
+            }
+        }
+
+        // 初始化筛选功能
+        function initializeFilters() {
+            // 分类筛选
+            document.getElementById('categoryFilter').addEventListener('change', function() {
+                currentFilters.category = this.value;
+                renderTable();
+            });
+            
+            // 类型筛选
+            document.getElementById('typeFilter').addEventListener('change', function() {
+                currentFilters.type = this.value;
+                renderTable();
+            });
+            
+            // 状态筛选
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                currentFilters.status = this.value;
+                renderTable();
+            });
+            
+            // 搜索功能
+            document.getElementById('searchInput').addEventListener('input', function() {
+                currentFilters.search = this.value;
+                renderTable();
+            });
+            
+            // 清除筛选
+            document.getElementById('clearFilters').addEventListener('click', function() {
+                currentFilters = {
+                    category: '',
+                    type: '',
+                    status: '',
+                    search: ''
+                };
+                
+                document.getElementById('categoryFilter').value = '';
+                document.getElementById('typeFilter').value = '';
+                document.getElementById('statusFilter').value = '';
+                document.getElementById('searchInput').value = '';
+                
+                renderTable();
+            });
+        }
+        
+        // 初始化列宽调整功能
+        function initializeColumnResize() {
+            let isResizing = false;
+            let currentColumn = null;
+            let startX = 0;
+            let startWidth = 0;
+            
+            // 为每个表头添加鼠标事件
+            document.addEventListener('DOMContentLoaded', function() {
+                const table = document.getElementById('rulesTable');
+                if (!table) return;
+                
+                const headers = table.querySelectorAll('th');
+                
+                headers.forEach(header => {
+                    // 添加鼠标按下事件
+                    header.addEventListener('mousedown', function(e) {
+                        // 检查是否点击在右边缘附近（5px范围内）
+                        const rect = header.getBoundingClientRect();
+                        if (e.clientX > rect.right - 5) {
+                            isResizing = true;
+                            currentColumn = header;
+                            startX = e.clientX;
+                            startWidth = parseInt(document.defaultView.getComputedStyle(header).width, 10);
+                            
+                            document.body.style.cursor = 'col-resize';
+                            e.preventDefault();
+                        }
+                    });
+                    
+                    // 添加鼠标移动事件（用于改变光标）
+                    header.addEventListener('mousemove', function(e) {
+                        if (!isResizing) {
+                            const rect = header.getBoundingClientRect();
+                            if (e.clientX > rect.right - 5) {
+                                header.style.cursor = 'col-resize';
+                            } else {
+                                header.style.cursor = 'default';
+                            }
+                        }
+                    });
+                    
+                    // 添加鼠标离开事件
+                    header.addEventListener('mouseleave', function() {
+                        if (!isResizing) {
+                            header.style.cursor = 'default';
+                        }
+                    });
+                });
+                
+                // 全局鼠标移动事件
+                document.addEventListener('mousemove', function(e) {
+                    if (isResizing && currentColumn) {
+                        const width = startWidth + e.clientX - startX;
+                        if (width > 50) { // 最小宽度50px
+                            currentColumn.style.width = width + 'px';
+                        }
+                    }
+                });
+                
+                // 全局鼠标释放事件
+                document.addEventListener('mouseup', function() {
+                    if (isResizing) {
+                        isResizing = false;
+                        currentColumn = null;
+                        document.body.style.cursor = 'default';
+                    }
+                });
+            });
+        }
+        
+        // 创建表格行
+        function createTableRow(rule, index) {
+            const row = document.createElement('tr');
+            row.dataset.index = index;
+            
+            if (selectedRows.has(index)) {
+                row.classList.add('selected');
+            }
+            
+            row.innerHTML = `
+                <td class="checkbox-col">
+                    <input type="checkbox" ${selectedRows.has(index) ? 'checked' : ''} 
+                           onchange="toggleRowSelection(${index})">
+                </td>
+                <td class="row-number-col">${index + 1}</td>
+                <td class="rule-name-col">
+                    <input type="text" value="${rule.name}" 
+                           onchange="updateRuleField(${index}, 'name', this.value)">
+                </td>
+                <td class="rule-type-col">
+                    <select onchange="updateRuleField(${index}, 'type', this.value)">
+                        <option value="insurance" ${rule.type === 'insurance' ? 'selected' : ''}>医保规则</option>
+                        <option value="dosage" ${rule.type === 'dosage' ? 'selected' : ''}>剂量规则</option>
+                        <option value="interaction" ${rule.type === 'interaction' ? 'selected' : ''}>药物相互作用</option>
+                        <option value="contraindication" ${rule.type === 'contraindication' ? 'selected' : ''}>禁忌症</option>
+                        <option value="indication" ${rule.type === 'indication' ? 'selected' : ''}>适应症</option>
+                        <option value="age_limit" ${rule.type === 'age_limit' ? 'selected' : ''}>年龄限制</option>
+                        <option value="gender_limit" ${rule.type === 'gender_limit' ? 'selected' : ''}>性别限制</option>
+                        <option value="pregnancy" ${rule.type === 'pregnancy' ? 'selected' : ''}>妊娠期用药</option>
+                        <option value="lactation" ${rule.type === 'lactation' ? 'selected' : ''}>哺乳期用药</option>
+                        <option value="renal_function" ${rule.type === 'renal_function' ? 'selected' : ''}>肾功能不全</option>
+                        <option value="hepatic_function" ${rule.type === 'hepatic_function' ? 'selected' : ''}>肝功能不全</option>
+                        <option value="allergy" ${rule.type === 'allergy' ? 'selected' : ''}>过敏反应</option>
+                        <option value="duplicate_therapy" ${rule.type === 'duplicate_therapy' ? 'selected' : ''}>重复用药</option>
+                        <option value="frequency" ${rule.type === 'frequency' ? 'selected' : ''}>用药频次</option>
+                        <option value="duration" ${rule.type === 'duration' ? 'selected' : ''}>疗程限制</option>
+                        <option value="route" ${rule.type === 'route' ? 'selected' : ''}>给药途径</option>
+                        <option value="monitoring" ${rule.type === 'monitoring' ? 'selected' : ''}>监测要求</option>
+                        <option value="special_population" ${rule.type === 'special_population' ? 'selected' : ''}>特殊人群</option>
+                        <option value="instruction" ${rule.type === 'instruction' ? 'selected' : ''}>说明书规则</option>
+                    </select>
+                </td>
+                <td class="condition-col">
+                    <input type="text" value="${rule.condition}" 
+                           onchange="updateRuleField(${index}, 'condition', this.value)">
+                </td>
+                <td class="operator-col">
+                    <select onchange="updateRuleField(${index}, 'operator', this.value)">
+                        <option value="equals" ${rule.operator === 'equals' ? 'selected' : ''}>等于</option>
+                        <option value="not_equals" ${rule.operator === 'not_equals' ? 'selected' : ''}>不等于</option>
+                        <option value="greater_than" ${rule.operator === 'greater_than' ? 'selected' : ''}>大于</option>
+                        <option value="less_than" ${rule.operator === 'less_than' ? 'selected' : ''}>小于</option>
+                        <option value="contains" ${rule.operator === 'contains' ? 'selected' : ''}>包含</option>
+                        <option value="not_contains" ${rule.operator === 'not_contains' ? 'selected' : ''}>不包含</option>
+                    </select>
+                </td>
+                <td class="value-col">
+                    <input type="text" value="${rule.value}" 
+                           onchange="updateRuleField(${index}, 'value', this.value)">
+                </td>
+                <td class="action-col">
+                    <select onchange="updateRuleField(${index}, 'action', this.value)">
+                        <option value="reject" ${rule.action === 'reject' ? 'selected' : ''}>拦截</option>
+                        <option value="warning" ${rule.action === 'warning' ? 'selected' : ''}>警告</option>
+                        <option value="approve" ${rule.action === 'approve' ? 'selected' : ''}>通过</option>
+                        <option value="manual" ${rule.action === 'manual' ? 'selected' : ''}>人工审核</option>
+                    </select>
+                </td>
+                <td class="priority-col">
+                    <select onchange="updateRuleField(${index}, 'priority', this.value)">
+                        <option value="high" ${rule.priority === 'high' ? 'selected' : ''}>高</option>
+                        <option value="medium" ${rule.priority === 'medium' ? 'selected' : ''}>中</option>
+                        <option value="low" ${rule.priority === 'low' ? 'selected' : ''}>低</option>
+                    </select>
+                </td>
+                <td class="status-col">
+                    <select onchange="updateRuleField(${index}, 'status', this.value)">
+                        <option value="active" ${rule.status === 'active' ? 'selected' : ''}>启用</option>
+                        <option value="inactive" ${rule.status === 'inactive' ? 'selected' : ''}>停用</option>
+                        <option value="draft" ${rule.status === 'draft' ? 'selected' : ''}>草稿</option>
+                    </select>
+                </td>
+                <td class="effective-date-col">
+                    <input type="date" value="${rule.effectiveDate}" 
+                           onchange="updateRuleField(${index}, 'effectiveDate', this.value)">
+                </td>
+                <td class="expiry-date-col">
+                    <input type="date" value="${rule.expiryDate}" 
+                           onchange="updateRuleField(${index}, 'expiryDate', this.value)">
+                </td>
+                <td class="description-col">
+                    <input type="text" value="${rule.description}" 
+                           onchange="updateRuleField(${index}, 'description', this.value)">
+                </td>
+                <td class="actions-col">
+                    <button class="action-btn delete" onclick="deleteRule(${index})">删除</button>
+                    <button class="action-btn copy" onclick="copyRule(${index})">复制</button>
+                </td>
+            `;
+            
+            return row;
+        }
+        
+        // 添加新行
+        function addRow() {
+            const newRule = {
+                name: '新规则',
+                type: 'insurance',
+                condition: '',
+                operator: 'equals',
+                value: '',
+                action: 'warning',
+                priority: 'medium',
+                status: 'draft',
+                effectiveDate: new Date().toISOString().split('T')[0],
+                expiryDate: '',
+                description: ''
+            };
+            
+            rulesData.push(newRule);
+            renderTable();
+        }
+        
+        // 删除选中行
+        function deleteSelectedRows() {
+            if (selectedRows.size === 0) {
+                alert('请先选择要删除的行');
+                return;
+            }
+            
+            if (confirm(`确定要删除选中的 ${selectedRows.size} 行规则吗？`)) {
+                // 从后往前删除，避免索引变化
+                const sortedIndexes = Array.from(selectedRows).sort((a, b) => b - a);
+                sortedIndexes.forEach(index => {
+                    rulesData.splice(index, 1);
+                });
+                
+                selectedRows.clear();
+                renderTable();
+            }
+        }
+        
+        // 复制行
+        function copyRows() {
+            if (selectedRows.size === 0) {
+                alert('请先选择要复制的行');
+                return;
+            }
+            
+            clipboard = Array.from(selectedRows).map(index => ({ ...rulesData[index] }));
+            alert(`已复制 ${clipboard.length} 行规则`);
+        }
+        
+        // 粘贴行
+        function pasteRows() {
+            if (clipboard.length === 0) {
+                alert('剪贴板为空，请先复制行');
+                return;
+            }
+            
+            clipboard.forEach(rule => {
+                const newRule = { ...rule, name: rule.name + ' (副本)' };
+                rulesData.push(newRule);
+            });
+            
+            renderTable();
+        }
+        
+        // 切换行选择
+        function toggleRowSelection(index) {
+            if (selectedRows.has(index)) {
+                selectedRows.delete(index);
+            } else {
+                selectedRows.add(index);
+            }
+            
+            // 更新行样式
+            const row = document.querySelector(`tr[data-index="${index}"]`);
+            if (row) {
+                row.classList.toggle('selected', selectedRows.has(index));
+            }
+            
+            updateStats();
+        }
+        
+        // 全选/取消全选
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const isChecked = selectAllCheckbox.checked;
+            
+            if (isChecked) {
+                // 全选
+                for (let i = 0; i < rulesData.length; i++) {
+                    selectedRows.add(i);
+                }
+            } else {
+                // 取消全选
+                selectedRows.clear();
+            }
+            
+            renderTable();
+        }
+        
+        // 更新规则字段
+        function updateRuleField(index, field, value) {
+            if (rulesData[index]) {
+                rulesData[index][field] = value;
+            }
+        }
+        
+        // 编辑规则详情
+
+        // 删除规则
+        function deleteRule(index) {
+            if (confirm('确定要删除这条规则吗？')) {
+                rulesData.splice(index, 1);
+                selectedRows.delete(index);
+                
+                // 更新选中行索引
+                const newSelectedRows = new Set();
+                selectedRows.forEach(selectedIndex => {
+                    if (selectedIndex > index) {
+                        newSelectedRows.add(selectedIndex - 1);
+                    } else if (selectedIndex < index) {
+                        newSelectedRows.add(selectedIndex);
+                    }
+                });
+                selectedRows = newSelectedRows;
+                
+                renderTable();
+            }
+        }
+        
+        // 复制规则
+        function copyRule(index) {
+            const rule = { ...rulesData[index], name: rulesData[index].name + ' (副本)' };
+            rulesData.push(rule);
+            renderTable();
+        }
+        
+        // 保存规则详情
+        function saveRuleDetail() {
+            if (editingRowIndex >= 0) {
+                const rule = rulesData[editingRowIndex];
+                
+                rule.name = document.getElementById('modalRuleName').value;
+                rule.type = document.getElementById('modalRuleType').value;
+                rule.condition = document.getElementById('modalCondition').value;
+                rule.operator = document.getElementById('modalOperator').value;
+                rule.value = document.getElementById('modalValue').value;
+                rule.action = document.getElementById('modalAction').value;
+                rule.priority = document.getElementById('modalPriority').value;
+                rule.status = document.getElementById('modalStatus').value;
+                rule.effectiveDate = document.getElementById('modalEffectiveDate').value;
+                rule.expiryDate = document.getElementById('modalExpiryDate').value;
+                rule.description = document.getElementById('modalDescription').value;
+                
+                renderTable();
+                closeModal();
+            }
+        }
+        
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('ruleModal').style.display = 'none';
+            editingRowIndex = -1;
+        }
+        
+        // 保存所有规则
+        function saveRules() {
+            console.log('保存规则数据:', rulesData);
+            alert('规则保存成功！');
+        }
+        
+        // 导出Excel
+        function exportExcel() {
+            alert('Excel导出功能开发中...');
+        }
+        
+        // 导入Excel
+        function importExcel() {
+            alert('Excel导入功能开发中...');
+        }
+        
+        // 清空表格
+        function clearAll() {
+            if (confirm('确定要清空所有规则吗？此操作不可恢复！')) {
+                rulesData = [];
+                selectedRows.clear();
+                renderTable();
+            }
+        }
+        
+        // 重置表格
+        function resetTable() {
+            if (confirm('确定要重置表格吗？这将恢复到初始状态！')) {
+                rulesData = [];
+                selectedRows.clear();
+                initializeTable();
+            }
+        }
+        
+
+
+        // 下载规则Excel模板
+        function downloadRuleTemplate() {
+            // 创建模拟的Excel数据
+            const templateData = [
+                ['规则名称*', '规则类型*', '触发条件*', '操作符*', '条件值*', '执行动作*', '优先级', '状态*', '生效日期', '失效日期', '描述'],
+                ['年龄限制规则', '年龄限制', '患者年龄', '小于', '18', '禁用', '高', '启用', '2024-01-01', '2024-12-31', '18岁以下患者禁用此药品'],
+                ['用量限制规则', '用量限制', '日用量', '大于', '6', '警告', '中', '启用', '2024-01-01', '2024-12-31', '日用量超过6片时给出警告'],
+                ['重复用药检查', '重复用药', '同类药品数量', '大于等于', '2', '警告', '高', '启用', '2024-01-01', '2024-12-31', '检查是否存在重复用药']
+            ];
+            
+            // 创建CSV内容
+            const csvContent = templateData.map(row => row.join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '规则导入模板.csv';
+            link.click();
+        }
+        
+        // 全屏功能
+        let isFullscreen = false;
+        
+        function toggleFullscreen() {
+            const excelContainer = document.querySelector('.excel-container');
+            const fullscreenBtn = document.getElementById('fullscreenBtn');
+            const excelFooter = document.querySelector('.excel-footer');
+            
+            if (!isFullscreen) {
+                // 进入表格全屏模式
+                excelContainer.style.position = 'fixed';
+                excelContainer.style.top = '0';
+                excelContainer.style.left = '0';
+                excelContainer.style.width = '100vw';
+                excelContainer.style.height = '100vh';
+                excelContainer.style.zIndex = '9999';
+                excelContainer.style.backgroundColor = '#ffffff';
+                excelContainer.style.padding = '20px';
+                excelContainer.style.boxSizing = 'border-box';
+                
+                // 调整表格容器高度，延伸到统计信息上方
+                const tableContainer = excelContainer.querySelector('.excel-table-container');
+                if (tableContainer) {
+                    tableContainer.style.height = 'calc(100vh - 80px)';
+                    tableContainer.style.overflow = 'auto';
+                    tableContainer.style.position = 'relative';
+                    
+                    // 确保表头固定在顶部
+                    const table = tableContainer.querySelector('.excel-table');
+                    if (table) {
+                        const thead = table.querySelector('thead');
+                        if (thead) {
+                            thead.style.position = 'sticky';
+                            thead.style.top = '0';
+                            thead.style.zIndex = '10';
+                            thead.style.backgroundColor = '#f8f9fa';
+                        }
+                    }
+                }
+                
+                // 隐藏统计信息
+                if (excelFooter) {
+                    excelFooter.style.display = 'none';
+                }
+                
+                fullscreenBtn.innerHTML = '退出全屏';
+                fullscreenBtn.title = '退出表格全屏';
+                isFullscreen = true;
+                
+                // 添加ESC键退出全屏
+                document.addEventListener('keydown', handleEscKey);
+            } else {
+                // 退出表格全屏模式
+                excelContainer.style.position = '';
+                excelContainer.style.top = '';
+                excelContainer.style.left = '';
+                excelContainer.style.width = '';
+                excelContainer.style.height = '';
+                excelContainer.style.zIndex = '';
+                excelContainer.style.backgroundColor = '';
+                excelContainer.style.padding = '';
+                excelContainer.style.boxSizing = '';
+                
+                // 恢复表格容器高度
+                const tableContainer = excelContainer.querySelector('.excel-table-container');
+                if (tableContainer) {
+                    tableContainer.style.height = '';
+                    tableContainer.style.overflow = '';
+                    tableContainer.style.position = '';
+                    
+                    // 恢复表头样式
+                    const table = tableContainer.querySelector('.excel-table');
+                    if (table) {
+                        const thead = table.querySelector('thead');
+                        if (thead) {
+                            thead.style.position = '';
+                            thead.style.top = '';
+                            thead.style.zIndex = '';
+                            thead.style.backgroundColor = '';
+                        }
+                    }
+                }
+                
+                // 显示统计信息
+                if (excelFooter) {
+                    excelFooter.style.display = '';
+                }
+                
+                fullscreenBtn.innerHTML = '表格全屏';
+                fullscreenBtn.title = '表格全屏显示';
+                isFullscreen = false;
+                
+                // 移除ESC键监听
+                document.removeEventListener('keydown', handleEscKey);
+            }
+        }
+        
+        function handleEscKey(event) {
+            if (event.key === 'Escape' && isFullscreen) {
+                toggleFullscreen();
+            }
+        }
+    </script>
+    
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载统一菜单组件 -->
+    <script>
+        // 加载统一侧边栏
+        fetch('../组件/_unified-sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const sidebarContainer = document.getElementById('sidebar-container');
+                sidebarContainer.innerHTML = html;
+                // 手动执行插入的脚本
+                const scripts = sidebarContainer.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.head.appendChild(newScript);
+                    script.remove();
+                });
+                // 等待脚本执行后再初始化菜单
+                setTimeout(() => {
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    }
+                    // 设置当前页面的菜单项为激活状态
+                    if (typeof setActiveMenu === 'function') {
+                        setActiveMenu();
+                    }
+                }, 100);
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+</body>
+</html>

@@ -1,0 +1,2434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>规则分析报告 - 医保智慧监管平台</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/平台看板样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    <!-- 样式文件已内联，移除外部引用以避免404错误 -->
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            min-height: 100vh;
+            background: #f8fafc;
+            position: relative;
+        }
+
+        .container {
+            max-width: none;
+            margin: 0;
+            padding: 10px;
+            width: 100%;
+        }
+        
+        /* content-wrapper样式优化 - 平衡布局 */
+        .content-wrapper {
+            width: 100% !important;
+            max-width: none !important;
+            padding: 20px !important;
+            margin: 0 !important;
+            box-sizing: border-box !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* 确保主内容区域在有侧边栏时正确布局 */
+        .main-content {
+            margin-left: 280px !important;
+            width: calc(100vw - 280px) !important;
+            max-width: none !important;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* 在小屏幕上移除侧边栏边距 */
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0 !important;
+                width: 100vw !important;
+            }
+        }
+        
+        .rule-analysis-container {
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .overview-section,
+        .analysis-section,
+        .ranking-section {
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            padding: 24px !important;
+        }
+        
+        .section-header {
+            margin-bottom: 8px !important;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 32px;
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-left h2 {
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+        
+        .dashboard-meta {
+            display: flex;
+            gap: 24px;
+            font-size: 14px;
+            color: #718096;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #3182ce;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2c5aa0;
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .btn-info {
+            background: #0bc5ea;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #00b3d7;
+        }
+        
+        /* 优化grid容器布局 - 极小的minmax值最大化空间利用 */
+        .overview-cards {
+            width: 100% !important;
+            max-width: none !important;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+            gap: 8px !important;
+        }
+        
+        .dashboard-grid {
+            width: 100% !important;
+            max-width: none !important;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+            gap: 8px !important;
+        }
+        
+        .stats-grid {
+            width: 100% !important;
+            max-width: none !important;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
+            gap: 8px !important;
+        }
+        
+        .trend-summary {
+            width: 100% !important;
+            max-width: none !important;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+            gap: 8px !important;
+        }
+        
+        .effectiveness-grid,
+        .performance-grid {
+            width: 100% !important;
+            max-width: none !important;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)) !important;
+            gap: 8px !important;
+        }
+
+        /* 强制所有容器使用全宽 */
+        .rule-analysis-container,
+        .overview-section,
+        .analysis-section,
+        .ranking-section {
+            width: 100% !important;
+            max-width: none !important;
+        }
+
+        /* 页面头部样式由平台看板样式文件统一管理 */
+
+
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* main-content样式由unified-sidebar.css提供 */
+        /* 高度一致性修正 - 确保右侧内容自适应高度而不是固定100vh */
+        .main-content {
+            height: auto !important;
+            min-height: 100vh;
+            overflow-y: visible !important;
+        }
+
+        .rule-analysis-container {
+            max-width: none;
+            margin: 0;
+            width: 100%;
+        }
+
+        .overview-section, .analysis-section, .ranking-section {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .date-range {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-range input {
+            padding: 6px 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn-refresh {
+            padding: 6px 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-refresh:hover {
+            background: #2563eb;
+        }
+
+        .overview-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+        }
+
+        .overview-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .overview-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-icon {
+            margin-right: 16px;
+        }
+
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .icon-circle.primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        }
+
+        .icon-circle.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .icon-circle.warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .icon-circle.danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+
+        .card-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .card-trend {
+            font-size: 12px;
+        }
+
+        .card-trend.positive {
+            color: #059669;
+        }
+
+        .card-trend.negative {
+            color: #dc2626;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3182ce;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2c5aa0;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 16px 0;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        td {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #3b82f6;
+            transition: width 0.3s ease;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            border-bottom-color: #3b82f6;
+            color: #3b82f6;
+        }
+
+        .tab:hover {
+            background: #f8fafc;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #86efac;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fcd34d;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        .analysis-controls, .ranking-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .analysis-controls select, .ranking-controls select {
+            padding: 6px 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn-export {
+            padding: 6px 12px;
+            background: #059669;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-export:hover {
+            background: #047857;
+        }
+
+        .analysis-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            align-items: start;
+            width: 100%;
+            max-width: none;
+        }
+
+        .category-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .stat-percentage {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .ranking-table {
+            overflow-x: auto;
+        }
+
+        .ranking-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ranking-table th {
+            background: #f8fafc;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #374151;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .ranking-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .rank-badge.rank-1 {
+            background: #fbbf24;
+        }
+
+        .rank-badge.rank-2 {
+            background: #9ca3af;
+        }
+
+        .rank-badge.rank-3 {
+            background: #f59e0b;
+        }
+
+        .rule-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .rule-name {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .rule-code {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .category-tag {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .category-tag.policy {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .category-tag.clinical {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .trend-indicator {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .trend-indicator.up {
+            color: #059669;
+        }
+
+        .trend-indicator.down {
+            color: #dc2626;
+        }
+
+        /* 趋势分析样式 */
+        .trend-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .trend-controls {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        
+        .time-selector {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .time-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .time-btn.active,
+        .time-btn:hover {
+            background: #1890ff;
+            color: white;
+            border-color: #1890ff;
+        }
+        
+        .metric-selector {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .metric-selector label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        
+        .trend-chart-container {
+            margin: 24px 0;
+            height: 400px;
+            position: relative;
+        }
+        
+        .trend-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+            margin: 8px 0;
+        }
+        
+        .summary-item {
+            text-align: center;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .summary-label {
+            display: block;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .summary-value {
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .summary-change {
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .summary-change.positive {
+            color: #52c41a;
+        }
+        
+        .summary-change.negative {
+            color: #ff4d4f;
+        }
+        
+        /* 效果分析样式 */
+        .effectiveness-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .effectiveness-controls select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .effectiveness-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+            margin: 10px 0;
+        }
+        
+        .effectiveness-card {
+            text-align: center;
+            padding: 24px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .effectiveness-card h4 {
+            margin: 0 0 16px 0;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .progress-circle {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 16px;
+            position: relative;
+            border-radius: 50%;
+            background: conic-gradient(#1890ff calc(var(--percentage) * 1%), #e6f7ff 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .circle-progress {
+            width: 90px;
+            height: 90px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .percentage {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1890ff;
+        }
+        
+        .effectiveness-card p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* 性能监控样式 */
+        .performance-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .performance-controls {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn-monitor,
+        .btn-alert {
+            padding: 8px 16px;
+            border: 1px solid #1890ff;
+            background: white;
+            color: #1890ff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-monitor:hover,
+        .btn-alert:hover {
+            background: #1890ff;
+            color: white;
+        }
+        
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+            margin: 10px 0;
+        }
+        
+        .performance-card {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .performance-card h4 {
+            margin: 0 0 12px 0;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .performance-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1890ff;
+            margin-bottom: 12px;
+        }
+        
+        .mini-chart {
+            height: 60px;
+            background: #e6f7ff;
+            border-radius: 4px;
+            margin: 12px 0;
+            position: relative;
+        }
+        
+        .performance-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+        
+        .performance-status.good {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+        
+        .performance-status.excellent {
+            background: #e6fffb;
+            color: #13c2c2;
+        }
+        
+        .performance-status.warning {
+            background: #fff7e6;
+            color: #fa8c16;
+        }
+        
+        .performance-details {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .concurrent-stats h4 {
+            margin: 0 0 16px 0;
+            color: #333;
+        }
+        
+        .detail-section {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .detail-section h4 {
+            margin: 0 0 16px 0;
+            color: #333;
+        }
+        
+        .execution-time-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .time-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .time-label {
+            width: 80px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .time-progress {
+            flex: 1;
+            height: 24px;
+            background: #1890ff;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 8px;
+            position: relative;
+        }
+        
+        .time-percentage {
+            color: white;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* 异常检测样式 */
+        .anomaly-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .anomaly-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .anomaly-controls select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .anomaly-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 24px;
+            margin: 24px 0;
+        }
+        
+        .anomaly-overview {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .anomaly-card {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-radius: 8px;
+            gap: 12px;
+        }
+        
+        .anomaly-card.critical {
+            background: #fff2f0;
+            border: 1px solid #ffccc7;
+        }
+        
+        .anomaly-card.warning {
+            background: #fffbe6;
+            border: 1px solid #ffe58f;
+        }
+        
+        .anomaly-card.info {
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+        }
+        
+        .anomaly-icon {
+            font-size: 24px;
+        }
+        
+        .anomaly-card.critical .anomaly-icon {
+            color: #ff4d4f;
+        }
+        
+        .anomaly-card.warning .anomaly-icon {
+            color: #fa8c16;
+        }
+        
+        .anomaly-card.info .anomaly-icon {
+            color: #52c41a;
+        }
+        
+        .anomaly-content {
+            flex: 1;
+        }
+        
+        .anomaly-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .anomaly-count {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .anomaly-desc {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .anomaly-chart h4 {
+            margin: 0 0 16px 0;
+            color: #333;
+        }
+        
+        .chart-legend {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        
+        .legend-color.critical {
+            background: #ff4d4f;
+        }
+        
+        .legend-color.warning {
+            background: #fa8c16;
+        }
+        
+        .legend-color.info {
+            background: #52c41a;
+        }
+        
+        .legend-text {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .anomaly-events {
+            margin-top: 24px;
+        }
+        
+        .anomaly-events h4 {
+            margin: 0 0 16px 0;
+            color: #333;
+        }
+        
+        .anomaly-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .anomaly-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            gap: 12px;
+        }
+        
+        .anomaly-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .anomaly-item.critical .anomaly-status {
+            background: #ff4d4f;
+        }
+        
+        .anomaly-item.warning .anomaly-status {
+            background: #fa8c16;
+        }
+        
+        .anomaly-item.info .anomaly-status {
+            background: #52c41a;
+        }
+        
+        .anomaly-info {
+            flex: 1;
+        }
+        
+        .anomaly-info .anomaly-title {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .anomaly-info .anomaly-desc {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .anomaly-time {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .anomaly-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-detail,
+        .btn-handle {
+            padding: 4px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .btn-detail:hover,
+        .btn-handle:hover {
+            background: #f0f0f0;
+        }
+        
+        /* 对比分析样式 */
+        .comparison-section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .comparison-controls select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .btn-compare {
+            padding: 8px 16px;
+            background: #1890ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-compare:hover {
+            background: #40a9ff;
+        }
+        
+        .comparison-config {
+            margin: 24px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .config-group {
+            margin-bottom: 16px;
+        }
+        
+        .config-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        .config-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .config-options {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .config-options label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+        
+        .time-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .time-group label {
+            margin-bottom: 0;
+            min-width: 60px;
+        }
+        
+        .time-group input {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .comparison-results {
+            margin-top: 24px;
+        }
+        
+        .comparison-summary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .comparison-arrow {
+            font-size: 24px;
+            color: #666;
+        }
+        
+        .comparison-chart {
+            margin-bottom: 24px;
+        }
+        
+        .comparison-chart h4 {
+            margin: 0 0 16px 0;
+            color: #333;
+        }
+        
+        .chart-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .tab-btn {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active,
+        .tab-btn:hover {
+            background: #1890ff;
+            color: white;
+            border-color: #1890ff;
+        }
+        
+        .chart-content {
+            height: 300px;
+            position: relative;
+        }
+        
+        .comparison-table h4 {
+            margin: 0 0 16px 0;
+            color: #333;
+        }
+        
+        .trend-indicator.stable {
+            color: #666;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .page-title {
+                font-size: 20px;
+            }
+
+            .analysis-content {
+                grid-template-columns: 1fr !important;
+            }
+
+            .overview-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .trend-controls {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .effectiveness-grid,
+            .performance-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .anomaly-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-summary {
+                flex-direction: column;
+                gap: 16px;
+            }
+        }
+    </style>
+    <!-- FontAwesome图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="content-wrapper">
+                <!-- 页面头部 -->
+            <div class="page-header">
+                <div class="header-left">
+                    <h2>规则分析报告</h2>
+                    <div class="dashboard-meta">
+                        <span class="update-time">最后更新：2024-01-31 23:59</span>
+                        <span class="data-source">数据来源：实时监控</span>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="refreshReport()">刷新数据</button>
+                    <button class="btn btn-primary" onclick="exportReport()">导出报告</button>
+                </div>
+            </div>
+        
+        <div class="rule-analysis-container">
+            <!-- 概览统计 -->
+            <div class="overview-section">
+                <div class="section-header">
+                    <h3>概览统计</h3>
+                    <div class="date-range">
+                        <input type="date" id="startDate" value="2024-01-01">
+                        <span>至</span>
+                        <input type="date" id="endDate" value="2024-01-31">
+                        <button class="btn-refresh" onclick="ruleAnalysis.refreshData()">刷新</button>
+                    </div>
+                </div>
+                <div class="overview-cards">
+                    <div class="overview-card">
+                        <div class="card-icon">
+                            <div class="icon-circle primary">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">总规则数</div>
+                            <div class="card-value">1,247</div>
+                            <div class="card-trend positive">+12.5% 环比增长</div>
+                        </div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="card-icon">
+                            <div class="icon-circle success">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">执行次数</div>
+                            <div class="card-value">2.8M</div>
+                            <div class="card-trend positive">+8.3% 环比增长</div>
+                        </div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="card-icon">
+                            <div class="icon-circle warning">
+                                <i class="fas fa-bullseye"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">命中率</div>
+                            <div class="card-value">15.6%</div>
+                            <div class="card-trend negative">-2.1% 环比下降</div>
+                        </div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="card-icon">
+                            <div class="icon-circle danger">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">拦截金额</div>
+                            <div class="card-value">¥1.2B</div>
+                            <div class="card-trend positive">+28.6% 环比增长</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 规则分类分析 -->
+            <div class="analysis-section">
+                <div class="section-header">
+                    <h3>规则分类分析</h3>
+                    <div class="analysis-controls">
+                        <select id="analysisType">
+                            <option value="category">按分类</option>
+                            <option value="priority">按优先级</option>
+                            <option value="status">按状态</option>
+                        </select>
+                        <button class="btn-export" onclick="ruleAnalysis.exportAnalysis()">导出</button>
+                    </div>
+                </div>
+                <div class="analysis-content">
+                    <div class="chart-container">
+                        <canvas id="categoryChart" width="400" height="300"></canvas>
+                    </div>
+                    <div class="category-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">反洗钱规则</span>
+                            <span class="stat-value">456</span>
+                            <span class="stat-percentage">36.6%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">风控规则</span>
+                            <span class="stat-value">312</span>
+                            <span class="stat-percentage">25.0%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">合规检查</span>
+                            <span class="stat-value">289</span>
+                            <span class="stat-percentage">23.2%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">交易监控</span>
+                            <span class="stat-value">190</span>
+                            <span class="stat-percentage">15.2%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 热点规则排行 -->
+            <div class="ranking-section">
+                <div class="section-header">
+                    <h3>热点规则排行</h3>
+                    <div class="ranking-controls">
+                        <select id="rankingType">
+                            <option value="execution">按执行次数</option>
+                            <option value="hit_rate">按命中率</option>
+                            <option value="amount">按拦截金额</option>
+                        </select>
+                        <select id="timeRange">
+                            <option value="today">今日</option>
+                            <option value="week">本周</option>
+                            <option value="month" selected>本月</option>
+                            <option value="quarter">本季度</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="ranking-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>排名</th>
+                                <th>规则名称</th>
+                                <th>分类</th>
+                                <th>执行次数</th>
+                                <th>命中次数</th>
+                                <th>命中率</th>
+                                <th>拦截金额</th>
+                                <th>趋势</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="rank-badge rank-1">1</span></td>
+                                <td>
+                                    <div class="rule-info">
+                                        <span class="rule-name">高值耗材超限检查</span>
+                                        <span class="rule-code">MATERIAL_LIMIT_001</span>
+                                    </div>
+                                </td>
+                                <td><span class="category-tag policy">政策</span></td>
+                                <td>4,567</td>
+                                <td>1,234</td>
+                                <td>27.0%</td>
+                                <td>¥456,780</td>
+                                <td><span class="trend-indicator up">↗</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-2">2</span></td>
+                                <td>
+                                    <div class="rule-info">
+                                        <span class="rule-name">诊疗项目合理性检查</span>
+                                        <span class="rule-code">TREATMENT_VALID_002</span>
+                                    </div>
+                                </td>
+                                <td><span class="category-tag clinical">临床</span></td>
+                                <td>3,892</td>
+                                <td>987</td>
+                                <td>25.4%</td>
+                                <td>¥389,200</td>
+                                <td><span class="trend-indicator up">↗</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge rank-3">3</span></td>
+                                <td>
+                                    <div class="rule-info">
+                                        <span class="rule-name">药品配伍禁忌检查</span>
+                                        <span class="rule-code">DRUG_CONFLICT_003</span>
+                                    </div>
+                                </td>
+                                <td><span class="category-tag safety">安全</span></td>
+                                <td>3,456</td>
+                                <td>765</td>
+                                <td>22.1%</td>
+                                <td>¥234,560</td>
+                                <td><span class="trend-indicator stable">→</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">4</span></td>
+                                <td>
+                                    <div class="rule-info">
+                                        <span class="rule-name">重复检查项目识别</span>
+                                        <span class="rule-code">DUPLICATE_CHECK_004</span>
+                                    </div>
+                                </td>
+                                <td><span class="category-tag efficiency">效率</span></td>
+                                <td>2,987</td>
+                                <td>598</td>
+                                <td>20.0%</td>
+                                <td>¥198,700</td>
+                                <td><span class="trend-indicator down">↘</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="rank-badge">5</span></td>
+                                <td>
+                                    <div class="rule-info">
+                                        <span class="rule-name">住院天数异常检测</span>
+                                        <span class="rule-code">STAY_DURATION_005</span>
+                                    </div>
+                                </td>
+                                <td><span class="category-tag policy">政策</span></td>
+                                <td>2,654</td>
+                                <td>478</td>
+                                <td>18.0%</td>
+                                <td>¥156,400</td>
+                                <td><span class="trend-indicator up">↗</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 规则执行趋势 -->
+            <div class="trend-section">
+                <div class="section-header">
+                    <h3>规则执行趋势</h3>
+                    <div class="trend-controls">
+                        <div class="time-selector">
+                            <button class="time-btn" data-period="7d">近7天</button>
+                            <button class="time-btn active" data-period="30d">近30天</button>
+                            <button class="time-btn" data-period="90d">近90天</button>
+                        </div>
+                        <div class="metric-selector">
+                            <label><input type="checkbox" value="execution" checked> 执行次数</label>
+                            <label><input type="checkbox" value="hit_rate" checked> 命中率</label>
+                            <label><input type="checkbox" value="amount"> 拦截金额</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="trend-chart-container">
+                    <canvas id="trendChart" width="800" height="400"></canvas>
+                </div>
+                <div class="trend-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">平均日执行量</span>
+                        <span class="summary-value">93,333</span>
+                        <span class="summary-change positive">+5.2%</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">平均命中率</span>
+                        <span class="summary-value">15.6%</span>
+                        <span class="summary-change negative">-1.8%</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">日均拦截金额</span>
+                        <span class="summary-value">¥4.2M</span>
+                        <span class="summary-change positive">+12.3%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 规则效果分析 -->
+            <div class="effectiveness-section">
+                <div class="section-header">
+                    <h3>规则效果分析</h3>
+                    <div class="effectiveness-controls">
+                        <select id="effectivenessMetric">
+                            <option value="coverage">覆盖率分析</option>
+                            <option value="accuracy">准确率分析</option>
+                            <option value="efficiency">效率分析</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="effectiveness-grid">
+                    <div class="effectiveness-card">
+                        <h4>规则覆盖率</h4>
+                        <div class="progress-circle" style="--percentage: 85">
+                            <div class="circle-progress">
+                                <span class="percentage">85%</span>
+                            </div>
+                        </div>
+                        <p>业务场景覆盖率良好</p>
+                    </div>
+                    <div class="effectiveness-card">
+                        <h4>误报率</h4>
+                        <div class="progress-circle" style="--percentage: 12">
+                            <div class="circle-progress">
+                                <span class="percentage">12%</span>
+                            </div>
+                        </div>
+                        <p>误报率控制在合理范围</p>
+                    </div>
+                    <div class="effectiveness-card">
+                        <h4>审核效率</h4>
+                        <div class="progress-circle" style="--percentage: 78">
+                            <div class="circle-progress">
+                                <span class="percentage">78%</span>
+                            </div>
+                        </div>
+                        <p>审核效率有待提升</p>
+                    </div>
+                    <div class="effectiveness-card">
+                        <h4>成本节约</h4>
+                        <div class="progress-circle" style="--percentage: 92">
+                            <div class="circle-progress">
+                                <span class="percentage">92%</span>
+                            </div>
+                        </div>
+                        <p>成本节约效果显著</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 规则性能监控 -->
+            <div class="performance-section">
+                <div class="section-header">
+                    <h3>规则性能监控</h3>
+                    <div class="performance-controls">
+                        <button class="btn-monitor" onclick="ruleAnalysis.startMonitoring()">开始监控</button>
+                        <button class="btn-alert" onclick="ruleAnalysis.configureAlerts()">告警配置</button>
+                    </div>
+                </div>
+                <div class="performance-grid">
+                    <div class="performance-card">
+                        <h4>平均响应时间</h4>
+                        <div class="performance-value">145ms</div>
+                        <div class="mini-chart" id="responseTimeChart"></div>
+                        <div class="performance-status good">良好</div>
+                    </div>
+                    <div class="performance-card">
+                        <h4>系统吞吐量</h4>
+                        <div class="performance-value">2,456/s</div>
+                        <div class="mini-chart" id="throughputChart"></div>
+                        <div class="performance-status excellent">优秀</div>
+                    </div>
+                    <div class="performance-card">
+                        <h4>CPU使用率</h4>
+                        <div class="performance-value">68%</div>
+                        <div class="mini-chart" id="cpuChart"></div>
+                        <div class="performance-status warning">注意</div>
+                    </div>
+                    <div class="performance-card">
+                        <h4>内存使用率</h4>
+                        <div class="performance-value">72%</div>
+                        <div class="mini-chart" id="memoryChart"></div>
+                        <div class="performance-status warning">注意</div>
+                    </div>
+                </div>
+                
+                <div class="performance-details">
+                    <div class="concurrent-stats">
+                        <h4>并发处理统计</h4>
+                        <div class="stat-item">
+                            <span class="stat-label">当前并发数</span>
+                            <span class="stat-value">234</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">峰值并发数</span>
+                            <span class="stat-value">456</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">平均并发数</span>
+                            <span class="stat-value">189</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">并发处理成功率</span>
+                            <span class="stat-value">99.2%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h4>规则执行耗时分布</h4>
+                    <div class="execution-time-chart">
+                        <div class="time-bar">
+                            <span class="time-label">< 50ms</span>
+                            <div class="time-progress" style="width: 65%">
+                                <span class="time-percentage">65%</span>
+                            </div>
+                        </div>
+                        <div class="time-bar">
+                            <span class="time-label">50-100ms</span>
+                            <div class="time-progress" style="width: 25%">
+                                <span class="time-percentage">25%</span>
+                            </div>
+                        </div>
+                        <div class="time-bar">
+                            <span class="time-label">100-200ms</span>
+                            <div class="time-progress" style="width: 8%">
+                                <span class="time-percentage">8%</span>
+                            </div>
+                        </div>
+                        <div class="time-bar">
+                            <span class="time-label">> 200ms</span>
+                            <div class="time-progress" style="width: 2%">
+                                <span class="time-percentage">2%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 规则异常检测 -->
+        <div class="anomaly-section">
+            <div class="section-header">
+                <h3>规则异常检测</h3>
+                <div class="anomaly-controls">
+                    <select id="anomalyTimeRange">
+                        <option value="1h">近1小时</option>
+                        <option value="6h">近6小时</option>
+                        <option value="24h" selected>近24小时</option>
+                        <option value="7d">近7天</option>
+                    </select>
+                    <button class="btn-refresh" onclick="ruleAnalysis.refreshAnomalyData()">
+                        <i class="fas fa-sync-alt"></i> 刷新
+                    </button>
+                </div>
+            </div>
+
+            <div class="anomaly-grid">
+                <!-- 异常概览 -->
+                <div class="anomaly-overview">
+                    <div class="anomaly-card critical">
+                        <div class="anomaly-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="anomaly-content">
+                            <div class="anomaly-title">严重异常</div>
+                            <div class="anomaly-count">3</div>
+                            <div class="anomaly-desc">需要立即处理</div>
+                        </div>
+                    </div>
+                    <div class="anomaly-card warning">
+                        <div class="anomaly-icon">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="anomaly-content">
+                            <div class="anomaly-title">警告异常</div>
+                            <div class="anomaly-count">8</div>
+                            <div class="anomaly-desc">建议关注处理</div>
+                        </div>
+                    </div>
+                    <div class="anomaly-card info">
+                        <div class="anomaly-icon">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div class="anomaly-content">
+                            <div class="anomaly-title">提醒异常</div>
+                            <div class="anomaly-count">15</div>
+                            <div class="anomaly-desc">日常监控项目</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 异常趋势图 -->
+                <div class="anomaly-chart">
+                    <h4>异常趋势分析</h4>
+                    <div class="chart-container">
+                        <canvas id="anomalyTrendChart" width="600" height="200"></canvas>
+                    </div>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-color critical"></span>
+                            <span class="legend-text">严重异常</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color warning"></span>
+                            <span class="legend-text">警告异常</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color info"></span>
+                            <span class="legend-text">提醒异常</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 异常事件列表 -->
+            <div class="anomaly-events">
+                <h4>最新异常事件</h4>
+                <div class="anomaly-list">
+                    <div class="anomaly-item critical">
+                        <div class="anomaly-status"></div>
+                        <div class="anomaly-info">
+                            <div class="anomaly-title">规则执行超时</div>
+                            <div class="anomaly-desc">反洗钱规则R001执行时间超过5秒阈值</div>
+                            <div class="anomaly-time">2分钟前</div>
+                        </div>
+                        <div class="anomaly-actions">
+                            <button class="btn-detail">详情</button>
+                            <button class="btn-handle">处理</button>
+                        </div>
+                    </div>
+                    <div class="anomaly-item warning">
+                        <div class="anomaly-status"></div>
+                        <div class="anomaly-info">
+                            <div class="anomaly-title">命中率异常下降</div>
+                            <div class="anomaly-desc">风控规则R015命中率从15%下降至8%</div>
+                            <div class="anomaly-time">15分钟前</div>
+                        </div>
+                        <div class="anomaly-actions">
+                            <button class="btn-detail">详情</button>
+                            <button class="btn-handle">处理</button>
+                        </div>
+                    </div>
+                    <div class="anomaly-item info">
+                        <div class="anomaly-status"></div>
+                        <div class="anomaly-info">
+                            <div class="anomaly-title">执行量激增</div>
+                            <div class="anomaly-desc">合规检查R032执行量比平时增加200%</div>
+                            <div class="anomaly-time">1小时前</div>
+                        </div>
+                        <div class="anomaly-actions">
+                            <button class="btn-detail">详情</button>
+                            <button class="btn-handle">处理</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 规则对比分析 -->
+        <div class="comparison-section">
+            <div class="section-header">
+                <h3>规则对比分析</h3>
+                <div class="comparison-controls">
+                    <select id="comparisonType">
+                        <option value="time">时间对比</option>
+                        <option value="rules">规则对比</option>
+                        <option value="categories">分类对比</option>
+                    </select>
+                    <button class="btn-compare" onclick="ruleAnalysis.startComparison()">
+                        <i class="fas fa-balance-scale"></i> 开始对比
+                    </button>
+                </div>
+            </div>
+
+            <div class="comparison-config">
+                <div class="config-group">
+                    <label>对比维度：</label>
+                    <div class="config-options">
+                        <label><input type="checkbox" value="execution" checked> 执行次数</label>
+                        <label><input type="checkbox" value="hit_rate" checked> 命中率</label>
+                        <label><input type="checkbox" value="amount" checked> 拦截金额</label>
+                        <label><input type="checkbox" value="response_time"> 响应时间</label>
+                    </div>
+                </div>
+                <div class="config-group">
+                    <label>时间范围：</label>
+                    <div class="time-selector">
+                        <div class="time-group">
+                            <label>期间A：</label>
+                            <input type="date" id="periodAStart" value="2024-01-01">
+                            <span>至</span>
+                            <input type="date" id="periodAEnd" value="2024-01-15">
+                        </div>
+                        <div class="time-group">
+                            <label>期间B：</label>
+                            <input type="date" id="periodBStart" value="2024-01-16">
+                            <span>至</span>
+                            <input type="date" id="periodBEnd" value="2024-01-31">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-results">
+                <div class="comparison-summary">
+                    <div class="summary-item">
+                        <div class="summary-title">期间A总执行</div>
+                        <div class="summary-value">1.2M</div>
+                    </div>
+                    <div class="comparison-arrow">→</div>
+                    <div class="summary-item">
+                        <div class="summary-title">期间B总执行</div>
+                        <div class="summary-value">1.6M</div>
+                    </div>
+                    <div class="summary-change positive">+33.3%</div>
+                </div>
+
+                <div class="comparison-chart">
+                    <h4>对比趋势图</h4>
+                    <div class="chart-tabs">
+                        <button class="tab-btn active" data-chart="execution">执行次数</button>
+                        <button class="tab-btn" data-chart="hit_rate">命中率</button>
+                        <button class="tab-btn" data-chart="amount">拦截金额</button>
+                    </div>
+                    <div class="chart-content">
+                        <canvas id="comparisonChart" width="600" height="300"></canvas>
+                    </div>
+                </div>
+
+                <div class="comparison-table">
+                    <h4>规则详细对比</h4>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>规则名称</th>
+                                    <th>期间A执行次数</th>
+                                    <th>期间B执行次数</th>
+                                    <th>变化率</th>
+                                    <th>期间A命中率</th>
+                                    <th>期间B命中率</th>
+                                    <th>命中率变化</th>
+                                    <th>趋势</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>反洗钱规则R001</td>
+                                    <td>2,456</td>
+                                    <td>2,890</td>
+                                    <td class="positive">+17.7%</td>
+                                    <td>12.3%</td>
+                                    <td>11.8%</td>
+                                    <td class="negative">-0.5%</td>
+                                    <td><span class="trend-indicator up">↗</span></td>
+                                </tr>
+                                <tr>
+                                    <td>风控规则R015</td>
+                                    <td>1,834</td>
+                                    <td>2,156</td>
+                                    <td class="positive">+17.6%</td>
+                                    <td>8.9%</td>
+                                    <td>9.2%</td>
+                                    <td class="positive">+0.3%</td>
+                                    <td><span class="trend-indicator up">↗</span></td>
+                                </tr>
+                                <tr>
+                                    <td>合规检查R032</td>
+                                    <td>3,124</td>
+                                    <td>2,987</td>
+                                    <td class="negative">-4.4%</td>
+                                    <td>15.6%</td>
+                                    <td>16.1%</td>
+                                    <td class="positive">+0.5%</td>
+                                    <td><span class="trend-indicator down">↘</span></td>
+                                </tr>
+                                <tr>
+                                    <td>交易监控R008</td>
+                                    <td>4,567</td>
+                                    <td>5,234</td>
+                                    <td class="positive">+14.6%</td>
+                                    <td>6.7%</td>
+                                    <td>6.3%</td>
+                                    <td class="negative">-0.4%</td>
+                                    <td><span class="trend-indicator up">↗</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </div> <!-- /content-wrapper -->
+        </div> <!-- /main-content -->
+    </div> <!-- /dashboard-container -->
+
+    <!-- 加载统一菜单 -->
+    <script>
+        // 加载统一菜单组件
+        fetch('../组件/_unified-sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const sidebarContainer = document.getElementById('sidebar-container');
+                sidebarContainer.innerHTML = html;
+                // 手动执行插入的脚本
+                const scripts = sidebarContainer.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.head.appendChild(newScript);
+                    script.remove();
+                });
+                // 等待脚本执行后再初始化菜单
+                setTimeout(() => {
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    }
+                }, 100);
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+
+    <!-- Chart.js 初始化脚本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 等待页面完全加载后初始化图表
+            setTimeout(initializeCharts, 500);
+        });
+
+        function initializeCharts() {
+            // 初始化规则分类饼状图
+            const categoryCtx = document.getElementById('categoryChart');
+            if (categoryCtx) {
+                new Chart(categoryCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['反洗钱规则', '风控规则', '合规检查', '交易监控', '其他'],
+                        datasets: [{
+                            data: [35, 25, 20, 15, 5],
+                            backgroundColor: [
+                                '#3b82f6',
+                                '#10b981',
+                                '#f59e0b',
+                                '#ef4444',
+                                '#8b5cf6'
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 初始化规则执行趋势曲线图
+            const trendCtx = document.getElementById('trendChart');
+            if (trendCtx) {
+                new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                        datasets: [{
+                            label: '规则执行次数',
+                            data: [1200, 1350, 1180, 1420, 1650, 1580],
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }, {
+                            label: '命中次数',
+                            data: [180, 210, 165, 245, 280, 260],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 初始化规则效果分析柱状图
+            const effectCtx = document.getElementById('effectChart');
+            if (effectCtx) {
+                new Chart(effectCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['反洗钱', '风控', '合规', '交易监控'],
+                        datasets: [{
+                            label: '命中率(%)',
+                            data: [12.5, 8.9, 15.6, 6.7],
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 4
+                        }, {
+                            label: '准确率(%)',
+                            data: [89.2, 92.1, 87.3, 94.5],
+                            backgroundColor: '#10b981',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 初始化性能监控图表
+            const performanceCtx = document.getElementById('performanceChart');
+            if (performanceCtx) {
+                new Chart(performanceCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                        datasets: [{
+                            label: '平均响应时间(ms)',
+                            data: [120, 95, 180, 150, 200, 135],
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 初始化异常趋势图表
+            const anomalyCtx = document.getElementById('anomalyTrendChart');
+            if (anomalyCtx) {
+                new Chart(anomalyCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                        datasets: [{
+                            label: '异常事件数',
+                            data: [5, 3, 8, 2, 6, 1, 4],
+                            backgroundColor: '#ef4444',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 初始化对比分析图表
+            const comparisonCtx = document.getElementById('comparisonChart');
+            if (comparisonCtx) {
+                new Chart(comparisonCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['规则A', '规则B', '规则C', '规则D'],
+                        datasets: [{
+                            label: '期间A',
+                            data: [2456, 1834, 3124, 4567],
+                            backgroundColor: '#3b82f6'
+                        }, {
+                            label: '期间B',
+                            data: [2890, 2156, 2987, 5234],
+                            backgroundColor: '#10b981'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            }
+                        }
+                    }
+                });
+            }
+
+            console.log('所有图表初始化完成');
+        }
+    </script>
+</body>
+</html>

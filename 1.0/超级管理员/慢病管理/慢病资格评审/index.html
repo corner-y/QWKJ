@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>慢病资格评审</title>
+    <!-- <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css"> -->
+         <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    <style>
+        /* 慢病资格评审页面样式 */
+        .chronic-review-container {
+            padding: 20px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .page-header h2 {
+            margin: 0;
+            color: var(--text-primary);
+        }
+        
+        .search-section {
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-medium);
+            box-shadow: var(--shadow-light);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        /* 任务卡片样式 */
+        .task-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+        
+        .task-card {
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-medium);
+            box-shadow: var(--shadow-light);
+            padding: 16px;
+            border: 1px solid var(--border-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .task-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+        
+        .task-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        
+        .task-patient-info h4 {
+            margin: 0 0 4px 0;
+            color: var(--text-primary);
+        }
+        
+        .task-patient-info p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+        
+        .task-id {
+            background-color: var(--bg-secondary);
+            padding: 2px 8px;
+            border-radius: var(--radius-small);
+            font-size: var(--font-size-xs);
+            color: var(--text-tertiary);
+        }
+        
+        .task-details {
+            margin-bottom: 16px;
+        }
+        
+        .task-detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: var(--font-size-sm);
+        }
+        
+        .task-detail-label {
+            color: var(--text-tertiary);
+        }
+        
+        .task-detail-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .task-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .btn-review {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--radius-small);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            transition: all 0.2s;
+        }
+        
+        .btn-review:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* 评审详情页面样式 */
+        .review-detail-container {
+            display: none;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--bg-primary);
+            z-index: 1000;
+        }
+        
+        .review-layout {
+            display: flex;
+            height: 100%;
+        }
+        
+        .review-sidebar-left {
+            width: 25%;
+            padding: 20px;
+            border-right: 1px solid var(--border-primary);
+            overflow-y: auto;
+        }
+        
+        .review-main {
+            width: 50%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .review-sidebar-right {
+            width: 25%;
+            padding: 20px;
+            border-left: 1px solid var(--border-primary);
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .patient-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-secondary);
+        }
+        
+        .patient-info-label {
+            color: var(--text-tertiary);
+        }
+        
+        .patient-info-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .checklist {
+            margin-top: 20px;
+        }
+        
+        .checklist-title {
+            font-size: var(--font-size-md);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: var(--font-size-sm);
+        }
+        
+        .checklist-checkbox {
+            margin-top: 2px;
+        }
+        
+        .checklist-text {
+            flex: 1;
+            color: var(--text-secondary);
+        }
+        
+        /* 文件查看区域样式 */
+        .file-tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .file-tab {
+            padding: 8px 16px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-bottom: none;
+            border-radius: var(--radius-small) var(--radius-small) 0 0;
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            transition: all 0.2s;
+        }
+        
+        .file-tab.active {
+            background-color: var(--bg-primary);
+            border-top: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .viewer-container {
+            flex: 1;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-medium);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .viewer-controls {
+            padding: 12px;
+            background-color: var(--bg-tertiary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .zoom-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-zoom {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            padding: 4px 8px;
+            border-radius: var(--radius-small);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            transition: all 0.2s;
+        }
+        
+        .btn-zoom:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .viewer-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+        }
+        
+        .document-preview {
+            max-width: 100%;
+            max-height: 100%;
+            transition: transform 0.2s;
+        }
+        
+        /* 评审结论区域样式 */
+        .review-conclusion {
+            margin-top: 20px;
+        }
+        
+        .review-result-options {
+            margin-bottom: 16px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .review-comments {
+            margin-bottom: 20px;
+        }
+        
+        .review-comments textarea {
+            width: 100%;
+            height: 120px;
+            padding: 8px;
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-small);
+            resize: vertical;
+            font-size: var(--font-size-sm);
+        }
+        
+        .btn-submit-conclusion {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius-small);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            width: 100%;
+            transition: all 0.2s;
+        }
+        
+        .btn-submit-conclusion:hover {
+            background-color: var(--success-dark);
+        }
+        
+        .btn-submit-conclusion:disabled {
+            background-color: var(--text-tertiary);
+            cursor: not-allowed;
+        }
+        
+        /* 返回按钮样式 */
+        .btn-back {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-primary);
+            padding: 8px 16px;
+            border-radius: var(--radius-small);
+            cursor: pointer;
+            box-shadow: var(--shadow-medium);
+            transition: all 0.2s;
+        }
+        
+        .btn-back:hover {
+            background-color: var(--bg-hover);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="chronic-review-container">
+                <!-- 页面头部 -->
+                <div class="page-header">
+                    <h2>慢病资格评审</h2>
+                    <div class="header-info">
+                        <span style="color: var(--text-secondary);">待评审任务数量: <span id="pendingTasksCount" style="color: var(--primary-color); font-weight: 500;">10</span></span>
+                    </div>
+                </div>
+
+                <!-- 搜索筛选区域 -->
+                <div class="search-section">
+                    <div class="search-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>患者姓名</label>
+                                <input type="text" class="form-control" id="patientName" placeholder="请输入患者姓名">
+                            </div>
+                            <div class="form-group">
+                                <label>申请病种</label>
+                                <select class="form-control" id="diseaseType">
+                                    <option value="">全部病种</option>
+                                    <option value="hypertension">高血压并发症</option>
+                                    <option value="diabetes">2型糖尿病</option>
+                                    <option value="heartDisease">冠心病</option>
+                                    <option value="stroke">脑卒中后遗症</option>
+                                    <option value="kidneyDisease">慢性肾脏病</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="flex: none;">
+                                <button class="btn btn-primary" onclick="searchTasks()">搜索</button>
+                                <button class="btn btn-secondary" onclick="resetSearch()">重置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 任务卡片列表 -->
+                <div class="task-cards" id="taskCards">
+                    <!-- 模拟数据将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 评审详情页面 -->
+    <div class="review-detail-container" id="reviewDetailContainer">
+        <button class="btn btn-back" onclick="closeReviewDetail()">← 返回列表</button>
+        <div class="review-layout">
+            <!-- 左侧：申请信息和审核要点 -->
+            <div class="review-sidebar-left">
+                <h3 class="section-title">申请信息</h3>
+                <div class="patient-info" id="patientInfo">
+                    <!-- 患者信息将通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="checklist">
+                    <h4 class="checklist-title">审核要点</h4>
+                    <div class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox">
+                        <span class="checklist-text">诊断证明是否由二级以上医院开具？</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox">
+                        <span class="checklist-text">相关检查报告是否齐全？</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox">
+                        <span class="checklist-text">患者病情是否符合慢病认定标准？</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox">
+                        <span class="checklist-text">申请材料是否在有效期内？</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" class="checklist-checkbox">
+                        <span class="checklist-text">是否有重复申请的情况？</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 中间：电子材料阅览区 -->
+            <div class="review-main">
+                <h3 class="section-title">电子材料阅览区</h3>
+                
+                <!-- 文件标签页 -->
+                <div class="file-tabs" id="fileTabs">
+                    <!-- 文件标签页将通过JavaScript动态生成 -->
+                </div>
+                
+                <!-- 文件查看器 -->
+                <div class="viewer-container">
+                    <div class="viewer-controls">
+                        <div class="zoom-controls">
+                            <button class="btn-zoom" onclick="zoomOut()">-</button>
+                            <span id="zoomLevel">100%</span>
+                            <button class="btn-zoom" onclick="zoomIn()">+</button>
+                        </div>
+                        <div>
+                            <button class="btn-zoom" onclick="rotateLeft()">↺</button>
+                            <button class="btn-zoom" onclick="rotateRight()">↻</button>
+                            <button class="btn-zoom" onclick="resetView()">重置</button>
+                        </div>
+                    </div>
+                    <div class="viewer-content">
+                        <img id="documentPreview" class="document-preview" src="" alt="文档预览">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 右侧：评审结论 -->
+            <div class="review-sidebar-right">
+                <h3 class="section-title">评审结论</h3>
+                
+                <div class="review-conclusion">
+                    <div class="review-result-options">
+                        <div class="radio-option">
+                            <input type="radio" id="resultApproved" name="reviewResult" value="approved" checked>
+                            <label for="resultApproved">通过</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="resultRejected" name="reviewResult" value="rejected">
+                            <label for="resultRejected">驳回</label>
+                        </div>
+                    </div>
+                    
+                    <div class="review-comments">
+                        <label for="reviewComments">评审意见（驳回时必填）</label>
+                        <textarea id="reviewComments" placeholder="请输入评审意见..."></textarea>
+                    </div>
+                    
+                    <button id="submitConclusionBtn" class="btn-submit-conclusion" onclick="submitReviewConclusion()">提交评审结论</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载统一菜单组件脚本 -->
+    <script>
+    // 加载统一菜单组件
+    fetch('../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+
+    <script>
+        // 模拟数据
+        const mockTasks = [
+            {
+                id: 'CM-202408011',
+                name: '周十一',
+                idCard: '110101198801111234',
+                disease: '高血压并发症',
+                hospital: '北京协和医院',
+                submitTime: '2024-08-18 10:30',
+                files: [
+                    { name: '诊断证明.pdf', type: 'pdf', path: '../../../assets/sample_diagnosis.pdf' },
+                    { name: '检查报告.jpg', type: 'image', path: '../../../assets/sample_report1.jpg' },
+                    { name: '病历记录.jpg', type: 'image', path: '../../../assets/sample_record.jpg' }
+                ]
+            },
+            {
+                id: 'CM-202408012',
+                name: '吴十二',
+                idCard: '110101198902122345',
+                disease: '2型糖尿病',
+                hospital: '北京协和医院',
+                submitTime: '2024-08-17 15:45',
+                files: [
+                    { name: '诊断证明.pdf', type: 'pdf', path: '../../../assets/sample_diagnosis.pdf' },
+                    { name: '血糖检测报告.jpg', type: 'image', path: '../../../assets/sample_report2.jpg' }
+                ]
+            },
+            {
+                id: 'CM-202408013',
+                name: '郑十三',
+                idCard: '110101199003133456',
+                disease: '冠心病',
+                hospital: '北京协和医院',
+                submitTime: '2024-08-16 09:20',
+                files: [
+                    { name: '诊断证明.pdf', type: 'pdf', path: '../../../assets/sample_diagnosis.pdf' },
+                    { name: '心电图报告.jpg', type: 'image', path: '../../../assets/sample_report3.jpg' },
+                    { name: '心脏彩超报告.jpg', type: 'image', path: '../../../assets/sample_report4.jpg' }
+                ]
+            },
+            {
+                id: 'CM-202408014',
+                name: '王十四',
+                idCard: '110101199104144567',
+                disease: '脑卒中后遗症',
+                hospital: '北京协和医院',
+                submitTime: '2024-08-15 14:10',
+                files: [
+                    { name: '诊断证明.pdf', type: 'pdf', path: '../../../assets/sample_diagnosis.pdf' },
+                    { name: 'CT报告.jpg', type: 'image', path: '../../../assets/sample_report5.jpg' },
+                    { name: '康复治疗记录.jpg', type: 'image', path: '../../../assets/sample_record.jpg' }
+                ]
+            },
+            {
+                id: 'CM-202408015',
+                name: '李十五',
+                idCard: '110101199205155678',
+                disease: '慢性肾脏病',
+                hospital: '北京协和医院',
+                submitTime: '2024-08-14 11:50',
+                files: [
+                    { name: '诊断证明.pdf', type: 'pdf', path: '../../../assets/sample_diagnosis.pdf' },
+                    { name: '肾功能检查报告.jpg', type: 'image', path: '../../../assets/sample_report6.jpg' }
+                ]
+            },
+            {
+                id: 'CM-202408016',
+                name: '赵十六',
+                idCard: '110101199306166789',
+                disease: '高血压并发症',
+                hospital: '北京协和医院',
+                submitTime: '2024-08-13 16:30',
+                files: [
+                    { name: '诊断证明.pdf', type: 'pdf', path: '../../../assets/sample_diagnosis.pdf' },
+                    { name: '血压监测报告.jpg', type: 'image', path: '../../../assets/sample_report7.jpg' }
+                ]
+            },
+            {
+                id: 'CM-202408017',
+                name: '钱十七',
+                idCard: '110101199407177890',
+                disease: '2型糖尿病',
+                hospital: '北京协和医院',
+                submitTime: '2024-08-12 08:40',
+                files: [
+                    { name: '诊断证明.pdf', type: 'pdf', path: '../../../assets/sample_diagnosis.pdf' },
+                    { name: '糖化血红蛋白报告.jpg', type: 'image', path: '../../../assets/sample_report8.jpg' },
+                    { name: '眼底检查报告.jpg', type: 'image', path: '../../../assets/sample_report9.jpg' }
+                ]
+            },
+            {
+                id: 'CM-202408018',
+                name: '孙十八',
+                idCard: '110101199508188901',
+                disease: '冠心病',
+                hospital: '北京协和医院',
+                submitTime: '2024-08-11 10:20',
+                files: [
+                    { name: '诊断证明.pdf', type: 'pdf', path: '../../../assets/sample_diagnosis.pdf' },
+                    { name: '冠脉造影报告.jpg', type: 'image', path: '../../../assets/sample_report10.jpg' }
+                ]
+            },
+            {
+                id: 'CM-202408019',
+                name: '周十九',
+                idCard: '110101199609199012',
+                disease: '脑卒中后遗症',
+                hospital: '北京协和医院',
+                submitTime: '2024-08-10 14:50',
+                files: [
+                    { name: '诊断证明.pdf', type: 'pdf', path: '../../../assets/sample_diagnosis.pdf' },
+                    { name: 'MRI报告.jpg', type: 'image', path: '../../../assets/sample_report11.jpg' },
+                    { name: '神经功能评估.jpg', type: 'image', path: '../../../assets/sample_report12.jpg' }
+                ]
+            },
+            {
+                id: 'CM-202408020',
+                name: '吴二十',
+                idCard: '110101199710200123',
+                disease: '慢性肾脏病',
+                hospital: '北京协和医院',
+                submitTime: '2024-08-09 11:10',
+                files: [
+                    { name: '诊断证明.pdf', type: 'pdf', path: '../../../assets/sample_diagnosis.pdf' },
+                    { name: '尿常规检查报告.jpg', type: 'image', path: '../../../assets/sample_report13.jpg' },
+                    { name: '肾脏B超报告.jpg', type: 'image', path: '../../../assets/sample_report14.jpg' }
+                ]
+            }
+        ];
+
+        // 筛选后的任务列表
+        let filteredTasks = [...mockTasks];
+        // 当前查看的任务
+        let currentTask = null;
+        // 查看器状态
+        let viewerState = {
+            zoom: 100,
+            rotation: 0
+        };
+
+        // 渲染任务卡片
+        function renderTaskCards() {
+            const taskCards = document.getElementById('taskCards');
+            taskCards.innerHTML = '';
+
+            if (filteredTasks.length === 0) {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.style.textAlign = 'center';
+                emptyState.style.padding = '40px';
+                emptyState.style.color = 'var(--text-tertiary)';
+                emptyState.textContent = '暂无待评审任务';
+                taskCards.appendChild(emptyState);
+                return;
+            }
+
+            filteredTasks.forEach(task => {
+                const taskCard = document.createElement('div');
+                taskCard.className = 'task-card';
+                
+                taskCard.innerHTML = `
+                    <div class="task-card-header">
+                        <div class="task-patient-info">
+                            <h4>${task.name}</h4>
+                            <p>${formatIdCard(task.idCard)}</p>
+                        </div>
+                        <div class="task-id">${task.id}</div>
+                    </div>
+                    <div class="task-details">
+                        <div class="task-detail-item">
+                            <span class="task-detail-label">申请病种</span>
+                            <span class="task-detail-value">${task.disease}</span>
+                        </div>
+                        <div class="task-detail-item">
+                            <span class="task-detail-label">申报医院</span>
+                            <span class="task-detail-value">${task.hospital}</span>
+                        </div>
+                        <div class="task-detail-item">
+                            <span class="task-detail-label">提交时间</span>
+                            <span class="task-detail-value">${task.submitTime}</span>
+                        </div>
+                        <div class="task-detail-item">
+                            <span class="task-detail-label">材料数量</span>
+                            <span class="task-detail-value">${task.files.length}个</span>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="btn-review" onclick="openReviewDetail('${task.id}')">进入评审</button>
+                    </div>
+                `;
+                
+                taskCards.appendChild(taskCard);
+            });
+        }
+
+        // 格式化身份证号（中间部分用*代替）
+        function formatIdCard(idCard) {
+            if (!idCard || idCard.length !== 18) return idCard;
+            return idCard.substring(0, 6) + '********' + idCard.substring(14);
+        }
+
+        // 搜索任务
+        function searchTasks() {
+            const patientName = document.getElementById('patientName').value.toLowerCase();
+            const diseaseType = document.getElementById('diseaseType').value;
+
+            filteredTasks = mockTasks.filter(task => {
+                let match = true;
+                
+                if (patientName && !task.name.toLowerCase().includes(patientName)) {
+                    match = false;
+                }
+                if (diseaseType) {
+                    const diseaseMap = {
+                        'hypertension': '高血压并发症',
+                        'diabetes': '2型糖尿病',
+                        'heartDisease': '冠心病',
+                        'stroke': '脑卒中后遗症',
+                        'kidneyDisease': '慢性肾脏病'
+                    };
+                    if (task.disease !== diseaseMap[diseaseType]) {
+                        match = false;
+                    }
+                }
+                
+                return match;
+            });
+
+            // 更新待评审任务数量
+            document.getElementById('pendingTasksCount').textContent = filteredTasks.length;
+            
+            renderTaskCards();
+        }
+
+        // 重置搜索
+        function resetSearch() {
+            document.getElementById('patientName').value = '';
+            document.getElementById('diseaseType').value = '';
+            
+            filteredTasks = [...mockTasks];
+            document.getElementById('pendingTasksCount').textContent = filteredTasks.length;
+            
+            renderTaskCards();
+        }
+
+        // 打开评审详情
+        function openReviewDetail(taskId) {
+            // 查找当前任务
+            currentTask = mockTasks.find(task => task.id === taskId);
+            if (!currentTask) {
+                alert('任务不存在');
+                return;
+            }
+
+            // 渲染患者信息
+            renderPatientInfo();
+            
+            // 渲染文件标签页
+            renderFileTabs();
+            
+            // 显示评审详情页面
+            document.getElementById('reviewDetailContainer').style.display = 'block';
+            
+            // 重置查看器状态
+            resetViewerState();
+            
+            // 默认显示第一个文件
+            if (currentTask.files.length > 0) {
+                showFile(0);
+            }
+        }
+
+        // 关闭评审详情
+        function closeReviewDetail() {
+            document.getElementById('reviewDetailContainer').style.display = 'none';
+            currentTask = null;
+            
+            // 重置评审表单
+            document.getElementById('resultApproved').checked = true;
+            document.getElementById('reviewComments').value = '';
+            updateSubmitButtonState();
+        }
+
+        // 渲染患者信息
+        function renderPatientInfo() {
+            const patientInfo = document.getElementById('patientInfo');
+            patientInfo.innerHTML = `
+                <div class="patient-info-item">
+                    <span class="patient-info-label">患者姓名</span>
+                    <span class="patient-info-value">${currentTask.name}</span>
+                </div>
+                <div class="patient-info-item">
+                    <span class="patient-info-label">身份证号</span>
+                    <span class="patient-info-value">${formatIdCard(currentTask.idCard)}</span>
+                </div>
+                <div class="patient-info-item">
+                    <span class="patient-info-label">申请病种</span>
+                    <span class="patient-info-value">${currentTask.disease}</span>
+                </div>
+                <div class="patient-info-item">
+                    <span class="patient-info-label">申报医院</span>
+                    <span class="patient-info-value">${currentTask.hospital}</span>
+                </div>
+                <div class="patient-info-item">
+                    <span class="patient-info-label">提交时间</span>
+                    <span class="patient-info-value">${currentTask.submitTime}</span>
+                </div>
+                <div class="patient-info-item">
+                    <span class="patient-info-label">申请编号</span>
+                    <span class="patient-info-value">${currentTask.id}</span>
+                </div>
+            `;
+        }
+
+        // 渲染文件标签页
+        function renderFileTabs() {
+            const fileTabs = document.getElementById('fileTabs');
+            fileTabs.innerHTML = '';
+            
+            currentTask.files.forEach((file, index) => {
+                const fileTab = document.createElement('div');
+                fileTab.className = `file-tab ${index === 0 ? 'active' : ''}`;
+                fileTab.textContent = file.name;
+                fileTab.dataset.index = index;
+                fileTab.onclick = () => {
+                    // 移除所有活动状态
+                    document.querySelectorAll('.file-tab').forEach(tab => {
+                        tab.classList.remove('active');
+                    });
+                    // 添加当前活动状态
+                    fileTab.classList.add('active');
+                    // 显示对应的文件
+                    showFile(index);
+                };
+                
+                fileTabs.appendChild(fileTab);
+            });
+        }
+
+        // 显示文件
+        function showFile(index) {
+            if (!currentTask || index >= currentTask.files.length) {
+                return;
+            }
+            
+            const file = currentTask.files[index];
+            const documentPreview = document.getElementById('documentPreview');
+            
+            // 由于是模拟环境，使用占位图代替实际文件
+            if (file.type === 'pdf') {
+                documentPreview.src = '../../../assets/pdf_placeholder.png';
+            } else {
+                // 随机选择一个示例图片
+                const sampleImages = [
+                    '../../../assets/sample_document1.png',
+                    '../../../assets/sample_document2.png',
+                    '../../../assets/sample_document3.png'
+                ];
+                const randomImage = sampleImages[Math.floor(Math.random() * sampleImages.length)];
+                documentPreview.src = randomImage;
+            }
+            
+            // 重置查看器状态
+            resetViewerState();
+        }
+
+        // 重置查看器状态
+        function resetViewerState() {
+            viewerState = {
+                zoom: 100,
+                rotation: 0
+            };
+            updateViewer();
+        }
+
+        // 放大
+        function zoomIn() {
+            if (viewerState.zoom < 500) {
+                viewerState.zoom += 10;
+                updateViewer();
+            }
+        }
+
+        // 缩小
+        function zoomOut() {
+            if (viewerState.zoom > 20) {
+                viewerState.zoom -= 10;
+                updateViewer();
+            }
+        }
+
+        // 向左旋转
+        function rotateLeft() {
+            viewerState.rotation = (viewerState.rotation - 90) % 360;
+            updateViewer();
+        }
+
+        // 向右旋转
+        function rotateRight() {
+            viewerState.rotation = (viewerState.rotation + 90) % 360;
+            updateViewer();
+        }
+
+        // 重置视图
+        function resetView() {
+            resetViewerState();
+        }
+
+        // 更新查看器
+        function updateViewer() {
+            const documentPreview = document.getElementById('documentPreview');
+            const zoomLevel = document.getElementById('zoomLevel');
+            
+            documentPreview.style.transform = `scale(${viewerState.zoom / 100}) rotate(${viewerState.rotation}deg)`;
+            zoomLevel.textContent = `${viewerState.zoom}%`;
+        }
+
+        // 监听评审结果选择变化
+        document.getElementById('resultApproved').addEventListener('change', updateSubmitButtonState);
+        document.getElementById('resultRejected').addEventListener('change', updateSubmitButtonState);
+        document.getElementById('reviewComments').addEventListener('input', updateSubmitButtonState);
+
+        // 更新提交按钮状态
+        function updateSubmitButtonState() {
+            const submitButton = document.getElementById('submitConclusionBtn');
+            const isRejected = document.getElementById('resultRejected').checked;
+            const comments = document.getElementById('reviewComments').value.trim();
+            
+            // 如果选择驳回且没有填写评审意见，则禁用提交按钮
+            submitButton.disabled = isRejected && comments === '';
+        }
+
+        // 提交评审结论
+        function submitReviewConclusion() {
+            const isApproved = document.getElementById('resultApproved').checked;
+            const comments = document.getElementById('reviewComments').value.trim();
+            
+            // 确认提交
+            if (confirm(`确定要提交评审结论吗？\n结论：${isApproved ? '通过' : '驳回'}${comments ? '\n意见：' + comments : ''}`)) {
+                // 模拟提交成功
+                alert('评审结论已提交！');
+                
+                // 从任务列表中移除当前任务
+                const taskIndex = mockTasks.findIndex(task => task.id === currentTask.id);
+                if (taskIndex !== -1) {
+                    mockTasks.splice(taskIndex, 1);
+                }
+                
+                // 关闭评审详情并更新列表
+                closeReviewDetail();
+                resetSearch();
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTaskCards();
+        });
+    </script>
+</body>
+</html>
