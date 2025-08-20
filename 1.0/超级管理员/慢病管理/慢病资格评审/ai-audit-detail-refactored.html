@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI辅助慢病资格评审 - 详情页</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#4080FF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        info: '#86909C',
+                        background: '#F2F3F5',
+                        surface: '#FFFFFF',
+                        border: '#E5E6EB',
+                        text: {
+                            primary: '#1D2129',
+                            secondary: '#4E5969',
+                            tertiary: '#86909C'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['PingFang SC', 'Microsoft YaHei', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'card': '0 2px 8px 0 rgba(0, 0, 0, 0.08)',
+                        'hover': '0 4px 16px 0 rgba(0, 0, 0, 0.12)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .tab-active {
+                @apply text-primary border-b-2 border-primary font-medium;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-hover;
+            }
+            .btn-primary {
+                @apply bg-primary text-white px-4 py-2 rounded transition-colors duration-300 hover:bg-primary/90;
+            }
+            .btn-secondary {
+                @apply bg-surface border border-border text-text-secondary px-4 py-2 rounded transition-colors duration-300 hover:border-primary hover:text-primary;
+            }
+            .btn-icon {
+                @apply w-8 h-8 flex items-center justify-center rounded hover:bg-background transition-colors duration-300;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background text-text-primary font-sans min-h-screen">
+    <div class="dashboard-container h-screen overflow-hidden">
+        <!-- 主内容区域 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 页面头部 -->
+            <header class="bg-surface h-16 flex items-center justify-between px-6 border-b border-border">
+                <div class="flex items-center space-x-4">
+                    <button id="backToListBtn" class="btn-secondary flex items-center space-x-1">
+                        <i class="fa fa-arrow-left"></i>
+                        <span>返回列表</span>
+                    </button>
+                    <h1 class="text-xl font-medium">AI辅助慢病资格评审</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-text-secondary text-sm">超级管理员</span>
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                        <i class="fa fa-user"></i>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- 主体内容 - 三栏式布局 -->
+            <div class="flex-1 flex overflow-hidden">
+                <!-- 左侧栏：申请信息与AI提示 -->
+                <div class="w-80 bg-surface border-r border-border overflow-y-auto">
+                    <!-- 申请信息模块 -->
+                    <div class="p-4 border-b border-border">
+                        <h2 class="text-lg font-medium mb-3">申请信息</h2>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">患者姓名</span>
+                                <span id="patientName" class="font-medium">张三</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">身份证号</span>
+                                <span id="patientIdCard" class="font-medium">110101********1234</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">申请病种</span>
+                                <span id="patientDisease" class="font-medium">高血压并发症</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">申报医院</span>
+                                <span id="patientHospital" class="font-medium">北京协和医院</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">提交时间</span>
+                                <span id="patientSubmitTime" class="font-medium">2024-08-18 10:30</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">申请编号</span>
+                                <span id="patientApplyId" class="font-medium">CM-202408011</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 机审结论与风险提示 -->
+                    <div class="p-4 border-b border-border bg-background/50">
+                        <h2 class="text-lg font-medium mb-3">机审结论与风险提示</h2>
+                        
+                        <div class="bg-success/10 p-3 rounded mb-3">
+                            <div class="flex items-center text-success mb-2">
+                                <i class="fa fa-check-circle mr-2"></i>
+                                <span class="font-medium">✅ 机审结论：初审通过</span>
+                            </div>
+                            <div class="text-sm text-text-secondary ml-6">
+                                系统自动初审认为该申请符合慢病资格认定标准
+                            </div>
+                        </div>
+                        
+                        <div class="bg-warning/10 p-3 rounded">
+                            <div class="flex items-center text-warning mb-2">
+                                <i class="fa fa-exclamation-triangle mr-2"></i>
+                                <span class="font-medium">⚠️ 关注项</span>
+                            </div>
+                            <ul class="text-sm text-text-secondary ml-6 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fa fa-circle text-xs mt-1 mr-2"></i>
+                                    <span>患者近期有多次急诊记录，请关注其病情稳定性。</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-circle text-xs mt-1 mr-2"></i>
+                                    <span>部分手写病历识别清晰度较低，建议核对原文。</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-circle text-xs mt-1 mr-2"></i>
+                                    <span>患者血压值持续不稳，收缩压曾高于160mmHg。</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 审核要点(Checklist) -->
+                    <div class="p-4">
+                        <h2 class="text-lg font-medium mb-3">审核要点</h2>
+                        <div class="space-y-2">
+                            <label class="flex items-start space-x-2 p-2 hover:bg-background/50 rounded cursor-pointer">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-primary rounded">
+                                <span class="text-sm">诊断证明是否符合慢病标准？</span>
+                            </label>
+                            <label class="flex items-start space-x-2 p-2 hover:bg-background/50 rounded cursor-pointer">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-primary rounded">
+                                <span class="text-sm">检查报告中关键指标是否达标？</span>
+                            </label>
+                            <label class="flex items-start space-x-2 p-2 hover:bg-background/50 rounded cursor-pointer">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-primary rounded">
+                                <span class="text-sm">病历记录是否完整规范？</span>
+                            </label>
+                            <label class="flex items-start space-x-2 p-2 hover:bg-background/50 rounded cursor-pointer">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-primary rounded">
+                                <span class="text-sm">是否为首次申请慢病资格？</span>
+                            </label>
+                            <label class="flex items-start space-x-2 p-2 hover:bg-background/50 rounded cursor-pointer">
+                                <input type="checkbox" class="mt-1 w-4 h-4 text-primary rounded">
+                                <span class="text-sm">是否符合当地医保政策要求？</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 中间栏：电子材料阅览区 -->
+                <div class="flex-1 bg-surface border-r border-border overflow-hidden flex flex-col">
+                    <!-- 文件标签页 -->
+                    <div class="border-b border-border">
+                        <div class="flex overflow-x-auto scrollbar-hide">
+                            <button class="py-3 px-4 text-primary border-b-2 border-primary font-medium text-sm">
+                                诊断证明.pdf
+                            </button>
+                            <button class="py-3 px-4 text-text-secondary hover:text-primary transition-colors text-sm">
+                                检查报告.jpg
+                            </button>
+                            <button class="py-3 px-4 text-text-secondary hover:text-primary transition-colors text-sm">
+                                病历记录.jpg
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 文档预览器 -->
+                    <div class="flex-1 flex flex-col">
+                        <!-- 预览器控制 -->
+                        <div class="p-3 border-b border-border flex items-center justify-between">
+                            <div class="text-sm font-medium">文档预览</div>
+                            <div class="flex space-x-1">
+                                <button class="btn-icon" title="缩小">
+                                    <i class="fa fa-search-minus text-text-secondary"></i>
+                                </button>
+                                <button class="btn-icon" title="放大">
+                                    <i class="fa fa-search-plus text-text-secondary"></i>
+                                </button>
+                                <button class="btn-icon" title="向左旋转">
+                                    <i class="fa fa-rotate-left text-text-secondary"></i>
+                                </button>
+                                <button class="btn-icon" title="向右旋转">
+                                    <i class="fa fa-rotate-right text-text-secondary"></i>
+                                </button>
+                                <button class="btn-icon" title="适应宽度">
+                                    <i class="fa fa-arrows-alt text-text-secondary"></i>
+                                </button>
+                                <button class="btn-icon" title="适应高度">
+                                    <i class="fa fa-arrows-v text-text-secondary"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 预览区域 -->
+                        <div class="flex-1 bg-background flex items-center justify-center overflow-hidden">
+                            <img id="documentPreview" src="../../../assets/sample_document1.png" alt="文档预览" class="max-w-full max-h-full object-contain">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧栏：决策与辅助工具 -->
+                <div class="w-96 bg-surface overflow-y-auto">
+                    <!-- 选项卡组件 -->
+                    <div class="border-b border-border">
+                        <div class="flex">
+                            <button id="tabConclusion" class="py-3 px-4 text-primary border-b-2 border-primary font-medium text-sm w-1/2">
+                                评审结论
+                            </button>
+                            <button id="tabAiChat" class="py-3 px-4 text-text-secondary hover:text-primary transition-colors text-sm w-1/2">
+                                AI智能提问
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 选项卡内容区域 -->
+                    <div class="p-4">
+                        <!-- 评审结论选项卡内容 -->
+                        <div id="contentConclusion" class="space-y-4">
+                            <div class="space-y-2">
+                                <div class="text-sm font-medium">评审结论</div>
+                                <div class="space-y-2">
+                                    <label class="flex items-center space-x-2 p-3 bg-surface rounded border border-border cursor-pointer">
+                                        <input type="radio" name="reviewConclusion" value="approved" class="w-4 h-4 text-primary" checked>
+                                        <span>通过</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 p-3 bg-surface rounded border border-border cursor-pointer">
+                                        <input type="radio" name="reviewConclusion" value="rejected" class="w-4 h-4 text-primary">
+                                        <span>驳回</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <div class="text-sm font-medium">评审意见</div>
+                                <textarea id="reviewComments" class="w-full p-3 border border-border rounded focus:outline-none focus:border-primary h-32" placeholder="请输入评审意见（驳回时为必填）..."></textarea>
+                            </div>
+                            
+                            <button id="submitConclusion" class="w-full btn-primary py-3 flex items-center justify-center space-x-2">
+                                <i class="fa fa-check"></i>
+                                <span>提交评审结论</span>
+                            </button>
+                        </div>
+                        
+                        <!-- AI智能提问选项卡内容 -->
+                        <div id="contentAiChat" class="hidden flex flex-col h-[500px]">
+                            <!-- 对话区域 -->
+                            <div id="aiChatContainer" class="flex-1 p-2 space-y-4 overflow-y-auto mb-4">
+                                <!-- 模拟对话 -->
+                                <div class="flex space-x-2">
+                                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                    <div class="bg-primary/10 p-3 rounded max-w-[85%]">
+                                        <p class="text-sm">请问此病例的病情摘要是什么？</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex space-x-2">
+                                    <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+                                        <i class="fa fa-robot"></i>
+                                    </div>
+                                    <div class="bg-background/80 p-3 rounded max-w-[85%]">
+                                        <p class="text-sm">该患者为65岁男性，因'高血压并发症'申请慢病。主要风险点在于血压持续不稳定，且有多次急诊记录。关键检查'心脏彩超'提示左心室肥厚。建议重点关注其心血管系统相关材料。</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 输入区域 -->
+                            <div class="border-t border-border pt-4">
+                                <div class="flex space-x-2">
+                                    <input id="aiChatInput" type="text" class="flex-1 px-3 py-2 border border-border rounded focus:outline-none focus:border-primary" placeholder="请在此向AI助手提问...">
+                                    <button id="aiChatSend" class="w-10 h-10 rounded bg-primary flex items-center justify-center text-white">
+                                        <i class="fa fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 解析URL参数，获取任务ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('taskId');
+            
+            if (taskId) {
+                console.log('接收到任务ID:', taskId);
+                // 这里可以根据taskId从服务器或本地存储中获取任务数据
+                // 为了演示，我们使用模拟数据
+                loadTaskData(taskId);
+            }
+            
+            // 加载任务数据函数
+            function loadTaskData(taskId) {
+                // 模拟任务数据
+                const mockTaskData = {
+                    patientName: '张三',
+                    patientIdCard: '110101********1234',
+                    patientDisease: '高血压并发症',
+                    patientHospital: '北京协和医院',
+                    patientSubmitTime: '2024-08-18 10:30',
+                    patientApplyId: taskId || 'CM-202408011'
+                };
+                
+                // 更新页面上的患者信息
+                document.getElementById('patientName').textContent = mockTaskData.patientName;
+                document.getElementById('patientIdCard').textContent = mockTaskData.patientIdCard;
+                document.getElementById('patientDisease').textContent = mockTaskData.patientDisease;
+                document.getElementById('patientHospital').textContent = mockTaskData.patientHospital;
+                document.getElementById('patientSubmitTime').textContent = mockTaskData.patientSubmitTime;
+                document.getElementById('patientApplyId').textContent = mockTaskData.patientApplyId;
+            }
+            
+            // 选项卡切换功能
+            const tabConclusion = document.getElementById('tabConclusion');
+            const tabAiChat = document.getElementById('tabAiChat');
+            const contentConclusion = document.getElementById('contentConclusion');
+            const contentAiChat = document.getElementById('contentAiChat');
+            
+            tabConclusion.addEventListener('click', function() {
+                // 更新选项卡样式
+                tabConclusion.classList.add('text-primary', 'border-b-2', 'border-primary', 'font-medium');
+                tabConclusion.classList.remove('text-text-secondary', 'hover:text-primary');
+                
+                tabAiChat.classList.add('text-text-secondary', 'hover:text-primary');
+                tabAiChat.classList.remove('text-primary', 'border-b-2', 'border-primary', 'font-medium');
+                
+                // 更新内容显示
+                contentConclusion.classList.remove('hidden');
+                contentAiChat.classList.add('hidden');
+            });
+            
+            tabAiChat.addEventListener('click', function() {
+                // 更新选项卡样式
+                tabAiChat.classList.add('text-primary', 'border-b-2', 'border-primary', 'font-medium');
+                tabAiChat.classList.remove('text-text-secondary', 'hover:text-primary');
+                
+                tabConclusion.classList.add('text-text-secondary', 'hover:text-primary');
+                tabConclusion.classList.remove('text-primary', 'border-b-2', 'border-primary', 'font-medium');
+                
+                // 更新内容显示
+                contentAiChat.classList.remove('hidden');
+                contentConclusion.classList.add('hidden');
+            });
+            
+            // 返回列表按钮
+            document.getElementById('backToListBtn').addEventListener('click', function() {
+                window.location.href = 'index.html';
+            });
+            
+            // 提交评审结论
+            document.getElementById('submitConclusion').addEventListener('click', function() {
+                const conclusion = document.querySelector('input[name="reviewConclusion"]:checked').value;
+                const comments = document.getElementById('reviewComments').value.trim();
+                
+                // 检查是否需要评审意见
+                if (conclusion === 'rejected' && comments === '') {
+                    alert('驳回时评审意见为必填项！');
+                    return;
+                }
+                
+                // 确认提交
+                if (confirm(`确定要提交评审结论吗？\n结论：${conclusion === 'approved' ? '通过' : '驳回'}${comments ? '\n意见：' + comments : ''}`)) {
+                    alert('评审结论已提交！');
+                    window.location.href = 'index.html';
+                }
+            });
+            
+            // AI对话发送
+            document.getElementById('aiChatSend').addEventListener('click', function() {
+                sendAiMessage();
+            });
+            
+            document.getElementById('aiChatInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendAiMessage();
+                }
+            });
+        });
+        
+        // 发送AI消息
+        function sendAiMessage() {
+            const input = document.getElementById('aiChatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const chatContainer = document.getElementById('aiChatContainer');
+            
+            // 添加用户消息
+            const userMessageElement = document.createElement('div');
+            userMessageElement.className = 'flex space-x-2';
+            userMessageElement.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="bg-primary/10 p-3 rounded max-w-[85%]">
+                    <p class="text-sm">${message}</p>
+                </div>
+            `;
+            chatContainer.appendChild(userMessageElement);
+            
+            // 添加AI回复（模拟）
+            const aiMessageElement = document.createElement('div');
+            aiMessageElement.className = 'flex space-x-2';
+            aiMessageElement.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+                    <i class="fa fa-robot"></i>
+                </div>
+                <div class="bg-background/80 p-3 rounded max-w-[85%]">
+                    <p class="text-sm">感谢您的提问。根据您的问题，我正在分析患者的相关信息，请稍候...</p>
+                </div>
+            `;
+            chatContainer.appendChild(aiMessageElement);
+            
+            // 清空输入框并滚动到底部
+            input.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // 模拟AI回复延迟
+            setTimeout(() => {
+                aiMessageElement.querySelector('p').textContent = "这是一个很好的问题。根据患者的病历资料，我认为需要综合考虑多个因素。从提供的检查结果来看，患者的主要问题是高血压控制不佳，同时伴有其他代谢异常。建议进一步评估患者的整体健康状况，并制定个性化的治疗方案。";
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

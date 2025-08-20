@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>材料上传详情 - 慢病资格申报</title>
+    <!-- 引入样式文件 -->
+    <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    <style>
+        /* 材料详情页专用样式 */
+        .detail-container {
+            margin-left: 280px;
+            padding: 20px;
+            width: calc(100% - 280px);
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        /* 页面头部样式增强 */
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* 信息确认区 */
+        .info-confirm-section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .info-header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .patient-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .info-label {
+            width: 120px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .info-value {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .edit-btn {
+            background: none;
+            border: 1px solid #d9d9d9;
+            color: #666;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .edit-btn:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+
+        /* 驳回提示样式 */
+        .rejected-notice {
+            background-color: #fff2f0;
+            border-left: 4px solid #ff4d4f;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .rejected-notice h3 {
+            color: #ff4d4f;
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+
+        .rejected-message {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 驳回原因区域 */
+        .rejection-reasons {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #fff2f0;
+            border-radius: 6px;
+            border: 1px dashed #ffccc7;
+        }
+
+        .reasons-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #ff4d4f;
+            margin-bottom: 10px;
+        }
+
+        .reason-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .reason-bullet {
+            color: #ff4d4f;
+            margin-right: 8px;
+            margin-top: 2px;
+        }
+
+        /* 材料清单区域 */
+        .materials-section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .materials-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .materials-header h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* 材料项样式 */
+        .material-item {
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .material-item:hover {
+            border-color: #1890ff;
+            box-shadow: 0 2px 8px rgba(24, 144, 255, 0.1);
+        }
+
+        .material-header {
+            padding: 15px;
+            background-color: #fafafa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .material-title {
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+
+        .required-tag {
+            background-color: #ff4d4f;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 2px;
+            margin-left: 8px;
+        }
+
+        .material-status {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .status-uploaded {
+            color: #52c41a;
+        }
+
+        .status-rejected {
+            color: #ff4d4f;
+        }
+
+        /* 材料内容区域 */
+        .material-content {
+            padding: 15px;
+        }
+
+        .material-description {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        /* 文件列表样式 */
+        .file-list {
+            margin-top: 10px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #fafafa;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .file-icon {
+            width: 30px;
+            height: 30px;
+            background-color: #e6f7ff;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .file-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-name {
+            font-size: 12px;
+            color: #333;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-size {
+            font-size: 10px;
+            color: #999;
+            margin-top: 2px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background-color: #f0f0f0;
+            color: #1890ff;
+        }
+
+        /* 提交操作区 */
+        .submit-section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* 状态标签样式 */
+        .status-tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-rejected {
+            background-color: #fff2f0;
+            color: #ff4d4f;
+        }
+        
+        /* 修改建议区域 */
+        .revision-tips {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff7e6;
+            border-radius: 6px;
+            border-left: 4px solid #faad14;
+        }
+        
+        .tips-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #d46b08;
+            margin-bottom: 10px;
+        }
+        
+        .tips-content {
+            color: #666;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一侧边栏容器 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="detail-container">
+            <!-- 页面头部 -->
+            <div class="detail-header">
+                <h1>材料上传详情</h1>
+                <button class="btn btn-secondary" onclick="window.history.back()">返回列表</button>
+            </div>
+            
+            <!-- 信息确认区 -->
+            <div class="info-confirm-section">
+                <div class="info-header">
+                    <h2>患者信息确认</h2>
+                </div>
+                
+                <div class="patient-info-grid">
+                    <div class="info-item">
+                        <span class="info-label">申报ID：</span>
+                        <span class="info-value" id="applicationId">CM-202408014</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">患者姓名：</span>
+                        <span class="info-value" id="patientName">赵六</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">身份证号：</span>
+                        <span class="info-value" id="idCard">11010419680315****</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">联系电话：</span>
+                        <span class="info-value" id="phoneNumber">136****6789</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">申请病种：</span>
+                        <span class="info-value" id="diseaseType">慢性肾脏病</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">申报医院：</span>
+                        <span class="info-value" id="hospital">北京朝阳医院</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">提交时间：</span>
+                        <span class="info-value" id="submitTime">2024-08-15 14:30:22</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">当前状态：</span>
+                        <span class="info-value">
+                            <span class="status-tag status-rejected" id="currentStatus">驳回</span>
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- 驳回提示区域 -->
+                <div id="rejectedNotice" class="rejected-notice">
+                    <h3>申请未通过</h3>
+                    <div class="rejected-message">
+                        <p>很抱歉，您的慢病资格申请未通过审核。请根据驳回原因修改材料后重新提交。</p>
+                        <p>您可以修改完善材料后重新发起申报，或联系客服了解详细情况。</p>
+                    </div>
+                </div>
+                
+                <!-- 驳回原因 -->
+                <div class="rejection-reasons">
+                    <div class="reasons-title">驳回原因：</div>
+                    <div class="reason-item">
+                        <span class="reason-bullet">•</span>
+                        <span>诊断证明不完整，缺少医生签字和医院公章；</span>
+                    </div>
+                    <div class="reason-item">
+                        <span class="reason-bullet">•</span>
+                        <span>近三个月的肾功能检查报告不符合要求，缺少关键指标数据；</span>
+                    </div>
+                    <div class="reason-item">
+                        <span class="reason-bullet">•</span>
+                        <span>身份证照片不清晰，无法辨认关键信息。</span>
+                    </div>
+                </div>
+                
+                <!-- 修改建议 -->
+                <div class="revision-tips">
+                    <div class="tips-title">修改建议：</div>
+                    <div class="tips-content">
+                        <p>1. 请重新提供盖有医院公章并由医生签字的正式诊断证明；</p>
+                        <p>2. 补充完整的近三个月肾功能检查报告，包含血肌酐、尿素氮、肾小球滤过率等关键指标；</p>
+                        <p>3. 重新上传清晰的身份证正反面照片，确保所有信息可清晰辨认；</p>
+                        <p>4. 修改完成后，可重新提交申请。重新提交的申请将进入审核队列，按提交时间顺序进行审核。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 材料清单区域 -->
+            <div class="materials-section">
+                <div class="materials-header">
+                    <h2>材料清单核对</h2>
+                </div>
+                
+                <!-- 材料项1：身份证正反面 -->
+                <div class="material-item">
+                    <div class="material-header">
+                        <div class="material-title">
+                            <span>身份证正反面</span>
+                            <span class="required-tag">必需</span>
+                        </div>
+                        <div class="material-status status-rejected">
+                            <svg width="16" height="16" viewBox="0 0 1024 1024" class="icon" fill="currentColor">
+                                <path d="M512 65.92c-246.016 0-446.08 200.064-446.08 446.08s200.064 446.08 446.08 446.08 446.08-200.064 446.08-446.08S758.016 65.92 512 65.92z m198.4 676.48l-221.44-221.44 221.44-221.44-66.56-66.56-221.44 221.44-221.44-221.44-66.56 66.56L445.44 581.76 224 803.2l66.56 66.56L445.44 648.96 666.88 870.4l66.56-66.56z"></path>
+                            </svg>
+                            <span>未通过</span>
+                        </div>
+                    </div>
+                    <div class="material-content">
+                        <div class="material-description">
+                            患者身份证正反面照片，图像清晰，信息完整可辨认。
+                        </div>
+                        <div class="file-list" id="fileList1">
+                            <div class="file-item">
+                                <div class="file-icon">🆔</div>
+                                <div class="file-info">
+                                    <div class="file-name">身份证正面_赵六.jpg</div>
+                                    <div class="file-size">1.2 MB</div>
+                                </div>
+                                <div class="file-actions">
+                                    <button class="action-btn" onclick="previewFile('身份证正面_赵六.jpg')">预览</button>
+                                </div>
+                            </div>
+                            <div class="file-item">
+                                <div class="file-icon">🆔</div>
+                                <div class="file-info">
+                                    <div class="file-name">身份证反面_赵六.jpg</div>
+                                    <div class="file-size">1.0 MB</div>
+                                </div>
+                                <div class="file-actions">
+                                    <button class="action-btn" onclick="previewFile('身份证反面_赵六.jpg')">预览</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 材料项2：二级及以上医院诊断证明 -->
+                <div class="material-item">
+                    <div class="material-header">
+                        <div class="material-title">
+                            <span>二级及以上医院诊断证明</span>
+                            <span class="required-tag">必需</span>
+                        </div>
+                        <div class="material-status status-rejected">
+                            <svg width="16" height="16" viewBox="0 0 1024 1024" class="icon" fill="currentColor">
+                                <path d="M512 65.92c-246.016 0-446.08 200.064-446.08 446.08s200.064 446.08 446.08 446.08 446.08-200.064 446.08-446.08S758.016 65.92 512 65.92z m198.4 676.48l-221.44-221.44 221.44-221.44-66.56-66.56-221.44 221.44-221.44-221.44-66.56 66.56L445.44 581.76 224 803.2l66.56 66.56L445.44 648.96 666.88 870.4l66.56-66.56z"></path>
+                            </svg>
+                            <span>未通过</span>
+                        </div>
+                    </div>
+                    <div class="material-content">
+                        <div class="material-description">
+                            由二级及以上医院出具的正式诊断证明，包含患者姓名、身份证号、诊断结论，并加盖医院公章和医生签字。
+                        </div>
+                        <div class="file-list" id="fileList2">
+                            <div class="file-item">
+                                <div class="file-icon">📄</div>
+                                <div class="file-info">
+                                    <div class="file-name">赵六慢性肾脏病诊断证明.pdf</div>
+                                    <div class="file-size">2.1 MB</div>
+                                </div>
+                                <div class="file-actions">
+                                    <button class="action-btn" onclick="previewFile('赵六慢性肾脏病诊断证明.pdf')">预览</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 材料项3：近三个月肾功能检查报告 -->
+                <div class="material-item">
+                    <div class="material-header">
+                        <div class="material-title">
+                            <span>近三个月肾功能检查报告</span>
+                            <span class="required-tag">必需</span>
+                        </div>
+                        <div class="material-status status-rejected">
+                            <svg width="16" height="16" viewBox="0 0 1024 1024" class="icon" fill="currentColor">
+                                <path d="M512 65.92c-246.016 0-446.08 200.064-446.08 446.08s200.064 446.08 446.08 446.08 446.08-200.064 446.08-446.08S758.016 65.92 512 65.92z m198.4 676.48l-221.44-221.44 221.44-221.44-66.56-66.56-221.44 221.44-221.44-221.44-66.56 66.56L445.44 581.76 224 803.2l66.56 66.56L445.44 648.96 666.88 870.4l66.56-66.56z"></path>
+                            </svg>
+                            <span>未通过</span>
+                        </div>
+                    </div>
+                    <div class="material-content">
+                        <div class="material-description">
+                            近三个月的肾功能检查报告，包含血肌酐、尿素氮、肾小球滤过率等关键指标。
+                        </div>
+                        <div class="file-list" id="fileList3">
+                            <div class="file-item">
+                                <div class="file-icon">📊</div>
+                                <div class="file-info">
+                                    <div class="file-name">赵六肾功能检查报告.pdf</div>
+                                    <div class="file-size">1.8 MB</div>
+                                </div>
+                                <div class="file-actions">
+                                    <button class="action-btn" onclick="previewFile('赵六肾功能检查报告.pdf')">预览</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 材料项4：既往病史记录 -->
+                <div class="material-item">
+                    <div class="material-header">
+                        <div class="material-title">
+                            <span>既往病史记录</span>
+                        </div>
+                        <div class="material-status status-uploaded">
+                            <svg width="16" height="16" viewBox="0 0 1024 1024" class="icon" fill="currentColor">
+                                <path d="M912 192H328c-4.4 0-8 3.6-8 8v632c0 4.4 3.6 8 8 8h584c4.4 0 8-3.6 8-8V200c0-4.4-3.6-8-8-8zm-12 632H340V212h560v612zM512 534.5c-37.5 0-68-30.5-68-68s30.5-68 68-68 68 30.5 68 68-30.5 68-68 68zm0 226c-96.6 0-175-78.4-175-175s78.4-175 175-175 175 78.4 175 175-78.4 175-175 175zm0-280c-57.8 0-105 47.2-105 105s47.2 105 105 105 105-47.2 105-105-47.2-105-105-105z"></path>
+                            </svg>
+                            <span>已上传</span>
+                        </div>
+                    </div>
+                    <div class="material-content">
+                        <div class="material-description">
+                            患者其他慢性病史或相关健康问题的医疗记录。
+                        </div>
+                        <div class="file-list" id="fileList4">
+                            <div class="file-item">
+                                <div class="file-icon">📋</div>
+                                <div class="file-info">
+                                    <div class="file-name">赵六既往病史记录.pdf</div>
+                                    <div class="file-size">2.3 MB</div>
+                                </div>
+                                <div class="file-actions">
+                                    <button class="action-btn" onclick="previewFile('赵六既往病史记录.pdf')">预览</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 提交操作区 -->
+            <div class="submit-section">
+                <button class="btn btn-primary" onclick="resubmitApplication()">修改并重申</button>
+                <button class="btn btn-secondary" onclick="window.history.back()">返回列表</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加载统一菜单组件脚本 -->
+    <script>
+    // 加载统一菜单组件
+    fetch('../../../组件/_unified-sidebar.html')
+        .then(response => response.text())
+        .then(html => {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = html;
+            // 手动执行插入的脚本
+            const scripts = sidebarContainer.querySelectorAll('script');
+            scripts.forEach(script => {
+                const newScript = document.createElement('script');
+                if (script.src) {
+                    newScript.src = script.src;
+                } else {
+                    newScript.textContent = script.textContent;
+                }
+                document.head.appendChild(newScript);
+                script.remove();
+            });
+            // 等待脚本执行后再初始化菜单
+            setTimeout(() => {
+                if (typeof initSidebar === 'function') {
+                    initSidebar();
+                }
+            }, 100);
+        })
+        .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+
+    <script>
+        // 页面参数解析
+        function getQueryParams() {
+            const params = {};
+            const urlParams = new URLSearchParams(window.location.search);
+            for (const [key, value] of urlParams.entries()) {
+                params[key] = value;
+            }
+            return params;
+        }
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取URL参数
+            const params = getQueryParams();
+            const applicationId = params.id;
+            
+            // 如果有传入ID参数，则更新显示
+            if (applicationId) {
+                document.getElementById('applicationId').textContent = applicationId;
+            }
+        });
+        
+        // 预览文件（模拟）
+        function previewFile(fileName) {
+            alert(`预览文件: ${fileName}\n\n实际应用中，这里会打开文件预览窗口。`);
+        }
+        
+        // 修改并重申（模拟）
+        function resubmitApplication() {
+            alert('即将进入修改页面，您可以重新上传和完善材料。\n\n实际应用中，这里会跳转到修改页面。');
+        }
+    </script>
+</body>
+</html>

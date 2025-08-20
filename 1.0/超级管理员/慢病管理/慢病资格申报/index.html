@@ -25,6 +25,61 @@
             margin-left: 280px; /* 为固定的侧边栏留出空间 */
         }
 
+        /* 批量上传区域样式 */
+        .batch-upload-area {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed #d0d7de;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .batch-upload-area:hover {
+            border-color: #4a90e2;
+            background-color: #f0f7ff;
+        }
+
+        /* 上传说明样式 */
+        .upload-instructions {
+            background-color: #f0f7ff;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .upload-instructions p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        /* 进度条样式 */
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #4a90e2;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #555;
+            font-size: 14px;
+        }
+
         /* 表格区域样式 - 确保表格容器支持水平滚动 */
         .table-section {
             background-color: var(--bg-primary); /* 使用主题背景色 */
@@ -126,9 +181,9 @@
         
         /* 评审中状态标签样式 */
         .status-reviewing {
-            background-color: var(--warning-light); /* 使用主题警告浅色背景 */
-            color: var(--warning-color); /* 使用主题警告颜色 */
-            border: 1px solid var(--warning-light); /* 使用主题警告浅色边框 */
+            background-color: #f5f5f5; /* 使用灰色背景 */
+            color: #8c8c8c; /* 使用灰色文字 */
+            border: 1px solid #d9d9d9; /* 使用灰色边框 */
         }
         
         /* 已通过状态标签样式 */
@@ -143,6 +198,20 @@
             background-color: var(--error-light); /* 使用主题错误浅色背景 */
             color: var(--error-color); /* 使用主题错误颜色 */
             border: 1px solid var(--error-light); /* 使用主题错误浅色边框 */
+        }
+        
+        /* 待补全状态标签样式 */
+        .status-incomplete {
+            background-color: var(--warning-light); /* 使用主题警告浅色背景 */
+            color: #faad14; /* 淡黄色文字 */
+            border: 1px solid var(--warning-light); /* 使用主题警告浅色边框 */
+        }
+        
+        /* 需补充材料状态标签样式 */
+        .status-supplement {
+            background-color: #fff2f0; /* 橘红色背景 */
+            color: #ff7a45; /* 橘红色文字 */
+            border: 1px solid #ffccc7; /* 橘红色边框 */
         }
         
         /* 操作按钮组样式 */
@@ -349,7 +418,7 @@
                 <div class="page-header">
                     <h2>慢病资格申报</h2>
                     <div class="header-actions">
-                        <button class="btn btn-primary" onclick="openNewApplicationModal()">+ 新建申报</button>
+                        <button class="btn btn-primary" onclick="openBatchApplicationModal()">+ 批量申报</button>
                     </div>
                 </div>
 
@@ -380,6 +449,8 @@
                                     <option value="reviewing">评审中</option>
                                     <option value="approved">已通过</option>
                                     <option value="rejected">已驳回</option>
+                                    <option value="incomplete">待补全</option>
+                                    <option value="supplement">需补充材料</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -489,6 +560,46 @@
         </div>
     </div>
 
+    <!-- 批量申报模态框 -->
+    <div class="modal" id="batchApplicationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">批量慢病资格申报</h3>
+                <button class="modal-close" onclick="closeBatchApplicationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-instructions">
+                    <h4>批量申报说明：</h4>
+                    <ul>
+                        <li>支持拖拽或选择多个文件夹/文件进行批量上传</li>
+                        <li>系统会自动识别文件内容并根据身份证号分组</li>
+                        <li>支持的文件格式：PDF、JPG、PNG、DOC、DOCX</li>
+                        <li>单文件大小不超过10MB，单次上传总数不超过100个文件</li>
+                    </ul>
+                </div>
+                <div class="upload-area" id="batchUploadArea" onclick="document.getElementById('batchFileUpload').click()">
+                    <input type="file" id="batchFileUpload" multiple style="display: none;">
+                    <div class="upload-icon">📎</div>
+                    <div class="upload-text">点击或拖拽文件到此处上传</div>
+                    <div class="upload-hint">支持PDF、JPG、PNG、DOC、DOCX格式</div>
+                </div>
+                <div id="uploadProgress" style="display: none; margin-top: 20px;">
+                    <div class="progress-label">文件处理中...</div>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill" id="progressBarFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0%</div>
+                </div>
+                <div class="file-list" id="batchFileList" style="max-height: 300px; overflow-y: auto; margin-top: 20px;"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeBatchApplicationModal()">取消</button>
+                <button class="btn btn-primary" id="btnSubmitBatch" onclick="submitBatchApplication()">开始处理</button>
+                <button class="btn btn-secondary" onclick="openSimulatedReport()">模拟申报处理报告</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 加载统一菜单组件脚本 -->
     <script>
     // 加载统一菜单组件
@@ -531,7 +642,9 @@
             { id: 'CM-202408007', name: '周九', idCard: '110101199607077890', disease: '2型糖尿病', hospital: '北京协和医院', submitTime: '2024-08-12 11:40', status: 'approved' },
             { id: 'CM-202408008', name: '吴十', idCard: '110101199908088901', disease: '冠心病', hospital: '北京协和医院', submitTime: '2024-08-11 15:20', status: 'rejected' },
             { id: 'CM-202408009', name: '郑一', idCard: '110101199209099012', disease: '脑卒中后遗症', hospital: '北京协和医院', submitTime: '2024-08-10 09:10', status: 'pending' },
-            { id: 'CM-202408010', name: '王二', idCard: '110101199410100123', disease: '慢性肾脏病', hospital: '北京协和医院', submitTime: '2024-08-09 14:50', status: 'reviewing' }
+            { id: 'CM-202408010', name: '王二', idCard: '110101199410100123', disease: '慢性肾脏病', hospital: '北京协和医院', submitTime: '2024-08-09 14:50', status: 'reviewing' },
+            { id: 'CM-202408011', name: '陈三', idCard: '110101198901012345', disease: '高血压并发症', hospital: '北京协和医院', submitTime: '2024-08-19 10:20', status: 'incomplete' },
+            { id: 'CM-202408012', name: '李华', idCard: '110101198703034567', disease: '2型糖尿病', hospital: '北京协和医院', submitTime: '2024-08-18 16:30', status: 'supplement' }
         ];
 
         // 当前页码和每页显示数量
@@ -578,6 +691,14 @@
                         statusClass = 'status-rejected';
                         statusText = '已驳回';
                         break;
+                    case 'incomplete':
+                        statusClass = 'status-incomplete';
+                        statusText = '待补全';
+                        break;
+                    case 'supplement':
+                        statusClass = 'status-supplement';
+                        statusText = '需补充材料';
+                        break;
                 }
 
                 row.innerHTML = `
@@ -589,9 +710,17 @@
                     <td>${application.submitTime}</td>
                     <td><span class="status-tag ${statusClass}">${statusText}</span></td>
                     <td class="action-buttons">
-                        <button class="btn-view" onclick="viewApplication('${application.id}')">查看详情</button>
-                        <button class="btn-cancel" onclick="cancelApplication('${application.id}')">撤销</button>
-                    </td>
+                            <button class="btn-view" onclick="viewApplication('${application.id}')">查看详情</button>
+                            ${application.status === 'incomplete' ? `
+                            <button class="btn-complete" onclick="completeApplication('${application.id}')">补全材料</button>
+                            ` : ''}
+                            ${application.status === 'supplement' ? `
+                            <button class="btn-supplement" onclick="supplementApplication('${application.id}')">补充材料并重提</button>
+                            ` : ''}
+                            ${['pending', 'reviewing'].includes(application.status) ? `
+                            <button class="btn-cancel" onclick="cancelApplication('${application.id}')">撤销</button>
+                            ` : ''}
+                        </td>
                 `;
                 tableBody.appendChild(row);
             });
@@ -736,8 +865,40 @@
 
         // 查看申报详情
         function viewApplication(id) {
-            alert(`查看申报ID：${id} 的详情`);
-            // 实际应用中，这里会打开详情页面或弹窗
+            // 根据申报ID查找对应的应用
+            const application = mockApplications.find(app => app.id === id);
+            if (application) {
+                // 根据状态跳转到对应的详情页面
+                let detailPage = 'material-detail.html';
+                switch (application.status) {
+                    case 'reviewing':
+                        detailPage = 'material-detail-reviewing.html';
+                        break;
+                    case 'approved':
+                        detailPage = 'material-detail-approved.html';
+                        break;
+                    case 'rejected':
+                        detailPage = 'material-detail-rejected.html';
+                        break;
+                    case 'supplement':
+                        detailPage = 'material-detail-supplement.html';
+                        break;
+                    // 待审核(pending)和待补全(incomplete)使用默认页面
+                    default:
+                        detailPage = 'material-detail.html';
+                }
+                window.location.href = `${detailPage}?id=${id}&action=view`;
+            }
+        }
+        
+        // 补全材料
+        function completeApplication(id) {
+            window.location.href = `material-detail.html?id=${id}&action=complete`;
+        }
+        
+        // 补充材料并重提
+        function supplementApplication(id) {
+            window.location.href = `material-detail.html?id=${id}&action=supplement`;
         }
 
         // 撤销申报
@@ -890,10 +1051,165 @@
             resetSearch();
         }
 
+        // 打开批量申报模态框
+        function openBatchApplicationModal() {
+            document.getElementById('batchApplicationModal').style.display = 'flex';
+            // 重置上传区域
+            document.getElementById('batchFileList').innerHTML = '';
+            document.getElementById('uploadProgress').style.display = 'none';
+            document.getElementById('btnSubmitBatch').disabled = false;
+            batchUploadedFiles = [];
+        }
+
+        // 关闭批量申报模态框
+        function closeBatchApplicationModal() {
+            document.getElementById('batchApplicationModal').style.display = 'none';
+        }
+
+        // 批量上传文件处理
+        let batchUploadedFiles = [];
+        document.getElementById('batchFileUpload').addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            handleBatchFileSelection(files);
+        });
+
+        // 处理批量文件选择
+        function handleBatchFileSelection(files) {
+            // 检查文件数量限制
+            if (batchUploadedFiles.length + files.length > 100) {
+                alert('最多只能上传100个文件');
+                return;
+            }
+            
+            // 检查文件类型和大小
+            const validFiles = files.filter(file => {
+                const extension = file.name.split('.').pop().toLowerCase();
+                const validExtension = ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'].includes(extension);
+                const validSize = file.size <= 10 * 1024 * 1024; // 10MB
+                return validExtension && validSize;
+            });
+            
+            if (validFiles.length < files.length) {
+                alert('只支持PDF、JPG、PNG、DOC、DOCX格式，且文件大小不超过10MB');
+            }
+            
+            // 添加有效文件
+            validFiles.forEach(file => {
+                batchUploadedFiles.push(file);
+            });
+            
+            // 渲染文件列表
+            renderBatchFileList();
+            
+            // 清空input，允许重复选择同一文件
+            document.getElementById('batchFileUpload').value = '';
+        }
+
+        // 渲染批量文件列表
+        function renderBatchFileList() {
+            const fileList = document.getElementById('batchFileList');
+            fileList.innerHTML = '';
+            
+            if (batchUploadedFiles.length === 0) {
+                fileList.innerHTML = '<div class="no-files">暂无上传文件</div>';
+                return;
+            }
+            
+            fileList.innerHTML = `<div class="file-count">共上传 ${batchUploadedFiles.length} 个文件</div>`;
+            
+            batchUploadedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                // 文件大小格式化
+                let fileSize = (file.size / 1024).toFixed(2);
+                let sizeUnit = 'KB';
+                if (fileSize > 1024) {
+                    fileSize = (fileSize / 1024).toFixed(2);
+                    sizeUnit = 'MB';
+                }
+                
+                fileItem.innerHTML = `
+                    <div class="file-info">
+                        <div class="file-icon">
+                            ${getFileIcon(file.name)}
+                        </div>
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${fileSize} ${sizeUnit}</div>
+                    </div>
+                    <button class="file-remove" onclick="removeBatchFile(${index})">×</button>
+                `;
+                
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        // 移除批量上传文件
+        function removeBatchFile(index) {
+            batchUploadedFiles.splice(index, 1);
+            renderBatchFileList();
+        }
+
+        // 提交批量申报
+        function submitBatchApplication() {
+            if (batchUploadedFiles.length === 0) {
+                alert('请至少上传一个申报材料');
+                return;
+            }
+
+            // 显示进度条
+            document.getElementById('uploadProgress').style.display = 'block';
+            document.getElementById('btnSubmitBatch').disabled = true;
+
+            // 模拟进度
+            let progress = 0;
+            const progressBarFill = document.getElementById('progressBarFill');
+            const progressText = document.getElementById('progressText');
+            const interval = setInterval(function() {
+                progress += 1;
+                progressBarFill.style.width = progress + '%';
+                progressText.textContent = progress + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    // 模拟处理完成后跳转到报告页面
+                    setTimeout(function() {
+                        closeBatchApplicationModal();
+                        window.location.href = 'batch-report.html';
+                    }, 500);
+                }
+            }, 50);
+        }
+
+        // 拖拽上传支持
+        const batchUploadArea = document.getElementById('batchUploadArea');
+        if (batchUploadArea) {
+            batchUploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+
+            batchUploadArea.addEventListener('dragleave', function() {
+                this.classList.remove('drag-over');
+            });
+
+            batchUploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                const files = e.dataTransfer.files;
+                handleBatchFileSelection(files);
+            });
+        }
+
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
             renderTableData();
         });
+        
+        // 打开模拟申报处理报告
+        function openSimulatedReport() {
+            window.location.href = 'simulated-report.html';
+        }
     </script>
     </div>
 </body>

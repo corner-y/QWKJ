@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI辅助慢病资格评审 - 详情页</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#4080FF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        info: '#86909C',
+                        background: '#F2F3F5',
+                        surface: '#FFFFFF',
+                        border: '#E5E6EB',
+                        text: {
+                            primary: '#1D2129',
+                            secondary: '#4E5969',
+                            tertiary: '#86909C'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['PingFang SC', 'Microsoft YaHei', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'card': '0 2px 8px 0 rgba(0, 0, 0, 0.08)',
+                        'hover': '0 4px 16px 0 rgba(0, 0, 0, 0.12)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .tab-active {
+                @apply text-primary border-b-2 border-primary font-medium;
+            }
+            .card-hover {
+                @apply transition-all duration-300 hover:shadow-hover;
+            }
+            .btn-primary {
+                @apply bg-primary text-white px-4 py-2 rounded transition-colors duration-300 hover:bg-primary/90;
+            }
+            .btn-secondary {
+                @apply bg-surface border border-border text-text-secondary px-4 py-2 rounded transition-colors duration-300 hover:border-primary hover:text-primary;
+            }
+            .btn-icon {
+                @apply w-8 h-8 flex items-center justify-center rounded hover:bg-background transition-colors duration-300;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background text-text-primary font-sans min-h-screen">
+    <div class="dashboard-container flex h-screen overflow-hidden">
+        <!-- 左侧菜单容器 -->
+        <div id="sidebar-container" class="w-64 bg-surface shadow-card flex-shrink-0 overflow-y-auto scrollbar-hide">
+            <!-- 统一菜单组件将通过JavaScript动态加载 -->
+        </div>
+        
+        <!-- 主内容区域 -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- 页面头部 -->
+            <header class="bg-surface h-16 flex items-center justify-between px-6 border-b border-border">
+                <div class="flex items-center space-x-4">
+                    <button id="backToListBtn" class="btn-secondary flex items-center space-x-1">
+                        <i class="fa fa-arrow-left"></i>
+                        <span>返回列表</span>
+                    </button>
+                    <h1 class="text-xl font-medium">AI辅助慢病资格评审</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-text-secondary text-sm">超级管理员</span>
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                        <i class="fa fa-user"></i>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- 主体内容 - 三栏式布局 -->
+            <div class="flex-1 flex overflow-hidden">
+                <!-- 左侧栏：原始材料区 (Ground Truth) -->
+                <div class="w-1/4 bg-surface border-r border-border overflow-y-auto flex flex-col">
+                    <div class="p-4 border-b border-border">
+                        <h2 class="text-lg font-medium">原始材料区</h2>
+                        <p class="text-text-tertiary text-sm mt-1">医院上传的所有原始凭证</p>
+                    </div>
+                    
+                    <!-- 患者基本信息 -->
+                    <div class="p-4 border-b border-border bg-background/50">
+                        <h3 class="font-medium mb-3">患者信息</h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">姓名：</span>
+                                <span id="patientName" class="font-medium">张三</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">身份证号：</span>
+                                <span id="patientIdCard" class="font-medium">110101********1234</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">申请病种：</span>
+                                <span id="patientDisease" class="font-medium">高血压并发症</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">申报医院：</span>
+                                <span id="patientHospital" class="font-medium">北京协和医院</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">提交时间：</span>
+                                <span id="patientSubmitTime" class="font-medium">2024-08-18 10:30</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-text-secondary text-sm">申请编号：</span>
+                                <span id="patientApplyId" class="font-medium">CM-202408011</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 材料列表 -->
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-medium">材料列表</h3>
+                            <span id="fileCount" class="text-sm text-text-tertiary">3个文件</span>
+                        </div>
+                        
+                        <!-- 文件列表 -->
+                        <div id="fileList" class="space-y-2">
+                            <!-- 文件项 -->
+                            <div class="file-item p-3 bg-surface rounded border border-primary flex items-center justify-between cursor-pointer">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 rounded bg-primary/10 flex items-center justify-center text-primary">
+                                        <i class="fa fa-file-text-o"></i>
+                                    </div>
+                                    <span class="text-sm truncate">诊断证明.pdf</span>
+                                </div>
+                                <span class="text-xs text-primary">2.5MB</span>
+                            </div>
+                            
+                            <div class="file-item p-3 bg-surface rounded border border-border flex items-center justify-between cursor-pointer hover:border-primary transition-colors duration-300">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 rounded bg-info/10 flex items-center justify-center text-info">
+                                        <i class="fa fa-file-image-o"></i>
+                                    </div>
+                                    <span class="text-sm truncate">检查报告.jpg</span>
+                                </div>
+                                <span class="text-xs text-text-tertiary">1.8MB</span>
+                            </div>
+                            
+                            <div class="file-item p-3 bg-surface rounded border border-border flex items-center justify-between cursor-pointer hover:border-primary transition-colors duration-300">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-8 h-8 rounded bg-info/10 flex items-center justify-center text-info">
+                                        <i class="fa fa-file-image-o"></i>
+                                    </div>
+                                    <span class="text-sm truncate">病历记录.jpg</span>
+                                </div>
+                                <span class="text-xs text-text-tertiary">3.2MB</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 文件预览器 -->
+                    <div class="flex-1 flex flex-col mt-4 p-4 border-t border-border">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="font-medium">文件预览</h3>
+                            <!-- 查看器控制 -->
+                            <div class="flex space-x-2">
+                                <button class="btn-icon" title="缩小">
+                                    <i class="fa fa-search-minus text-text-secondary"></i>
+                                </button>
+                                <button class="btn-icon" title="放大">
+                                    <i class="fa fa-search-plus text-text-secondary"></i>
+                                </button>
+                                <button class="btn-icon" title="向左旋转">
+                                    <i class="fa fa-rotate-left text-text-secondary"></i>
+                                </button>
+                                <button class="btn-icon" title="向右旋转">
+                                    <i class="fa fa-rotate-right text-text-secondary"></i>
+                                </button>
+                                <button class="btn-icon" title="重置视图">
+                                    <i class="fa fa-refresh text-text-secondary"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 预览区域 -->
+                        <div class="flex-1 bg-background rounded flex items-center justify-center overflow-hidden">
+                            <img id="documentPreview" src="../../../assets/sample_document1.png" alt="文档预览" class="max-w-full max-h-full object-contain">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 中间栏：AI病历摘要视图 (AI-Powered EMR) -->
+                <div class="w-2/5 bg-surface border-r border-border overflow-y-auto">
+                    <div class="p-4 border-b border-border bg-primary/5">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                                <i class="fa fa-robot"></i>
+                            </div>
+                            <h2 class="text-lg font-medium">AI病历摘要视图</h2>
+                        </div>
+                        <p class="text-text-tertiary text-sm">由AI自动提取的结构化电子病历摘要</p>
+                    </div>
+                    
+                    <!-- 患者基本信息摘要 -->
+                    <div class="p-4 border-b border-border">
+                        <h3 class="text-base font-medium mb-3 flex items-center">
+                            <i class="fa fa-id-card-o text-primary mr-2"></i>
+                            患者基本信息摘要
+                        </h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-background/50 p-3 rounded">
+                                <div class="text-text-tertiary text-xs mb-1">姓名</div>
+                                <div class="font-medium">张三</div>
+                            </div>
+                            <div class="bg-background/50 p-3 rounded">
+                                <div class="text-text-tertiary text-xs mb-1">性别</div>
+                                <div class="font-medium">男</div>
+                            </div>
+                            <div class="bg-background/50 p-3 rounded">
+                                <div class="text-text-tertiary text-xs mb-1">年龄</div>
+                                <div class="font-medium">65岁</div>
+                            </div>
+                            <div class="bg-background/50 p-3 rounded">
+                                <div class="text-text-tertiary text-xs mb-1">民族</div>
+                                <div class="font-medium">汉族</div>
+                            </div>
+                            <div class="bg-background/50 p-3 rounded">
+                                <div class="text-text-tertiary text-xs mb-1">婚姻状况</div>
+                                <div class="font-medium">已婚</div>
+                            </div>
+                            <div class="bg-background/50 p-3 rounded">
+                                <div class="text-text-tertiary text-xs mb-1">联系方式</div>
+                                <div class="font-medium">138****1234</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 关键指标趋势 -->
+                    <div class="p-4 border-b border-border">
+                        <h3 class="text-base font-medium mb-3 flex items-center">
+                            <i class="fa fa-line-chart text-primary mr-2"></i>
+                            关键指标趋势
+                        </h3>
+                        <div class="bg-background/50 p-3 rounded">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="text-sm font-medium">血压监测趋势</div>
+                                <div class="flex space-x-2">
+                                    <button class="text-xs px-2 py-1 bg-primary text-white rounded">最近3个月</button>
+                                    <button class="text-xs px-2 py-1 text-text-secondary hover:bg-background/80 rounded">最近6个月</button>
+                                    <button class="text-xs px-2 py-1 text-text-secondary hover:bg-background/80 rounded">最近1年</button>
+                                </div>
+                            </div>
+                            <div class="h-64">
+                                <canvas id="bloodPressureChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 诊断与病程 -->
+                    <div class="p-4 border-b border-border">
+                        <h3 class="text-base font-medium mb-3 flex items-center">
+                            <i class="fa fa-stethoscope text-primary mr-2"></i>
+                            诊断与病程
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-background/50 p-3 rounded">
+                                <div class="text-text-tertiary text-xs mb-1">主要诊断</div>
+                                <div class="font-medium">原发性高血压3级（极高危）</div>
+                            </div>
+                            
+                            <div class="bg-background/50 p-3 rounded">
+                                <div class="text-text-tertiary text-xs mb-1">次要诊断</div>
+                                <div class="font-medium">冠心病、2型糖尿病</div>
+                            </div>
+                            
+                            <div class="bg-background/50 p-3 rounded">
+                                <div class="text-text-tertiary text-xs mb-1">主诉</div>
+                                <div>反复头晕头痛10年，加重伴胸闷1周</div>
+                            </div>
+                            
+                            <div class="bg-background/50 p-3 rounded">
+                                <div class="text-text-tertiary text-xs mb-1">现病史</div>
+                                <div class="text-sm">患者10年前无明显诱因出现头晕、头痛，测血压160/100mmHg，诊断为高血压，规律服用降压药物，但血压控制不佳。1周前患者出现头晕、头痛加重，并伴有胸闷不适，无恶心呕吐，无肢体活动障碍，来我院就诊。</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 检查与检验列表 -->
+                    <div class="p-4">
+                        <h3 class="text-base font-medium mb-3 flex items-center">
+                            <i class="fa fa-flask text-primary mr-2"></i>
+                            检查与检验列表
+                        </h3>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full bg-surface border border-border">
+                                <thead>
+                                    <tr class="bg-background/50">
+                                        <th class="py-2 px-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider border-b border-border">检查项目</th>
+                                        <th class="py-2 px-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider border-b border-border">检查值</th>
+                                        <th class="py-2 px-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider border-b border-border">参考范围</th>
+                                        <th class="py-2 px-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider border-b border-border">检查日期</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-border">
+                                    <tr>
+                                        <td class="py-2 px-3 text-sm">收缩压</td>
+                                        <td class="py-2 px-3 text-sm font-medium text-danger">180 mmHg</td>
+                                        <td class="py-2 px-3 text-sm">90-139 mmHg</td>
+                                        <td class="py-2 px-3 text-sm">2024-08-15</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-3 text-sm">舒张压</td>
+                                        <td class="py-2 px-3 text-sm font-medium text-danger">110 mmHg</td>
+                                        <td class="py-2 px-3 text-sm">60-89 mmHg</td>
+                                        <td class="py-2 px-3 text-sm">2024-08-15</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-3 text-sm">空腹血糖</td>
+                                        <td class="py-2 px-3 text-sm font-medium text-warning">7.8 mmol/L</td>
+                                        <td class="py-2 px-3 text-sm">3.9-6.1 mmol/L</td>
+                                        <td class="py-2 px-3 text-sm">2024-08-15</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-3 text-sm">糖化血红蛋白</td>
+                                        <td class="py-2 px-3 text-sm font-medium text-warning">7.5 %</td>
+                                        <td class="py-2 px-3 text-sm">4.0-6.0 %</td>
+                                        <td class="py-2 px-3 text-sm">2024-08-15</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2 px-3 text-sm">总胆固醇</td>
+                                        <td class="py-2 px-3 text-sm font-medium text-danger">6.2 mmol/L</td>
+                                        <td class="py-2 px-3 text-sm">3.1-5.7 mmol/L</td>
+                                        <td class="py-2 px-3 text-sm">2024-08-15</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧栏：AI评审精灵与专家决策区 (AI Co-pilot) -->
+                <div class="w-1/4 bg-surface overflow-y-auto flex flex-col">
+                    <div class="p-4 border-b border-border bg-primary/5">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                                <i class="fa fa-lightbulb-o"></i>
+                            </div>
+                            <h2 class="text-lg font-medium">AI评审精灵</h2>
+                        </div>
+                        <p class="text-text-tertiary text-sm">智能辅助决策系统</p>
+                    </div>
+                    
+                    <!-- 机审结论与风险提示 -->
+                    <div class="p-4 border-b border-border">
+                        <h3 class="text-base font-medium mb-3 flex items-center">
+                            <i class="fa fa-shield text-primary mr-2"></i>
+                            机审结论与风险提示
+                        </h3>
+                        
+                        <div class="bg-success/10 p-3 rounded mb-3">
+                            <div class="flex items-center text-success mb-2">
+                                <i class="fa fa-check-circle mr-2"></i>
+                                <span class="font-medium">机审结论：初审通过</span>
+                            </div>
+                            <div class="text-sm text-text-secondary ml-6">
+                                系统自动初审认为该申请符合慢病资格认定标准
+                            </div>
+                        </div>
+                        
+                        <div class="bg-warning/10 p-3 rounded">
+                            <div class="flex items-center text-warning mb-2">
+                                <i class="fa fa-exclamation-triangle mr-2"></i>
+                                <span class="font-medium">关注项</span>
+                            </div>
+                            <ul class="text-sm text-text-secondary ml-6 space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fa fa-circle text-xs mt-1 mr-2"></i>
+                                    <span>患者近期有多次急诊记录，请关注其病情稳定性。</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-circle text-xs mt-1 mr-2"></i>
+                                    <span>部分手写病历识别清晰度较低，建议核对原文。</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-circle text-xs mt-1 mr-2"></i>
+                                    <span>患者血压控制不佳，收缩压持续高于160mmHg。</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 智能提问 (AI对话) -->
+                    <div class="flex-1 flex flex-col border-b border-border">
+                        <div class="p-4 border-b border-border">
+                            <h3 class="text-base font-medium mb-1 flex items-center">
+                                <i class="fa fa-comment text-primary mr-2"></i>
+                                智能提问
+                            </h3>
+                            <p class="text-text-tertiary text-xs">与AI助手进行自然语言交互</p>
+                        </div>
+                        
+                        <!-- 对话区域 -->
+                        <div id="aiChatContainer" class="flex-1 p-4 space-y-4 overflow-y-auto">
+                            <!-- 系统提示 -->
+                            <div class="flex space-x-2">
+                                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+                                    <i class="fa fa-robot"></i>
+                                </div>
+                                <div class="bg-background/80 p-3 rounded max-w-[85%]">
+                                    <p class="text-sm">请问您想了解关于此病例的什么信息？</p>
+                                </div>
+                            </div>
+                            
+                            <!-- 示例问题 -->
+                            <div class="pl-10">
+                                <div class="text-xs text-primary mb-1">示例问题：</div>
+                                <div class="space-y-1">
+                                    <button class="text-sm text-primary hover:underline">总结一下这个患者的所有心血管系统相关检查结果。</button>
+                                    <button class="text-sm text-primary hover:underline">根据上传的病历，他的高血压并发症体现在哪些方面？</button>
+                                </div>
+                            </div>
+                            
+                            <!-- 模拟对话 -->
+                            <div class="flex space-x-2">
+                                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                                    <i class="fa fa-user"></i>
+                                </div>
+                                <div class="bg-primary/10 p-3 rounded max-w-[85%]">
+                                    <p class="text-sm">总结一下这个患者的所有心血管系统相关检查结果。</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+                                    <i class="fa fa-robot"></i>
+                                </div>
+                                <div class="bg-background/80 p-3 rounded max-w-[85%]">
+                                    <p class="text-sm">该患者心血管系统相关检查结果如下：</p>
+                                    <ul class="list-disc ml-5 text-sm mt-1 space-y-1">
+                                        <li>血压：收缩压180mmHg（极高），舒张压110mmHg（极高）</li>
+                                        <li>心电图：ST段压低，提示心肌缺血</li>
+                                        <li>心脏超声：左心室肥厚，射血分数55%（轻度降低）</li>
+                                        <li>血脂：总胆固醇6.2mmol/L（高），低密度脂蛋白胆固醇4.1mmol/L（高）</li>
+                                    </ul>
+                                    <p class="text-sm mt-2">这些结果提示患者存在严重高血压、冠心病和血脂异常，心血管风险极高。</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 输入区域 -->
+                        <div class="p-4 border-t border-border">
+                            <div class="flex space-x-2">
+                                <input id="aiChatInput" type="text" class="flex-1 px-3 py-2 border border-border rounded focus:outline-none focus:border-primary" placeholder="请输入您的问题...">
+                                <button id="aiChatSend" class="w-10 h-10 rounded bg-primary flex items-center justify-center text-white">
+                                    <i class="fa fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 专家决策 (终审) -->
+                    <div class="p-4 bg-background/50">
+                        <h3 class="text-base font-medium mb-3 flex items-center">
+                            <i class="fa fa-gavel text-primary mr-2"></i>
+                            专家决策
+                        </h3>
+                        
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <div class="text-sm font-medium">评审结论</div>
+                                <div class="space-y-2">
+                                    <label class="flex items-center space-x-2 p-3 bg-surface rounded border border-border cursor-pointer">
+                                        <input type="radio" name="reviewConclusion" value="approved" class="w-4 h-4 text-primary" checked>
+                                        <span>终审通过</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 p-3 bg-surface rounded border border-border cursor-pointer">
+                                        <input type="radio" name="reviewConclusion" value="rejected" class="w-4 h-4 text-primary">
+                                        <span>终审驳回</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 p-3 bg-surface rounded border border-border cursor-pointer">
+                                        <input type="radio" name="reviewConclusion" value="supplement" class="w-4 h-4 text-primary">
+                                        <span>终审退回补充材料</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <div class="text-sm font-medium">评审意见</div>
+                                <textarea id="reviewComments" class="w-full p-3 border border-border rounded focus:outline-none focus:border-primary h-32" placeholder="请输入评审意见（驳回或退回时为必填）..."></textarea>
+                            </div>
+                            
+                            <button id="submitConclusion" class="w-full btn-primary py-3 flex items-center justify-center space-x-2">
+                                <i class="fa fa-check"></i>
+                                <span>提交终审结论</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 加载统一菜单组件脚本 -->
+    <script>
+        // 加载统一菜单组件
+        fetch('../../组件/_unified-sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const sidebarContainer = document.getElementById('sidebar-container');
+                sidebarContainer.innerHTML = html;
+                // 手动执行插入的脚本
+                const scripts = sidebarContainer.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.head.appendChild(newScript);
+                    script.remove();
+                });
+                // 等待脚本执行后再初始化菜单
+                setTimeout(() => {
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    }
+                }, 100);
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+    </script>
+    
+    <script>
+        // 初始化血压趋势图表
+        document.addEventListener('DOMContentLoaded', function() {
+            // 解析URL参数，获取任务ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('taskId');
+            
+            if (taskId) {
+                console.log('接收到任务ID:', taskId);
+                // 这里可以根据taskId从服务器或本地存储中获取任务数据
+                // 为了演示，我们使用模拟数据
+                loadTaskData(taskId);
+            } else {
+                console.log('未接收到任务ID，使用默认数据');
+            }
+            
+            // 加载任务数据函数
+            function loadTaskData(taskId) {
+                // 模拟任务数据
+                // 在实际应用中，这里应该是一个API请求，根据taskId获取真实数据
+                const mockTaskData = {
+                    patientName: '张三',
+                    patientIdCard: '110101********1234',
+                    patientDisease: '高血压并发症',
+                    patientHospital: '北京协和医院',
+                    patientSubmitTime: '2024-08-18 10:30',
+                    patientApplyId: taskId || 'CM-202408011'
+                };
+                
+                // 更新页面上的患者信息
+                document.getElementById('patientName').textContent = mockTaskData.patientName;
+                document.getElementById('patientIdCard').textContent = mockTaskData.patientIdCard;
+                document.getElementById('patientDisease').textContent = mockTaskData.patientDisease;
+                document.getElementById('patientHospital').textContent = mockTaskData.patientHospital;
+                document.getElementById('patientSubmitTime').textContent = mockTaskData.patientSubmitTime;
+                document.getElementById('patientApplyId').textContent = mockTaskData.patientApplyId;
+            }
+            // 血压趋势图表
+            const bloodPressureCtx = document.getElementById('bloodPressureChart').getContext('2d');
+            new Chart(bloodPressureCtx, {
+                type: 'line',
+                data: {
+                    labels: ['6/1', '6/15', '7/1', '7/15', '8/1', '8/15'],
+                    datasets: [
+                        {
+                            label: '收缩压',
+                            data: [165, 170, 168, 175, 178, 180],
+                            borderColor: '#F53F3F',
+                            backgroundColor: 'rgba(245, 63, 63, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false
+                        },
+                        {
+                            label: '舒张压',
+                            data: [100, 105, 102, 108, 105, 110],
+                            borderColor: '#FF7D00',
+                            backgroundColor: 'rgba(255, 125, 0, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                boxWidth: 12,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 80,
+                            max: 200,
+                            ticks: {
+                                stepSize: 20
+                            },
+                            grid: {
+                                drawBorder: false
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 文件选择
+            const fileItems = document.querySelectorAll('.file-item');
+            fileItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    fileItems.forEach(i => {
+                        i.classList.remove('border-primary');
+                        i.classList.add('border-border');
+                    });
+                    this.classList.remove('border-border');
+                    this.classList.add('border-primary');
+                });
+            });
+            
+            // 返回列表按钮
+            document.getElementById('backToListBtn').addEventListener('click', function() {
+                window.location.href = 'index.html';
+            });
+            
+            // 提交评审结论
+            document.getElementById('submitConclusion').addEventListener('click', function() {
+                const conclusion = document.querySelector('input[name="reviewConclusion"]:checked').value;
+                const comments = document.getElementById('reviewComments').value.trim();
+                
+                // 检查是否需要评审意见
+                if ((conclusion === 'rejected' || conclusion === 'supplement') && comments === '') {
+                    alert('驳回或退回时评审意见为必填项！');
+                    return;
+                }
+                
+                // 确认提交
+                if (confirm(`确定要提交评审结论吗？\n结论：${conclusion === 'approved' ? '终审通过' : conclusion === 'rejected' ? '终审驳回' : '终审退回补充材料'}${comments ? '\n意见：' + comments : ''}`)) {
+                    alert('评审结论已提交！');
+                    window.location.href = 'index.html';
+                }
+            });
+            
+            // AI对话示例问题点击
+            const exampleQuestions = document.querySelectorAll('.text-sm.text-primary.hover\:underline');
+            exampleQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    document.getElementById('aiChatInput').value = this.textContent;
+                });
+            });
+            
+            // AI对话发送
+            document.getElementById('aiChatSend').addEventListener('click', function() {
+                sendAiMessage();
+            });
+            
+            document.getElementById('aiChatInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendAiMessage();
+                }
+            });
+        });
+        
+        // 发送AI消息
+        function sendAiMessage() {
+            const input = document.getElementById('aiChatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const chatContainer = document.getElementById('aiChatContainer');
+            
+            // 添加用户消息
+            const userMessageElement = document.createElement('div');
+            userMessageElement.className = 'flex space-x-2';
+            userMessageElement.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                    <i class="fa fa-user"></i>
+                </div>
+                <div class="bg-primary/10 p-3 rounded max-w-[85%]">
+                    <p class="text-sm">${message}</p>
+                </div>
+            `;
+            chatContainer.appendChild(userMessageElement);
+            
+            // 添加AI回复（模拟）
+            const aiMessageElement = document.createElement('div');
+            aiMessageElement.className = 'flex space-x-2';
+            aiMessageElement.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary flex-shrink-0">
+                    <i class="fa fa-robot"></i>
+                </div>
+                <div class="bg-background/80 p-3 rounded max-w-[85%]">
+                    <p class="text-sm">感谢您的提问。根据您的问题，我正在分析患者的相关信息，请稍候...</p>
+                </div>
+            `;
+            chatContainer.appendChild(aiMessageElement);
+            
+            // 清空输入框并滚动到底部
+            input.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            // 模拟AI回复延迟
+            setTimeout(() => {
+                aiMessageElement.querySelector('p').textContent = generateAiResponse(message);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 1500);
+        }
+        
+        // 生成AI回复（模拟）
+        function generateAiResponse(question) {
+            const responses = {
+                '总结一下这个患者的所有心血管系统相关检查结果。': '根据患者的检查结果，其心血管系统存在以下问题：1. 血压显著升高（收缩压180mmHg，舒张压110mmHg）；2. 心电图显示ST段压低，提示心肌缺血；3. 心脏超声提示左心室肥厚；4. 血脂异常（总胆固醇6.2mmol/L）。这些结果表明患者存在严重的高血压和冠心病风险。',
+                '根据上传的病历，他的高血压并发症体现在哪些方面？': '患者的高血压并发症主要体现在以下几个方面：1. 心脏并发症：左心室肥厚、心肌缺血；2. 代谢异常：血糖升高（空腹血糖7.8mmol/L）；3. 血管损伤：眼底动脉狭窄。这些并发症表明患者的高血压已经对多个器官造成了损害，需要积极干预。'
+            };
+            
+            // 如果有匹配的问题，返回对应的回复，否则返回通用回复
+            return responses[question] || '这是一个很好的问题。根据患者的病历资料，我认为需要综合考虑多个因素。从提供的检查结果来看，患者的主要问题是高血压控制不佳，同时伴有其他代谢异常。建议进一步评估患者的整体健康状况，并制定个性化的治疗方案。';
+        }
+    </script>
+</body>
+</html>

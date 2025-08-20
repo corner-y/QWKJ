@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模拟申报处理报告</title>
+    <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    <style>
+        /* 全局变量定义 */
+        :root {
+            --primary-color: #1890ff;
+            --primary-dark: #096dd9;
+            --success-color: #52c41a;
+            --success-light: #f6ffed;
+            --warning-color: #faad14;
+            --warning-light: #fff7e6;
+            --error-color: #f5222d;
+            --error-light: #fff1f0;
+            --text-primary: #262626;
+            --text-secondary: #8c8c8c;
+            --bg-primary: #ffffff;
+            --bg-secondary: #fafafa;
+            --bg-hover: #f5f5f5;
+            --border-primary: #d9d9d9;
+            --radius-small: 4px;
+            --radius-medium: 8px;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --font-size-sm: 14px;
+            --font-size-xs: 12px;
+            --font-weight-bold: 600;
+            --font-weight-semibold: 500;
+        }
+
+        /* 全局重置样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            background-color: var(--bg-secondary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 主容器布局 */
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 左侧菜单样式 */
+        #sidebar-container {
+            width: 260px;
+            height: 100vh;
+            background-color: #fff;
+            border-right: 1px solid var(--border-primary);
+            flex-shrink: 0;
+        }
+
+        /* 主内容区域样式 */
+        .report-container {
+            flex: 1;
+            padding: 24px;
+            height: 100vh;
+            overflow-y: auto;
+            background-color: var(--bg-secondary);
+        }
+
+        /* 页面头部样式 */
+        .report-header {
+            margin-bottom: 24px;
+        }
+
+        .report-header h2 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 20px;
+            font-weight: var(--font-weight-bold);
+        }
+
+        .report-info {
+            margin-top: 8px;
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        /* 统计卡片区域样式 */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-medium);
+            padding: 24px;
+            box-shadow: var(--shadow-light);
+            text-align: center;
+            border: 1px solid var(--border-primary);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+        }
+
+        /* Tabs样式 */
+        .tabs-container {
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-medium);
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--border-primary);
+            background-color: #fff;
+        }
+
+        .tab-button {
+            padding: 14px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .tab-button:hover {
+            color: var(--primary-color);
+            background-color: #f0f7ff;
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            font-weight: var(--font-weight-semibold);
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .tabs-content {
+            padding: 24px;
+        }
+
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* 表格样式 */
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            background-color: #fff;
+            border-radius: var(--radius-medium);
+            overflow: hidden;
+        }
+
+        .result-table th,
+        .result-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-primary);
+        }
+
+        .result-table th {
+            background-color: var(--bg-secondary);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .result-table tr:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .result-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* 按钮样式 */
+        .btn-complement {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--radius-small);
+            cursor: pointer;
+            font-size: var(--font-size-sm);
+            transition: all 0.2s;
+        }
+
+        .btn-complement:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+        }
+
+        /* 状态标签样式 */
+        .status-label {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+        }
+
+        .status-success {
+            background-color: var(--success-light);
+            color: var(--success-color);
+            border: 1px solid #b7eb8f;
+        }
+
+        .status-warning {
+            background-color: var(--warning-light);
+            color: var(--warning-color);
+            border: 1px solid #ffe58f;
+        }
+
+        .status-error {
+            background-color: var(--error-light);
+            color: var(--error-color);
+            border: 1px solid #ffccc7;
+        }
+
+        /* 表格标题样式 */
+        .table-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="report-container">
+            <!-- 页面头部 -->
+            <div class="report-header">
+                <h2>模拟申报处理报告</h2>
+                <div class="report-info">
+                    生成时间：2023-10-15 14:30:00 | 批量处理批次：BATCH-20231015-001
+                </div>
+            </div>
+
+            <!-- 统计卡片区域 -->
+            <div class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-value">156</div>
+                    <div class="stat-label">上传总数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">98</div>
+                    <div class="stat-label">成功创建</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">32</div>
+                    <div class="stat-label">材料不全</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">26</div>
+                    <div class="stat-label">重复申报</div>
+                </div>
+            </div>
+
+            <!-- 详细结果列表（Tabs切换） -->
+            <div class="tabs-container">
+                <div class="tabs-header">
+                    <button class="tab-button active" onclick="switchTab(event, 'success')">成功列表</button>
+                    <button class="tab-button" onclick="switchTab(event, 'incomplete')">材料不全列表</button>
+                    <button class="tab-button" onclick="switchTab(event, 'duplicate')">重复申报列表</button>
+                </div>
+                
+                <div class="tabs-content">
+                    <!-- 成功列表Tab -->
+                    <div id="success" class="tab-panel active">
+                        <div class="table-title">以下申报已成功创建，等待审核：</div>
+                        <table class="result-table">
+                            <thead>
+                                <tr>
+                                    <th>申报ID</th>
+                                    <th>患者姓名</th>
+                                    <th>身份证号</th>
+                                    <th>申请病种</th>
+                                    <th>申报医院</th>
+                                    <th>状态</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>S20231015001</td>
+                                    <td>张三</td>
+                                    <td>110********0001</td>
+                                    <td>高血压并发症</td>
+                                    <td>北京协和医院</td>
+                                    <td><span class="status-label status-success">待审核</span></td>
+                                </tr>
+                                <tr>
+                                    <td>S20231015002</td>
+                                    <td>李四</td>
+                                    <td>110********0002</td>
+                                    <td>2型糖尿病</td>
+                                    <td>北京协和医院</td>
+                                    <td><span class="status-label status-success">待审核</span></td>
+                                </tr>
+                                <tr>
+                                    <td>S20231015003</td>
+                                    <td>王五</td>
+                                    <td>110********0003</td>
+                                    <td>冠心病</td>
+                                    <td>北京协和医院</td>
+                                    <td><span class="status-label status-success">待审核</span></td>
+                                </tr>
+                                <tr>
+                                    <td>S20231015004</td>
+                                    <td>赵六</td>
+                                    <td>110********0004</td>
+                                    <td>脑卒中后遗症</td>
+                                    <td>北京协和医院</td>
+                                    <td><span class="status-label status-success">待审核</span></td>
+                                </tr>
+                                <tr>
+                                    <td>S20231015005</td>
+                                    <td>钱七</td>
+                                    <td>110********0005</td>
+                                    <td>慢性肾脏病</td>
+                                    <td>北京协和医院</td>
+                                    <td><span class="status-label status-success">待审核</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 材料不全列表Tab -->
+                    <div id="incomplete" class="tab-panel">
+                        <div class="table-title">以下申报因缺少材料而创建失败：</div>
+                        <table class="result-table">
+                            <thead>
+                                <tr>
+                                    <th>患者姓名</th>
+                                    <th>身份证号</th>
+                                    <th>申请病种</th>
+                                    <th>缺失材料</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>孙八</td>
+                                    <td>110********0006</td>
+                                    <td>高血压并发症</td>
+                                    <td>诊断证明、近三个月血压监测记录</td>
+                                    <td><button class="btn-complement">前往补全</button></td>
+                                </tr>
+                                <tr>
+                                    <td>周九</td>
+                                    <td>110********0007</td>
+                                    <td>2型糖尿病</td>
+                                    <td>诊断证明、近三个月血糖监测记录</td>
+                                    <td><button class="btn-complement">前往补全</button></td>
+                                </tr>
+                                <tr>
+                                    <td>吴十</td>
+                                    <td>110********0008</td>
+                                    <td>冠心病</td>
+                                    <td>心电图报告、心脏超声报告</td>
+                                    <td><button class="btn-complement">前往补全</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 重复申报列表Tab -->
+                    <div id="duplicate" class="tab-panel">
+                        <div class="table-title">以下申报因重复而被拦截，未在系统中创建：</div>
+                        <table class="result-table">
+                            <thead>
+                                <tr>
+                                    <th>患者姓名</th>
+                                    <th>身份证号</th>
+                                    <th>申请病种</th>
+                                    <th>冲突详情</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>郑十一</td>
+                                    <td>110********0009</td>
+                                    <td>高血压并发症</td>
+                                    <td>已存在相同患者、相同病种的待审核申请（申报ID：S20231001001）</td>
+                                </tr>
+                                <tr>
+                                    <td>王十二</td>
+                                    <td>110********0010</td>
+                                    <td>2型糖尿病</td>
+                                    <td>已存在相同患者、相同病种的待审核申请（申报ID：S20231002002）</td>
+                                </tr>
+                                <tr>
+                                    <td>李十三</td>
+                                    <td>110********0011</td>
+                                    <td>冠心病</td>
+                                    <td>已存在相同患者、相同病种的待审核申请（申报ID：S20231003003）</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 加载统一菜单组件
+        document.addEventListener('DOMContentLoaded', function() {
+            // 模拟加载统一菜单
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.innerHTML = '<div style="width: 260px; height: 100vh; background-color: #fff; border-right: 1px solid #d9d9d9; display: flex; align-items: center; justify-content: center; color: #8c8c8c;">统一菜单组件</div>';
+            
+            // 初始化Tabs功能
+            initTabs();
+        });
+
+        // Tab切换功能
+        function switchTab(event, tabName) {
+            // 隐藏所有tab面板
+            const tabPanels = document.querySelectorAll('.tab-panel');
+            tabPanels.forEach(panel => panel.classList.remove('active'));
+            
+            // 移除所有tab按钮的激活状态
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => button.classList.remove('active'));
+            
+            // 显示选中的tab面板
+            document.getElementById(tabName).classList.add('active');
+            
+            // 激活选中的tab按钮
+            event.currentTarget.classList.add('active');
+        }
+
+        // 初始化Tabs
+        function initTabs() {
+            // 为所有补全按钮添加点击事件
+            const complementButtons = document.querySelectorAll('.btn-complement');
+            complementButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 这里可以实现跳转到补全材料页面的逻辑
+                    alert('前往补全材料页面');
+                });
+            });
+        }
+    </script>
+</body>
+</html>
