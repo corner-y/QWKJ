@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人工审核工作台 - 医保审核系统</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    <style>
+        /* 工作台特定样式 */
+        .dashboard-header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .dashboard-subtitle {
+            color: #7f8c8d;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        .tabs-container {
+            background: white;
+            padding: 0 20px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 16px 24px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #7f8c8d;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+            font-weight: 600;
+        }
+        
+        .tab-count {
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+            font-weight: normal;
+        }
+        
+        .active .tab-count {
+            background: #3498db;
+            color: white;
+        }
+        
+        .task-cards-container {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .task-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+        
+        .task-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+        
+        .task-patient-info {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 16px;
+        }
+        
+        .risk-tags {
+            margin-bottom: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .risk-tag {
+            background: #f1f3f5;
+            color: #495057;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+        }
+        
+        .risk-tag.over-medication {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .risk-tag.repeat-medication {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .risk-tag.excessive-check {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .risk-tag.materials-abnormal {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+        
+        .risk-tag.split-hospitalization {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .task-details {
+            margin-bottom: 20px;
+        }
+        
+        .task-detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .task-detail-label {
+            color: #7f8c8d;
+        }
+        
+        .task-detail-value {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .task-actions {
+            text-align: right;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+        
+        .task-card.in-review {
+            border-left: 4px solid #f39c12;
+        }
+        
+        .task-card.completed {
+            border-left: 4px solid #27ae60;
+        }
+        
+        .task-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .task-status.pending {
+            background: #f1f3f5;
+            color: #495057;
+        }
+        
+        .task-status.reviewing {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .task-status.completed {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            padding: 20px;
+        }
+        
+        .pagination-item {
+            padding: 8px 16px;
+            margin: 0 4px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-item:hover {
+            background: #f1f3f5;
+        }
+        
+        .pagination-item.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .pagination-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <!-- 引入统一侧边栏 -->
+    <div id="sidebar-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-logo">医保审核系统</h2>
+                <p class="sidebar-subtitle">超级管理员平台</p>
+            </div>
+            <div class="sidebar-nav">
+                <!-- 侧边栏内容将通过脚本加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">人工审核工作台</h1>
+            <p class="dashboard-subtitle">高效、智能、以任务为中心的审核界面</p>
+        </div>
+
+        <!-- 选项卡 -->
+        <div class="tabs-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="pending">待审核 <span class="tab-count">15</span></div>
+                <div class="tab" data-tab="reviewing">审核中 <span class="tab-count">3</span></div>
+                <div class="tab" data-tab="completed">已完成 <span class="tab-count">258</span></div>
+            </div>
+        </div>
+
+        <!-- 任务卡片容器 -->
+        <div class="task-cards-container">
+            <!-- 待审核任务 -->
+            <div id="pending" class="tab-content active">
+                <div class="task-cards-grid">
+                    <!-- 任务卡片 1 -->
+                    <div class="task-card">
+                        <div class="task-patient-info">患者：王*，女，68岁</div>
+                        <div class="risk-tags">
+                            <span class="risk-tag over-medication">过度用药</span>
+                            <span class="risk-tag repeat-medication">重复用药</span>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及医院</span>
+                                <span class="task-detail-value">北京协和医院</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及金额</span>
+                                <span class="task-detail-value">¥ 856.00</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">任务来源</span>
+                                <span class="task-detail-value">机审自动生成</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-primary" onclick="startAudit('CS-001')">开始审核</button>
+                        </div>
+                    </div>
+
+                    <!-- 任务卡片 2 -->
+                    <div class="task-card">
+                        <div class="task-patient-info">患者：李*，男，56岁</div>
+                        <div class="risk-tags">
+                            <span class="risk-tag excessive-check">过度检查</span>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及医院</span>
+                                <span class="task-detail-value">中日友好医院</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及金额</span>
+                                <span class="task-detail-value">¥ 2,340.00</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">任务来源</span>
+                                <span class="task-detail-value">机审自动生成</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-primary" onclick="startAudit('CS-002')">开始审核</button>
+                        </div>
+                    </div>
+
+                    <!-- 任务卡片 3 -->
+                    <div class="task-card">
+                        <div class="task-patient-info">患者：张*，女，72岁</div>
+                        <div class="risk-tags">
+                            <span class="risk-tag materials-abnormal">耗材异常使用</span>
+                            <span class="risk-tag split-hospitalization">分解住院</span>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及医院</span>
+                                <span class="task-detail-value">北京医院</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及金额</span>
+                                <span class="task-detail-value">¥ 15,800.00</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">任务来源</span>
+                                <span class="task-detail-value">机审自动生成</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-primary" onclick="startAudit('CS-003')">开始审核</button>
+                        </div>
+                    </div>
+
+                    <!-- 任务卡片 4 -->
+                    <div class="task-card">
+                        <div class="task-patient-info">患者：刘*，男，45岁</div>
+                        <div class="risk-tags">
+                            <span class="risk-tag over-medication">过度用药</span>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及医院</span>
+                                <span class="task-detail-value">协和医院</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及金额</span>
+                                <span class="task-detail-value">¥ 620.00</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">任务来源</span>
+                                <span class="task-detail-value">机审自动生成</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-primary" onclick="startAudit('CS-004')">开始审核</button>
+                        </div>
+                    </div>
+
+                    <!-- 任务卡片 5 -->
+                    <div class="task-card">
+                        <div class="task-patient-info">患者：陈*，女，58岁</div>
+                        <div class="risk-tags">
+                            <span class="risk-tag repeat-medication">重复用药</span>
+                            <span class="risk-tag excessive-check">过度检查</span>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及医院</span>
+                                <span class="task-detail-value">北大医院</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及金额</span>
+                                <span class="task-detail-value">¥ 1,250.00</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">任务来源</span>
+                                <span class="task-detail-value">机审自动生成</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-primary" onclick="startAudit('CS-005')">开始审核</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination">
+                    <div class="pagination-item disabled">上一页</div>
+                    <div class="pagination-item active">1</div>
+                    <div class="pagination-item">2</div>
+                    <div class="pagination-item">3</div>
+                    <div class="pagination-item">下一页</div>
+                </div>
+            </div>
+
+            <!-- 审核中任务 -->
+            <div id="reviewing" class="tab-content" style="display: none;">
+                <div class="task-cards-grid">
+                    <!-- 任务卡片 1 -->
+                    <div class="task-card in-review">
+                        <div class="task-patient-info">患者：赵*，男，63岁</div>
+                        <div class="risk-tags">
+                            <span class="risk-tag over-medication">过度用药</span>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及医院</span>
+                                <span class="task-detail-value">北京协和医院</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及金额</span>
+                                <span class="task-detail-value">¥ 980.00</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">任务来源</span>
+                                <span class="task-detail-value">机审自动生成</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">领取时间</span>
+                                <span class="task-detail-value">2024-10-20 09:15</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-primary" onclick="continueAudit('CS-006')">继续审核</button>
+                        </div>
+                    </div>
+
+                    <!-- 任务卡片 2 -->
+                    <div class="task-card in-review">
+                        <div class="task-patient-info">患者：钱*，女，59岁</div>
+                        <div class="risk-tags">
+                            <span class="risk-tag materials-abnormal">耗材异常使用</span>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及医院</span>
+                                <span class="task-detail-value">中日友好医院</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及金额</span>
+                                <span class="task-detail-value">¥ 4,560.00</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">任务来源</span>
+                                <span class="task-detail-value">机审自动生成</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">领取时间</span>
+                                <span class="task-detail-value">2024-10-20 11:30</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-primary" onclick="continueAudit('CS-007')">继续审核</button>
+                        </div>
+                    </div>
+
+                    <!-- 任务卡片 3 -->
+                    <div class="task-card in-review">
+                        <div class="task-patient-info">患者：孙*，男，70岁</div>
+                        <div class="risk-tags">
+                            <span class="risk-tag split-hospitalization">分解住院</span>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及医院</span>
+                                <span class="task-detail-value">北京医院</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及金额</span>
+                                <span class="task-detail-value">¥ 28,900.00</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">任务来源</span>
+                                <span class="task-detail-value">机审自动生成</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">领取时间</span>
+                                <span class="task-detail-value">2024-10-20 14:45</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-primary" onclick="continueAudit('CS-008')">继续审核</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 已完成任务 -->
+            <div id="completed" class="tab-content" style="display: none;">
+                <div class="task-cards-grid">
+                    <!-- 任务卡片 1 -->
+                    <div class="task-card completed">
+                        <div class="task-patient-info">患者：周*，女，61岁</div>
+                        <div class="risk-tags">
+                            <span class="risk-tag over-medication">过度用药</span>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及医院</span>
+                                <span class="task-detail-value">协和医院</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及金额</span>
+                                <span class="task-detail-value">¥ 750.00</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">完成时间</span>
+                                <span class="task-detail-value">2024-10-19 16:30</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">审核结论</span>
+                                <span class="task-detail-value">确认违规</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-secondary" onclick="viewAuditDetail('CS-009')">查看详情</button>
+                        </div>
+                    </div>
+
+                    <!-- 任务卡片 2 -->
+                    <div class="task-card completed">
+                        <div class="task-patient-info">患者：吴*，男，54岁</div>
+                        <div class="risk-tags">
+                            <span class="risk-tag repeat-medication">重复用药</span>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及医院</span>
+                                <span class="task-detail-value">北大医院</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及金额</span>
+                                <span class="task-detail-value">¥ 1,120.00</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">完成时间</span>
+                                <span class="task-detail-value">2024-10-19 15:15</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">审核结论</span>
+                                <span class="task-detail-value">无违规</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-secondary" onclick="viewAuditDetail('CS-010')">查看详情</button>
+                        </div>
+                    </div>
+
+                    <!-- 任务卡片 3 -->
+                    <div class="task-card completed">
+                        <div class="task-patient-info">患者：郑*，女，67岁</div>
+                        <div class="risk-tags">
+                            <span class="risk-tag excessive-check">过度检查</span>
+                            <span class="risk-tag materials-abnormal">耗材异常使用</span>
+                        </div>
+                        <div class="task-details">
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及医院</span>
+                                <span class="task-detail-value">北京协和医院</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">涉及金额</span>
+                                <span class="task-detail-value">¥ 6,800.00</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">完成时间</span>
+                                <span class="task-detail-value">2024-10-19 11:20</span>
+                            </div>
+                            <div class="task-detail-item">
+                                <span class="task-detail-label">审核结论</span>
+                                <span class="task-detail-value">需医院补充材料</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn btn-secondary" onclick="viewAuditDetail('CS-011')">查看详情</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination">
+                    <div class="pagination-item disabled">上一页</div>
+                    <div class="pagination-item active">1</div>
+                    <div class="pagination-item">2</div>
+                    <div class="pagination-item">3</div>
+                    <div class="pagination-item">4</div>
+                    <div class="pagination-item">5</div>
+                    <div class="pagination-item">下一页</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 加载统一侧边栏
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载统一侧边栏
+            fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector('#sidebar-container .sidebar-nav').innerHTML = html;
+                    
+                    // 初始化侧边栏
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    } else {
+                        // 如果没有现成的initSidebar函数，使用简单的初始化
+                        simpleInitSidebar();
+                    }
+                })
+                .catch(error => {
+                    console.error('加载统一侧边栏失败:', error);
+                });
+
+            // 初始化选项卡功能
+            initTabs();
+        });
+
+        // 简单的侧边栏初始化函数
+        function simpleInitSidebar() {
+            // 菜单展开/收起功能
+            document.querySelectorAll('.nav-expandable').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const parent = this.closest('.nav-group, .nav-subgroup');
+                    const submenu = parent.querySelector('.nav-submenu');
+                    
+                    if (submenu) {
+                        parent.classList.toggle('expanded');
+                        submenu.style.display = parent.classList.contains('expanded') ? 'block' : 'none';
+                    }
+                });
+            });
+        }
+
+        // 初始化选项卡功能
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 移除所有选项卡的active状态
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // 添加当前选项卡的active状态
+                    this.classList.add('active');
+                    
+                    // 隐藏所有内容
+                    const tabContents = document.querySelectorAll('.tab-content');
+                    tabContents.forEach(content => content.style.display = 'none');
+                    
+                    // 显示当前内容
+                    const targetTab = this.getAttribute('data-tab');
+                    document.getElementById(targetTab).style.display = 'block';
+                });
+            });
+        }
+
+        // 开始审核
+        function startAudit(caseId) {
+            // 在实际应用中，这里应该调用API将任务状态从待审核改为审核中
+            console.log(`开始审核案例：${caseId}`);
+            
+            // 跳转到AI辅助审核详情页
+            window.location.href = `/1.0/超级管理员/事后审核管理/AI辅助审核详情页.html?caseId=${caseId}&action=start`;
+        }
+
+        // 继续审核
+        function continueAudit(caseId) {
+            console.log(`继续审核案例：${caseId}`);
+            
+            // 跳转到AI辅助审核详情页
+            window.location.href = `/1.0/超级管理员/事后审核管理/AI辅助审核详情页.html?caseId=${caseId}&action=continue`;
+        }
+
+        // 查看审核详情
+        function viewAuditDetail(caseId) {
+            console.log(`查看审核详情：${caseId}`);
+            
+            // 跳转到AI辅助审核详情页（只读模式）
+            window.location.href = `/1.0/超级管理员/事后审核管理/AI辅助审核详情页.html?caseId=${caseId}&action=view`;
+        }
+    </script>
+</body>
+</html>

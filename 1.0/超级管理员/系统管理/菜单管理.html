@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>菜单管理 - 医保审核系统</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/表单样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 页面标题 -->
+            <h1 class="page-title">菜单管理</h1>
+            
+            <!-- 菜单管理容器 -->
+            <div class="menu-management-container">
+                <!-- 操作按钮区域 -->
+                <div class="operation-area">
+                    <button class="btn btn-primary" id="addMenuBtn">新增目录</button>
+                </div>
+                
+                <!-- 菜单列表 -->
+                <div class="menu-list">
+                    <!-- 列表标题 -->
+                    <div class="menu-list-header">
+                        <div class="menu-header-item name">菜单名称</div>
+                        <div class="menu-header-item icon">图标</div>
+                        <div class="menu-header-item time">创建时间</div>
+                        <div class="menu-header-item status">菜单状态</div>
+                        <div class="menu-header-item sort">排序</div>
+                        <div class="menu-header-item operation">操作</div>
+                    </div>
+                    
+                    <!-- 菜单列表内容 -->
+                    <div class="menu-list-content">
+                        <!-- 一级菜单 -->
+                        <div class="menu-item">
+                            <div class="menu-info">
+                                <div class="menu-detail name">
+                                    <span class="nav-icon nav-icon-dashboard"></span>
+                                    <span>工作台</span>
+                                </div>
+                                <div class="menu-detail icon"><span class="nav-icon nav-icon-dashboard"></span></div>
+                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                <div class="menu-detail sort">1</div>
+                                <div class="menu-detail operation">
+                                    <button class="btn btn-small btn-primary edit-menu" data-id="1">编辑</button>
+                                    <button class="btn btn-small btn-secondary add-submenu" data-id="1">新增下级菜单</button>
+                                </div>
+                            </div>
+                            <!-- 子菜单 -->
+                            <div class="submenu-list">
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">平台运营看板</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-chart"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">1</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="2">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">报告规则分析</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-analysis"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">2</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="3">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 规则管理 -->
+                        <div class="menu-item">
+                            <div class="menu-info">
+                                <div class="menu-detail name">
+                                    <span class="nav-icon nav-icon-rules"></span>
+                                    <span>规则管理</span>
+                                </div>
+                                <div class="menu-detail icon"><span class="nav-icon nav-icon-rules"></span></div>
+                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                <div class="menu-detail sort">2</div>
+                                <div class="menu-detail operation">
+                                    <button class="btn btn-small btn-primary edit-menu" data-id="4">编辑</button>
+                                    <button class="btn btn-small btn-secondary add-submenu" data-id="4">新增下级菜单</button>
+                                </div>
+                            </div>
+                            <!-- 子菜单 -->
+                            <div class="submenu-list">
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">药品规则库</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-drug"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">1</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="5">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">慢病规则库</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-chronic"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">2</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="6">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">诊疗规则库</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-clinical"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">3</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="7">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">政策规则库</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-policy"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">4</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="8">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 审核管理 -->
+                        <div class="menu-item">
+                            <div class="menu-info">
+                                <div class="menu-detail name">
+                                    <span class="nav-icon nav-icon-audit"></span>
+                                    <span>审核管理</span>
+                                </div>
+                                <div class="menu-detail icon"><span class="nav-icon nav-icon-audit"></span></div>
+                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                <div class="menu-detail sort">3</div>
+                                <div class="menu-detail operation">
+                                    <button class="btn btn-small btn-primary edit-menu" data-id="9">编辑</button>
+                                    <button class="btn btn-small btn-secondary add-submenu" data-id="9">新增下级菜单</button>
+                                </div>
+                            </div>
+                            <!-- 子菜单 -->
+                            <div class="submenu-list">
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">审核流程</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-process"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">1</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="25">编辑</button>
+                                            <button class="btn btn-small btn-secondary add-submenu" data-id="25">新增下级菜单</button>
+                                        </div>
+                                    </div>
+                                    <!-- 三级菜单 -->
+                                    <div class="submenu-list">
+                                        <div class="submenu-item">
+                                            <div class="menu-info">
+                                                <div class="menu-detail name">事前审核记录</div>
+                                                <div class="menu-detail icon"><span class="nav-icon nav-icon-search"></span></div>
+                                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                                <div class="menu-detail sort">1</div>
+                                                <div class="menu-detail operation">
+                                                    <button class="btn btn-small btn-primary edit-menu" data-id="26">编辑</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="submenu-item">
+                                            <div class="menu-info">
+                                                <div class="menu-detail name">事中审核检查</div>
+                                                <div class="menu-detail icon"><span class="nav-icon nav-icon-check"></span></div>
+                                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                                <div class="menu-detail sort">2</div>
+                                                <div class="menu-detail operation">
+                                                    <button class="btn btn-small btn-primary edit-menu" data-id="27">编辑</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="submenu-item">
+                                            <div class="menu-info">
+                                                <div class="menu-detail name">事后审核任务</div>
+                                                <div class="menu-detail icon"><span class="nav-icon nav-icon-task"></span></div>
+                                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                                <div class="menu-detail sort">3</div>
+                                                <div class="menu-detail operation">
+                                                    <button class="btn btn-small btn-primary edit-menu" data-id="28">编辑</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">审核结果</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-results"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">2</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="29">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 事后审核管理 -->
+                        <div class="menu-item">
+                            <div class="menu-info">
+                                <div class="menu-detail name">
+                                    <!-- <span class="expand-icon collapsed">▶</span> -->
+                                    <span class="nav-icon nav-icon-analytics"></span>
+                                    <span>事后审核管理</span>
+                                </div>
+                                <div class="menu-detail icon"><span class="nav-icon nav-icon-analytics"></span></div>
+                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                <div class="menu-detail sort">4</div>
+                                <div class="menu-detail operation">
+                                    <button class="btn btn-small btn-primary edit-menu" data-id="10">编辑</button>
+                                    <button class="btn btn-small btn-secondary add-submenu" data-id="10">新增下级菜单</button>
+                                </div>
+                            </div>
+                            <!-- 子菜单 -->
+                            <div class="submenu-list">
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">审核进度监控台</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-monitor"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">1</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="30">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">诊疗数据上传</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-upload"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">2</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="31">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">人工审核工作台</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-workbench"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">3</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="32">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">稽核交互中心</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-interaction"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">4</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="33">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">审核结果管理</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-results"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">5</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="34">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 用户权限管理 -->
+                        <div class="menu-item">
+                            <div class="menu-info">
+                                <div class="menu-detail name">
+                                    <span class="nav-icon nav-icon-users"></span>
+                                    <span>用户权限管理</span>
+                                </div>
+                                <div class="menu-detail icon"><span class="nav-icon nav-icon-users"></span></div>
+                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                <div class="menu-detail sort">5</div>
+                                <div class="menu-detail operation">
+                                    <button class="btn btn-small btn-primary edit-menu" data-id="11">编辑</button>
+                                    <button class="btn btn-small btn-secondary add-submenu" data-id="11">新增下级菜单</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 事前智能预警模拟 -->
+                        <div class="menu-item">
+                            <div class="menu-info">
+                                <div class="menu-detail name">
+                                    <span class="nav-icon nav-icon-warning"></span>
+                                    <span>事前智能预警模拟</span>
+                                </div>
+                                <div class="menu-detail icon"><span class="nav-icon nav-icon-warning"></span></div>
+                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                <div class="menu-detail sort">6</div>
+                                <div class="menu-detail operation">
+                                    <button class="btn btn-small btn-primary edit-menu" data-id="12">编辑</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 系统管理 -->
+                        <div class="menu-item">
+                            <div class="menu-info">
+                                <div class="menu-detail name">
+                                    <span class="nav-icon nav-icon-system"></span>
+                                    <span>系统管理</span>
+                                </div>
+                                <div class="menu-detail icon"><span class="nav-icon nav-icon-system"></span></div>
+                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                <div class="menu-detail sort">7</div>
+                                <div class="menu-detail operation">
+                                    <button class="btn btn-small btn-primary edit-menu" data-id="13">编辑</button>
+                                    <button class="btn btn-small btn-secondary add-submenu" data-id="13">新增下级菜单</button>
+                                </div>
+                            </div>
+                            <!-- 子菜单 -->
+                            <div class="submenu-list">
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">全局设置</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-settings"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">1</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="14">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">系统监控</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-monitor"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">2</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="15">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">菜单管理</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-settings"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">3</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="16">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 慢病管理 -->
+                        <div class="menu-item">
+                            <div class="menu-info">
+                                <div class="menu-detail name">
+                                    <span class="nav-icon nav-icon-chronic"></span>
+                                    <span>慢病管理</span>
+                                </div>
+                                <div class="menu-detail icon"><span class="nav-icon nav-icon-chronic"></span></div>
+                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                <div class="menu-detail sort">8</div>
+                                <div class="menu-detail operation">
+                                    <button class="btn btn-small btn-primary edit-menu" data-id="17">编辑</button>
+                                    <button class="btn btn-small btn-secondary add-submenu" data-id="17">新增下级菜单</button>
+                                </div>
+                            </div>
+                            <!-- 子菜单 -->
+                            <div class="submenu-list">
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">慢病资格申报</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-apply"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">1</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="18">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">慢病资格评审</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-review"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">2</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="19">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">评审结果管理</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-result"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">3</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="20">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">慢病数据看板</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-dashboard"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">4</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="21">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 知识库 -->
+                        <div class="menu-item">
+                            <div class="menu-info">
+                                <div class="menu-detail name">
+                                    <span class="nav-icon nav-icon-knowledge"></span>
+                                    <span>知识库</span>
+                                </div>
+                                <div class="menu-detail icon"><span class="nav-icon nav-icon-knowledge"></span></div>
+                                <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                <div class="menu-detail sort">9</div>
+                                <div class="menu-detail operation">
+                                    <button class="btn btn-small btn-primary edit-menu" data-id="18">编辑</button>
+                                    <button class="btn btn-small btn-secondary add-submenu" data-id="18">新增下级菜单</button>
+                                </div>
+                            </div>
+                            <!-- 子菜单 -->
+                            <div class="submenu-list">
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">药品目录</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-list"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">1</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="22">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">诊疗目录</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-list"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">2</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="23">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="submenu-item">
+                                    <div class="menu-info">
+                                        <div class="menu-detail name">耗材目录</div>
+                                        <div class="menu-detail icon"><span class="nav-icon nav-icon-list"></span></div>
+                                        <div class="menu-detail time">2022-11-03 10:12:04</div>
+                                        <div class="menu-detail status"><span class="status-tag enabled">启用</span></div>
+                                        <div class="menu-detail sort">3</div>
+                                        <div class="menu-detail operation">
+                                            <button class="btn btn-small btn-primary edit-menu" data-id="24">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 编辑菜单弹窗 -->
+    <div id="editMenuModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑菜单</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editMenuForm">
+                    <div class="form-group">
+                        <label for="menuName">菜单名称</label>
+                        <input type="text" id="menuName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="menuIcon">菜单图标</label>
+                        <select id="menuIcon">
+                            <option value="nav-icon-dashboard">dashboard</option>
+                            <option value="nav-icon-rules">rules</option>
+                            <option value="nav-icon-audit">audit</option>
+                            <option value="nav-icon-analytics">analytics</option>
+                            <option value="nav-icon-users">users</option>
+                            <option value="nav-icon-warning">warning</option>
+                            <option value="nav-icon-system">system</option>
+                            <option value="nav-icon-settings">settings</option>
+                            <option value="nav-icon-monitor">monitor</option>
+                            <option value="nav-icon-chronic">chronic</option>
+                            <option value="nav-icon-knowledge">knowledge</option>
+                            <option value="nav-icon-chart">chart</option>
+                            <option value="nav-icon-analysis">analysis</option>
+                            <option value="nav-icon-drug">drug</option>
+                            <option value="nav-icon-clinical">clinical</option>
+                            <option value="nav-icon-policy">policy</option>
+                            <option value="nav-icon-process">process</option>
+                            <option value="nav-icon-detail">detail</option>
+                            <option value="nav-icon-results">results</option>
+                            <option value="nav-icon-upload">upload</option>
+                            <option value="nav-icon-workbench">workbench</option>
+                            <option value="nav-icon-interaction">interaction</option>
+                            <option value="nav-icon-user-list">user-list</option>
+                            <option value="nav-icon-permission">permission</option>
+                            <option value="nav-icon-organization">organization</option>
+                            <option value="nav-icon-list">list</option>
+                            <option value="nav-icon-application">application</option>
+                            <option value="nav-icon-review">review</option>
+                            <option value="nav-icon-apply">apply</option>
+                            <option value="nav-icon-result">result</option>
+                            <option value="nav-icon-search">search</option>
+                            <option value="nav-icon-check">check</option>
+                            <option value="nav-icon-task">task</option>
+                            <option value="nav-icon-checklist">checklist</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="menuPath">菜单路径</label>
+                        <input type="text" id="menuPath" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="menuParent">上级菜单</label>
+                        <select id="menuParent">
+                            <option value="0">无上级菜单</option>
+                            <option value="1">工作台</option>
+                            <option value="4">规则管理</option>
+                            <option value="9">审核管理</option>
+                            <option value="25">审核流程</option>
+                            <option value="10">事后审核管理</option>
+                            <option value="11">用户权限管理</option>
+                            <option value="13">系统管理</option>
+                            <option value="17">慢病管理</option>
+                            <option value="18">知识库</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="menuSort">排序</label>
+                        <input type="number" id="menuSort" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="menuStatus">菜单状态</label>
+                        <select id="menuStatus">
+                            <option value="enabled">启用</option>
+                            <option value="disabled">禁用</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="menuId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">取消</button>
+                <button class="btn btn-primary" id="saveMenuBtn">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 新增下级菜单弹窗 -->
+    <div id="addSubmenuModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新增下级菜单</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addSubmenuForm">
+                    <div class="form-group">
+                        <label for="submenuName">菜单名称</label>
+                        <input type="text" id="submenuName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="submenuIcon">菜单图标</label>
+                        <select id="submenuIcon">
+                            <option value="nav-icon-dashboard">dashboard</option>
+                            <option value="nav-icon-rules">rules</option>
+                            <option value="nav-icon-audit">audit</option>
+                            <option value="nav-icon-analytics">analytics</option>
+                            <option value="nav-icon-users">users</option>
+                            <option value="nav-icon-warning">warning</option>
+                            <option value="nav-icon-system">system</option>
+                            <option value="nav-icon-settings">settings</option>
+                            <option value="nav-icon-monitor">monitor</option>
+                            <option value="nav-icon-chronic">chronic</option>
+                            <option value="nav-icon-knowledge">knowledge</option>
+                            <option value="nav-icon-chart">chart</option>
+                            <option value="nav-icon-analysis">analysis</option>
+                            <option value="nav-icon-drug">drug</option>
+                            <option value="nav-icon-clinical">clinical</option>
+                            <option value="nav-icon-policy">policy</option>
+                            <option value="nav-icon-process">process</option>
+                            <option value="nav-icon-detail">detail</option>
+                            <option value="nav-icon-results">results</option>
+                            <option value="nav-icon-upload">upload</option>
+                            <option value="nav-icon-workbench">workbench</option>
+                            <option value="nav-icon-interaction">interaction</option>
+                            <option value="nav-icon-user-list">user-list</option>
+                            <option value="nav-icon-permission">permission</option>
+                            <option value="nav-icon-organization">organization</option>
+                            <option value="nav-icon-list">list</option>
+                            <option value="nav-icon-application">application</option>
+                            <option value="nav-icon-review">review</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="submenuPath">菜单路径</label>
+                        <input type="text" id="submenuPath" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="submenuSort">排序</label>
+                        <input type="number" id="submenuSort" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="submenuStatus">菜单状态</label>
+                        <select id="submenuStatus">
+                            <option value="enabled">启用</option>
+                            <option value="disabled">禁用</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="parentMenuId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-close">取消</button>
+                <button class="btn btn-primary" id="saveSubmenuBtn">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 导入统一左侧菜单组件 -->
+    <script>
+        // 加载统一左侧菜单
+        fetch('../组件/_unified-sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const sidebarContainer = document.getElementById('sidebar-container');
+                sidebarContainer.innerHTML = html;
+                // 手动执行插入的脚本
+                const scripts = sidebarContainer.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.head.appendChild(newScript);
+                    script.remove();
+                });
+                // 等待脚本执行后再初始化菜单
+                setTimeout(() => {
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    }
+                }, 100);
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+        
+        // 编辑菜单弹窗控制
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加列表样式
+            const style = document.createElement('style');
+            style.textContent = `
+                /* 菜单列表样式 */
+                .menu-list {
+                    background: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    margin-top: 16px;
+                }
+                
+                /* 列表标题 */
+                .menu-list-header {
+                    display: flex;
+                    background: #f8f9fa;
+                    border-bottom: 1px solid #e9ecef;
+                    padding: 12px 16px;
+                    font-weight: 600;
+                    color: #495057;
+                }
+                
+                .menu-header-item {
+                    padding: 0 8px;
+                }
+                
+                .menu-header-item.name {
+                    flex: 2;
+                }
+                
+                .menu-header-item.icon {
+                    width: 60px;
+                }
+                
+                .menu-header-item.time {
+                    width: 150px;
+                }
+                
+                .menu-header-item.status {
+                    width: 80px;
+                }
+                
+                .menu-header-item.sort {
+                    width: 60px;
+                }
+                
+                .menu-header-item.operation {
+                    flex: 1;
+                    min-width: 150px;
+                }
+                
+                /* 列表内容 */
+                .menu-list-content {
+                    max-height: 600px;
+                    overflow-y: auto;
+                }
+                
+                /* 菜单项 */
+                .menu-item {
+                    border-bottom: 1px solid #f0f0f0;
+                }
+                
+                .menu-info {
+                    display: flex;
+                    align-items: center;
+                    padding: 12px 16px;
+                    transition: background-color 0.2s;
+                }
+                
+                .menu-info:hover {
+                    background-color: #f8f9fa;
+                }
+                
+                .menu-detail {
+                    padding: 0 8px;
+                    display: flex;
+                    align-items: center;
+                }
+                
+                .menu-detail.name {
+                    flex: 2;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                
+                /* 展开/折叠图标样式 */
+                .expand-icon {
+                    width: 16px;
+                    height: 16px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    transition: transform 0.2s;
+                }
+                
+                .expand-icon.collapsed {
+                    transform: rotate(-90deg);
+                }
+                
+                .menu-detail.icon {
+                    width: 60px;
+                }
+                
+                .menu-detail.time {
+                    width: 150px;
+                    color: #6c757d;
+                }
+                
+                .menu-detail.status {
+                    width: 80px;
+                }
+                
+                .menu-detail.sort {
+                    width: 60px;
+                    color: #6c757d;
+                }
+                
+                .menu-detail.operation {
+                    flex: 1;
+                    min-width: 150px;
+                    display: flex;
+                    gap: 8px;
+                }
+                
+                /* 子菜单样式 */
+                .submenu-list {
+                    border-left: 2px solid #e9ecef;
+                    margin-left: 32px;
+                }
+                
+                .submenu-item {
+                    border-bottom: 1px solid #f0f0f0;
+                }
+                
+                /* 按钮样式 */
+                .btn-small {
+                    padding: 4px 12px;
+                    font-size: 12px;
+                }
+                
+                /* 状态标签 */
+                .status-tag {
+                    padding: 2px 8px;
+                    border-radius: 12px;
+                    font-size: 12px;
+                    font-weight: 500;
+                }
+                
+                .status-tag.enabled {
+                    background-color: #d4edda;
+                    color: #155724;
+                }
+                
+                .status-tag.disabled {
+                    background-color: #f8d7da;
+                    color: #721c24;
+                }
+                
+                /* 弹窗默认隐藏 */
+                .modal {
+                    display: none;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 初始化菜单列表的点击事件
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            menuItems.forEach(item => {
+                const menuInfo = item.querySelector('.menu-info');
+                const submenuList = item.querySelector('.submenu-list');
+                const menuName = menuInfo.querySelector('.menu-detail.name');
+                
+                if (menuInfo && submenuList && menuName) {
+                    // 创建展开/折叠图标
+                    const expandIcon = document.createElement('span');
+                    expandIcon.className = 'expand-icon collapsed';
+                    expandIcon.innerHTML = '▶'; // 三角形图标
+                    
+                    // 将图标添加到菜单名称前面
+                    if (menuName.firstChild) {
+                        menuName.insertBefore(expandIcon, menuName.firstChild);
+                    } else {
+                        menuName.appendChild(expandIcon);
+                    }
+                    
+                    // 默认折叠子菜单
+                    submenuList.style.display = 'none';
+                    
+                    // 切换子菜单显示状态
+                    menuInfo.addEventListener('click', function(event) {
+                        // 如果点击的是按钮，不切换子菜单
+                        if (event.target.tagName === 'BUTTON' || event.target.closest('button')) {
+                            return;
+                        }
+                        
+                        if (submenuList.style.display === 'none') {
+                            submenuList.style.display = 'block';
+                            expandIcon.classList.remove('collapsed');
+                        } else {
+                            submenuList.style.display = 'none';
+                            expandIcon.classList.add('collapsed');
+                        }
+                    });
+                }
+            });
+            
+            // 创建模拟菜单数据
+            const menuData = {
+                '1': {
+                    name: '工作台',
+                    icon: 'nav-icon-dashboard',
+                    path: '/1.0/超级管理员/工作台/',
+                    parent: '0',
+                    sort: '1',
+                    status: 'enabled'
+                },
+                '2': {
+                    name: '平台运营看板',
+                    icon: 'nav-icon-chart',
+                    path: '/1.0/超级管理员/工作台/平台运营看板.html',
+                    parent: '1',
+                    sort: '1',
+                    status: 'enabled'
+                },
+                '3': {
+                    name: '报告规则分析',
+                    icon: 'nav-icon-analysis',
+                    path: '/1.0/超级管理员/工作台/报告规则分析.html',
+                    parent: '1',
+                    sort: '2',
+                    status: 'enabled'
+                },
+                '4': {
+                    name: '规则管理',
+                    icon: 'nav-icon-rules',
+                    path: '/1.0/超级管理员/规则管理/',
+                    parent: '0',
+                    sort: '2',
+                    status: 'enabled'
+                },
+                '5': {
+                    name: '药品规则库',
+                    icon: 'nav-icon-drug',
+                    path: '/1.0/超级管理员/规则管理/药品规则库.html',
+                    parent: '4',
+                    sort: '1',
+                    status: 'enabled'
+                },
+                '6': {
+                    name: '慢病规则库',
+                    icon: 'nav-icon-chronic',
+                    path: '/1.0/超级管理员/规则管理/慢病规则库.html',
+                    parent: '4',
+                    sort: '2',
+                    status: 'enabled'
+                },
+                '7': {
+                    name: '诊疗规则库',
+                    icon: 'nav-icon-clinical',
+                    path: '/1.0/超级管理员/规则管理/诊疗规则库.html',
+                    parent: '4',
+                    sort: '3',
+                    status: 'enabled'
+                },
+                '8': {
+                    name: '政策规则库',
+                    icon: 'nav-icon-policy',
+                    path: '/1.0/超级管理员/规则管理/政策规则库.html',
+                    parent: '4',
+                    sort: '4',
+                    status: 'enabled'
+                },
+                // 审核管理
+                '9': {
+                    name: '审核管理',
+                    icon: 'nav-icon-audit',
+                    path: '/1.0/超级管理员/审核管理/',
+                    parent: '0',
+                    sort: '3',
+                    status: 'enabled'
+                },
+                '25': {
+                    name: '审核流程',
+                    icon: 'nav-icon-process',
+                    path: '/1.0/超级管理员/审核管理/审核流程.html',
+                    parent: '9',
+                    sort: '1',
+                    status: 'enabled'
+                },
+                '26': {
+                    name: '事前审核记录',
+                    icon: 'nav-icon-search',
+                    path: '/1.0/超级管理员/审核管理/事前审核记录.html',
+                    parent: '25',
+                    sort: '1',
+                    status: 'enabled'
+                },
+                '27': {
+                    name: '事中审核检查',
+                    icon: 'nav-icon-check',
+                    path: '/1.0/超级管理员/审核管理/事中审核检查.html',
+                    parent: '25',
+                    sort: '2',
+                    status: 'enabled'
+                },
+                '28': {
+                    name: '事后审核任务',
+                    icon: 'nav-icon-task',
+                    path: '/1.0/超级管理员/审核管理/事后审核任务.html',
+                    parent: '25',
+                    sort: '3',
+                    status: 'enabled'
+                },
+                '29': {
+                    name: '审核结果',
+                    icon: 'nav-icon-results',
+                    path: '/1.0/超级管理员/审核管理/审核结果.html',
+                    parent: '9',
+                    sort: '2',
+                    status: 'enabled'
+                },
+                // 事后审核管理
+                '10': {
+                    name: '事后审核管理',
+                    icon: 'nav-icon-analytics',
+                    path: '/1.0/超级管理员/事后审核管理/',
+                    parent: '0',
+                    sort: '4',
+                    status: 'enabled'
+                },
+                '30': {
+                    name: '审核进度监控台',
+                    icon: 'nav-icon-monitor',
+                    path: '/1.0/超级管理员/事后审核管理/审核进度监控台.html',
+                    parent: '10',
+                    sort: '1',
+                    status: 'enabled'
+                },
+                '31': {
+                    name: '诊疗数据上传',
+                    icon: 'nav-icon-upload',
+                    path: '/1.0/超级管理员/事后审核管理/诊疗数据上传.html',
+                    parent: '10',
+                    sort: '2',
+                    status: 'enabled'
+                },
+                '32': {
+                    name: '人工审核工作台',
+                    icon: 'nav-icon-workbench',
+                    path: '/1.0/超级管理员/事后审核管理/人工审核工作台.html',
+                    parent: '10',
+                    sort: '3',
+                    status: 'enabled'
+                },
+                '33': {
+                    name: '稽核交互中心',
+                    icon: 'nav-icon-interaction',
+                    path: '/1.0/超级管理员/事后审核管理/稽核交互中心.html',
+                    parent: '10',
+                    sort: '4',
+                    status: 'enabled'
+                },
+                '34': {
+                    name: '审核结果管理',
+                    icon: 'nav-icon-results',
+                    path: '/1.0/超级管理员/事后审核管理/审核结果管理.html',
+                    parent: '10',
+                    sort: '5',
+                    status: 'enabled'
+                },
+                // 用户权限管理
+                '11': {
+                    name: '用户权限管理',
+                    icon: 'nav-icon-users',
+                    path: '/1.0/超级管理员/用户权限管理/',
+                    parent: '0',
+                    sort: '5',
+                    status: 'enabled'
+                },
+                // 系统管理
+                '12': {
+                    name: '系统管理',
+                    icon: 'nav-icon-system',
+                    path: '/1.0/超级管理员/系统管理/',
+                    parent: '0',
+                    sort: '6',
+                    status: 'enabled'
+                },
+                '13': {
+                    name: '全局设置',
+                    icon: 'nav-icon-settings',
+                    path: '/1.0/超级管理员/系统管理/全局设置.html',
+                    parent: '12',
+                    sort: '1',
+                    status: 'enabled'
+                },
+                '14': {
+                    name: '系统监控',
+                    icon: 'nav-icon-monitor',
+                    path: '/1.0/超级管理员/系统管理/系统监控.html',
+                    parent: '12',
+                    sort: '2',
+                    status: 'enabled'
+                },
+                '15': {
+                    name: '菜单管理',
+                    icon: 'nav-icon-settings',
+                    path: '/1.0/超级管理员/系统管理/菜单管理.html',
+                    parent: '12',
+                    sort: '3',
+                    status: 'enabled'
+                },
+                // 慢病管理
+                '17': {
+                    name: '慢病管理',
+                    icon: 'nav-icon-chronic',
+                    path: '/1.0/超级管理员/慢病管理/',
+                    parent: '0',
+                    sort: '8',
+                    status: 'enabled'
+                },
+                '18': {
+                    name: '慢病资格申报',
+                    icon: 'nav-icon-apply',
+                    path: '/1.0/超级管理员/慢病管理/慢病资格申报.html',
+                    parent: '17',
+                    sort: '1',
+                    status: 'enabled'
+                },
+                '19': {
+                    name: '慢病资格评审',
+                    icon: 'nav-icon-review',
+                    path: '/1.0/超级管理员/慢病管理/慢病资格评审.html',
+                    parent: '17',
+                    sort: '2',
+                    status: 'enabled'
+                },
+                '20': {
+                    name: '评审结果管理',
+                    icon: 'nav-icon-result',
+                    path: '/1.0/超级管理员/慢病管理/评审结果管理.html',
+                    parent: '17',
+                    sort: '3',
+                    status: 'enabled'
+                },
+                '21': {
+                    name: '慢病数据看板',
+                    icon: 'nav-icon-dashboard',
+                    path: '/1.0/超级管理员/慢病管理/慢病数据看板.html',
+                    parent: '17',
+                    sort: '4',
+                    status: 'enabled'
+                },
+                // 知识库
+                '22': {
+                    name: '知识库',
+                    icon: 'nav-icon-knowledge',
+                    path: '/1.0/超级管理员/知识库/',
+                    parent: '0',
+                    sort: '9',
+                    status: 'enabled'
+                },
+                '23': {
+                    name: '药品目录',
+                    icon: 'nav-icon-list',
+                    path: '/1.0/超级管理员/知识库/药品目录.html',
+                    parent: '22',
+                    sort: '1',
+                    status: 'enabled'
+                },
+                '24': {
+                    name: '诊疗目录',
+                    icon: 'nav-icon-list',
+                    path: '/1.0/超级管理员/知识库/诊疗目录.html',
+                    parent: '22',
+                    sort: '2',
+                    status: 'enabled'
+                },
+                '30': {
+                    name: '耗材目录',
+                    icon: 'nav-icon-list',
+                    path: '/1.0/超级管理员/知识库/耗材目录.html',
+                    parent: '22',
+                    sort: '3',
+                    status: 'enabled'
+                }
+            };
+            
+            // 编辑菜单弹窗控制
+            const editMenuModal = document.getElementById('editMenuModal');
+            const editButtons = document.querySelectorAll('.edit-menu');
+            const closeButtons = document.querySelectorAll('.modal-close');
+            const saveMenuBtn = document.getElementById('saveMenuBtn');
+            const menuIdInput = document.getElementById('menuId');
+            
+            // 打开编辑弹窗 - 显示实际菜单数据
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const menuId = this.getAttribute('data-id');
+                    menuIdInput.value = menuId;
+                    
+                    // 根据menuId加载实际菜单数据
+                    if (menuData[menuId]) {
+                        document.getElementById('menuName').value = menuData[menuId].name;
+                        document.getElementById('menuIcon').value = menuData[menuId].icon;
+                        document.getElementById('menuPath').value = menuData[menuId].path;
+                        document.getElementById('menuParent').value = menuData[menuId].parent;
+                        document.getElementById('menuSort').value = menuData[menuId].sort;
+                        document.getElementById('menuStatus').value = menuData[menuId].status;
+                    }
+                    
+                    editMenuModal.style.display = 'flex';
+                });
+            });
+            
+            // 关闭弹窗
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    editMenuModal.style.display = 'none';
+                });
+            });
+            
+            // 点击弹窗外区域关闭
+            window.addEventListener('click', function(event) {
+                if (event.target === editMenuModal) {
+                    editMenuModal.style.display = 'none';
+                }
+            });
+            
+            // 保存菜单 - 更新实际菜单数据
+            saveMenuBtn.addEventListener('click', function() {
+                const menuId = menuIdInput.value;
+                
+                // 更新菜单数据
+                if (menuData[menuId]) {
+                    menuData[menuId] = {
+                        name: document.getElementById('menuName').value,
+                        icon: document.getElementById('menuIcon').value,
+                        path: document.getElementById('menuPath').value,
+                        parent: document.getElementById('menuParent').value,
+                        sort: document.getElementById('menuSort').value,
+                        status: document.getElementById('menuStatus').value
+                    };
+                    
+                    // 在实际应用中，这里应该提交表单数据到服务器
+                    alert('菜单保存成功！');
+                    
+                    // 关闭弹窗
+                    editMenuModal.style.display = 'none';
+                } else {
+                    alert('无效的菜单ID！');
+                }
+            });
+            
+            // 新增下级菜单弹窗控制
+            const addSubmenuModal = document.getElementById('addSubmenuModal');
+            const addSubmenuButtons = document.querySelectorAll('.add-submenu');
+            const saveSubmenuBtn = document.getElementById('saveSubmenuBtn');
+            const parentMenuIdInput = document.getElementById('parentMenuId');
+            
+            // 打开新增弹窗 - 只有在点击按钮时才会打开
+            addSubmenuButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const parentId = this.getAttribute('data-id');
+                    parentMenuIdInput.value = parentId;
+                    
+                    // 清空表单
+                    document.getElementById('submenuName').value = '';
+                    document.getElementById('submenuIcon').value = 'nav-icon-dashboard';
+                    document.getElementById('submenuPath').value = '';
+                    document.getElementById('submenuSort').value = '1';
+                    document.getElementById('submenuStatus').value = 'enabled';
+                    
+                    addSubmenuModal.style.display = 'flex';
+                });
+            });
+            
+            // 关闭新增弹窗
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    addSubmenuModal.style.display = 'none';
+                });
+            });
+            
+            // 点击弹窗外区域关闭新增弹窗
+            window.addEventListener('click', function(event) {
+                if (event.target === addSubmenuModal) {
+                    addSubmenuModal.style.display = 'none';
+                }
+            });
+            
+            // 保存下级菜单
+            saveSubmenuBtn.addEventListener('click', function() {
+                const parentId = parentMenuIdInput.value;
+                const submenuName = document.getElementById('submenuName').value;
+                const submenuIcon = document.getElementById('submenuIcon').value;
+                const submenuPath = document.getElementById('submenuPath').value;
+                const submenuSort = document.getElementById('submenuSort').value;
+                const submenuStatus = document.getElementById('submenuStatus').value;
+                
+                // 验证表单
+                if (!submenuName || !submenuPath) {
+                    alert('请填写菜单名称和路径！');
+                    return;
+                }
+                
+                // 生成新的菜单ID
+                let newMenuId = '1';
+                Object.keys(menuData).forEach(id => {
+                    if (parseInt(id) >= parseInt(newMenuId)) {
+                        newMenuId = (parseInt(id) + 1).toString();
+                    }
+                });
+                
+                // 添加新的菜单数据
+                menuData[newMenuId] = {
+                    name: submenuName,
+                    icon: submenuIcon,
+                    path: submenuPath,
+                    parent: parentId,
+                    sort: submenuSort,
+                    status: submenuStatus
+                };
+                
+                // 在实际应用中，这里应该提交表单数据到服务器
+                alert('下级菜单添加成功！');
+                addSubmenuModal.style.display = 'none';
+                
+                // 这里可以添加代码来刷新菜单列表
+                // 由于是静态演示，这里就不实现实际的列表刷新了
+            });
+            
+            // 新增目录按钮点击事件 - 创建新的顶级菜单
+            const addMenuBtn = document.getElementById('addMenuBtn');
+            addMenuBtn.addEventListener('click', function() {
+                // 清空表单并设置默认值
+                document.getElementById('menuName').value = '';
+                document.getElementById('menuIcon').value = 'nav-icon-dashboard';
+                document.getElementById('menuPath').value = '';
+                document.getElementById('menuParent').value = '0';
+                
+                // 查找最大的排序值并加1
+                let maxSort = 0;
+                Object.values(menuData).forEach(menu => {
+                    if (menu.parent === '0' && parseInt(menu.sort) > maxSort) {
+                        maxSort = parseInt(menu.sort);
+                    }
+                });
+                document.getElementById('menuSort').value = (maxSort + 1).toString();
+                document.getElementById('menuStatus').value = 'enabled';
+                
+                // 设置menuId为特殊值，表示这是一个新增操作
+                menuIdInput.value = 'new';
+                
+                // 打开编辑弹窗
+                editMenuModal.style.display = 'flex';
+            });
+            
+            // 扩展保存菜单功能，支持新增目录
+            const originalSaveMenuHandler = saveMenuBtn.onclick;
+            saveMenuBtn.onclick = function() {
+                const menuId = menuIdInput.value;
+                
+                // 如果是新增目录操作
+                if (menuId === 'new') {
+                    const menuName = document.getElementById('menuName').value;
+                    const menuIcon = document.getElementById('menuIcon').value;
+                    const menuPath = document.getElementById('menuPath').value;
+                    const menuParent = document.getElementById('menuParent').value;
+                    const menuSort = document.getElementById('menuSort').value;
+                    const menuStatus = document.getElementById('menuStatus').value;
+                    
+                    // 验证表单
+                    if (!menuName || !menuPath) {
+                        alert('请填写菜单名称和路径！');
+                        return;
+                    }
+                    
+                    // 生成新的菜单ID
+                    let newMenuId = '1';
+                    Object.keys(menuData).forEach(id => {
+                        if (parseInt(id) >= parseInt(newMenuId)) {
+                            newMenuId = (parseInt(id) + 1).toString();
+                        }
+                    });
+                    
+                    // 添加新的顶级菜单数据
+                    menuData[newMenuId] = {
+                        name: menuName,
+                        icon: menuIcon,
+                        path: menuPath,
+                        parent: menuParent,
+                        sort: menuSort,
+                        status: menuStatus
+                    };
+                    
+                    // 在实际应用中，这里应该提交表单数据到服务器
+                    alert('目录创建成功！');
+                    editMenuModal.style.display = 'none';
+                    
+                    // 这里可以添加代码来刷新菜单列表
+                    // 由于是静态演示，这里就不实现实际的列表刷新了
+                } else {
+                    // 调用原始的保存菜单功能
+                    originalSaveMenuHandler.call(this);
+                }
+            };
+        });
+    </script>
+</body>
+</html>

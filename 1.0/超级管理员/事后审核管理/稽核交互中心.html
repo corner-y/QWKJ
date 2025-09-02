@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>稽核交互中心 - 医保审核系统</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    <style>
+        /* 稽核交互中心特定样式 */
+        .dashboard-header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .dashboard-subtitle {
+            color: #7f8c8d;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        .tabs-container {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 8px 8px 0 0;
+            border-bottom: 2px solid #e0e0e0;
+            overflow: hidden;
+        }
+        
+        .tab {
+            padding: 16px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #7f8c8d;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .tab:hover {
+            background: #f8f9fa;
+        }
+        
+        .tab.active {
+            color: #3498db;
+            background: white;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #3498db;
+        }
+        
+        .tab-badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .filter-section {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            background: #f8f9fa;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+        
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-item label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .filter-item input,
+        .filter-item select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .filter-item input:focus,
+        .filter-item select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        
+        .audit-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .audit-table th {
+            background: #f8f9fa;
+            padding: 16px 24px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .audit-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #34495e;
+        }
+        
+        .audit-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .drillable {
+            color: #3498db;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        .drillable:hover {
+            color: #2980b9;
+        }
+        
+        .status-pending {
+            color: #f39c12;
+            font-weight: 500;
+        }
+        
+        .status-in-progress {
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+        .status-need-supplement {
+            color: #9b59b6;
+            font-weight: 500;
+        }
+        
+        .status-completed {
+            color: #27ae60;
+            font-weight: 500;
+        }
+        
+        .status-confirmed {
+            color: #27ae60;
+            font-weight: 500;
+        }
+        
+        .status-appealed {
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+        .status-rejected {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        
+        .status-processed {
+            color: #f39c12;
+            font-weight: 500;
+        }
+        
+        .status-handling {
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+        .status-finished {
+            color: #27ae60;
+            font-weight: 500;
+        }
+        
+        .action-btn {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 8px;
+        }
+        
+        .action-btn.primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .action-btn.primary:hover {
+            background: #2980b9;
+        }
+        
+        .action-btn.secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .action-btn.secondary:hover {
+            background: #bdc3c7;
+        }
+        
+        .action-btn.danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .action-btn.danger:hover {
+            background: #c0392b;
+        }
+        
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-container {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #7f8c8d;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+        
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .form-group textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .upload-area {
+            border: 2px dashed #e0e0e0;
+            border-radius: 4px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+        }
+        
+        .upload-text {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+        
+        .upload-hint {
+            font-size: 12px;
+            color: #95a5a6;
+        }
+        
+        .uploaded-files {
+            margin-top: 16px;
+        }
+        
+        .uploaded-file {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+        
+        .file-icon {
+            font-size: 18px;
+            color: #3498db;
+            margin-right: 12px;
+        }
+        
+        .file-name {
+            flex: 1;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+        
+        .remove-file {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #e74c3c;
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .remove-file:hover {
+            background: #f8f9fa;
+        }
+        
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+    <!-- 引入统一侧边栏 -->
+    <div id="sidebar-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-logo">医保审核系统</h2>
+                <p class="sidebar-subtitle">超级管理员平台</p>
+            </div>
+            <div class="sidebar-nav">
+                <!-- 侧边栏内容将通过脚本加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">稽核交互中心</h1>
+                <p class="dashboard-subtitle">为医院工作人员提供统一的、多功能的交互工作台</p>
+            </div>
+        </div>
+
+        <!-- 选项卡容器 -->
+        <div class="tabs-container">
+            <!-- 选项卡头部 -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('pending-audit')">稽核中案例 <span class="tab-badge">18</span></button>
+                <button class="tab" onclick="switchTab('violation-cases')">违规案例 <span class="tab-badge">5</span></button>
+                <button class="tab" onclick="switchTab('appeal-management')">申诉管理 <span class="tab-badge">2</span></button>
+            </div>
+
+            <!-- 选项卡内容 -->
+            <!-- 稽核中案例 -->
+            <div id="pending-audit" class="tab-content active">
+                <!-- 筛选区 -->
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <div class="filter-item">
+                            <label for="patientName1">患者姓名/身份证号</label>
+                            <input type="text" id="patientName1" placeholder="请输入患者姓名或身份证号">
+                        </div>
+                        <div class="filter-item">
+                            <label for="startDate1">就诊日期从</label>
+                            <input type="date" id="startDate1">
+                        </div>
+                        <div class="filter-item">
+                            <label for="endDate1">到</label>
+                            <input type="date" id="endDate1">
+                        </div>
+                        <div class="filter-item">
+                            <label for="doubtType1">疑点类型</label>
+                            <select id="doubtType1">
+                                <option value="">全部</option>
+                                <option value="over-medication">过度用药</option>
+                                <option value="disease-drug-mismatch">病药不符</option>
+                                <option value="over-examination">过度检查</option>
+                                <option value="decomposed-hospitalization">分解住院</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="auditStatus1">审核状态</label>
+                            <select id="auditStatus1">
+                                <option value="">全部</option>
+                                <option value="pending">待审核</option>
+                                <option value="in-progress">审核中</option>
+                                <option value="need-supplement">待补充材料</option>
+                                <option value="completed">已完成</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary">查询</button>
+                        <button class="btn btn-secondary">重置</button>
+                    </div>
+                </div>
+
+                <!-- 数据表格 -->
+                <div class="table-wrapper">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>案例ID</th>
+                                <th>患者信息</th>
+                                <th>就诊日期</th>
+                                <th>疑点类型</th>
+                                <th>审核状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CS-001</td>
+                                <td>王*, 370...01X</td>
+                                <td>2024-10-15</td>
+                                <td>过度用药</td>
+                                <td class="status-in-progress">审核中</td>
+                                <td><button class="action-btn secondary" onclick="viewAuditCaseDetail('CS-001')">查看详情</button></td>
+                            </tr>
+                            <tr>
+                                <td>CS-002</td>
+                                <td>李*, 110...02Y</td>
+                                <td>2024-10-12</td>
+                                <td>病药不符</td>
+                                <td class="status-pending">待审核</td>
+                                <td><button class="action-btn secondary" onclick="viewAuditCaseDetail('CS-002')">查看详情</button></td>
+                            </tr>
+                            <tr>
+                                <td>CS-003</td>
+                                <td>赵*, 440...03Z</td>
+                                <td>2024-10-11</td>
+                                <td>过度检查</td>
+                                <td class="status-need-supplement">待补充材料</td>
+                                <td><button class="action-btn secondary" onclick="viewAuditCaseDetail('CS-003')">查看详情</button></td>
+                            </tr>
+                            <tr>
+                                <td>CS-004</td>
+                                <td>钱*, 310...04X</td>
+                                <td>2024-10-10</td>
+                                <td>过度用药</td>
+                                <td class="status-completed">已完成</td>
+                                <td><button class="action-btn secondary" onclick="viewAuditCaseDetail('CS-004')">查看详情</button></td>
+                            </tr>
+                            <tr>
+                                <td>CS-005</td>
+                                <td>孙*, 330...05Y</td>
+                                <td>2024-10-08</td>
+                                <td>分解住院</td>
+                                <td class="status-in-progress">审核中</td>
+                                <td><button class="action-btn secondary" onclick="viewAuditCaseDetail('CS-005')">查看详情</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 违规案例 -->
+            <div id="violation-cases" class="tab-content">
+                <!-- 筛选区 -->
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <div class="filter-item">
+                            <label for="patientName2">患者姓名/身份证号</label>
+                            <input type="text" id="patientName2" placeholder="请输入患者姓名或身份证号">
+                        </div>
+                        <div class="filter-item">
+                            <label for="violationType">违规类型</label>
+                            <select id="violationType">
+                                <option value="">全部</option>
+                                <option value="over-medication">过度用药</option>
+                                <option value="decomposed-hospitalization">分解住院</option>
+                                <option value="disease-drug-mismatch">病药不符</option>
+                                <option value="over-examination">过度检查</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="processStatus">处理状态</label>
+                            <select id="processStatus">
+                                <option value="">全部</option>
+                                <option value="pending">待确认</option>
+                                <option value="appealed">已申诉</option>
+                                <option value="rejected">申诉驳回</option>
+                                <option value="processed">已处理</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary">查询</button>
+                        <button class="btn btn-secondary">重置</button>
+                    </div>
+                </div>
+
+                <!-- 数据表格 -->
+                <div class="table-wrapper">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>通知ID</th>
+                                <th>患者信息</th>
+                                <th>违规类型</th>
+                                <th>违规金额</th>
+                                <th>处理状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>N-202410-001</td>
+                                <td>王*, 370...01X</td>
+                                <td>过度用药</td>
+                                <td>¥ 150.80</td>
+                                <td class="status-pending">待确认</td>
+                                <td>
+                                    <button class="action-btn secondary" onclick="confirmViolation('N-202410-001')">确认违规</button>
+                                    <button class="action-btn primary" onclick="showAppealModal('N-202410-001')">提起申诉</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>N-202410-002</td>
+                                <td>陈*, 420...05A</td>
+                                <td>分解住院</td>
+                                <td>¥ 2300.00</td>
+                                <td class="status-appealed">已申诉</td>
+                                <td><button class="action-btn secondary" onclick="viewViolationDetail('N-202410-002')">查看申诉详情</button></td>
+                            </tr>
+                            <tr>
+                                <td>N-202410-003</td>
+                                <td>刘*, 510...06B</td>
+                                <td>病药不符</td>
+                                <td>¥ 88.50</td>
+                                <td class="status-rejected">申诉驳回</td>
+                                <td><button class="action-btn danger" onclick="confirmViolation('N-202410-003')">确认违规</button></td>
+                            </tr>
+                            <tr>
+                                <td>N-202410-004</td>
+                                <td>杨*, 320...07C</td>
+                                <td>过度检查</td>
+                                <td>¥ 450.00</td>
+                                <td class="status-processed">已处理</td>
+                                <td><button class="action-btn secondary" onclick="viewViolationDetail('N-202410-004')">查看详情</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 申诉管理 -->
+            <div id="appeal-management" class="tab-content">
+                <!-- 筛选区 -->
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <div class="filter-item">
+                            <label for="patientName3">患者姓名/身份证号</label>
+                            <input type="text" id="patientName3" placeholder="请输入患者姓名或身份证号">
+                        </div>
+                        <div class="filter-item">
+                            <label for="appealStatus">申诉状态</label>
+                            <select id="appealStatus">
+                                <option value="">全部</option>
+                                <option value="pending">待受理</option>
+                                <option value="reviewing">医保局复核中</option>
+                                <option value="completed">已办结</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary">查询</button>
+                        <button class="btn btn-secondary">重置</button>
+                    </div>
+                </div>
+
+                <!-- 数据表格 -->
+                <div class="table-wrapper">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>申诉ID</th>
+                                <th>关联通知ID</th>
+                                <th>患者信息</th>
+                                <th>申诉日期</th>
+                                <th>申诉状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>A-001</td>
+                                <td>N-202410-002</td>
+                                <td>陈*, 420...05A</td>
+                                <td>2024-10-20</td>
+                                <td class="status-handling">医保局复核中</td>
+                                <td><button class="action-btn secondary" onclick="viewAppealDetail('A-001')">查看详情</button></td>
+                            </tr>
+                            <tr>
+                                <td>A-002</td>
+                                <td>N-202409-015</td>
+                                <td>周*, 610...08D</td>
+                                <td>2024-09-28</td>
+                                <td class="status-finished">已办结 - 维持原判</td>
+                                <td><button class="action-btn secondary" onclick="viewAppealDetail('A-002')">查看详情</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 提起申诉模态框 -->
+    <div id="appealModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">提起申诉</h2>
+                <button class="modal-close" onclick="closeAppealModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="appealReason">申诉理由 <span style="color: #e74c3c;">*</span></label>
+                    <textarea id="appealReason" placeholder="请详细阐述您认为判罚不当的理由。" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="appealFiles">补充证明材料</label>
+                    <div class="upload-area" onclick="document.getElementById('fileUpload').click()">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">点击上传文件或拖拽文件到此处</div>
+                        <div class="upload-hint">支持 PDF、Word、JPG、PNG 格式，单个文件不超过 10MB</div>
+                        <input type="file" id="fileUpload" multiple style="display: none;" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                    </div>
+                    <div id="uploadedFiles" class="uploaded-files">
+                        <!-- 上传的文件将通过JavaScript动态添加 -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeAppealModal()">取消</button>
+                <button class="btn btn-primary" onclick="submitAppeal()">确认提交申诉</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 加载统一侧边栏
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载统一侧边栏
+            fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector('#sidebar-container .sidebar-nav').innerHTML = html;
+                    
+                    // 初始化侧边栏
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    } else {
+                        // 如果没有现成的initSidebar函数，使用简单的初始化
+                        simpleInitSidebar();
+                    }
+                })
+                .catch(error => {
+                    console.error('加载统一侧边栏失败:', error);
+                });
+
+            // 文件上传监听
+            const fileUpload = document.getElementById('fileUpload');
+            fileUpload.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    const uploadedFiles = document.getElementById('uploadedFiles');
+                    uploadedFiles.innerHTML = '';
+                    
+                    Array.from(this.files).forEach(file => {
+                        const fileSize = (file.size / 1024 / 1024).toFixed(2);
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'uploaded-file';
+                        fileItem.innerHTML = `
+                            <span class="file-icon">📄</span>
+                            <span class="file-name">${file.name} (${fileSize} MB)</span>
+                            <button class="remove-file" onclick="removeFile(this)">&times;</button>
+                        `;
+                        uploadedFiles.appendChild(fileItem);
+                    });
+                }
+            });
+        });
+
+        // 简单的侧边栏初始化函数
+        function simpleInitSidebar() {
+            // 菜单展开/收起功能
+            document.querySelectorAll('.nav-expandable').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const parent = this.closest('.nav-group, .nav-subgroup');
+                    const submenu = parent.querySelector('.nav-submenu');
+                    
+                    if (submenu) {
+                        parent.classList.toggle('expanded');
+                        submenu.style.display = parent.classList.contains('expanded') ? 'block' : 'none';
+                    }
+                });
+            });
+        }
+
+        // 切换选项卡
+        function switchTab(tabId) {
+            // 隐藏所有选项卡内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 移除所有选项卡的active状态
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的选项卡内容
+            document.getElementById(tabId).classList.add('active');
+            
+            // 设置选中的选项卡为active状态
+            const tabButton = Array.from(document.querySelectorAll('.tab')).find(btn => {
+                return btn.getAttribute('onclick') === `switchTab('${tabId}')`;
+            });
+            
+            if (tabButton) {
+                tabButton.classList.add('active');
+            }
+        }
+
+        // 查看稽核中案例详情
+        function viewAuditCaseDetail(caseId) {
+            // 在实际应用中，这里应该跳转到案例详情页
+            console.log('查看稽核中案例详情:', caseId);
+            alert(`查看案例 ${caseId} 的详情`);
+        }
+
+        // 确认违规
+        function confirmViolation(noticeId) {
+            if (confirm(`确定要确认通知 ${noticeId} 的违规事实吗？`)) {
+                console.log('确认违规:', noticeId);
+                alert(`已确认通知 ${noticeId} 的违规事实`);
+            }
+        }
+
+        // 显示提起申诉模态框
+        function showAppealModal(noticeId) {
+            // 记录当前申诉的通知ID
+            document.getElementById('appealModal').dataset.noticeId = noticeId;
+            
+            // 清空表单
+            document.getElementById('appealReason').value = '';
+            document.getElementById('uploadedFiles').innerHTML = '';
+            document.getElementById('fileUpload').value = '';
+            
+            // 显示模态框
+            document.getElementById('appealModal').style.display = 'flex';
+        }
+
+        // 关闭提起申诉模态框
+        function closeAppealModal() {
+            document.getElementById('appealModal').style.display = 'none';
+        }
+
+        // 移除上传的文件
+        function removeFile(button) {
+            const fileItem = button.closest('.uploaded-file');
+            fileItem.remove();
+        }
+
+        // 提交申诉
+        function submitAppeal() {
+            const noticeId = document.getElementById('appealModal').dataset.noticeId;
+            const appealReason = document.getElementById('appealReason').value.trim();
+            const hasFiles = document.getElementById('uploadedFiles').children.length > 0;
+            
+            if (!appealReason) {
+                alert('请输入申诉理由');
+                return;
+            }
+            
+            // 模拟提交申诉
+            console.log('提交申诉:', {
+                noticeId: noticeId,
+                appealReason: appealReason,
+                hasFiles: hasFiles
+            });
+            
+            // 显示成功提示
+            alert(`申诉已成功提交，申诉ID：A-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`);
+            
+            // 关闭模态框
+            closeAppealModal();
+            
+            // 切换到申诉管理选项卡
+            switchTab('appeal-management');
+        }
+
+        // 查看违规案例详情
+        function viewViolationDetail(noticeId) {
+            // 在实际应用中，这里应该跳转到违规案例详情页
+            console.log('查看违规案例详情:', noticeId);
+            alert(`查看违规通知 ${noticeId} 的详情`);
+        }
+
+        // 查看申诉详情
+        function viewAppealDetail(appealId) {
+            // 在实际应用中，这里应该跳转到申诉详情页
+            console.log('查看申诉详情:', appealId);
+            alert(`查看申诉 ${appealId} 的详情`);
+        }
+
+        // 点击模态框外部关闭模态框
+        document.querySelector('.modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

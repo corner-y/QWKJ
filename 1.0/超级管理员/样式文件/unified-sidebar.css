@@ -201,6 +201,7 @@
 .nav-icon-dashboard::before { content: '■'; }
 .nav-icon-chart::before { content: '≡'; }
 .nav-icon-analysis::before { content: '↗'; }
+.nav-icon-analytics::before { content: '≡'; }
 .nav-icon-rules::before { content: '≡'; }
 .nav-icon-list::before { content: '≡'; }
 .nav-icon-detail::before { content: '○'; }

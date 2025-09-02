@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>审核结果管理 - 医保审核系统</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    <style>
+        /* 审核结果管理特定样式 */
+        .dashboard-header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .dashboard-subtitle {
+            color: #7f8c8d;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        .tabs-container {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 8px 8px 0 0;
+            border-bottom: 2px solid #e0e0e0;
+            overflow: hidden;
+        }
+        
+        .tab {
+            padding: 16px 24px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #7f8c8d;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .tab:hover {
+            background: #f8f9fa;
+        }
+        
+        .tab.active {
+            color: #3498db;
+            background: white;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #3498db;
+        }
+        
+        .tab-badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .filter-section {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            background: #f8f9fa;
+        }
+        
+        .filter-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+        
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-item label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .filter-item input,
+        .filter-item select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .filter-item input:focus,
+        .filter-item select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        
+        .audit-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .audit-table th {
+            background: #f8f9fa;
+            padding: 16px 24px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .audit-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #34495e;
+        }
+        
+        .audit-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .drillable {
+            color: #3498db;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        .drillable:hover {
+            color: #2980b9;
+        }
+        
+        /* 专家结论标签样式 */
+        .conclusion-confirmed {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        
+        .conclusion-no-violation {
+            color: #27ae60;
+            font-weight: 500;
+        }
+        
+        .conclusion-suspected {
+            color: #f39c12;
+            font-weight: 500;
+        }
+        
+        .conclusion-need-supplement {
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+        /* 操作按钮样式 */
+        .action-btn {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 8px;
+        }
+        
+        .action-btn.primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .action-btn.primary:hover {
+            background: #2980b9;
+        }
+        
+        .action-btn.secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .action-btn.secondary:hover {
+            background: #bdc3c7;
+        }
+        
+        /* 按钮通用样式 */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+    <!-- 引入统一侧边栏 -->
+    <div id="sidebar-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-logo">医保审核系统</h2>
+                <p class="sidebar-subtitle">超级管理员平台</p>
+            </div>
+            <div class="sidebar-nav">
+                <!-- 侧边栏内容将通过脚本加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">审核结果管理</h1>
+                <p class="dashboard-subtitle">为医保局工作人员提供集中的、高效的决策管理平台</p>
+            </div>
+        </div>
+
+        <!-- 选项卡容器 -->
+        <div class="tabs-container">
+            <!-- 选项卡头部 -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('conclusion-confirmation')">结论确认 <span class="tab-badge">8</span></button>
+                <button class="tab" onclick="switchTab('appeal-handling')">申诉处理 <span class="tab-badge">5</span></button>
+                <button class="tab" onclick="switchTab('history-query')">历史记录查询</button>
+            </div>
+
+            <!-- 选项卡内容 -->
+            <!-- 结论确认 -->
+            <div id="conclusion-confirmation" class="tab-content active">
+                <!-- 筛选区 -->
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <div class="filter-item">
+                            <label for="patientName1">患者姓名/身份证号</label>
+                            <input type="text" id="patientName1" placeholder="请输入患者姓名或身份证号">
+                        </div>
+                        <div class="filter-item">
+                            <label for="hospital1">涉及医院</label>
+                            <select id="hospital1">
+                                <option value="">全部</option>
+                                <option value="beijing-xiehe">北京协和医院</option>
+                                <option value="zhongri-youhao">中日友好医院</option>
+                                <option value="beida-renmin">北大人民医院</option>
+                                <option value="chaoyang">朝阳医院</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="doubtType1">疑点类型</label>
+                            <select id="doubtType1">
+                                <option value="">全部</option>
+                                <option value="over-medication">过度用药</option>
+                                <option value="disease-drug-mismatch">病药不符</option>
+                                <option value="over-examination">过度检查</option>
+                                <option value="decomposed-hospitalization">分解住院</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="expert1">审核专家</label>
+                            <select id="expert1">
+                                <option value="">全部</option>
+                                <option value="expert-zhang">张医生</option>
+                                <option value="expert-li">李医生</option>
+                                <option value="expert-wang">王医生</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="startDate1">提交日期从</label>
+                            <input type="date" id="startDate1">
+                        </div>
+                        <div class="filter-item">
+                            <label for="endDate1">到</label>
+                            <input type="date" id="endDate1">
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary">查询</button>
+                        <button class="btn btn-secondary">重置</button>
+                    </div>
+                </div>
+
+                <!-- 数据表格 -->
+                <div class="table-wrapper">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>任务ID</th>
+                                <th>涉及医院</th>
+                                <th>患者信息</th>
+                                <th>疑点类型</th>
+                                <th>专家结论</th>
+                                <th>提交时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>T-001</td>
+                                <td>北京协和医院</td>
+                                <td>王*, 370...01X</td>
+                                <td>过度用药</td>
+                                <td class="conclusion-confirmed">确认违规</td>
+                                <td>2024-10-25 09:30</td>
+                                <td><button class="action-btn primary" onclick="enterConclusionConfirmation('T-001')">进入确认</button></td>
+                            </tr>
+                            <tr>
+                                <td>T-002</td>
+                                <td>中日友好医院</td>
+                                <td>李*, 110...02Y</td>
+                                <td>病药不符</td>
+                                <td class="conclusion-no-violation">无违规</td>
+                                <td>2024-10-25 09:28</td>
+                                <td><button class="action-btn primary" onclick="enterConclusionConfirmation('T-002')">进入确认</button></td>
+                            </tr>
+                            <tr>
+                                <td>T-003</td>
+                                <td>北大人民医院</td>
+                                <td>赵*, 440...03Z</td>
+                                <td>过度检查</td>
+                                <td class="conclusion-suspected">疑似违规</td>
+                                <td>2024-10-25 09:15</td>
+                                <td><button class="action-btn primary" onclick="enterConclusionConfirmation('T-003')">进入确认</button></td>
+                            </tr>
+                            <tr>
+                                <td>T-004</td>
+                                <td>朝阳医院</td>
+                                <td>钱*, 310...04X</td>
+                                <td>过度用药</td>
+                                <td class="conclusion-need-supplement">需补充材料</td>
+                                <td>2024-10-25 09:10</td>
+                                <td><button class="action-btn primary" onclick="enterConclusionConfirmation('T-004')">进入确认</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 申诉处理 -->
+            <div id="appeal-handling" class="tab-content">
+                <!-- 筛选区 -->
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <div class="filter-item">
+                            <label for="hospital2">涉及医院</label>
+                            <select id="hospital2">
+                                <option value="">全部</option>
+                                <option value="beijing-xiehe">北京协和医院</option>
+                                <option value="zhongri-youhao">中日友好医院</option>
+                                <option value="beida-renmin">北大人民医院</option>
+                                <option value="chaoyang">朝阳医院</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="patientName2">患者姓名/身份证号</label>
+                            <input type="text" id="patientName2" placeholder="请输入患者姓名或身份证号">
+                        </div>
+                        <div class="filter-item">
+                            <label for="startDate2">申诉日期从</label>
+                            <input type="date" id="startDate2">
+                        </div>
+                        <div class="filter-item">
+                            <label for="endDate2">到</label>
+                            <input type="date" id="endDate2">
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary">查询</button>
+                        <button class="btn btn-secondary">重置</button>
+                    </div>
+                </div>
+
+                <!-- 数据表格 -->
+                <div class="table-wrapper">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>申诉ID</th>
+                                <th>涉及医院</th>
+                                <th>患者信息</th>
+                                <th>违规类型</th>
+                                <th>申诉日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>A-001</td>
+                                <td>北京协和医院</td>
+                                <td>陈*, 420...05A</td>
+                                <td>分解住院</td>
+                                <td>2024-10-20</td>
+                                <td><button class="action-btn primary" onclick="handleAppeal('A-001')">处理申诉</button></td>
+                            </tr>
+                            <tr>
+                                <td>A-002</td>
+                                <td>中日友好医院</td>
+                                <td>周*, 610...08D</td>
+                                <td>过度用药</td>
+                                <td>2024-10-18</td>
+                                <td><button class="action-btn primary" onclick="handleAppeal('A-002')">处理申诉</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 历史记录查询 -->
+            <div id="history-query" class="tab-content">
+                <!-- 筛选区 -->
+                <div class="filter-section">
+                    <div class="filter-row">
+                        <div class="filter-item">
+                            <label for="caseId">案例ID</label>
+                            <input type="text" id="caseId" placeholder="请输入案例ID">
+                        </div>
+                        <div class="filter-item">
+                            <label for="patientName3">患者姓名/身份证号</label>
+                            <input type="text" id="patientName3" placeholder="请输入患者姓名或身份证号">
+                        </div>
+                        <div class="filter-item">
+                            <label for="hospital3">涉及医院</label>
+                            <select id="hospital3">
+                                <option value="">全部</option>
+                                <option value="beijing-xiehe">北京协和医院</option>
+                                <option value="zhongri-youhao">中日友好医院</option>
+                                <option value="beida-renmin">北大人民医院</option>
+                                <option value="chaoyang">朝阳医院</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="violationType">违规类型</label>
+                            <select id="violationType">
+                                <option value="">全部</option>
+                                <option value="over-medication">过度用药</option>
+                                <option value="disease-drug-mismatch">病药不符</option>
+                                <option value="over-examination">过度检查</option>
+                                <option value="decomposed-hospitalization">分解住院</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="expert2">审核专家</label>
+                            <select id="expert2">
+                                <option value="">全部</option>
+                                <option value="expert-zhang">张医生</option>
+                                <option value="expert-li">李医生</option>
+                                <option value="expert-wang">王医生</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="finalResult">最终处理结果</label>
+                            <select id="finalResult">
+                                <option value="">全部</option>
+                                <option value="confirmed">确认违规</option>
+                                <option value="no-violation">无违规</option>
+                                <option value="appeal-approved">申诉成立</option>
+                                <option value="appeal-rejected">申诉驳回</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <label for="startDate3">完成日期从</label>
+                            <input type="date" id="startDate3">
+                        </div>
+                        <div class="filter-item">
+                            <label for="endDate3">到</label>
+                            <input type="date" id="endDate3">
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary">查询</button>
+                        <button class="btn btn-secondary">重置</button>
+                    </div>
+                </div>
+
+                <!-- 数据表格 -->
+                <div class="table-wrapper">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>案例ID</th>
+                                <th>涉及医院</th>
+                                <th>患者信息</th>
+                                <th>违规类型</th>
+                                <th>专家结论</th>
+                                <th>最终处理结果</th>
+                                <th>完成日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CS-001</td>
+                                <td>北京协和医院</td>
+                                <td>王*, 370...01X</td>
+                                <td>过度用药</td>
+                                <td>确认违规</td>
+                                <td>确认违规</td>
+                                <td>2024-10-20</td>
+                                <td><button class="action-btn secondary" onclick="viewAuditSnapshot('CS-001')">查看快照</button></td>
+                            </tr>
+                            <tr>
+                                <td>CS-002</td>
+                                <td>中日友好医院</td>
+                                <td>李*, 110...02Y</td>
+                                <td>病药不符</td>
+                                <td>无违规</td>
+                                <td>无违规</td>
+                                <td>2024-10-18</td>
+                                <td><button class="action-btn secondary" onclick="viewAuditSnapshot('CS-002')">查看快照</button></td>
+                            </tr>
+                            <tr>
+                                <td>CS-003</td>
+                                <td>朝阳医院</td>
+                                <td>陈*, 420...05A</td>
+                                <td>分解住院</td>
+                                <td>确认违规</td>
+                                <td>申诉成立</td>
+                                <td>2024-10-15</td>
+                                <td><button class="action-btn secondary" onclick="viewAuditSnapshot('CS-003')">查看快照</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 加载统一侧边栏
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载统一侧边栏
+            fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector('#sidebar-container .sidebar-nav').innerHTML = html;
+                    
+                    // 初始化侧边栏
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    } else {
+                        // 如果没有现成的initSidebar函数，使用简单的初始化
+                        simpleInitSidebar();
+                    }
+                })
+                .catch(error => {
+                    console.error('加载统一侧边栏失败:', error);
+                });
+        });
+
+        // 简单的侧边栏初始化函数
+        function simpleInitSidebar() {
+            // 菜单展开/收起功能
+            document.querySelectorAll('.nav-expandable').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const parent = this.closest('.nav-group, .nav-subgroup');
+                    const submenu = parent.querySelector('.nav-submenu');
+                    
+                    if (submenu) {
+                        parent.classList.toggle('expanded');
+                        submenu.style.display = parent.classList.contains('expanded') ? 'block' : 'none';
+                    }
+                });
+            });
+        }
+
+        // 切换选项卡
+        function switchTab(tabId) {
+            // 隐藏所有选项卡内容
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 移除所有选项卡的active状态
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的选项卡内容
+            document.getElementById(tabId).classList.add('active');
+            
+            // 设置选中的选项卡为active状态
+            const tabButton = Array.from(document.querySelectorAll('.tab')).find(btn => {
+                return btn.getAttribute('onclick') === `switchTab('${tabId}')`;
+            });
+            
+            if (tabButton) {
+                tabButton.classList.add('active');
+            }
+        }
+
+        // 进入结论确认
+        function enterConclusionConfirmation(taskId) {
+            // 跳转到审核结论确认页
+            window.location.href = `/1.0/超级管理员/事后审核管理/审核结论确认页.html?taskId=${taskId}`;
+        }
+
+        // 处理申诉
+        function handleAppeal(appealId) {
+            // 跳转到申诉处理详情页
+            window.location.href = `/1.0/超级管理员/事后审核管理/申诉处理详情页.html?appealId=${appealId}`;
+        }
+
+        // 查看审核快照
+        function viewAuditSnapshot(caseId) {
+            // 在实际应用中，这里应该跳转到审核快照详情页
+            console.log('查看审核快照:', caseId);
+            alert(`查看案例 ${caseId} 的审核快照`);
+        }
+    </script>
+</body>
+</html>

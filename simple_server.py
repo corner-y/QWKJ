@@ -9,7 +9,7 @@ import socketserver
 import os
 
 # 设置端口
-PORT = 8000
+PORT = 8080
 
 # 获取当前目录
 Handler = http.server.SimpleHTTPRequestHandler

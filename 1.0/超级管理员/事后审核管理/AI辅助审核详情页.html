@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI辅助审核详情页 - 医保审核系统</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    <style>
+        /* 审核详情页特定样式 */
+        .dashboard-header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .dashboard-subtitle {
+            color: #7f8c8d;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr 360px;
+            gap: 20px;
+            padding: 0 20px 20px 20px;
+            height: calc(100vh - 160px);
+        }
+        
+        .left-panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .middle-panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .right-panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .system-alert {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-left: 4px solid #f39c12;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-icon {
+            font-size: 24px;
+            color: #f39c12;
+            margin-bottom: 8px;
+        }
+        
+        .alert-title {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+        
+        .alert-content {
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .patient-profile {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .patient-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .patient-info-label {
+            color: #7f8c8d;
+        }
+        
+        .patient-info-value {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .patient-tags {
+            margin-top: 16px;
+        }
+        
+        .tag-group {
+            margin-bottom: 12px;
+        }
+        
+        .tag-group-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .patient-tag {
+            background: #e3f2fd;
+            color: #1565c0;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+        }
+        
+        .patient-tag.high-risk {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .patient-tag.chronic {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        /* 时间轴样式 */
+        .timeline-filter {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .filter-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        
+        .timeline-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .timeline-item.current {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -30px;
+            top: 6px;
+            width: 16px;
+            height: 16px;
+            background: #3498db;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #3498db;
+        }
+        
+        .timeline-item.current .timeline-dot {
+            background: #e74c3c;
+            box-shadow: 0 0 0 2px #e74c3c;
+        }
+        
+        .timeline-date {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+        
+        .timeline-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .timeline-content {
+            font-size: 14px;
+            color: #34495e;
+            line-height: 1.6;
+        }
+        
+        .timeline-item-details {
+            margin-top: 12px;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .detail-section {
+            margin-bottom: 16px;
+        }
+        
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .detail-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .prescription-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f3f5;
+            font-size: 14px;
+        }
+        
+        .prescription-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* 决策区样式 */
+        .decision-section {
+            margin-bottom: 24px;
+        }
+        
+        .decision-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 16px;
+        }
+        
+        .radio-group {
+            margin-bottom: 16px;
+        }
+        
+        .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .radio-item.selected {
+            background: #e3f2fd;
+            border-color: #3498db;
+        }
+        
+        .radio-item input {
+            margin-right: 12px;
+        }
+        
+        .textarea-container {
+            margin-bottom: 24px;
+        }
+        
+        .textarea-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .textarea-required {
+            color: #e74c3c;
+            margin-left: 4px;
+        }
+        
+        .decision-textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            resize: vertical;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .decision-textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        /* AI聊天框样式 */
+        .ai-chat-section {
+            margin-top: 32px;
+        }
+        
+        .ai-chat-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 16px;
+        }
+        
+        .preset-questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .preset-question-btn {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .preset-question-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .chat-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        
+        .chat-messages {
+            height: 200px;
+            overflow-y: auto;
+            padding: 16px;
+            background: #fafbfc;
+        }
+        
+        .chat-message {
+            margin-bottom: 16px;
+        }
+        
+        .chat-message.user {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .chat-message.ai {
+            display: flex;
+            justify-content: flex-start;
+        }
+        
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .chat-bubble.user {
+            background: #3498db;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .chat-bubble.ai {
+            background: white;
+            color: #2c3e50;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+        }
+        
+        .chat-send-btn {
+            padding: 0 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        
+        .chat-send-btn:hover {
+            background: #2980b9;
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+        
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <!-- 引入统一侧边栏 -->
+    <div id="sidebar-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-logo">医保审核系统</h2>
+                <p class="sidebar-subtitle">超级管理员平台</p>
+            </div>
+            <div class="sidebar-nav">
+                <!-- 侧边栏内容将通过脚本加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">AI辅助审核详情页</h1>
+                <p class="dashboard-subtitle">案例ID: <span id="caseIdDisplay">CS-001</span> | 患者：王*，女，68岁</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="backToWorkbench()">返回工作台</button>
+            </div>
+        </div>
+
+        <!-- 三栏式布局 -->
+        <div class="detail-layout">
+            <!-- 左侧栏：疑点摘要与患者档案 -->
+            <div class="left-panel">
+                <h2 class="section-title">疑点摘要与患者档案</h2>
+                
+                <!-- 系统疑点提示 -->
+                <div class="system-alert">
+                    <div class="alert-icon">⚠️</div>
+                    <div class="alert-title">系统疑点：过度用药</div>
+                    <div class="alert-content">
+                        <p><strong>触发规则：</strong>DR-001 (苯磺酸氨氯地平片 - 30天超量)</p>
+                        <p><strong>违规详情：</strong>系统检测到该患者在2024-09-20至2024-10-15期间，累计开具'苯磺酸氨氯地平片'40片，超出了35片的规则阈值。</p>
+                    </div>
+                </div>
+                
+                <!-- 患者画像 -->
+                <div class="patient-profile">
+                    <div class="patient-info-item">
+                        <span class="patient-info-label">姓名</span>
+                        <span class="patient-info-value">王*</span>
+                    </div>
+                    <div class="patient-info-item">
+                        <span class="patient-info-label">性别</span>
+                        <span class="patient-info-value">女</span>
+                    </div>
+                    <div class="patient-info-item">
+                        <span class="patient-info-label">年龄</span>
+                        <span class="patient-info-value">68岁</span>
+                    </div>
+                    <div class="patient-info-item">
+                        <span class="patient-info-label">医保类型</span>
+                        <span class="patient-info-value">城镇职工</span>
+                    </div>
+                    <div class="patient-info-item">
+                        <span class="patient-info-label">参保地</span>
+                        <span class="patient-info-value">北京市</span>
+                    </div>
+                    
+                    <!-- 慢病备案 -->
+                    <div class="patient-tags">
+                        <div class="tag-group">
+                            <div class="tag-group-title">慢病备案</div>
+                            <div class="tag-list">
+                                <span class="patient-tag chronic">✅ 高血压</span>
+                                <span class="patient-tag chronic">✅ 2型糖尿病</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 风险标签 -->
+                        <div class="tag-group">
+                            <div class="tag-group-title">风险标签</div>
+                            <div class="tag-list">
+                                <span class="patient-tag high-risk">高额费用</span>
+                                <span class="patient-tag high-risk">多次住院</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 中间栏：患者360°诊疗视图 -->
+            <div class="middle-panel">
+                <h2 class="section-title">患者360°诊疗视图</h2>
+                
+                <!-- 筛选器 -->
+                <div class="timeline-filter">
+                    <button class="filter-btn active" onclick="filterTimeline('all')">全部记录</button>
+                    <button class="filter-btn" onclick="filterTimeline('medication')">药品使用记录</button>
+                    <button class="filter-btn" onclick="filterTimeline('examination')">检查记录</button>
+                    <button class="filter-btn" onclick="filterTimeline('hospitalization')">住院记录</button>
+                </div>
+                
+                <!-- 时间轴 -->
+                <div class="timeline">
+                    <!-- 时间轴项目 1 - 当前疑点 -->
+                    <div class="timeline-item current" data-type="medication">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2024-10-15</div>
+                        <div class="timeline-title">门诊就诊 - 北京协和医院</div>
+                        <div class="timeline-content">
+                            <p>科室：心内科 | 医生：张医生</p>
+                            <p>诊断：高血压（原发性）、2型糖尿病</p>
+                        </div>
+                        <div class="timeline-item-details">
+                            <div class="detail-section">
+                                <div class="detail-section-title">处方药品</div>
+                                <div class="prescription-item">
+                                    <span>苯磺酸氨氯地平片(5mg)</span>
+                                    <span>20片 × 2盒</span>
+                                </div>
+                                <div class="prescription-item">
+                                    <span>盐酸二甲双胍片(0.5g)</span>
+                                    <span>30片 × 1盒</span>
+                                </div>
+                                <div class="prescription-item">
+                                    <span>阿司匹林肠溶片(100mg)</span>
+                                    <span>14片 × 1盒</span>
+                                </div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">病历摘要</div>
+                                <p style="font-size: 14px; color: #34495e; line-height: 1.6;">患者因"高血压病史10年，血糖控制不佳1个月"就诊。既往有高血压、2型糖尿病病史，规律服用降压药和降糖药。近期血压控制不理想，最高达160/95mmHg，空腹血糖波动在7.5-8.5mmol/L之间。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 时间轴项目 2 -->
+                    <div class="timeline-item" data-type="examination">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2024-09-20</div>
+                        <div class="timeline-title">门诊就诊 - 北京协和医院</div>
+                        <div class="timeline-content">
+                            <p>科室：心内科 | 医生：张医生</p>
+                            <p>诊断：高血压（原发性）、2型糖尿病</p>
+                        </div>
+                        <div class="timeline-item-details">
+                            <div class="detail-section">
+                                <div class="detail-section-title">处方药品</div>
+                                <div class="prescription-item">
+                                    <span>苯磺酸氨氯地平片(5mg)</span>
+                                    <span>14片 × 1盒</span>
+                                </div>
+                                <div class="prescription-item">
+                                    <span>盐酸二甲双胍片(0.5g)</span>
+                                    <span>30片 × 1盒</span>
+                                </div>
+                            </div>
+                            <div class="detail-section">
+                                <div class="detail-section-title">检查项目</div>
+                                <div class="prescription-item">
+                                    <span>血常规</span>
+                                    <span>正常</span>
+                                </div>
+                                <div class="prescription-item">
+                                    <span>尿常规</span>
+                                    <span>正常</span>
+                                </div>
+                                <div class="prescription-item">
+                                    <span>血糖（空腹）</span>
+                                    <span>7.8mmol/L</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 时间轴项目 3 -->
+                    <div class="timeline-item" data-type="hospitalization">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2024-08-15</div>
+                        <div class="timeline-title">住院治疗 - 北京协和医院</div>
+                        <div class="timeline-content">
+                            <p>科室：心内科 | 住院天数：7天</p>
+                            <p>诊断：高血压3级（极高危）、2型糖尿病、冠心病</p>
+                        </div>
+                        <div class="timeline-item-details">
+                            <div class="detail-section">
+                                <div class="detail-section-title">主要治疗</div>
+                                <p style="font-size: 14px; color: #34495e; line-height: 1.6;">患者因"胸闷、胸痛3天"入院，诊断为冠心病、不稳定型心绞痛，给予抗血小板、调脂、扩冠等治疗，同时调整降压和降糖方案。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 时间轴项目 4 -->
+                    <div class="timeline-item" data-type="medication">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2024-07-20</div>
+                        <div class="timeline-title">门诊就诊 - 北京协和医院</div>
+                        <div class="timeline-content">
+                            <p>科室：心内科 | 医生：张医生</p>
+                            <p>诊断：高血压（原发性）、2型糖尿病</p>
+                        </div>
+                        <div class="timeline-item-details">
+                            <div class="detail-section">
+                                <div class="detail-section-title">处方药品</div>
+                                <div class="prescription-item">
+                                    <span>苯磺酸氨氯地平片(5mg)</span>
+                                    <span>14片 × 1盒</span>
+                                </div>
+                                <div class="prescription-item">
+                                    <span>盐酸二甲双胍片(0.5g)</span>
+                                    <span>30片 × 1盒</span>
+                                </div>
+                                <div class="prescription-item">
+                                    <span>阿司匹林肠溶片(100mg)</span>
+                                    <span>14片 × 1盒</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 时间轴项目 5 -->
+                    <div class="timeline-item" data-type="examination">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-date">2024-06-10</div>
+                        <div class="timeline-title">体检 - 北京健康体检中心</div>
+                        <div class="timeline-content">
+                            <p>常规体检</p>
+                        </div>
+                        <div class="timeline-item-details">
+                            <div class="detail-section">
+                                <div class="detail-section-title">体检结论</div>
+                                <p style="font-size: 14px; color: #34495e; line-height: 1.6;">血压偏高（150/90mmHg），空腹血糖偏高（7.2mmol/L），建议心内科和内分泌科随访。血脂轻度异常，建议低脂饮食，适当运动。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧栏：专家决策与AI辅助区 -->
+            <div class="right-panel">
+                <h2 class="section-title">专家决策</h2>
+                
+                <!-- 审核结论 -->
+                <div class="decision-section">
+                    <div class="decision-title">审核结论</div>
+                    <div class="radio-group">
+                        <label class="radio-item" onclick="selectDecision('confirm')">
+                            <input type="radio" name="decision" value="confirm">
+                            <span>确认违规</span>
+                        </label>
+                        <label class="radio-item" onclick="selectDecision('no-violation')">
+                            <input type="radio" name="decision" value="no-violation">
+                            <span>无违规</span>
+                        </label>
+                        <label class="radio-item" onclick="selectDecision('suspected')">
+                            <input type="radio" name="decision" value="suspected">
+                            <span>疑似违规，转交上级</span>
+                        </label>
+                        <label class="radio-item" onclick="selectDecision('supplement')">
+                            <input type="radio" name="decision" value="supplement">
+                            <span>需医院补充材料</span>
+                        </label>
+                    </div>
+                    
+                    <div class="textarea-container">
+                        <label class="textarea-label" for="auditComment">审核意见 <span class="textarea-required">*</span></label>
+                        <textarea id="auditComment" class="decision-textarea" placeholder="请输入审核意见..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- AI智能提问 -->
+                <div class="ai-chat-section">
+                    <div class="ai-chat-title">AI智能助手</div>
+                    
+                    <div class="preset-questions">
+                        <button class="preset-question-btn" onclick="askAI('总结患者降压药使用史')">总结患者降压药使用史</button>
+                        <button class="preset-question-btn" onclick="askAI('本次开药医生是谁？')">本次开药医生是谁？</button>
+                        <button class="preset-question-btn" onclick="askAI('查询相关医保政策')">查询相关医保政策</button>
+                    </div>
+                    
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chatMessages">
+                            <!-- 聊天消息将通过JavaScript动态填充 -->
+                            <div class="chat-message ai">
+                                <div class="chat-bubble ai">您好！我是您的AI审核助手，有什么我可以帮助您的吗？</div>
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <input type="text" class="chat-input" id="chatInput" placeholder="请输入您的问题...">
+                            <button class="chat-send-btn" onclick="sendMessage()">发送</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 操作按钮 -->
+                <div class="section-actions">
+                    <button class="btn btn-primary" onclick="submitConclusion()">提交结论</button>
+                    <button class="btn btn-secondary" onclick="saveForLater()">保存，稍后处理</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 加载统一侧边栏
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载统一侧边栏
+            fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector('#sidebar-container .sidebar-nav').innerHTML = html;
+                    
+                    // 初始化侧边栏
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    } else {
+                        // 如果没有现成的initSidebar函数，使用简单的初始化
+                        simpleInitSidebar();
+                    }
+                })
+                .catch(error => {
+                    console.error('加载统一侧边栏失败:', error);
+                });
+
+            // 解析URL参数，获取案例ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const caseId = urlParams.get('caseId');
+            const action = urlParams.get('action');
+            
+            if (caseId) {
+                document.getElementById('caseIdDisplay').textContent = caseId;
+            }
+
+            // 根据操作类型设置页面状态
+            if (action === 'view') {
+                // 只读模式
+                document.querySelectorAll('.radio-item input, .decision-textarea').forEach(el => {
+                    el.disabled = true;
+                });
+                document.querySelector('.section-actions').innerHTML = '';
+            }
+        });
+
+        // 简单的侧边栏初始化函数
+        function simpleInitSidebar() {
+            // 菜单展开/收起功能
+            document.querySelectorAll('.nav-expandable').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const parent = this.closest('.nav-group, .nav-subgroup');
+                    const submenu = parent.querySelector('.nav-submenu');
+                    
+                    if (submenu) {
+                        parent.classList.toggle('expanded');
+                        submenu.style.display = parent.classList.contains('expanded') ? 'block' : 'none';
+                    }
+                });
+            });
+        }
+
+        // 选择决策
+        function selectDecision(value) {
+            // 移除所有选中状态
+            document.querySelectorAll('.radio-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // 添加当前选中状态
+            const selectedItem = document.querySelector(`.radio-item input[value="${value}"]`).closest('.radio-item');
+            selectedItem.classList.add('selected');
+        }
+
+        // 筛选时间轴
+        function filterTimeline(filterType) {
+            // 移除所有筛选按钮的active状态
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 添加当前筛选按钮的active状态
+            const activeBtn = document.querySelector(`.filter-btn[onclick="filterTimeline('${filterType}')"]`);
+            activeBtn.classList.add('active');
+            
+            // 筛选时间轴项目
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            timelineItems.forEach(item => {
+                if (filterType === 'all' || item.getAttribute('data-type') === filterType) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // 发送聊天消息
+        function sendMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const message = chatInput.value.trim();
+            
+            if (message) {
+                // 添加用户消息
+                addMessage('user', message);
+                
+                // 清空输入框
+                chatInput.value = '';
+                
+                // 模拟AI回复
+                setTimeout(() => {
+                    let aiResponse = '';
+                    if (message.includes('总结') && message.includes('降压药')) {
+                        aiResponse = '患者近3个月来主要使用苯磺酸氨氯地平片(5mg)进行降压治疗，2024-07-20开具14片，2024-09-20开具14片，2024-10-15开具40片（20片×2盒）。近3个月累计开具68片，平均每日约0.75片。';
+                    } else if (message.includes('医生')) {
+                        aiResponse = '本次（2024-10-15）开药医生是北京协和医院心内科的张医生。';
+                    } else if (message.includes('医保政策')) {
+                        aiResponse = '根据现行医保政策，苯磺酸氨氯地平片属于医保甲类药品，门诊单次处方量一般不超过30天用量（30片），特殊情况可延长至60天。对于高血压等慢性病患者，在病情稳定的情况下，可适当延长处方量。';
+                    } else {
+                        aiResponse = '感谢您的提问。我正在学习更多知识，以便更好地为您提供帮助。';
+                    }
+                    addMessage('ai', aiResponse);
+                }, 1000);
+            }
+        }
+
+        // 预设问题提问
+        function askAI(question) {
+            // 设置输入框内容
+            document.getElementById('chatInput').value = question;
+            
+            // 发送消息
+            sendMessage();
+        }
+
+        // 添加聊天消息
+        function addMessage(sender, message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageElement = document.createElement('div');
+            messageElement.className = `chat-message ${sender}`;
+            messageElement.innerHTML = `
+                <div class="chat-bubble ${sender}">${message}</div>
+            `;
+            chatMessages.appendChild(messageElement);
+            
+            // 滚动到底部
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // 提交结论
+        function submitConclusion() {
+            const selectedDecision = document.querySelector('input[name="decision"]:checked');
+            const auditComment = document.getElementById('auditComment').value.trim();
+            
+            if (!selectedDecision) {
+                alert('请选择审核结论');
+                return;
+            }
+            
+            if (!auditComment) {
+                alert('请输入审核意见');
+                return;
+            }
+            
+            // 模拟提交
+            console.log('提交审核结论：', {
+                decision: selectedDecision.value,
+                comment: auditComment
+            });
+            
+            // 显示成功提示
+            alert('审核结论提交成功！');
+            
+            // 返回工作台
+            backToWorkbench();
+        }
+
+        // 保存，稍后处理
+        function saveForLater() {
+            const selectedDecision = document.querySelector('input[name="decision"]:checked');
+            const auditComment = document.getElementById('auditComment').value.trim();
+            
+            // 模拟保存
+            console.log('保存审核进度：', {
+                decision: selectedDecision ? selectedDecision.value : null,
+                comment: auditComment
+            });
+            
+            // 显示成功提示
+            alert('审核进度已保存！');
+            
+            // 返回工作台
+            backToWorkbench();
+        }
+
+        // 返回工作台
+        function backToWorkbench() {
+            window.location.href = '/1.0/超级管理员/事后审核管理/人工审核工作台.html';
+        }
+    </script>
+</body>
+</html>

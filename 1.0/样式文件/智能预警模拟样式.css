@@ -1,0 +1,884 @@
+/* 智能预警模拟页面专用样式 */
+
+/* 工作台容器样式 */
+.workstation-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+  transition: all 0.3s ease;
+}
+
+/* 主内容区域样式优化 */
+.main-content {
+  flex: 1;
+  padding: var(--spacing-2xl);
+  overflow-y: auto;
+  transition: all 0.3s ease;
+}
+
+/* 页面头部样式增强 */
+.workstation-header {
+  background-color: var(--bg-primary);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-light);
+  margin-bottom: var(--spacing-xl);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.workstation-header h1 {
+  font-size: var(--font-size-2xl);
+  color: var(--text-primary);
+  margin: 0;
+  font-weight: var(--font-weight-semibold);
+}
+
+.session-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* 患者信息区域样式优化 */
+.patient-info-section {
+  background-color: var(--bg-primary);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-light);
+  margin-bottom: var(--spacing-xl);
+  transition: all 0.3s ease;
+}
+
+.patient-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.patient-info-item {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-md);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-medium);
+  transition: all 0.2s ease;
+}
+
+.patient-info-item:hover {
+  background-color: var(--bg-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-light);
+}
+
+.patient-info-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-tertiary);
+  margin-bottom: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.patient-info-value {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* 处方编辑区域样式增强 */
+.prescription-section {
+  background-color: var(--bg-primary);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-light);
+  margin-bottom: var(--spacing-xl);
+  transition: all 0.3s ease;
+}
+
+.section-title {
+  font-size: var(--font-size-xl);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+  font-weight: var(--font-weight-semibold);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--primary-light);
+}
+
+/* 添加药品表单样式优化 */
+.add-medication {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-medium);
+  transition: all 0.3s ease;
+}
+
+.add-medication input,
+.add-medication select {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-medium);
+  font-size: var(--font-size-md);
+  background-color: var(--bg-primary);
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.add-medication input:focus,
+.add-medication select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: var(--shadow-focus);
+}
+
+/* 处方表格样式增强 */
+.prescription-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--spacing-lg);
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+}
+
+.prescription-table th,
+.prescription-table td {
+  padding: var(--spacing-md);
+  text-align: left;
+  border-bottom: 1px solid var(--border-secondary);
+  transition: all 0.2s ease;
+}
+
+.prescription-table th {
+  background-color: var(--bg-tertiary);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.5px;
+}
+
+.prescription-table tr:hover {
+  background-color: var(--bg-hover);
+}
+
+.prescription-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* 操作区域样式优化 */
+.action-section {
+  background-color: var(--bg-primary);
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.risk-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+/* 风险按钮样式增强 */
+.risk-btn {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: none;
+  border-radius: var(--radius-medium);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-width: 120px;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+}
+
+.risk-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.5s ease;
+}
+
+.risk-btn:hover::before {
+  left: 100%;
+}
+
+.risk-btn.low {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-light);
+}
+
+.risk-btn.low:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.risk-btn.low:active {
+  background-color: var(--bg-active);
+  border-color: var(--border-primary);
+  transform: translateY(0);
+  box-shadow: var(--shadow-light);
+}
+
+.risk-btn.medium {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.risk-btn.medium:hover {
+  background-color: #FF6A00;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.risk-btn.high {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.risk-btn.high:hover {
+  background-color: #E63636;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.risk-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-light);
+}
+
+/* 弹窗样式增强 */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+}
+
+.modal-content {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-large);
+  padding: var(--spacing-2xl);
+
+
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-heavy);
+  position: relative;
+  animation: modalSlideIn 0.3s ease-out;
+  transition: all 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.modal-title {
+  font-size: var(--font-size-xl);
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  margin-bottom: var(--spacing-xl);
+  line-height: var(--line-height-loose);
+}
+
+.modal-body p {
+  margin-bottom: var(--spacing-md);
+  color: var(--text-secondary);
+}
+
+.modal-body ul {
+  margin-left: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  color: var(--text-secondary);
+}
+
+.modal-body li {
+  margin-bottom: var(--spacing-xs);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-secondary);
+}
+
+/* 低风险悬浮提示样式增强 */
+.low-risk-tooltip {
+  position: absolute;
+  background-color: var(--warning-light);
+  border: 1px solid var(--warning-color);
+  border-radius: var(--radius-medium);
+  padding: var(--spacing-md);
+  max-width: 300px;
+  z-index: 1001;
+  display: none;
+  box-shadow: var(--shadow-medium);
+  animation: tooltipFadeIn 0.3s ease-out;
+  transition: all 0.3s ease;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.low-risk-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid var(--warning-color);
+}
+
+.low-risk-tooltip p {
+  margin: 0;
+  color: var(--warning-color);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.tooltip-timer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 4px;
+  background-color: var(--warning-color);
+  transition: width 1s linear;
+  border-radius: 0 0 var(--radius-medium) var(--radius-medium);
+}
+
+/* 按钮通用样式增强 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-tight);
+  border: 1px solid transparent;
+  border-radius: var(--radius-medium);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  outline: none;
+  position: relative;
+  height: 40px;
+  min-width: 80px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn-primary:active {
+  background-color: var(--primary-active);
+  border-color: var(--primary-active);
+  transform: translateY(0);
+  box-shadow: var(--shadow-light);
+}
+
+.btn-secondary {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border-color: var(--border-primary);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--border-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn-secondary:active {
+  background-color: var(--bg-active);
+  border-color: var(--border-primary);
+  transform: translateY(0);
+  box-shadow: var(--shadow-light);
+}
+
+/* 响应式设计优化 */
+@media (max-width: 1200px) {
+  .patient-info-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .main-content {
+    padding: var(--spacing-xl);
+  }
+  
+  .workstation-header {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    align-items: flex-start;
+  }
+  
+  .session-info {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+  }
+  
+  .add-medication {
+    flex-direction: column;
+  }
+  
+  .add-medication button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .workstation-container {
+    flex-direction: column;
+  }
+  
+  .main-content {
+    padding: var(--spacing-lg);
+  }
+  
+  .patient-info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-section {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+  
+  .risk-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .risk-btn {
+    flex: 1;
+    min-width: 100%;
+  }
+  
+  .prescription-table {
+    display: block;
+    overflow-x: auto;
+  }
+  
+  .modal-content {
+    margin: var(--spacing-lg);
+    width: calc(100% - 32px);
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: var(--spacing-md);
+  }
+  
+  .workstation-header h1 {
+    font-size: var(--font-size-xl);
+  }
+  
+  .session-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+  
+  .modal-content {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* 医保类别标签样式 */
+.tag-medical-a {
+  background-color: #e6f2ff;
+  color: #0066cc;
+  border-color: rgba(0, 102, 204, 0.2);
+}
+
+.tag-medical-b {
+  background-color: #e6ffe6;
+  color: #009933;
+  border-color: rgba(0, 153, 51, 0.2);
+}
+
+/* 风险等级差异化弹窗样式 */
+/* 高风险强制弹窗样式 */
+.modal-force {
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-force .modal-content {
+  border: 2px solid var(--danger-color);
+  box-shadow: 0 10px 30px rgba(255, 77, 77, 0.3);
+  animation: modalShake 0.6s ease-in-out 0.3s 1;
+}
+
+@keyframes modalShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+/* 中风险非强制弹窗样式 */
+.modal-non-force {
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-non-force .modal-content {
+  border: 1px solid var(--warning-color);
+  box-shadow: 0 5px 20px rgba(255, 165, 0, 0.2);
+}
+
+/* 低风险悬浮提示样式增强 */
+.low-risk-tooltip {
+  position: absolute;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-lg);
+  padding: 0;
+  width: 320px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: none;
+  font-size: var(--font-size-sm);
+}
+
+.low-risk-tooltip .tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--border-primary);
+  background-color: var(--bg-secondary);
+  border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+}
+
+.low-risk-tooltip .tooltip-header h4 {
+  margin: 0;
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+}
+
+.low-risk-tooltip .tooltip-timer {
+  height: 3px;
+  background-color: var(--success-color);
+  width: 100%;
+  transition: width 0.05s linear;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
+}
+
+.low-risk-tooltip .tooltip-content {
+  padding: var(--spacing-md);
+}
+
+.low-risk-tooltip .patient-brief {
+  margin-bottom: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.low-risk-tooltip .patient-brief p {
+  margin: 2px 0;
+  color: var(--text-secondary);
+}
+
+.low-risk-tooltip .risk-info {
+  margin-bottom: var(--spacing-sm);
+}
+
+.low-risk-tooltip .risk-info strong {
+  color: var(--warning-color);
+}
+
+.low-risk-tooltip .risk-suggestion {
+  margin-bottom: 0;
+  color: var(--text-secondary);
+}
+
+.low-risk-tooltip .tooltip-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-top: 1px solid var(--border-primary);
+  background-color: var(--bg-secondary);
+}
+
+/* 风险卡片建议部分样式 - 渐变边框和阴影效果 */
+.risk-card.high .risk-card-suggestion {
+  position: relative;
+  padding-left: 16px;
+  margin-top: 10px;
+  border-left: 4px solid var(--error-color);
+  box-shadow: 0 2px 6px rgba(245, 63, 63, 0.1);
+}
+
+.risk-card.high .risk-card-suggestion::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--error-color), #ffb3b3);
+  z-index: 1;
+}
+
+.risk-card.medium .risk-card-suggestion {
+  position: relative;
+  padding-left: 16px;
+  margin-top: 10px;
+  border-left: 4px solid var(--warning-color);
+  box-shadow: 0 2px 6px rgba(255, 125, 0, 0.1);
+}
+
+.risk-card.medium .risk-card-suggestion::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--warning-color), #ffddb3);
+  z-index: 1;
+}
+
+.risk-card.low .risk-card-suggestion {
+  position: relative;
+  padding-left: 16px;
+  margin-top: 10px;
+  border-left: 4px solid var(--primary-color);
+  box-shadow: 0 2px 6px rgba(22, 93, 255, 0.1);
+}
+
+.risk-card.low .risk-card-suggestion::before {
+  content: '';
+  position: absolute;
+  left: -4px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, var(--primary-color), #b3d1ff);
+  z-index: 1;
+}
+
+/* 高风险二次确认区域样式 */
+.risk-confirmation {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background-color: var(--bg-secondary);
+  border-radius: var(--border-radius-lg);
+  border-left: 4px solid var(--danger-color);
+}
+
+.confirm-message {
+  margin-bottom: var(--spacing-md);
+}
+
+.confirm-options {
+  margin-bottom: var(--spacing-md);
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-xs);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.option-item:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.option-item input[type="radio"] {
+  margin-right: var(--spacing-sm);
+  accent-color: var(--primary-color);
+}
+
+.reason-input-container {
+  margin-top: var(--spacing-md);
+}
+
+#risk-reason-input {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--border-radius-md);
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+  font-size: var(--font-size-base);
+  transition: border-color var(--transition-fast);
+}
+
+#risk-reason-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.reason-hint {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* 打印样式 */
+@media print {
+  .workstation-container {
+    flex-direction: column;
+  }
+  
+  #sidebar-container {
+    display: none;
+  }
+  
+  .risk-buttons,
+  .action-section button,
+  .add-medication {
+    display: none;
+  }
+  
+  .modal {
+    display: none !important;
+  }
+}
+
+/* 无障碍支持 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .patient-info-item {
+    border: 1px solid #000;
+  }
+  
+  .prescription-table {
+    border: 1px solid #000;
+  }
+  
+  .prescription-table th,
+  .prescription-table td {
+    border-color: #000;
+  }
+}

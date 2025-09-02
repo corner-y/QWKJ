@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>审核结论确认页 - 医保审核系统</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    <style>
+        /* 审核结论确认页特定样式 */
+        .dashboard-header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+        
+        .dashboard-subtitle {
+            color: #7f8c8d;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        
+        .content-container {
+            padding: 0 20px 20px 20px;
+        }
+        
+        .main-layout {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .left-column {
+            width: 300px;
+            flex-shrink: 0;
+        }
+        
+        .middle-column {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .right-column {
+            width: 400px;
+            flex-shrink: 0;
+        }
+        
+        /* 通用卡片样式 */
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        /* 案件基本信息 */
+        .case-info-item {
+            display: flex;
+            margin-bottom: 12px;
+        }
+        
+        .case-info-label {
+            width: 100px;
+            color: #7f8c8d;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+        
+        .case-info-value {
+            flex: 1;
+            color: #2c3e50;
+        }
+        
+        /* 专家结论标签样式 */
+        .conclusion-confirmed {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+        
+        .conclusion-no-violation {
+            color: #27ae60;
+            font-weight: 500;
+        }
+        
+        .conclusion-suspected {
+            color: #f39c12;
+            font-weight: 500;
+        }
+        
+        .conclusion-need-supplement {
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+        /* 专家意见 */
+        .expert-opinion {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 16px;
+            border-radius: 0 4px 4px 0;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #34495e;
+        }
+        
+        /* 证据链列表 */
+        .evidence-chain {
+            margin-top: 16px;
+        }
+        
+        .evidence-item {
+            display: flex;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+        }
+        
+        .evidence-icon {
+            font-size: 24px;
+            margin-right: 12px;
+            color: #3498db;
+            flex-shrink: 0;
+        }
+        
+        .evidence-content {
+            flex: 1;
+        }
+        
+        .evidence-title {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        
+        .evidence-description {
+            font-size: 13px;
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+        
+        /* 诊疗快照 */
+        .diagnosis-snapshot {
+            margin-top: 20px;
+        }
+        
+        .snapshot-item {
+            padding: 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+        
+        .snapshot-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        
+        .snapshot-date {
+            color: #7f8c8d;
+            font-size: 13px;
+        }
+        
+        .snapshot-title {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .snapshot-details {
+            font-size: 14px;
+            color: #34495e;
+            line-height: 1.6;
+        }
+        
+        /* 决策区域 */
+        .decision-section {
+            margin-top: 20px;
+        }
+        
+        .decision-radio-group {
+            margin-bottom: 16px;
+        }
+        
+        .decision-radio {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+        
+        .decision-radio input[type="radio"] {
+            margin-right: 8px;
+        }
+        
+        .decision-radio label {
+            cursor: pointer;
+            color: #2c3e50;
+        }
+        
+        .decision-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .decision-textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .decision-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        /* 按钮通用样式 */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        
+        .btn-secondary:hover {
+            background: #bdc3c7;
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 1200px) {
+            .main-layout {
+                flex-direction: column;
+            }
+            
+            .left-column,
+            .right-column {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 引入统一侧边栏 -->
+    <div id="sidebar-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-logo">医保审核系统</h2>
+                <p class="sidebar-subtitle">超级管理员平台</p>
+            </div>
+            <div class="sidebar-nav">
+                <!-- 侧边栏内容将通过脚本加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <div class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">审核结论确认</h1>
+                <p class="dashboard-subtitle">对第三方专家提交的审核报告进行最终的复核与确认</p>
+            </div>
+        </div>
+
+        <!-- 三栏式布局 -->
+        <div class="content-container">
+            <div class="main-layout">
+                <!-- 左侧栏 - 案件概要与专家报告 -->
+                <div class="left-column">
+                    <!-- 案件基本信息 -->
+                    <div class="card">
+                        <h3 class="card-title">案件基本信息</h3>
+                        <div class="case-info-item">
+                            <span class="case-info-label">任务ID：</span>
+                            <span class="case-info-value">T-001</span>
+                        </div>
+                        <div class="case-info-item">
+                            <span class="case-info-label">患者姓名：</span>
+                            <span class="case-info-value">王*</span>
+                        </div>
+                        <div class="case-info-item">
+                            <span class="case-info-label">身份证号：</span>
+                            <span class="case-info-value">370...01X</span>
+                        </div>
+                        <div class="case-info-item">
+                            <span class="case-info-label">涉及医院：</span>
+                            <span class="case-info-value">北京协和医院</span>
+                        </div>
+                        <div class="case-info-item">
+                            <span class="case-info-label">疑点类型：</span>
+                            <span class="case-info-value">过度用药</span>
+                        </div>
+                        <div class="case-info-item">
+                            <span class="case-info-label">提交时间：</span>
+                            <span class="case-info-value">2024-10-25 09:30</span>
+                        </div>
+                    </div>
+
+                    <!-- 专家审核报告 -->
+                    <div class="card">
+                        <h3 class="card-title">专家审核报告</h3>
+                        <div class="case-info-item">
+                            <span class="case-info-label">审核专家：</span>
+                            <span class="case-info-value">张医生</span>
+                        </div>
+                        <div class="case-info-item">
+                            <span class="case-info-label">专家结论：</span>
+                            <span class="case-info-value conclusion-confirmed">确认违规</span>
+                        </div>
+                        <div class="case-info-item">
+                            <span class="case-info-label">违规金额：</span>
+                            <span class="case-info-value">¥ 150.80</span>
+                        </div>
+                        <div class="case-info-item" style="margin-bottom: 16px;">
+                            <span class="case-info-label">专家意见：</span>
+                        </div>
+                        <div class="expert-opinion">
+                            经核查患者历史用药记录，无特殊情况支持本次超量开药，确认为违规。建议追回医保基金 ¥150.80。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 中间栏 - 核心证据链（只读） -->
+                <div class="middle-column">
+                    <div class="card">
+                        <h3 class="card-title">核心证据链</h3>
+                        <div class="evidence-chain">
+                            <div class="evidence-item">
+                                <span class="evidence-icon">📊</span>
+                                <div class="evidence-content">
+                                    <div class="evidence-title">系统判定依据</div>
+                                    <div class="evidence-description">
+                                        根据《医保用药管理办法》第三章第十五条，该药品单次处方量不得超过14天。本次处方开具了30天用量，超出规定标准114.29%。
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="evidence-item">
+                                <span class="evidence-icon">📋</span>
+                                <div class="evidence-content">
+                                    <div class="evidence-title">用药记录分析</div>
+                                    <div class="evidence-description">
+                                        患者近三个月内有5次同类药品处方记录，且每次处方量均在合理范围内，本次处方明显异常。
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="evidence-item">
+                                <span class="evidence-icon">📝</span>
+                                <div class="evidence-content">
+                                    <div class="evidence-title">病程记录核查</div>
+                                    <div class="evidence-description">
+                                        患者本次就诊病历中未记录特殊情况说明，无法支持超量开药的合理性。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="diagnosis-snapshot">
+                            <h4 class="snapshot-title">诊疗快照</h4>
+                            <div class="snapshot-item">
+                                <div class="snapshot-header">
+                                    <span class="snapshot-date">2024-10-20</span>
+                                    <span>门诊就诊</span>
+                                </div>
+                                <div class="snapshot-details">
+                                    <p><strong>诊断：</strong>高血压</p>
+                                    <p><strong>药品：</strong>苯磺酸氨氯地平片（5mg*7片）</p>
+                                    <p><strong>用量：</strong>每次1片，每日1次</p>
+                                    <p><strong>处方数量：</strong>5盒（35天用量）</p>
+                                </div>
+                            </div>
+                            <div class="snapshot-item">
+                                <div class="snapshot-header">
+                                    <span class="snapshot-date">2024-09-25</span>
+                                    <span>门诊复诊</span>
+                                </div>
+                                <div class="snapshot-details">
+                                    <p><strong>诊断：</strong>高血压</p>
+                                    <p><strong>药品：</strong>苯磺酸氨氯地平片（5mg*7片）</p>
+                                    <p><strong>用量：</strong>每次1片，每日1次</p>
+                                    <p><strong>处方数量：</strong>2盒（14天用量）</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧栏 - 医保局最终决策区 -->
+                <div class="right-column">
+                    <div class="card">
+                        <h3 class="card-title">最终处理决定</h3>
+                        <div class="decision-section">
+                            <div class="decision-radio-group">
+                                <div class="decision-radio">
+                                    <input type="radio" id="decision-1" name="decision" value="agree" checked>
+                                    <label for="decision-1">同意专家结论，发送通知</label>
+                                </div>
+                                <div class="decision-radio">
+                                    <input type="radio" id="decision-2" name="decision" value="doubt">
+                                    <label for="decision-2">结论存疑，发回重审</label>
+                                </div>
+                                <div class="decision-radio">
+                                    <input type="radio" id="decision-3" name="decision" value="escalate">
+                                    <label for="decision-3">升级处理，转交稽查科</label>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="processingOpinion">处理意见</label>
+                                <textarea id="processingOpinion" class="decision-textarea" placeholder="请填写最终的处理意见或给专家的重审指令。"></textarea>
+                            </div>
+                            <div class="decision-actions">
+                                <button class="btn btn-secondary" onclick="goBack()">返回</button>
+                                <button class="btn btn-primary" onclick="confirmAndArchive()">确认并归档</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作历史 -->
+                    <div class="card">
+                        <h3 class="card-title">操作历史</h3>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            <div style="padding: 8px 0; border-bottom: 1px solid #e0e0e0; font-size: 14px;">
+                                <div style="color: #7f8c8d;">2024-10-25 09:30</div>
+                                <div style="color: #2c3e50; margin-top: 4px;">专家张医生提交审核结论：确认违规</div>
+                            </div>
+                            <div style="padding: 8px 0; border-bottom: 1px solid #e0e0e0; font-size: 14px;">
+                                <div style="color: #7f8c8d;">2024-10-25 08:45</div>
+                                <div style="color: #2c3e50; margin-top: 4px;">系统自动分配任务给专家张医生</div>
+                            </div>
+                            <div style="padding: 8px 0; border-bottom: 1px solid #e0e0e0; font-size: 14px;">
+                                <div style="color: #7f8c8d;">2024-10-25 08:00</div>
+                                <div style="color: #2c3e50; margin-top: 4px;">系统完成初审，标记为过度用药疑点</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 加载统一侧边栏
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载统一侧边栏
+            fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector('#sidebar-container .sidebar-nav').innerHTML = html;
+                    
+                    // 初始化侧边栏
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    } else {
+                        // 如果没有现成的initSidebar函数，使用简单的初始化
+                        simpleInitSidebar();
+                    }
+                })
+                .catch(error => {
+                    console.error('加载统一侧边栏失败:', error);
+                });
+
+            // 从URL获取任务ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('taskId');
+            
+            // 如果有任务ID，可以根据任务ID加载不同的数据
+            if (taskId) {
+                console.log('加载任务ID:', taskId);
+                // 在实际应用中，这里应该调用API获取任务数据并填充页面
+                // 这里为了演示，我们根据任务ID切换不同的模拟数据
+                loadTaskData(taskId);
+            }
+        });
+
+        // 简单的侧边栏初始化函数
+        function simpleInitSidebar() {
+            // 菜单展开/收起功能
+            document.querySelectorAll('.nav-expandable').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const parent = this.closest('.nav-group, .nav-subgroup');
+                    const submenu = parent.querySelector('.nav-submenu');
+                    
+                    if (submenu) {
+                        parent.classList.toggle('expanded');
+                        submenu.style.display = parent.classList.contains('expanded') ? 'block' : 'none';
+                    }
+                });
+            });
+        }
+
+        // 根据任务ID加载数据（模拟函数）
+        function loadTaskData(taskId) {
+            // 这里是模拟数据加载，实际应用中应该从服务器获取
+            console.log('加载任务数据:', taskId);
+            
+            // 根据不同的任务ID，我们可以切换不同的模拟数据
+            if (taskId === 'T-002') {
+                // 切换到T-002的数据（无违规）
+                document.querySelector('.case-info-item:nth-child(1) .case-info-value').textContent = 'T-002';
+                document.querySelector('.case-info-item:nth-child(2) .case-info-value').textContent = '李*';
+                document.querySelector('.case-info-item:nth-child(3) .case-info-value').textContent = '110...02Y';
+                document.querySelector('.case-info-item:nth-child(4) .case-info-value').textContent = '中日友好医院';
+                document.querySelector('.case-info-item:nth-child(5) .case-info-value').textContent = '病药不符';
+                
+                const expertConclusion = document.querySelector('.case-info-item:nth-child(7) .case-info-value');
+                expertConclusion.textContent = '无违规';
+                expertConclusion.className = 'case-info-value conclusion-no-violation';
+                
+                document.querySelector('.expert-opinion').textContent = '经核查，虽然初步筛查认为存在病药不符情况，但进一步检查发现患者有合并症，该用药符合临床指南。建议判定为无违规。';
+            } else if (taskId === 'T-003') {
+                // 切换到T-003的数据（疑似违规）
+                document.querySelector('.case-info-item:nth-child(1) .case-info-value').textContent = 'T-003';
+                document.querySelector('.case-info-item:nth-child(2) .case-info-value').textContent = '赵*';
+                document.querySelector('.case-info-item:nth-child(3) .case-info-value').textContent = '440...03Z';
+                document.querySelector('.case-info-item:nth-child(4) .case-info-value').textContent = '北大人民医院';
+                document.querySelector('.case-info-item:nth-child(5) .case-info-value').textContent = '过度检查';
+                
+                const expertConclusion = document.querySelector('.case-info-item:nth-child(7) .case-info-value');
+                expertConclusion.textContent = '疑似违规';
+                expertConclusion.className = 'case-info-value conclusion-suspected';
+                
+                document.querySelector('.expert-opinion').textContent = '患者进行了多项影像学检查，其中部分检查项目存在重叠。建议进一步核查检查必要性，目前判定为疑似违规。';
+            } else if (taskId === 'T-004') {
+                // 切换到T-004的数据（需补充材料）
+                document.querySelector('.case-info-item:nth-child(1) .case-info-value').textContent = 'T-004';
+                document.querySelector('.case-info-item:nth-child(2) .case-info-value').textContent = '钱*';
+                document.querySelector('.case-info-item:nth-child(3) .case-info-value').textContent = '310...04X';
+                document.querySelector('.case-info-item:nth-child(4) .case-info-value').textContent = '朝阳医院';
+                document.querySelector('.case-info-item:nth-child(5) .case-info-value').textContent = '过度用药';
+                
+                const expertConclusion = document.querySelector('.case-info-item:nth-child(7) .case-info-value');
+                expertConclusion.textContent = '需补充材料';
+                expertConclusion.className = 'case-info-value conclusion-need-supplement';
+                
+                document.querySelector('.expert-opinion').textContent = '患者病历中提到特殊情况，但缺乏完整的病程记录支持。建议要求医院补充详细的临床说明材料，以便做出准确判断。';
+            }
+        }
+
+        // 返回按钮功能
+        function goBack() {
+            // 返回上一页或审核结果管理页面
+            window.location.href = '/1.0/超级管理员/事后审核管理/审核结果管理.html';
+        }
+
+        // 确认并归档功能
+        function confirmAndArchive() {
+            // 获取选中的决策
+            const selectedDecision = document.querySelector('input[name="decision"]:checked').value;
+            const processingOpinion = document.getElementById('processingOpinion').value.trim();
+            
+            // 在实际应用中，这里应该调用API提交决策
+            console.log('提交决策:', {
+                decision: selectedDecision,
+                opinion: processingOpinion
+            });
+            
+            // 显示成功提示
+            let decisionText = '';
+            switch(selectedDecision) {
+                case 'agree':
+                    decisionText = '同意专家结论，发送通知';
+                    break;
+                case 'doubt':
+                    decisionText = '结论存疑，发回重审';
+                    break;
+                case 'escalate':
+                    decisionText = '升级处理，转交稽查科';
+                    break;
+            }
+            
+            alert(`决策已提交：${decisionText}\n处理意见：${processingOpinion || '无'}`);
+            
+            // 返回审核结果管理页面
+            goBack();
+        }
+    </script>
+</body>
+</html>

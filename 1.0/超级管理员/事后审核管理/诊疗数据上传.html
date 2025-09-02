@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>诊疗数据上传 - 医保审核系统</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/审核记录样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    <style>
+        /* 主内容区域样式 */
+        .main-content {
+            padding: 20px;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            margin-left: 280px; /* 为固定的侧边栏留出空间 */
+            box-sizing: border-box;
+        }
+
+        /* 上传区域样式 */
+        .upload-section {
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 2px dashed #d0d7de;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f9f9f9;
+        }
+
+        .upload-area:hover,
+        .upload-area.drag-over {
+            border-color: #4a90e2;
+            background-color: #f0f7ff;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #95a5a6;
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .upload-btn {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background-color: #357abd;
+        }
+
+        /* 隐藏实际的文件输入 */
+        #file-input {
+            display: none;
+        }
+
+        /* 表格区域样式 */
+        .table-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .filter-section {
+            padding: 16px 24px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .history-table th {
+            background: #f8f9fa;
+            padding: 16px 24px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .history-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #34495e;
+        }
+
+        .history-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* 状态标签样式 */
+        .status-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-uploading {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-queuing {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .status-verifying {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-failed {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* 操作按钮样式 */
+        .action-btn {
+            padding: 6px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            color: #4a90e2;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-container {
+            background: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #7f8c8d;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background-color: #f0f0f0;
+            color: #2c3e50;
+        }
+
+        .modal-content {
+            padding: 24px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        /* 错误报告样式 */
+        .error-summary {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .error-table-container {
+            margin-top: 24px;
+        }
+
+        .error-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .error-table th {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .error-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #34495e;
+        }
+
+        .error-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .btn-primary {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #357abd;
+        }
+
+        .btn-secondary {
+            background-color: #f0f0f0;
+            color: #2c3e50;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 引入统一侧边栏 -->
+    <div id="sidebar-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-logo">医保审核系统</h2>
+                <p class="sidebar-subtitle">超级管理员平台</p>
+            </div>
+            <div class="sidebar-nav">
+                <!-- 侧边栏内容将通过脚本加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">诊疗数据上传</h1>
+            <p class="dashboard-subtitle">为医院工作人员提供数据上传通道，支持批量上传和历史记录查询</p>
+        </div>
+
+        <!-- 数据上传区域 -->
+        <div class="upload-section">
+            <div id="upload-area" class="upload-area">
+                <input type="file" id="file-input" multiple>
+                <div class="upload-icon">+</div>
+                <div class="upload-text">点击选择文件或直接拖拽文件到此处</div>
+                <div class="upload-subtext">请上传符合医保局规定格式的数据包（.zip, .csv, .xml）。为确保数据准确性，建议按日上传。单次上传文件大小不超过500MB。</div>
+                <button id="upload-btn" class="upload-btn">点击选择文件</button>
+            </div>
+        </div>
+
+        <!-- 上传历史记录表格 -->
+        <div class="table-section">
+            <div class="table-header">
+                <h2 class="table-title">上传历史记录</h2>
+            </div>
+            
+            <!-- 筛选区域 -->
+            <div class="filter-section">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label class="filter-label">上传日期：</label>
+                        <input type="date" class="filter-input" id="start-date">
+                        <span>至</span>
+                        <input type="date" class="filter-input" id="end-date">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">处理状态：</label>
+                        <select class="filter-select" id="status-filter">
+                            <option value="all">全部</option>
+                            <option value="uploading">上传中</option>
+                            <option value="queuing">排队等待</option>
+                            <option value="verifying">校验中</option>
+                            <option value="success">导入成功</option>
+                            <option value="failed">导入失败</option>
+                        </select>
+                    </div>
+                    <button class="action-btn" id="filter-btn">筛选</button>
+                    <button class="action-btn" id="reset-filter-btn">重置</button>
+                </div>
+            </div>
+
+            <!-- 表格内容 -->
+            <div class="table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>文件名</th>
+                            <th>文件大小</th>
+                            <th>上传人</th>
+                            <th>上传时间</th>
+                            <th>处理状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- 表格数据将通过JavaScript动态填充 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 错误报告模态框 -->
+    <div id="errorReportModal" class="modal-overlay" style="display: none;">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 class="modal-title">导入失败错误报告：<span id="errorFileName"></span></h2>
+                <button class="modal-close" onclick="closeErrorReportModal()">×</button>
+            </div>
+            <div class="modal-content">
+                <!-- 错误概要信息 -->
+                <div class="error-summary">
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="summary-label">总记录数</div>
+                            <div class="summary-value" id="totalRecords">0</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">成功导入</div>
+                            <div class="summary-value" id="successRecords">0</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">失败记录</div>
+                            <div class="summary-value" id="failedRecords">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 错误详情表格 -->
+                <div class="error-table-container">
+                    <h3 style="margin-bottom: 16px; color: #2c3e50;">错误详情列表</h3>
+                    <div class="table-wrapper">
+                        <table class="error-table">
+                            <thead>
+                                <tr>
+                                    <th>所在行号</th>
+                                    <th>错误字段</th>
+                                    <th>错误值</th>
+                                    <th>错误原因</th>
+                                </tr>
+                            </thead>
+                            <tbody id="errorTableBody">
+                                <!-- 错误详情将通过JavaScript动态填充 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="downloadErrorReportBtn">下载完整错误报告.csv</button>
+                <button class="btn-secondary" onclick="closeErrorReportModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 加载统一侧边栏
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载统一侧边栏
+            fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector('#sidebar-container .sidebar-nav').innerHTML = html;
+                    
+                    // 初始化侧边栏
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    } else {
+                        // 如果没有现成的initSidebar函数，使用简单的初始化
+                        simpleInitSidebar();
+                    }
+                })
+                .catch(error => {
+                    console.error('加载统一侧边栏失败:', error);
+                });
+
+            // 初始化模拟数据
+            initMockData();
+            
+            // 初始化上传区域事件
+            initUploadArea();
+        });
+
+        // 简单的侧边栏初始化函数
+        function simpleInitSidebar() {
+            // 菜单展开/收起功能
+            document.querySelectorAll('.nav-expandable').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const parent = this.closest('.nav-group, .nav-subgroup');
+                    const submenu = parent.querySelector('.nav-submenu');
+                    
+                    if (submenu) {
+                        parent.classList.toggle('expanded');
+                        submenu.style.display = parent.classList.contains('expanded') ? 'block' : 'none';
+                    }
+                });
+            });
+        }
+
+        // 初始化上传区域事件
+        function initUploadArea() {
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const uploadBtn = document.getElementById('upload-btn');
+
+            // 点击上传按钮时触发文件选择
+            uploadBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            // 点击上传区域时触发文件选择
+            uploadArea.addEventListener('click', function(e) {
+                if (e.target !== uploadBtn) {
+                    fileInput.click();
+                }
+            });
+
+            // 文件选择变化时的处理
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    // 模拟文件上传
+                    simulateFileUpload(this.files);
+                    // 清空input，允许重复选择同一文件
+                    this.value = '';
+                }
+            });
+
+            // 拖拽相关事件
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('drag-over');
+            });
+
+            uploadArea.addEventListener('dragleave', function() {
+                this.classList.remove('drag-over');
+            });
+
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('drag-over');
+                
+                if (e.dataTransfer.files.length > 0) {
+                    // 模拟文件上传
+                    simulateFileUpload(e.dataTransfer.files);
+                }
+            });
+
+            // 筛选按钮事件
+            document.getElementById('filter-btn').addEventListener('click', function() {
+                filterHistoryData();
+            });
+
+            // 重置筛选按钮事件
+            document.getElementById('reset-filter-btn').addEventListener('click', function() {
+                resetFilter();
+            });
+
+            // 下载错误报告按钮事件
+            document.getElementById('downloadErrorReportBtn').addEventListener('click', function() {
+                downloadErrorReport();
+            });
+        }
+
+        // 模拟文件上传
+        function simulateFileUpload(files) {
+            // 这里可以添加实际的文件上传逻辑
+            // 现在我们只是简单地显示一个提示
+            alert(`已选择 ${files.length} 个文件进行上传`);
+            
+            // 模拟上传完成后的操作
+            setTimeout(() => {
+                alert('文件上传成功，正在等待系统处理');
+            }, 2000);
+        }
+
+        // 模拟历史数据
+        const mockHistoryData = [
+            {
+                id: '1',
+                fileName: '20241015_data.zip',
+                fileSize: '256.3 MB',
+                uploader: '张三',
+                uploadTime: '2024-10-16 02:30',
+                status: 'success',
+                statusText: '✅ 导入成功'
+            },
+            {
+                id: '2',
+                fileName: '20241014_data.zip',
+                fileSize: '248.1 MB',
+                uploader: '张三',
+                uploadTime: '2024-10-15 02:25',
+                status: 'failed',
+                statusText: '❌ 导入失败'
+            },
+            {
+                id: '3',
+                fileName: '20241013_data.zip',
+                fileSize: '251.8 MB',
+                uploader: '张三',
+                uploadTime: '2024-10-14 02:28',
+                status: 'verifying',
+                statusText: '🔄 校验中'
+            },
+            {
+                id: '4',
+                fileName: '20241012_data.zip',
+                fileSize: '249.5 MB',
+                uploader: '张三',
+                uploadTime: '2024-10-13 02:31',
+                status: 'success',
+                statusText: '✅ 导入成功'
+            },
+            {
+                id: '5',
+                fileName: '20241011_data.zip',
+                fileSize: '245.2 MB',
+                uploader: '李四',
+                uploadTime: '2024-10-12 02:35',
+                status: 'success',
+                statusText: '✅ 导入成功'
+            },
+            {
+                id: '6',
+                fileName: '20241010_data.zip',
+                fileSize: '253.7 MB',
+                uploader: '李四',
+                uploadTime: '2024-10-11 02:29',
+                status: 'uploading',
+                statusText: '上传中...'
+            }
+        ];
+
+        // 模拟错误报告数据
+        const mockErrorData = {
+            fileName: '20241014_data.zip',
+            totalRecords: '5,830',
+            successRecords: '0',
+            failedRecords: '5,830',
+            errors: [
+                {
+                    row: '152',
+                    field: 'id_card_no',
+                    value: '1101... (17位)',
+                    reason: '身份证号长度不正确，应为18位。'
+                },
+                {
+                    row: '341',
+                    field: 'drug_code',
+                    value: 'XXXXX',
+                    reason: '药品编码不存在于医保药品目录中。'
+                },
+                {
+                    row: '527',
+                    field: 'visit_date',
+                    value: '2024-13-01',
+                    reason: '就诊日期格式错误，应为YYYY-MM-DD格式。'
+                },
+                {
+                    row: '789',
+                    field: 'patient_name',
+                    value: '',
+                    reason: '患者姓名不能为空。'
+                },
+                {
+                    row: '1056',
+                    field: 'hospital_code',
+                    value: 'H0001',
+                    reason: '医院编码不存在于系统中。'
+                }
+            ]
+        };
+
+        // 初始化模拟数据
+        function initMockData() {
+            renderHistoryTable(mockHistoryData);
+        }
+
+        // 渲染历史表格
+        function renderHistoryTable(data) {
+            const tableBody = document.getElementById('history-table-body');
+            tableBody.innerHTML = '';
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                
+                // 根据状态确定状态标签的类名
+                let statusClass = '';
+                switch (item.status) {
+                    case 'uploading':
+                        statusClass = 'status-uploading';
+                        break;
+                    case 'queuing':
+                        statusClass = 'status-queuing';
+                        break;
+                    case 'verifying':
+                        statusClass = 'status-verifying';
+                        break;
+                    case 'success':
+                        statusClass = 'status-success';
+                        break;
+                    case 'failed':
+                        statusClass = 'status-failed';
+                        break;
+                }
+
+                // 根据状态确定操作按钮的文本和点击事件
+                let actionButton = '';
+                if (item.status === 'failed') {
+                    actionButton = `<button class="action-btn" onclick="showErrorReport('${item.fileName}')">查看错误报告</button>`;
+                } else {
+                    actionButton = `<button class="action-btn" onclick="showDetail('${item.id}')">查看详情</button>`;
+                }
+
+                row.innerHTML = `
+                    <td>${item.fileName}</td>
+                    <td>${item.fileSize}</td>
+                    <td>${item.uploader}</td>
+                    <td>${item.uploadTime}</td>
+                    <td><span class="status-tag ${statusClass}">${item.statusText}</span></td>
+                    <td>${actionButton}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // 筛选历史数据
+        function filterHistoryData() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            const statusFilter = document.getElementById('status-filter').value;
+
+            // 这里实现筛选逻辑
+            // 实际应用中，应该调用API获取符合条件的数据
+            const filteredData = mockHistoryData.filter(item => {
+                // 日期筛选
+                if (startDate || endDate) {
+                    const uploadDate = new Date(item.uploadTime.split(' ')[0]);
+                    const start = startDate ? new Date(startDate) : null;
+                    const end = endDate ? new Date(endDate) : null;
+
+                    if (start && uploadDate < start) return false;
+                    if (end && uploadDate > end) return false;
+                }
+
+                // 状态筛选
+                if (statusFilter !== 'all' && item.status !== statusFilter) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            renderHistoryTable(filteredData);
+        }
+
+        // 重置筛选条件
+        function resetFilter() {
+            document.getElementById('start-date').value = '';
+            document.getElementById('end-date').value = '';
+            document.getElementById('status-filter').value = 'all';
+            renderHistoryTable(mockHistoryData);
+        }
+
+        // 查看详情
+        function showDetail(id) {
+            alert(`查看ID为 ${id} 的上传记录详情`);
+            // 实际应用中，应该显示详情模态框
+        }
+
+        // 显示错误报告
+        function showErrorReport(fileName) {
+            // 填充错误报告数据
+            document.getElementById('errorFileName').textContent = fileName;
+            document.getElementById('totalRecords').textContent = mockErrorData.totalRecords;
+            document.getElementById('successRecords').textContent = mockErrorData.successRecords;
+            document.getElementById('failedRecords').textContent = mockErrorData.failedRecords;
+
+            // 填充错误详情表格
+            const errorTableBody = document.getElementById('errorTableBody');
+            errorTableBody.innerHTML = '';
+
+            mockErrorData.errors.forEach(error => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${error.row}</td>
+                    <td>${error.field}</td>
+                    <td>${error.value}</td>
+                    <td>${error.reason}</td>
+                `;
+                errorTableBody.appendChild(row);
+            });
+
+            // 显示错误报告模态框
+            document.getElementById('errorReportModal').style.display = 'flex';
+        }
+
+        // 关闭错误报告模态框
+        function closeErrorReportModal() {
+            document.getElementById('errorReportModal').style.display = 'none';
+        }
+
+        // 下载错误报告
+        function downloadErrorReport() {
+            // 实际应用中，这里应该调用API下载错误报告
+            // 现在我们只是简单地显示一个提示
+            alert('错误报告下载功能已触发');
+        }
+
+        // 点击模态框外部关闭模态框
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

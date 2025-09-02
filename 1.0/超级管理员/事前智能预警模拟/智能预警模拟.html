@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事前智能预警模拟 - 医保审核系统</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    <link rel="stylesheet" href="../../样式文件/智能预警模拟样式.css">
+    <style>
+        /* 医生工作站样式 */
+        .workstation-container {
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--bg-secondary);
+        }
+        
+        /* 风险等级感叹号图标 */
+        .risk-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            margin-right: 8px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .risk-icon.medium {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .risk-icon.high {
+            background-color: var(--error-color);
+            color: white;
+        }
+        
+        /* 风险卡片样式 */
+        .risk-card {
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-large);
+            padding: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+            border-left: 4px solid transparent;
+            box-shadow: var(--shadow-light);
+        }
+        
+        /* 药品名称超链接样式 */
+        .drug-link {
+            color: var(--primary-color);
+            text-decoration: underline;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .drug-link:hover {
+            color: var(--primary-hover);
+        }
+        
+        /* 药品规则弹窗样式 */
+        .drug-rule-modal-content {
+            max-width: 700px;
+        }
+        
+        .drug-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 2px solid var(--primary-light);
+        }
+        
+        .drug-name-large {
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
+            color: var(--primary-color);
+        }
+        
+        .drug-rule-section {
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-lg);
+            background-color: var(--bg-secondary);
+            border-radius: var(--radius-medium);
+        }
+        
+        .drug-rule-section h4 {
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-sm);
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .drug-rule-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .drug-rule-list li {
+            margin-bottom: var(--spacing-md);
+            padding-left: var(--spacing-lg);
+            position: relative;
+        }
+        
+        .drug-rule-list li:before {
+            content: "•";
+            color: var(--primary-color);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        .risk-card.high {
+            border-left-color: var(--error-color);
+            background-color: var(--error-light);
+        }
+        
+        .risk-card.medium {
+            border-left-color: var(--warning-color);
+            background-color: var(--warning-light);
+        }
+        
+        .risk-card.low {
+            border-left-color: var(--info-color);
+            background-color: var(--info-light);
+        }
+        
+        .risk-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .risk-card-title {
+            font-size: var(--font-size-lg);
+            font-weight: var(--font-weight-semibold);
+            margin-right: var(--spacing-md);
+        }
+        
+        .risk-card-title.high {
+            color: var(--error-color);
+        }
+        
+        .risk-card-title.medium {
+            color: var(--warning-color);
+        }
+        
+        .risk-card-title.low {
+            color: var(--info-color);
+        }
+        
+        .risk-card-drug {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 4px 8px;
+            border-radius: var(--radius-small);
+            font-size: var(--font-size-sm);
+            margin-right: var(--spacing-md);
+            white-space: nowrap;
+        }
+        
+        .risk-card-rule {
+            color: var(--text-secondary);
+            font-size: var(--font-size-sm);
+            background-color: var(--bg-tertiary);
+            padding: 4px 8px;
+            border-radius: var(--radius-small);
+        }
+        
+        .risk-card-content {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .risk-card-content p {
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-secondary);
+            line-height: var(--line-height-normal);
+        }
+        
+        .risk-card-reason {
+            background-color: var(--bg-tertiary);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-medium);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .risk-card-reason p {
+            color: var(--text-secondary);
+            line-height: var(--line-height-normal);
+        }
+        
+        .risk-card-suggestion {
+            background-color: var(--bg-primary);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-medium);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        .risk-card-suggestion p {
+            color: var(--text-primary);
+            line-height: var(--line-height-normal);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        /* 弹窗内容样式 */
+        .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .modal-body p {
+            margin-bottom: var(--spacing-md);
+            color: var(--text-secondary);
+            line-height: var(--line-height-normal);
+        }
+        
+        .modal-body p strong {
+            color: var(--text-primary);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .patient-summary {
+            background-color: var(--bg-tertiary);
+            padding: var(--spacing-lg);
+            border-radius: var(--radius-large);
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .patient-summary p {
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-secondary);
+        }
+        
+        .patient-summary p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .guidance-text {
+            margin-bottom: var(--spacing-xl);
+            font-weight: var(--font-weight-medium);
+            color: var(--text-primary);
+        }
+        
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .workstation-header {
+            background-color: var(--bg-primary);
+            padding: 20px;
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .workstation-header h1 {
+            font-size: var(--font-size-2xl);
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        /* 患者信息区 */
+        .patient-info-section {
+            background-color: var(--bg-primary);
+            padding: 20px;
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 20px;
+        }
+        
+        .patient-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 16px;
+        }
+        
+        .patient-info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .patient-info-label {
+            font-size: var(--font-size-sm);
+            color: var(--text-tertiary);
+            margin-bottom: 4px;
+        }
+        
+        .patient-info-value {
+            font-size: var(--font-size-md);
+            color: var(--text-primary);
+            font-weight: var(--font-weight-medium);
+        }
+        
+        /* 处方编辑区 */
+        .prescription-section {
+            background-color: var(--bg-primary);
+            padding: 20px;
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-light);
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: var(--font-size-xl);
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .prescription-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 16px;
+        }
+        
+        .prescription-table th,
+        .prescription-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .prescription-table th {
+            background-color: var(--bg-tertiary);
+            font-weight: var(--font-weight-semibold);
+            color: var(--text-secondary);
+        }
+        
+        .prescription-table tr:hover {
+            background-color: var(--bg-hover);
+        }
+        
+        .add-medication {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .add-medication input,
+        .add-medication select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-primary);
+            border-radius: var(--radius-medium);
+            font-size: var(--font-size-md);
+        }
+        
+        /* 操作按钮区 */
+        .action-section {
+            background-color: var(--bg-primary);
+            padding: 20px;
+            border-radius: var(--radius-large);
+            box-shadow: var(--shadow-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .risk-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        /* 风险按钮样式 */
+        .risk-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius-medium);
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-medium);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .risk-btn.low {
+            background-color: var(--warning-light);
+            color: var(--warning-color);
+            border: 1px solid var(--warning-color);
+        }
+        
+        .risk-btn.medium {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .risk-btn.high {
+            background-color: var(--error-color);
+            color: white;
+        }
+        
+        .risk-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .risk-btn.low:hover {
+            background-color: #FFF0E0;
+        }
+        
+        .risk-btn.medium:hover {
+            background-color: #FF6A00;
+        }
+        
+        .risk-btn.high:hover {
+            background-color: #E63636;
+        }
+        
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--bg-primary);
+            border-radius: var(--radius-large);
+            padding: 24px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: var(--shadow-heavy);
+            position: relative;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-primary);
+        }
+        
+        .modal-title {
+            font-size: var(--font-size-xl);
+            color: var(--text-primary);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-tertiary);
+        }
+        
+        .modal-body {
+            margin-bottom: 24px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        /* 低风险悬浮提示 */
+        .low-risk-tooltip {
+            position: absolute;
+            background-color: var(--warning-light);
+            border: 1px solid var(--warning-color);
+            border-radius: var(--radius-medium);
+            padding: 12px;
+            max-width: 300px;
+            z-index: 1001;
+            display: none;
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .tooltip-timer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background-color: var(--warning-color);
+            transition: width 1s linear;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .workstation-container {
+                flex-direction: column;
+            }
+            
+            .patient-info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-section {
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .risk-buttons {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="workstation-container">
+        <!-- 统一左侧菜单 -->
+        <div id="sidebar-container"></div>
+
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 页面头部 -->
+            <div class="workstation-header">
+                <h1>事前智能预警模拟 - 医生工作站</h1>
+                <div class="session-info">
+                    <span>当前医生: 张医生</span>
+                    <span>科室: 心内科</span>
+                    <span id="current-time"></span>
+                </div>
+            </div>
+
+            <!-- 患者信息区 -->
+            <div class="patient-info-section">
+                <h2 class="section-title">患者信息</h2>
+                <div class="patient-info-grid">
+                    <div class="patient-info-item">
+                        <div class="patient-info-label">患者姓名</div>
+                        <div class="patient-info-value">王晓明</div>
+                    </div>
+                    <div class="patient-info-item">
+                        <div class="patient-info-label">性别/年龄</div>
+                        <div class="patient-info-value">男 / 65岁</div>
+                    </div>
+                    <div class="patient-info-item">
+                        <div class="patient-info-label">医保类型</div>
+                        <div class="patient-info-value">城镇职工医保</div>
+                    </div>
+                    <div class="patient-info-item">
+                        <div class="patient-info-label">住院号</div>
+                        <div class="patient-info-value">ZY20250826001</div>
+                    </div>
+                    <div class="patient-info-item">
+                        <div class="patient-info-label">入院日期</div>
+                        <div class="patient-info-value">2025-08-20</div>
+                    </div>
+                    <div class="patient-info-item">
+                        <div class="patient-info-label">诊断</div>
+                        <div class="patient-info-value">冠心病、高血压2级</div>
+                    </div>
+                    <div class="patient-info-item">
+                        <div class="patient-info-label">过敏史</div>
+                        <div class="patient-info-value">青霉素</div>
+                    </div>
+                    <div class="patient-info-item">
+                        <div class="patient-info-label">当前状态</div>
+                        <div class="patient-info-value">稳定</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 处方编辑区 -->
+            <div class="prescription-section">
+                <h2 class="section-title">处方编辑</h2>
+                <div class="add-medication">
+                    <input type="text" placeholder="药品名称" id="medication-name">
+                    <input type="number" placeholder="剂量" id="medication-dose">
+                    <select id="medication-unit">
+                        <option value="mg">mg</option>
+                        <option value="g">g</option>
+                        <option value="ml">ml</option>
+                    </select>
+                    <input type="text" placeholder="用法" id="medication-usage">
+                    <input type="number" placeholder="频次" id="medication-frequency">
+                    <button class="btn btn-primary" onclick="addMedication()">添加药品</button>
+                </div>
+                <table class="prescription-table">
+                    <thead>
+                        <tr>
+                            <th>药品名称</th>
+                            <th>剂量</th>
+                            <th>用法</th>
+                            <th>频次</th>
+                            <th>金额</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="medication-list">
+                        <tr>
+                            <td>阿司匹林肠溶片</td>
+                            <td>100mg</td>
+                            <td>口服</td>
+                            <td>每日一次</td>
+                            <td>¥8.50</td>
+                            <td><button class="btn btn-secondary" onclick="removeMedication(this)">删除</button></td>
+                        </tr>
+                        <tr>
+                            <td>氯吡格雷片</td>
+                            <td>75mg</td>
+                            <td>口服</td>
+                            <td>每日一次</td>
+                            <td>¥35.80</td>
+                            <td><button class="btn btn-secondary" onclick="removeMedication(this)">删除</button></td>
+                        </tr>
+                        <tr>
+                            <td>辛伐他汀片</td>
+                            <td>20mg</td>
+                            <td>口服</td>
+                            <td>每晚一次</td>
+                            <td>¥12.30</td>
+                            <td><button class="btn btn-secondary" onclick="removeMedication(this)">删除</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 操作按钮区 -->
+            <div class="action-section">
+                <div class="risk-buttons">
+                    <a href="#" class="btn btn-secondary" style="border: 1px solid var(--border-primary);" id="low-risk-btn" onclick="showModal('low-risk-modal'); return false;">低风险预警</a>
+                    <a href="#" class="risk-btn medium" id="medium-risk-btn" onclick="showModal('medium-risk-modal'); return false;">中风险预警</a>
+                    <a href="#" class="risk-btn high" id="high-risk-btn" onclick="showModal('high-risk-modal'); return false;">高风险预警</a>
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="showModal('high-risk-modal'); return false;">保存处方</button>
+                    <button class="btn btn-secondary" onclick="clearPrescription()">清空处方</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗 -->
+    <div class="modal" id="low-risk-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><span class="risk-icon low">!</span>低风险预警提示</h3>
+                <button class="modal-close" onclick="closeModal('low-risk-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- 患者摘要信息 -->
+                <div class="patient-summary">
+                    <p><strong>患者：</strong>王晓明，男性，65岁</p>
+                    <p><strong>诊断：</strong>冠心病、高血压2级、2型糖尿病、急性支气管炎</p>
+                </div>
+                
+                <!-- 引导语 -->
+                <p class="guidance-text">系统检测到当前处方存在以下低风险问题，请留意：</p>
+                
+              
+                
+                <!-- 低风险预警卡片二 -->
+                <div class="risk-card low">
+                    <div class="risk-card-header">
+                        <span class="risk-card-title low">🔵 低风险提示</span>
+                        <span class="risk-card-drug"><a href="#" class="drug-link" onclick="showDrugRule('复方磷酸可待因溶液'); return false;">复方磷酸可待因溶液</a></span>
+                        <span class="risk-card-rule">合理用药 - 诊断支撑不足</span>
+                    </div>
+                    <div class="risk-card-content">
+                        <p>当前诊断'急性支气管炎'，不足以充分支撑使用中枢性镇咳药【<a href="#" class="drug-link" onclick="showDrugRule('复方磷酸可待因溶液'); return false;">复方磷酸可待因溶液</a>】。</p>
+                    </div>
+                    <!-- <div class="risk-card-reason">
+                        <p>复方磷酸可待因含有麻醉药品成分，具有潜在成瘾性。临床指南建议仅在常规祛痰、镇咳治疗无效，且剧烈干咳严重影响休息时才考虑短期使用。</p>
+                    </div> -->
+                    <div class="risk-card-suggestion">
+                        <p>建议在病程记录中详细描述咳嗽的性质、频率和严重程度，以支撑用药的医疗必要性；或考虑更换为非中枢性/非麻醉性的镇咳药物（如：右美沙芬）。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="savePrescription()">调整处方</button>
+                <button class="btn btn-primary" onclick="continueAndSave()">继续保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-non-force" id="medium-risk-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><span class="risk-icon medium">!</span>中风险预警提示</h3>
+                <button class="modal-close" onclick="closeModal('medium-risk-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- 患者摘要信息 -->
+                <div class="patient-summary">
+                    <p><strong>患者：</strong>王晓明，男性，65岁</p>
+                    <p><strong>诊断：</strong>冠心病、高血压2级、2型糖尿病、急性支气管炎</p>
+                </div>
+                
+                <!-- 引导语 -->
+                <p class="guidance-text">系统检测到当前处方存在以下风险问题，请核对处理：</p>
+                
+                <!-- 中风险预警卡片 -->
+                <div class="risk-card medium">
+                    <div class="risk-card-header">
+                        <span class="risk-card-title medium">🟠 中风险预警</span>
+                        <span class="risk-card-drug"><a href="#" class="drug-link" onclick="showDrugRule('苯磺酸氨氯地平片'); return false;">苯磺酸氨氯地平片</a></span>
+                        <span class="risk-card-rule">医保规定 - 慢病长处方超量</span>
+                    </div>
+                    <div class="risk-card-content">
+                        <p>处方中【<a href="#" class="drug-link" onclick="showDrugRule('苯磺酸氨氯地平片'); return false;">苯磺酸氨氯地平片</a>】本次开具数量为 90天 用量，超出了本地医保对高血压慢病长处方单次最多 75天 的限量规定。</p>
+                    </div>
+                    <!-- <div class="risk-card-reason">
+                        <p>超出医保单次限量规定，超出部分的药品费用（15天量）可能无法按慢病待遇报销，或在上传费用时导致整张处方审核失败。</p>
+                    </div> -->
+                    <div class="risk-card-suggestion">
+                        <p>建议将药品数量调整为符合 75天 用量的数量（例如：2盒共56片，或按单片计算的75片）。</p>
+                    </div>
+                </div>
+                
+                <!-- 低风险预警卡片 -->
+                <div class="risk-card low">
+                    <div class="risk-card-header">
+                        <span class="risk-card-title low">🔵 低风险提示</span>
+                        <span class="risk-card-drug"><a href="#" class="drug-link" onclick="showDrugRule('华法林钠片'); return false;">华法林钠片</a></span>
+                        <span class="risk-card-rule">合理用药 - 缺少必要监测</span>
+                    </div>
+                    <div class="risk-card-content">
+                        <p>您开具了口服抗凝药物【<a href="#" class="drug-link" onclick="showDrugRule('华法林钠片'); return false;">华法林钠片</a>】，但本次就诊的医嘱中未包含必要的凝血功能监测项目。</p>
+                    </div>
+                    <!-- <div class="risk-card-reason">
+                        <p>华法林治疗窗窄，其抗凝效果个体差异大且易受多种因素影响。根据临床指南，<strong>需定期监测凝血酶原时间国际标准化比值（INR）</strong>以调整剂量，有效预防出血或血栓事件。</p>
+                    </div> -->
+                    <div class="risk-card-suggestion">
+                        <p>建议为患者追加开具 [凝血功能(PT/INR)] 检查。如下次复诊时监测，请在病程中注明。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="ignoreAndSave()">忽略并保存</button>
+                <button class="btn btn-primary" onclick="adjustPrescription()">调整处方（推荐）</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal modal-force" id="high-risk-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><span class="risk-icon high">!</span>高风险预警提示</h3>
+                <!-- 高风险弹窗无关闭按钮，强制用户处理 -->
+            </div>
+            <div class="modal-body">
+                <!-- 患者摘要信息 -->
+                <div class="patient-summary">
+                    <p><strong>患者：</strong>王晓明，男性，65岁</p>
+                    <p><strong>诊断：</strong>冠心病、高血压2级、2型糖尿病、急性支气管炎</p>
+                </div>
+                
+                <!-- 引导语 -->
+                <p class="guidance-text">系统检测到当前处方存在以下 5 个问题，请逐一核对处理：</p>
+                
+                <!-- 风险卡片一：高风险 -->
+                <div class="risk-card high">
+                    <div class="risk-card-header">
+                        <span class="risk-card-title high">🔴 高风险预警</span>
+                        <span class="risk-card-drug"><a href="#" class="drug-link" onclick="showDrugRule('头孢克洛胶囊'); return false;">头孢克洛胶囊</a></span>
+                        <span class="risk-card-rule">合理用药 - 禁忌症 (过敏史)</span>
+                    </div>
+                    <div class="risk-card-content">
+                        <p>处方中【<a href="#" class="drug-link" onclick="showDrugRule('头孢克洛胶囊'); return false;">头孢克洛胶囊</a>】与患者电子病历中明确记载的【青霉素过敏史】存在潜在的交叉过敏风险！</p>
+                    </div>
+                    <!-- <div class="risk-card-reason">
+                        <p>头孢菌素类药物（如头孢克洛）与青霉素类药物化学结构相似，临床数据显示约有5-10%的交叉过敏反应率。此类反应可能非常严重，包括引发过敏性休克，危及生命。</p>
+                    </div> -->
+                    <div class="risk-card-suggestion">
+                        <p>立即停止使用此药物！请更换为大环内酯类（如阿奇霉素）、喹诺酮类（如左氧氟沙星）等无交叉过敏风险的替代抗菌药物。</p>
+                    </div>
+                </div>
+                
+                <!-- 风险卡片二：中风险 -->
+                <div class="risk-card medium">
+                    <div class="risk-card-header">
+                        <span class="risk-card-title medium">🟠 中风险预警</span>
+                        <span class="risk-card-drug"><a href="#" class="drug-link" onclick="showDrugRule('苯磺酸氨氯地平片'); return false;">苯磺酸氨氯地平片</a></span>
+                        <span class="risk-card-rule">医保规定 - 慢病长处方超量</span>
+                    </div>
+                    <div class="risk-card-content">
+                        <p>处方中【<a href="#" class="drug-link" onclick="showDrugRule('苯磺酸氨氯地平片'); return false;">苯磺酸氨氯地平片</a>】本次开具数量为 90天 用量，超出了本地医保对高血压慢病长处方单次最多 75天 的限量规定。</p>
+                    </div>
+                    <!-- <div class="risk-card-reason">
+                        <p>超出医保单次限量规定，超出部分的药品费用（15天量）可能无法按慢病待遇报销，或在上传费用时导致整张处方审核失败。</p>
+                    </div> -->
+                    <div class="risk-card-suggestion">
+                        <p>建议将药品数量调整为符合 75天 用量的数量（例如：2盒共56片，或按单片计算的75片）。</p>
+                    </div>
+                </div>
+                
+                <!-- 风险卡片三：中风险 -->
+                <div class="risk-card medium">
+                    <div class="risk-card-header">
+                        <span class="risk-card-title medium">🟠 中风险预警</span>
+                        <span class="risk-card-drug"><a href="#" class="drug-link" onclick="showDrugRule('苯磺酸氨氯地平片'); return false;">苯磺酸氨氯地平片</a></span>
+                        <span class="risk-card-rule">合理用药 - 重复用药</span>
+                    </div>
+                    <div class="risk-card-content">
+                        <p>系统检测到患者长期服用药物清单中包含【<a href="#" class="drug-link" onclick="showDrugRule('尼群地平片'); return false;">尼群地平片</a>】，而本次处方中的【<a href="#" class="drug-link" onclick="showDrugRule('苯磺酸氨氯地平片'); return false;">苯磺酸氨氯地平片</a>】 作用机制完全一致（均通过阻滞血管平滑肌钙通道扩张血管、降低血压，或缓解心绞痛）。</p>
+                    </div>
+                    <!-- <div class="risk-card-reason">
+                        <p>两者作用机制完全一致 —— 均通过阻滞血管平滑肌细胞膜上的钙通道，扩张外周血管以降低血压，或缓解冠状动脉痉挛以改善心绞痛。二者联用相当于 “同类药物叠加”，不会增强治疗效果，反而会放大药物对身体的作用，导致不良反应发生率和严重程度显著上升：</p>
+                    </div> -->
+                    <div class="risk-card-suggestion">
+                        <p>请评估并停用其中一种药物。</p>
+                    </div>
+                </div>
+                
+                <!-- 风险卡片四：低风险 -->
+                <div class="risk-card low">
+                    <div class="risk-card-header">
+                        <span class="risk-card-title low">🔵 低风险提示</span>
+                        <span class="risk-card-drug"><a href="#" class="drug-link" onclick="showDrugRule('华法林钠片'); return false;">华法林钠片</a></span>
+                        <span class="risk-card-rule">合理用药 - 缺少必要监测</span>
+                    </div>
+                    <div class="risk-card-content">
+                        <p>您开具了口服抗凝药物【<a href="#" class="drug-link" onclick="showDrugRule('华法林钠片'); return false;">华法林钠片</a>】，但本次就诊的医嘱中未包含必要的凝血功能监测项目。</p>
+                    </div>
+                    <!-- <div class="risk-card-reason">
+                        <p>华法林治疗窗窄，其抗凝效果个体差异大且易受多种因素影响。根据临床指南，<strong>需定期监测凝血酶原时间国际标准化比值（INR）</strong>以调整剂量，有效预防出血或血栓事件。</p>
+                    </div> -->
+                    <div class="risk-card-suggestion">
+                        <p>建议为患者追加开具 [凝血功能(PT/INR)] 检查。如下次复诊时监测，请在病程中注明。</p>
+                    </div>
+                </div>
+                
+                <!-- 风险卡片五：低风险 -->
+                <div class="risk-card low">
+                    <div class="risk-card-header">
+                        <span class="risk-card-title low">🔵 低风险提示</span>
+                        <span class="risk-card-drug"><a href="#" class="drug-link" onclick="showDrugRule('复方磷酸可待因溶液'); return false;">复方磷酸可待因溶液</a></span>
+                        <span class="risk-card-rule">合理用药 - 诊断支撑不足</span>
+                    </div>
+                    <div class="risk-card-content">
+                        <p>当前诊断'急性支气管炎'，不足以充分支撑使用中枢性镇咳药【<a href="#" class="drug-link" onclick="showDrugRule('复方磷酸可待因溶液'); return false;">复方磷酸可待因溶液</a>】。</p>
+                    </div>
+                    <!-- <div class="risk-card-reason">
+                        <p>复方磷酸可待因含有麻醉药品成分，具有潜在成瘾性。临床指南建议仅在常规祛痰、镇咳治疗无效，且剧烈干咳严重影响休息时才考虑短期使用。</p>
+                    </div> -->
+                    <div class="risk-card-suggestion">
+                        <p>建议在病程记录中详细描述咳嗽的性质、频率和严重程度，以支撑用药的医疗必要性；或考虑更换为非中枢性/非麻醉性的镇咳药物（如：右美沙芬）。</p>
+                    </div>
+                </div>
+                
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="high-risk-submit">调整处方</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 低风险悬浮提示（无干扰方式） -->
+    <div class="low-risk-tooltip" id="low-risk-tooltip">
+        <div class="tooltip-header">
+            <h4><span class="risk-icon low">!</span>低风险预警</h4>
+            <div class="tooltip-timer" id="tooltip-timer"></div>
+        </div>
+        <div class="tooltip-content">
+            <div class="patient-brief">
+                <p>患者：王晓明 (65岁/男)</p>
+                <p>诊断：冠心病、高血压2级、2型糖尿病、急性支气管炎</p>
+            </div>
+            <div class="risk-info">
+                <p><strong>轻度用药风险：</strong>辛伐他汀与氯吡格雷联合使用可能增加肌肉损伤风险</p>
+            </div>
+            <div class="risk-suggestion">
+                <p><strong>建议：</strong>密切监测患者肌酸激酶（CK）水平</p>
+            </div>
+        </div>
+        <div class="tooltip-footer">
+            <button class="btn btn-xs btn-secondary" onclick="closeLowRiskTooltip()">关闭</button>
+            <button class="btn btn-xs btn-primary" onclick="showDetailedLowRisk()">查看详情</button>
+        </div>
+    </div>
+
+    <script>
+        // 加载统一侧边栏
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            fetch('../组件/_unified-sidebar.html')
+                .then(response => response.text())
+                .then(html => {
+                    sidebarContainer.innerHTML = html;
+                    // 高亮当前菜单
+                    const currentMenuItem = document.querySelector('[data-menu="pre-warning"]');
+                    if (currentMenuItem) {
+                        currentMenuItem.classList.add('active');
+                    }
+                    // 初始化侧边栏交互
+                    initSidebar();
+                })
+                .catch(error => {
+                    console.error('加载侧边栏失败:', error);
+                });
+            
+            // 显示当前时间
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 60000);
+            
+            // 按钮点击事件已直接在HTML标签中通过onclick属性绑定
+        });
+        
+        // 初始化侧边栏
+        function initSidebar() {
+            // 侧边栏展开/折叠逻辑
+            const expandableItems = document.querySelectorAll('.nav-level-1.nav-expandable');
+            expandableItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const navGroup = this.closest('.nav-group');
+                    navGroup.classList.toggle('expanded');
+                });
+            });
+        }
+        
+        // 更新当前时间
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                timeElement.textContent = now.toLocaleTimeString('zh-CN');
+            }
+        }
+        
+        // 显示弹窗
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+        
+        // 关闭弹窗
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // 显示药品规则弹窗
+        function showDrugRule(drugName) {
+            const modal = document.getElementById('drug-rule-modal');
+            const drugNameElement = document.getElementById('drug-name-display');
+            const drugRulesElement = document.getElementById('drug-rules-content');
+            const drugStatusElement = document.querySelector('.drug-status');
+            
+            // 设置药品名称
+            drugNameElement.textContent = drugName;
+            
+            // 清空并重新设置药品状态标签
+            drugStatusElement.innerHTML = '';
+            drugStatusElement.innerHTML = '<span class="tag tag-info">处方药</span><span class="tag tag-warning">需审核</span>';
+            
+            // 根据药品名称添加对应的医保类别标签
+            if (drugName === '苯磺酸氨氯地平片') {
+                drugStatusElement.innerHTML += '<span class="tag tag-medical-b">医保乙类</span>';
+            } else if (drugName === '头孢克洛胶囊') {
+                drugStatusElement.innerHTML += '<span class="tag tag-medical-a">医保甲类</span>';
+            }
+            
+            // 根据药品名称生成对应的规则内容
+            let rulesHtml = '';
+            
+            if (drugName === '头孢克洛胶囊') {
+                rulesHtml = `
+                    <div class="drug-rule-section">
+                        <h4>适应症</h4>
+                        <ul class="drug-rule-list">
+                            <li>用于敏感菌所致的呼吸系统、泌尿系统、耳鼻喉科及皮肤、软组织感染等。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>禁忌症</h4>
+                        <ul class="drug-rule-list">
+                            <li>对本品及其他头孢菌素类过敏者禁用。</li>
+                            <li>对青霉素类、青霉素衍生物或青霉胺有过敏史者慎用。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>药物相互作用</h4>
+                        <ul class="drug-rule-list">
+                            <li>与强利尿剂（如呋塞米）、抗肿瘤药（如卡氮芥）、氨基糖苷类抗生素及多粘菌素E等合用，有增加肾毒性的可能。</li>
+                            <li>与丙磺舒合用，可延迟本品的排泄。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>注意事项</h4>
+                        <ul class="drug-rule-list">
+                            <li>长期使用本品可致菌群失调，引发继发性感染。</li>
+                            <li>有胃肠道疾病史者，特别是溃疡性结肠炎、局限性肠炎或抗生素相关性结肠炎者慎用。</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (drugName === '苯磺酸氨氯地平片') {
+                rulesHtml = `
+                    <div class="drug-rule-section">
+                        <h4>适应症</h4>
+                        <ul class="drug-rule-list">
+                            <li>高血压（单独或与其他药物合并使用）。</li>
+                            <li>冠心病（慢性稳定性心绞痛、血管痉挛性心绞痛、经血管造影证实的冠心病）。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>禁忌症</h4>
+                        <ul class="drug-rule-list">
+                            <li>对二氢吡啶类药物或本品中任何成分过敏的病人禁用。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>药物相互作用</h4>
+                        <ul class="drug-rule-list">
+                            <li>与其他降压药合用时可加强降压作用。</li>
+                            <li>与雌激素合用时可增加液体潴留而增高血压。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>医保规定</h4>
+                        <ul class="drug-rule-list">
+                            <li>高血压慢病长处方单次最多开具75天用量。</li>
+                            <li>属于国家医保目录乙类药品。</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (drugName === '捷诺维 (西格列汀二甲双胍片)') {
+                rulesHtml = `
+                    <div class="drug-rule-section">
+                        <h4>适应症</h4>
+                        <ul class="drug-rule-list">
+                            <li>配合饮食和运动治疗，用于经二甲双胍单药治疗血糖仍控制不佳或正在接受二者联合治疗的2型糖尿病患者。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>禁忌症</h4>
+                        <ul class="drug-rule-list">
+                            <li>肾病或肾功能异常，即血清肌酐水平≥1.5mg/dL（男性）、≥1.4mg/dL（女性），或肌酐清除率异常。</li>
+                            <li>急性或慢性代谢性酸中毒，包括有或无昏迷的糖尿病酮症酸中毒。</li>
+                            <li>对本品中任何成分过敏者。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>药物相互作用</h4>
+                        <ul class="drug-rule-list">
+                            <li>与其他降糖药合用时，可能会增加低血糖的风险。</li>
+                            <li>与利福平合用可能降低西格列汀的疗效。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>注意事项</h4>
+                        <ul class="drug-rule-list">
+                            <li>本品含有二甲双胍成分，不应与其他含二甲双胍的药物合用，以免导致二甲双胍剂量过大。</li>
+                            <li>定期监测肾功能。</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (drugName === '盐酸二甲双胍片') {
+                rulesHtml = `
+                    <div class="drug-rule-section">
+                        <h4>适应症</h4>
+                        <ul class="drug-rule-list">
+                            <li>用于单纯饮食控制不满意的2型糖尿病病人，尤其是肥胖和伴高胰岛素血症者。</li>
+                            <li>可与磺酰脲类降血糖药合用，具协同作用。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>禁忌症</h4>
+                        <ul class="drug-rule-list">
+                            <li>2型糖尿病伴有酮症酸中毒、肝肾功能不全、心力衰竭、急性心肌梗死、严重感染和外伤、重大手术以及临床有低血压和缺氧情况。</li>
+                            <li>糖尿病合并严重的慢性并发症（如糖尿病肾病、糖尿病眼底病变）。</li>
+                            <li>对本品过敏者。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>注意事项</h4>
+                        <ul class="drug-rule-list">
+                            <li>定期检查肾功能、肝功能和血糖。</li>
+                            <li>既往有乳酸性酸中毒史者慎用。</li>
+                            <li>与胰岛素合用治疗时，防止出现低血糖反应。</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (drugName === '华法林钠片') {
+                rulesHtml = `
+                    <div class="drug-rule-section">
+                        <h4>适应症</h4>
+                        <ul class="drug-rule-list">
+                            <li>预防及治疗深静脉血栓及肺栓塞。</li>
+                            <li>预防心肌梗塞后血栓栓塞并发症（卒中或体循环栓塞）。</li>
+                            <li>预防房颤、心脏瓣膜置换术后引起的血栓栓塞并发症（卒中或体循环栓塞）。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>禁忌症</h4>
+                        <ul class="drug-rule-list">
+                            <li>肝肾功能损害、严重高血压、凝血功能障碍伴有出血倾向、活动性溃疡、外伤、先兆流产、近期手术者禁用。</li>
+                            <li>妊娠期禁用。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>药物相互作用</h4>
+                        <ul class="drug-rule-list">
+                            <li>与阿司匹林、非甾体抗炎药、右旋糖酐等合用，可增强华法林的抗凝作用。</li>
+                            <li>与肝药酶诱导剂（如苯巴比妥、苯妥英钠等）合用，可减弱华法林的抗凝作用。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>监测要求</h4>
+                        <ul class="drug-rule-list">
+                            <li><strong>必须定期监测凝血酶原时间国际标准化比值（INR）</strong>，目标值通常为2.0-3.0。</li>
+                            <li>治疗初期应每日或隔日测定INR，稳定后可每周测定一次，再稳定后可每月测定一次。</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (drugName === '辛伐他汀片') {
+                rulesHtml = `
+                    <div class="drug-rule-section">
+                        <h4>适应症</h4>
+                        <ul class="drug-rule-list">
+                            <li>用于高胆固醇血症、冠心病等疾病的治疗。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>禁忌症</h4>
+                        <ul class="drug-rule-list">
+                            <li>对本品过敏者禁用。</li>
+                            <li>活动性肝病或不明原因血氨基转移酶持续升高的患者禁用。</li>
+                            <li>孕妇及哺乳期妇女禁用。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>药物相互作用</h4>
+                        <ul class="drug-rule-list">
+                            <li>与氯吡格雷合用可能增加肌肉损伤风险。</li>
+                            <li>与红霉素、克拉霉素等大环内酯类抗生素合用可能增加肌病风险。</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (drugName === '氯吡格雷片') {
+                rulesHtml = `
+                    <div class="drug-rule-section">
+                        <h4>适应症</h4>
+                        <ul class="drug-rule-list">
+                            <li>用于心肌梗死、缺血性卒中、外周动脉性疾病、急性冠脉综合征等。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>禁忌症</h4>
+                        <ul class="drug-rule-list">
+                            <li>对本品过敏者禁用。</li>
+                            <li>严重肝脏损害患者禁用。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>药物相互作用</h4>
+                        <ul class="drug-rule-list">
+                            <li>与辛伐他汀合用可能增加肌肉损伤风险。</li>
+                            <li>与奥美拉唑等质子泵抑制剂合用可能降低疗效。</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (drugName === '复方磷酸可待因溶液') {
+                rulesHtml = `
+                    <div class="drug-rule-section">
+                        <h4>适应症</h4>
+                        <ul class="drug-rule-list">
+                            <li>用于感冒、流行性感冒等病引起的咳嗽。</li>
+                            <li>用于刺激性干咳，尤其适用于伴有胸痛的剧烈咳嗽。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>禁忌症</h4>
+                        <ul class="drug-rule-list">
+                            <li>对本品成分过敏者禁用。</li>
+                            <li>哺乳期妇女禁用。</li>
+                            <li>18岁以下青少年儿童禁用。</li>
+                            <li>患有严重高血压、冠心病或正服用单胺氧化酶抑制剂的患者禁用。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>注意事项</h4>
+                        <ul class="drug-rule-list">
+                            <li>本品含有麻醉药品成分（可待因），具有潜在成瘾性，应严格控制使用剂量和疗程。</li>
+                            <li>临床指南建议仅在常规祛痰、镇咳治疗无效，且剧烈干咳严重影响休息时才考虑短期使用。</li>
+                            <li>应在病程记录中详细描述咳嗽的性质、频率和严重程度，以支撑用药的医疗必要性。</li>
+                        </ul>
+                    </div>
+                    <div class="drug-rule-section">
+                        <h4>替代药物</h4>
+                        <ul class="drug-rule-list">
+                            <li>可考虑使用非中枢性/非麻醉性的镇咳药物，如右美沙芬。</li>
+                            <li>对于有痰咳嗽，应优先使用祛痰药而非镇咳药。</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                rulesHtml = `
+                    <div class="drug-rule-section">
+                        <h4>药品信息</h4>
+                        <ul class="drug-rule-list">
+                            <li>暂无该药品的详细规则信息。</li>
+                            <li>请参考药品说明书或咨询临床药师。</li>
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // 设置规则内容
+            drugRulesElement.innerHTML = rulesHtml;
+            
+            // 显示弹窗
+            modal.style.display = 'flex';
+        }
+        
+        // 显示低风险悬浮提示（无干扰模式）
+        function showLowRiskTooltip() {
+            const tooltip = document.getElementById('low-risk-tooltip');
+            const btn = document.getElementById('low-risk-btn');
+            const timer = document.getElementById('tooltip-timer');
+            
+            // 计算提示框位置
+            const rect = btn.getBoundingClientRect();
+            tooltip.style.top = `${rect.bottom + 10}px`;
+            tooltip.style.left = `${rect.left}px`;
+            
+            // 显示提示框
+            tooltip.style.display = 'block';
+            
+            // 重置计时器宽度
+            timer.style.width = '100%';
+            
+            // 设置8秒自动消失倒计时
+            const totalTime = 8000;
+            const interval = 50;
+            const step = (interval / totalTime) * 100;
+            let currentWidth = 100;
+            
+            const countdown = setInterval(() => {
+                currentWidth -= step;
+                timer.style.width = `${currentWidth}%`;
+                
+                if (currentWidth <= 0) {
+                    clearInterval(countdown);
+                    tooltip.style.display = 'none';
+                }
+            }, interval);
+            
+            // 悬停时暂停计时，移开时继续计时
+            let isPaused = false;
+            let remainingTime = totalTime;
+            
+            tooltip.addEventListener('mouseenter', function() {
+                if (!isPaused) {
+                    clearInterval(countdown);
+                    remainingTime = currentWidth * totalTime / 100;
+                    isPaused = true;
+                }
+            });
+            
+            tooltip.addEventListener('mouseleave', function() {
+                if (isPaused) {
+                    isPaused = false;
+                    const newCountdown = setInterval(() => {
+                        remainingTime -= interval;
+                        currentWidth = (remainingTime / totalTime) * 100;
+                        timer.style.width = `${currentWidth}%`;
+                        
+                        if (remainingTime <= 0) {
+                            clearInterval(newCountdown);
+                            tooltip.style.display = 'none';
+                        }
+                    }, interval);
+                }
+            });
+        }
+        
+        // 关闭低风险悬浮提示
+        function closeLowRiskTooltip() {
+            const tooltip = document.getElementById('low-risk-tooltip');
+            tooltip.style.display = 'none';
+        }
+        
+        // 显示低风险详情弹窗
+        function showDetailedLowRisk() {
+            closeLowRiskTooltip();
+            showModal('low-risk-modal');
+        }
+        
+        // 高风险弹窗二次确认逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('high-risk-submit')) {
+                document.getElementById('high-risk-submit').addEventListener('click', function() {
+                    // 点击按钮只关闭当前弹窗，不再显示其他提示
+                    closeModal('high-risk-modal');
+                });
+            }
+        });
+        
+        // 保存处方
+        function savePrescription() {
+            // 直接关闭当前弹窗，不再显示其他提示
+            closeModal('low-risk-modal');
+        }
+        
+        // 添加药品
+        function addMedication() {
+            const name = document.getElementById('medication-name').value;
+            const dose = document.getElementById('medication-dose').value;
+            const unit = document.getElementById('medication-unit').value;
+            const usage = document.getElementById('medication-usage').value;
+            const frequency = document.getElementById('medication-frequency').value;
+            
+            if (name && dose && usage && frequency) {
+                const tableBody = document.getElementById('medication-list');
+                const newRow = document.createElement('tr');
+                const randomPrice = (Math.random() * 50 + 5).toFixed(2);
+                
+                newRow.innerHTML = `
+                    <td>${name}</td>
+                    <td>${dose}${unit}</td>
+                    <td>${usage}</td>
+                    <td>${frequency}</td>
+                    <td>¥${randomPrice}</td>
+                    <td><button class="btn btn-secondary" onclick="removeMedication(this)">删除</button></td>
+                `;
+                
+                tableBody.appendChild(newRow);
+                
+                // 清空输入框
+                document.getElementById('medication-name').value = '';
+                document.getElementById('medication-dose').value = '';
+                document.getElementById('medication-usage').value = '';
+                document.getElementById('medication-frequency').value = '';
+            } else {
+                alert('请填写完整的药品信息');
+            }
+        }
+        
+        // 删除药品
+        function removeMedication(button) {
+            const row = button.closest('tr');
+            row.remove();
+        }
+        
+        // 调整处方
+        function adjustPrescription() {
+            closeModal('medium-risk-modal');
+        }
+        
+        // 清空处方
+        function clearPrescription() {
+            const tableBody = document.getElementById('medication-list');
+            tableBody.innerHTML = '';
+        }
+        
+        // 中风险弹窗 - 忽略并保存操作
+        function ignoreAndSave() {
+            // 显示提示信息
+            alert('调用his处方保存接口，不再进行拦截');
+            // 关闭弹窗
+            closeModal('medium-risk-modal');
+        }
+        
+        // 低风险弹窗 - 继续保存操作
+        function continueAndSave() {
+            // 显示提示信息
+            alert('调用his处方保存接口，不再进行拦截');
+            // 关闭弹窗
+            closeModal('low-risk-modal');
+        }
+        
+        // 点击空白处关闭弹窗
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+        
+        <!-- 药品规则弹窗 -->
+        <div class="modal" id="drug-rule-modal" style="display: none;">
+            <div class="modal-content drug-rule-modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title"><span class="risk-icon medium">!</span>药品规则详情</h3>
+                    <button class="modal-close" onclick="closeModal('drug-rule-modal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="drug-info-header">
+                        <h2 class="drug-name-large" id="drug-name-display"></h2>
+                        <div class="drug-status">
+                            <!-- 药品状态标签将通过JavaScript动态填充 -->
+                        </div>
+                    </div>
+                    
+                    <!-- 药品规则内容将通过JavaScript动态填充 -->
+                    <div id="drug-rules-content"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="closeModal('drug-rule-modal')">关闭</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
