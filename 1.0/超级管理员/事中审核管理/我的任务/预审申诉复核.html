@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预审申诉复核 - 医保审核系统</title>
+    <link rel="stylesheet" href="/1.0/样式文件/通用样式.css">
+    <link rel="stylesheet" href="/1.0/样式文件/unified-sidebar.css">
+    <link rel="stylesheet" href="/1.0/样式文件/表单样式.css">
+    <style>
+        /* 预审申诉复核页特有样式 */
+        .appeal-review-layout {
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 20px;
+            height: calc(100vh - 150px);
+        }
+        
+        /* 左侧医生理由和病历上下文 */
+        .doctor-reason-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-header {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+        }
+        
+        .section-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .patient-basic-info {
+            background-color: #f5f5f5;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .patient-info-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .patient-info-label {
+            width: 100px;
+            color: #8c8c8c;
+            font-size: 14px;
+        }
+        
+        .patient-info-value {
+            flex: 1;
+            color: #262626;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .appeal-item {
+            border: 1px solid #f0f0f0;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+        
+        .appeal-item-header {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            background-color: #fafafa;
+        }
+        
+        .appeal-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+        
+        .appeal-item-meta {
+            font-size: 12px;
+            color: #8c8c8c;
+        }
+        
+        .appeal-item-content {
+            padding: 16px;
+        }
+        
+        .original-issue {
+            margin-bottom: 16px;
+        }
+        
+        .issue-title {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-bottom: 4px;
+        }
+        
+        .issue-content {
+            font-size: 14px;
+            color: #262626;
+            padding: 12px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+        
+        .doctor-reason {
+            margin-bottom: 16px;
+        }
+        
+        .reason-title {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-bottom: 4px;
+        }
+        
+        .reason-content {
+            font-size: 14px;
+            color: #262626;
+            padding: 12px;
+            background-color: #e6f7ff;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+        
+        .medical-context {
+            margin-bottom: 8px;
+        }
+        
+        .context-title {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-bottom: 4px;
+        }
+        
+        .context-content {
+            font-size: 14px;
+            color: #262626;
+            padding: 12px;
+            background-color: #fff7e6;
+            border-radius: 4px;
+        }
+        
+        /* 右侧裁决操作区 */
+        .decision-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .decision-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .decision-form {
+            margin-bottom: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #262626;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+        
+        .form-textarea:focus {
+            outline: none;
+            border-color: #1890ff;
+        }
+        
+        .decision-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn-decision {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-approve {
+            background-color: #52c41a;
+            color: white;
+        }
+        
+        .btn-approve:hover {
+            background-color: #73d13d;
+        }
+        
+        .btn-reject {
+            background-color: #ff4d4f;
+            color: white;
+        }
+        
+        .btn-reject:hover {
+            background-color: #ff7875;
+        }
+        
+        .btn-transfer {
+            background-color: #bfbfbf;
+            color: white;
+        }
+        
+        .btn-transfer:hover {
+            background-color: #d9d9d9;
+        }
+        
+        /* 驳回理由弹窗 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            margin-bottom: 16px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #262626;
+        }
+        
+        .modal-body {
+            margin-bottom: 24px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        .btn-secondary {
+            padding: 8px 20px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+        
+        .btn-primary {
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #40a9ff;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .appeal-review-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .doctor-reason-section, 
+            .decision-section {
+                height: auto;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-navbar">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="icon-menu"></i>
+                </button>
+                <div class="breadcrumb">
+                    <a href="/1.0/超级管理员/工作台">工作台</a>
+                    <span class="separator">></span>
+                    <a href="/1.0/超级管理员/事中审核管理/医保办工作台">医保办工作台</a>
+                    <span class="separator">></span>
+                    <span>预审申诉复核</span>
+                </div>
+            </div>
+            
+            <div class="container">
+                <!-- 页面头部 -->
+                <div class="page-header">
+                    <a href="/1.0/超级管理员/事中审核管理/医保办工作台" class="back-link">返回工作台</a>
+                    <h1>预审申诉复核 - 患者【张三】</h1>
+                    <div class="task-overview">
+                        申请医生：<span class="highlight">王医生</span> • 申请时间：2025-08-13 15:30 • 审核人：<span class="highlight">李审核</span>
+                    </div>
+                </div>
+                
+                <!-- 主布局 -->
+                <div class="appeal-review-layout">
+                    <!-- 左侧医生理由和病历上下文 -->
+                    <div class="doctor-reason-section">
+                        <div class="section-header">
+                            <div class="section-title">医生补充理由与病历上下文</div>
+                        </div>
+                        
+                        <div class="section-content">
+                            <!-- 患者基本信息 -->
+                            <div class="patient-basic-info">
+                                <div class="patient-info-row">
+                                    <div class="patient-info-label">住院号</div>
+                                    <div class="patient-info-value">ZY20230810</div>
+                                </div>
+                                <div class="patient-info-row">
+                                    <div class="patient-info-label">床号</div>
+                                    <div class="patient-info-value">01床</div>
+                                </div>
+                                <div class="patient-info-row">
+                                    <div class="patient-info-label">年龄</div>
+                                    <div class="patient-info-value">65岁</div>
+                                </div>
+                                <div class="patient-info-row">
+                                    <div class="patient-info-label">性别</div>
+                                    <div class="patient-info-value">男</div>
+                                </div>
+                                <div class="patient-info-row">
+                                    <div class="patient-info-label">科室</div>
+                                    <div class="patient-info-value">心内科</div>
+                                </div>
+                                <div class="patient-info-row">
+                                    <div class="patient-info-label">主要诊断</div>
+                                    <div class="patient-info-value">冠心病</div>
+                                </div>
+                            </div>
+                            
+                            <!-- 申诉项1 -->
+                            <div class="appeal-item">
+                                <div class="appeal-item-header">
+                                    <div class="appeal-item-title">高风险：住院天数超出医保限制</div>
+                                    <div class="appeal-item-meta">申请医生：王医生 • 申请时间：2025-08-13 15:30</div>
+                                </div>
+                                <div class="appeal-item-content">
+                                    <div class="original-issue">
+                                        <div class="issue-title">原始问题描述</div>
+                                        <div class="issue-content">
+                                            患者本次住院已达7天，根据医保政策，冠心病患者单次住院一般不超过7天，请确认是否有延长住院的必要。
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="doctor-reason">
+                                        <div class="reason-title">医生补充理由</div>
+                                        <div class="reason-content">
+                                            患者为老年冠心病患者，合并高血压2级，住院期间出现心律失常，需要密切监测心功能变化。目前患者心率仍不稳定，时有早搏出现，建议延长住院观察3天，待病情稳定后再出院。
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="medical-context">
+                                        <div class="context-title">相关病历上下文</div>
+                                        <div class="context-content">
+                                            2025-08-12 14:30 病程记录：患者今日出现阵发性心悸，心电图显示偶发室性早搏，给予美托洛尔25mg bid治疗，建议继续观察心率变化。
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="medical-context">
+                                        <div class="context-content">
+                                            2025-08-13 10:00 心电图报告：窦性心律，偶发室性早搏，较昨日有所减少。
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 右侧裁决操作区 -->
+                    <div class="decision-section">
+                        <div class="section-header">
+                            <div class="section-title">审核裁决</div>
+                        </div>
+                        
+                        <div class="decision-content">
+                            <!-- 审核意见表单 -->
+                            <div class="decision-form">
+                                <div class="form-group">
+                                    <label class="form-label">审核意见（选填）</label>
+                                    <textarea class="form-textarea" id="audit-comment" placeholder="请输入审核意见..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- 裁决操作按钮 -->
+                            <div class="decision-actions">
+                                <button class="btn-decision btn-approve" onclick="approveAppeal()">同意申诉，本次合规</button>
+                                <button class="btn-decision btn-reject" onclick="openRejectModal()">驳回申诉，退回修改</button>
+                                <button class="btn-decision btn-transfer" onclick="transferToSelfPay()">转为院内承担/自费</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 驳回理由弹窗 -->
+    <div class="modal" id="reject-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">驳回理由</div>
+            </div>
+            <div class="modal-body">
+                <textarea id="reject-reason" class="form-textarea" placeholder="请输入驳回理由，以便医生了解需要如何修改..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeRejectModal()">取消</button>
+                <button class="btn-primary" onclick="confirmReject()">确认驳回</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 加载统一菜单组件 -->
+    <script>
+        // 加载统一侧边栏
+        fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const sidebarContainer = document.getElementById('sidebar-container');
+                sidebarContainer.innerHTML = html;
+                // 手动执行插入的脚本
+                const scripts = sidebarContainer.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.head.appendChild(newScript);
+                    script.remove();
+                });
+                // 等待脚本执行后再初始化菜单
+                setTimeout(() => {
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    }
+                    // 设置当前页面的菜单项为激活状态
+                    if (typeof setActiveMenu === 'function') {
+                        setActiveMenu();
+                    }
+                }, 100);
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+        
+        // 切换侧边栏显示/隐藏
+        function toggleSidebar() {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            const mainContent = document.querySelector('.main-content');
+            
+            if (sidebarContainer.classList.contains('collapsed')) {
+                sidebarContainer.classList.remove('collapsed');
+                mainContent.style.marginLeft = '260px';
+            } else {
+                sidebarContainer.classList.add('collapsed');
+                mainContent.style.marginLeft = '0';
+            }
+        }
+        
+        // 同意申诉
+        function approveAppeal() {
+            const auditComment = document.getElementById('audit-comment').value;
+            
+            // 在实际应用中，这里应该向服务器发送请求，记录审核结果
+            console.log('同意申诉', { auditComment });
+            
+            alert('已同意申诉，问题项已关闭，流程继续。');
+            window.location.href = '/1.0/超级管理员/事中审核管理/医保办工作台';
+        }
+        
+        // 打开驳回理由弹窗
+        function openRejectModal() {
+            document.getElementById('reject-modal').style.display = 'flex';
+        }
+        
+        // 关闭驳回理由弹窗
+        function closeRejectModal() {
+            document.getElementById('reject-modal').style.display = 'none';
+            document.getElementById('reject-reason').value = '';
+        }
+        
+        // 确认驳回
+        function confirmReject() {
+            const rejectReason = document.getElementById('reject-reason').value;
+            const auditComment = document.getElementById('audit-comment').value;
+            
+            if (!rejectReason.trim()) {
+                alert('请输入驳回理由');
+                return;
+            }
+            
+            // 在实际应用中，这里应该向服务器发送请求，记录驳回结果并重新派发任务
+            console.log('驳回申诉', { rejectReason, auditComment });
+            
+            alert('已驳回申诉，任务将重新派发回原处理医生。');
+            window.location.href = '/1.0/超级管理员/事中审核管理/医保办工作台';
+        }
+        
+        // 转为院内承担/自费
+        function transferToSelfPay() {
+            const auditComment = document.getElementById('audit-comment').value;
+            
+            // 在实际应用中，这里应该向服务器发送请求，记录责任划分结果
+            console.log('转为院内承担/自费', { auditComment });
+            
+            alert('已将费用转为院内承担/自费，流程结束。');
+            window.location.href = '/1.0/超级管理员/事中审核管理/医保办工作台';
+        }
+        
+        // 点击弹窗外部关闭弹窗
+        window.addEventListener('click', function(event) {
+            const rejectModal = document.getElementById('reject-modal');
+            if (event.target === rejectModal) {
+                closeRejectModal();
+            }
+        });
+    </script>
+</body>
+</html>

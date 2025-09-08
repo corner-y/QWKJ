@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史裁决详情 - 医保审核系统</title>
+    <link rel="stylesheet" href="/1.0/样式文件/通用样式.css">
+    <link rel="stylesheet" href="/1.0/样式文件/unified-sidebar.css">
+    <link rel="stylesheet" href="/1.0/样式文件/表单样式.css">
+    <style>
+        /* 历史裁决详情页特有样式 */
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        /* 左侧患者信息 */
+        .patient-info {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .patient-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 16px;
+        }
+        
+        .patient-meta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        
+        .patient-meta-label {
+            color: #8c8c8c;
+        }
+        
+        .patient-meta-value {
+            color: #262626;
+            font-weight: 500;
+        }
+        
+        /* 右侧裁决详情 */
+        .decision-detail {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .detail-header {
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+        
+        .detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 14px;
+            color: #8c8c8c;
+        }
+        
+        .detail-section {
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .section-content {
+            font-size: 14px;
+            color: #595959;
+            line-height: 1.6;
+        }
+        
+        .highlight-box {
+            background-color: #f0f5ff;
+            border-left: 4px solid #1890ff;
+            padding: 12px 16px;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #595959;
+            line-height: 1.5;
+        }
+        
+        .process-step {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .process-step:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 6px;
+            width: 8px;
+            height: 8px;
+            background-color: #1890ff;
+            border-radius: 50%;
+        }
+        
+        .process-step:not(:last-child):after {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 16px;
+            bottom: -24px;
+            width: 2px;
+            background-color: #e8e8e8;
+        }
+        
+        .process-time {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-bottom: 4px;
+        }
+        
+        .process-content {
+            font-size: 14px;
+            color: #262626;
+        }
+        
+        .result-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 12px;
+        }
+        
+        .result-tag.approved {
+            background-color: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+        
+        .result-tag.rejected {
+            background-color: #fff1f0;
+            color: #ff4d4f;
+            border: 1px solid #ffccc7;
+        }
+        
+        .result-tag.hospital-pay {
+            background-color: #f5f5f5;
+            color: #8c8c8c;
+            border: 1px solid #d9d9d9;
+        }
+        
+        .btn-back {
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-back:hover {
+            background-color: #40a9ff;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .detail-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .patient-info,
+            .decision-detail {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-navbar">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="icon-menu"></i>
+                </button>
+                <div class="breadcrumb">
+                    <a href="/1.0/超级管理员/事中审核管理/我的任务/医保办任务列表.html">我的任务（医保办）</a>
+                    <span class="separator">></span>
+                    <span>历史裁决详情</span>
+                </div>
+            </div>
+            
+            <div class="container">
+                <!-- 页面头部 -->
+                <div class="page-header" style="margin-bottom: 20px;">
+
+                    <h1>历史裁决详情<span class="result-tag approved">同意申诉</span></h1>
+                </div>
+                
+                <!-- 主布局 -->
+                <div class="detail-layout">
+                    <!-- 左侧患者信息 -->
+                    <div class="patient-info">
+                        <div class="patient-name">赵六</div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">住院号</span>
+                            <span class="patient-meta-value">ZY20230805</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">床号</span>
+                            <span class="patient-meta-value">05床</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">年龄</span>
+                            <span class="patient-meta-value">58岁</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">性别</span>
+                            <span class="patient-meta-value">男</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">入院时间</span>
+                            <span class="patient-meta-value">2025-08-05</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">科室</span>
+                            <span class="patient-meta-value">消化内科</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">主治医生</span>
+                            <span class="patient-meta-value">孙医生</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">主要诊断</span>
+                            <span class="patient-meta-value">肝硬化失代偿期</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">医保类型</span>
+                            <span class="patient-meta-value">城镇职工</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 右侧裁决详情 -->
+                    <div class="decision-detail">
+                        <div class="detail-header">
+                            <div class="detail-title">关于"特殊检查项目"的医保支付</div>
+                            <div class="detail-meta">
+                                <span>原申诉医生：孙医生</span>
+                                <span>裁决人：周主任</span>
+                                <span>裁决时间：2025-08-12 15:30</span>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="section-title">问题概述</div>
+                            <div class="section-content">
+                                <p>患者赵六，诊断为肝硬化失代偿期，医生申请进行肝纤维化弹性成像检查（FibroScan），该检查项目不在常规医保支付范围内。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="section-title">医生补充理由</div>
+                            <div class="highlight-box">
+                                患者为肝硬化失代偿期，需要定期评估肝脏纤维化程度以指导治疗方案调整。FibroScan作为一种无创检查，能够准确评估肝脏硬度，对于判断疾病进展和治疗效果具有重要价值。虽然不在常规医保支付范围内，但符合患者的实际诊疗需求，建议予以特殊审批。
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="section-title">医保办审核意见</div>
+                            <div class="highlight-box">
+                                经审核，患者赵六诊断明确，FibroScan检查对于评估肝硬化程度和指导治疗具有重要临床价值。根据《医保特殊项目审批管理办法》第三条第五款规定，对于诊断明确且有明确临床需求的特殊检查项目，可以予以特殊审批。同意该检查项目的医保支付。
+                            </div>
+                        </div>
+                        
+                        <div class="detail-section">
+                            <div class="section-title">完整处理流程</div>
+                            <div class="process-step">
+                                <div class="process-time">2025-08-08 10:15</div>
+                                <div class="process-content">孙医生提交特殊检查项目申请</div>
+                            </div>
+                            <div class="process-step">
+                                <div class="process-time">2025-08-08 10:30</div>
+                                <div class="process-content">系统自动审核未通过，标记为待人工复核</div>
+                            </div>
+                            <div class="process-step">
+                                <div class="process-time">2025-08-08 11:00</div>
+                                <div class="process-content">孙医生补充申请理由</div>
+                            </div>
+                            <div class="process-step">
+                                <div class="process-time">2025-08-12 14:30</div>
+                                <div class="process-content">医保办周主任接收任务</div>
+                            </div>
+                            <div class="process-step">
+                                <div class="process-time">2025-08-12 15:30</div>
+                                <div class="process-content">周主任完成审核，同意申诉</div>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: center; margin-top: 40px;">
+                            <button class="btn-back" onclick="goBack()">返回历史列表</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 加载统一侧边栏
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
+        });
+        
+        // 加载侧边栏
+        function loadSidebar() {
+            fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('sidebar-container').innerHTML = html;
+                    
+                    // 延迟设置活动菜单项，确保DOM已完全加载
+                    setTimeout(() => {
+                        // 设置当前活动菜单项
+                        const currentMenu = document.querySelector('[data-menu="insurance-tasks"]');
+                        if (currentMenu) {
+                            currentMenu.classList.add('active');
+                            // 展开父级菜单
+                            const parentMenu = currentMenu.closest('.nav-group');
+                            if (parentMenu) {
+                                parentMenu.classList.add('expanded');
+                            }
+                        }
+                        
+                        if (typeof setActiveMenu === 'function') {
+                            setActiveMenu();
+                        }
+                    }, 100);
+                })
+                .catch(error => console.error('Error loading sidebar:', error));
+        }
+        
+        // 切换侧边栏显示/隐藏
+        function toggleSidebar() {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            const mainContent = document.querySelector('.main-content');
+            
+            if (sidebarContainer.classList.contains('collapsed')) {
+                sidebarContainer.classList.remove('collapsed');
+                mainContent.style.marginLeft = '260px';
+            } else {
+                sidebarContainer.classList.add('collapsed');
+                mainContent.style.marginLeft = '0';
+            }
+        }
+        
+        // 返回历史列表
+        function goBack() {
+            window.location.href = '/1.0/超级管理员/事中审核管理/我的任务/医保办任务列表.html';
+        }
+        
+        // 根据URL参数加载不同的历史详情数据
+        function loadHistoryData() {
+            // 获取URL中的任务ID参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const historyId = urlParams.get('id');
+            
+            // 在实际应用中，这里会根据historyId从服务器加载对应的历史数据
+            console.log(`加载历史详情数据，ID: ${historyId}`);
+            
+            // 模拟根据不同ID显示不同的裁决结果
+            if (historyId === 'history-002') {
+                document.querySelector('.result-tag').className = 'result-tag rejected';
+                document.querySelector('.result-tag').textContent = '驳回申诉';
+                document.querySelector('h1').innerHTML = '历史裁决详情<span class="result-tag rejected">驳回申诉</span>';
+            } else if (historyId === 'history-003') {
+                document.querySelector('.result-tag').className = 'result-tag hospital-pay';
+                document.querySelector('.result-tag').textContent = '转为院内承担';
+                document.querySelector('h1').innerHTML = '历史裁决详情<span class="result-tag hospital-pay">转为院内承担</span>';
+            }
+        }
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadHistoryData();
+        });
+    </script>
+</body>
+</html>

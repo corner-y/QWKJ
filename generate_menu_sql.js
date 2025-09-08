@@ -76,6 +76,15 @@ const menuData = {
         sort: '3',
         status: 'enabled'
     },
+    // 事前审核 - 新增一级菜单
+    '35': {
+        name: '事前审核',
+        icon: 'nav-icon-warning',
+        path: '/1.0/超级管理员/事前审核/',
+        parent: '0',
+        sort: '3.5',
+        status: 'enabled'
+    },
     '25': {
         name: '审核流程',
         icon: 'nav-icon-process',
@@ -273,15 +282,24 @@ const menuData = {
         sort: '2',
         status: 'enabled'
     },
-    '35': {
+    '36': {
         name: '耗材目录',
         icon: 'nav-icon-list',
         path: '/1.0/超级管理员/知识库/耗材目录.html',
         parent: '22',
         sort: '3',
         status: 'enabled'
+    },
+    // 事前智能预警模拟 - 新增二级菜单
+    '37': {
+        name: '事前智能预警模拟',
+        icon: 'nav-icon-simulation',
+        path: '/1.0/超级管理员/事前智能预警模拟/智能预警模拟.html',
+        parent: '35',
+        sort: '1',
+        status: 'enabled'
     }
-};
+    };
 
 // 生成当前时间戳
 function getCurrentTime() {

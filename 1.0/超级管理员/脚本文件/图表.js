@@ -1,6 +1,10 @@
 // 图表初始化管理器
 class ChartManager {
     constructor() {
+        // 确保全局只有一个图表管理器实例
+        if (window.chartManager) {
+            window.chartManager.destroyCharts();
+        }
         this.charts = {};
         this.initializeCharts();
     }
@@ -21,6 +25,8 @@ class ChartManager {
     setupCharts() {
         // 延迟执行，确保组件已加载
         setTimeout(() => {
+            // 先销毁所有可能存在的图表
+            this.destroyCharts();
             this.initTenantGrowthChart();
             this.initTenantTypeChart();
             this.initRevenueChart();
@@ -31,8 +37,15 @@ class ChartManager {
 
     // 租户增长趋势图表
     initTenantGrowthChart() {
-        const canvas = document.getElementById('tenantGrowthChart');
+        let canvas = document.getElementById('tenantGrowthChart');
         if (!canvas) return;
+
+        // 完全重置Canvas元素
+        const parent = canvas.parentNode;
+        const canvasCopy = canvas.cloneNode(false);
+        parent.removeChild(canvas);
+        parent.appendChild(canvasCopy);
+        canvas = canvasCopy;
 
         const ctx = canvas.getContext('2d');
         this.charts.tenantGrowth = new Chart(ctx, {
@@ -113,8 +126,15 @@ class ChartManager {
 
     // 租户类型分布图表
     initTenantTypeChart() {
-        const canvas = document.getElementById('tenantTypeChart');
+        let canvas = document.getElementById('tenantTypeChart');
         if (!canvas) return;
+
+        // 完全重置Canvas元素
+        const parent = canvas.parentNode;
+        const canvasCopy = canvas.cloneNode(false);
+        parent.removeChild(canvas);
+        parent.appendChild(canvasCopy);
+        canvas = canvasCopy;
 
         const ctx = canvas.getContext('2d');
         this.charts.tenantType = new Chart(ctx, {
@@ -169,8 +189,15 @@ class ChartManager {
 
     // 月度收入趋势图表
     initRevenueChart() {
-        const canvas = document.getElementById('revenueChart');
+        let canvas = document.getElementById('revenueChart');
         if (!canvas) return;
+
+        // 完全重置Canvas元素
+        const parent = canvas.parentNode;
+        const canvasCopy = canvas.cloneNode(false);
+        parent.removeChild(canvas);
+        parent.appendChild(canvasCopy);
+        canvas = canvasCopy;
 
         const ctx = canvas.getContext('2d');
         this.charts.revenue = new Chart(ctx, {
@@ -262,8 +289,15 @@ class ChartManager {
 
     // 租户活跃度图表
     initActivityChart() {
-        const canvas = document.getElementById('activityChart');
+        let canvas = document.getElementById('activityChart');
         if (!canvas) return;
+
+        // 完全重置Canvas元素
+        const parent = canvas.parentNode;
+        const canvasCopy = canvas.cloneNode(false);
+        parent.removeChild(canvas);
+        parent.appendChild(canvasCopy);
+        canvas = canvasCopy;
 
         const ctx = canvas.getContext('2d');
         this.charts.activity = new Chart(ctx, {

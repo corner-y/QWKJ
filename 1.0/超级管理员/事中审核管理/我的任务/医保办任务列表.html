@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的任务（医保办） - 医保审核系统</title>
+    <link rel="stylesheet" href="/1.0/样式文件/通用样式.css">
+    <link rel="stylesheet" href="/1.0/样式文件/unified-sidebar.css">
+    <link rel="stylesheet" href="/1.0/样式文件/表单样式.css">
+    <style>
+        /* 任务列表页特有样式 */
+        .task-tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .task-tab {
+            flex: 1;
+            padding: 16px 24px;
+            text-align: center;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .task-tab.active {
+            color: #1890ff;
+            border-bottom-color: #1890ff;
+            font-weight: 500;
+        }
+        
+        .task-tab .badge {
+            position: absolute;
+            top: 8px;
+            right: calc(50% - 30px);
+            background-color: #ff4d4f;
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 16px;
+            text-align: center;
+        }
+        
+        .task-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+            gap: 16px;
+        }
+        
+        .task-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .task-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .task-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .task-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .task-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .task-tag.pre-audit-review {
+            background-color: #fff7e6;
+            color: #fa8c16;
+        }
+        
+        .task-tag.complex-case {
+            background-color: #f9f0ff;
+            color: #722ed1;
+        }
+        
+        .task-issue {
+            margin-bottom: 16px;
+            padding: 12px;
+            background-color: #fafafa;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #595959;
+        }
+        
+        .doctor-reason {
+            margin-bottom: 16px;
+            padding: 12px;
+            background-color: #f0f5ff;
+            border-left: 4px solid #1890ff;
+            border-radius: 0 4px 4px 0;
+            font-size: 14px;
+            color: #595959;
+            line-height: 1.5;
+        }
+        
+        .doctor-reason-title {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #262626;
+        }
+        
+        .task-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: #8c8c8c;
+        }
+        
+        .task-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .btn-primary {
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #40a9ff;
+        }
+        
+        /* 历史记录表格样式 */
+        .history-table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border-collapse: collapse;
+            overflow: hidden;
+        }
+        
+        .history-table th,
+        .history-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .history-table th {
+            background-color: #fafafa;
+            font-weight: 500;
+            color: #262626;
+            font-size: 14px;
+        }
+        
+        .history-table td {
+            color: #595959;
+            font-size: 14px;
+        }
+        
+        .history-table tbody tr:hover {
+            background-color: #fafafa;
+        }
+        
+        .result-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .result-tag.approved {
+            background-color: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+        
+        .result-tag.rejected {
+            background-color: #fff1f0;
+            color: #ff4d4f;
+            border: 1px solid #ffccc7;
+        }
+        
+        .result-tag.hospital-pay {
+            background-color: #f5f5f5;
+            color: #8c8c8c;
+            border: 1px solid #d9d9d9;
+        }
+        
+        .btn-view {
+            background-color: #52c41a;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-view:hover {
+            background-color: #73d13d;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8c8c8c;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .empty-state-text {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state-subtext {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .task-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .task-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .history-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-navbar">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="icon-menu"></i>
+                </button>
+                <div class="breadcrumb">
+                    <a href="/1.0/超级管理员/事中审核管理/住院患者管理.html">事中审核管理</a>
+                    <span class="separator">></span>
+                    <span>我的任务（医保办）</span>
+                </div>
+            </div>
+            
+            <div class="container">
+                <!-- 页面头部 -->
+                <div class="page-header">
+                    <h1>我的任务（医保办）</h1>
+                </div>
+                
+                <!-- 页签切换 -->
+                <div class="task-tabs">
+                    <button class="task-tab active" onclick="switchTab('pending')">
+                        待我裁决
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="task-tab" onclick="switchTab('history')">历史已裁决</button>
+                </div>
+                
+                <!-- 待我裁决任务卡片列表 -->
+                <div id="pending-tasks" class="task-content active">
+                    <div class="task-cards">
+                        <!-- 任务卡片1 - 预审申诉复核 -->
+                        <div class="task-card">
+                            <div class="task-title">患者 张三 (住院号: ZY20230810) - 王医生 提交了1项申诉待复核</div>
+                            <div class="task-meta">
+                                <span class="task-tag pre-audit-review">预审申诉复核</span>
+                            </div>
+                            <div class="task-issue">
+                                <strong>涉及问题摘要：</strong>关于"住院天数超出医保限制"的申诉
+                            </div>
+                            <div class="doctor-reason">
+                                <div class="doctor-reason-title">医生补充理由：</div>
+                                <p>患者为65岁男性，诊断为冠心病，本次住院期间出现心律失常并发症，需要延长住院观察治疗。根据患者的具体病情和治疗需要，建议延长住院至10天，符合医疗规范和患者利益。</p>
+                            </div>
+                            <div class="task-info">
+                                <span>来源：事中审核系统</span>
+                                <span>提交时间：2025-08-14 10:30</span>
+                            </div>
+                            <div class="task-actions">
+                                <button class="btn-primary" onclick="openTaskDetail('task-001')">进入裁决</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 任务卡片2 - 预审申诉复核 -->
+                        <div class="task-card">
+                            <div class="task-title">患者 李四 (住院号: ZY20230811) - 李医生 提交了1项申诉待复核</div>
+                            <div class="task-meta">
+                                <span class="task-tag pre-audit-review">预审申诉复核</span>
+                            </div>
+                            <div class="task-issue">
+                                <strong>涉及问题摘要：</strong>关于"头孢曲松钠"的超说明书用药
+                            </div>
+                            <div class="doctor-reason">
+                                <div class="doctor-reason-title">医生补充理由：</div>
+                                <p>患者为42岁女性，诊断为社区获得性肺炎，痰培养结果显示为多重耐药菌感染，根据药敏试验结果，头孢曲松钠联合其他抗生素是最佳治疗方案。虽然超出常规说明书用法，但符合《抗菌药物临床应用指导原则》的相关规定。</p>
+                            </div>
+                            <div class="task-info">
+                                <span>来源：事中审核系统</span>
+                                <span>提交时间：2025-08-14 09:15</span>
+                            </div>
+                            <div class="task-actions">
+                                <button class="btn-primary" onclick="openTaskDetail('task-002')">进入裁决</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 任务卡片3 - 复杂案例协查 -->
+                        <div class="task-card">
+                            <div class="task-title">患者 王五 (住院号: ZY20230812) - 张医生 提交了1项复杂案例协查</div>
+                            <div class="task-meta">
+                                <span class="task-tag complex-case">复杂案例协查</span>
+                            </div>
+                            <div class="task-issue">
+                                <strong>涉及问题摘要：</strong>关于"多脏器功能衰竭患者的综合治疗方案"的疑难问题
+                            </div>
+                            <div class="doctor-reason">
+                                <div class="doctor-reason-title">医生补充理由：</div>
+                                <p>患者为70岁男性，因重症肺炎导致多脏器功能衰竭，目前治疗方案涉及多个医保目录外药品和特殊治疗手段。由于患者病情复杂，预后不确定，特申请医保办专家对治疗方案进行评估，确定合理的医保支付范围。</p>
+                            </div>
+                            <div class="task-info">
+                                <span>来源：医生主动上报</span>
+                                <span>提交时间：2025-08-13 16:45</span>
+                            </div>
+                            <div class="task-actions">
+                                <button class="btn-primary" onclick="openTaskDetail('task-003')">进入裁决</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 历史已裁决任务表格 -->
+                <div id="history-tasks" class="task-content" style="display: none;">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>患者信息</th>
+                                <th>涉及问题摘要</th>
+                                <th>原申诉医生</th>
+                                <th>裁决人</th>
+                                <th>裁决结果</th>
+                                <th>裁决时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 历史记录1 -->
+                            <tr>
+                                <td>赵六 (住院号: ZY20230805)</td>
+                                <td>关于"特殊检查项目"的医保支付</td>
+                                <td>孙医生</td>
+                                <td>周主任</td>
+                                <td><span class="result-tag approved">同意申诉</span></td>
+                                <td>2025-08-12 15:30</td>
+                                <td><button class="btn-view" onclick="viewHistoryDetail('history-001')">查看详情</button></td>
+                            </tr>
+                            <!-- 历史记录2 -->
+                            <tr>
+                                <td>钱七 (住院号: ZY20230806)</td>
+                                <td>关于"高价药品"的超限额使用</td>
+                                <td>吴医生</td>
+                                <td>郑专家</td>
+                                <td><span class="result-tag rejected">驳回申诉</span></td>
+                                <td>2025-08-12 14:15</td>
+                                <td><button class="btn-view" onclick="viewHistoryDetail('history-002')">查看详情</button></td>
+                            </tr>
+                            <!-- 历史记录3 -->
+                            <tr>
+                                <td>孙八 (住院号: ZY20230807)</td>
+                                <td>关于"康复治疗"的医保范围</td>
+                                <td>郑医生</td>
+                                <td>王专家</td>
+                                <td><span class="result-tag hospital-pay">转为院内承担</span></td>
+                                <td>2025-08-11 11:00</td>
+                                <td><button class="btn-view" onclick="viewHistoryDetail('history-003')">查看详情</button></td>
+                            </tr>
+                            <!-- 历史记录4 -->
+                            <tr>
+                                <td>周九 (住院号: ZY20230808)</td>
+                                <td>关于"特殊材料"的使用</td>
+                                <td>冯医生</td>
+                                <td>陈专家</td>
+                                <td><span class="result-tag approved">同意申诉</span></td>
+                                <td>2025-08-10 16:30</td>
+                                <td><button class="btn-view" onclick="viewHistoryDetail('history-004')">查看详情</button></td>
+                            </tr>
+                            <!-- 历史记录5 -->
+                            <tr>
+                                <td>吴十 (住院号: ZY20230809)</td>
+                                <td>关于"慢病用药"的长期处方</td>
+                                <td>褚医生</td>
+                                <td>魏专家</td>
+                                <td><span class="result-tag rejected">驳回申诉</span></td>
+                                <td>2025-08-10 10:45</td>
+                                <td><button class="btn-view" onclick="viewHistoryDetail('history-005')">查看详情</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 加载统一侧边栏
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSidebar();
+        });
+        
+        // 加载侧边栏
+        function loadSidebar() {
+            fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('sidebar-container').innerHTML = html;
+                    
+                    // 延迟设置活动菜单项，确保DOM已完全加载
+                    setTimeout(() => {
+                        // 设置当前活动菜单项
+                        const currentMenu = document.querySelector('[data-menu="insurance-tasks"]');
+                        if (currentMenu) {
+                            currentMenu.classList.add('active');
+                            // 展开父级菜单
+                            const parentMenu = currentMenu.closest('.nav-group');
+                            if (parentMenu) {
+                                parentMenu.classList.add('expanded');
+                            }
+                        }
+                        
+                        if (typeof setActiveMenu === 'function') {
+                            setActiveMenu();
+                        }
+                    }, 100);
+                })
+                .catch(error => console.error('Error loading sidebar:', error));
+        }
+        
+        // 切换侧边栏显示/隐藏
+        function toggleSidebar() {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            const mainContent = document.querySelector('.main-content');
+            
+            if (sidebarContainer.classList.contains('collapsed')) {
+                sidebarContainer.classList.remove('collapsed');
+                mainContent.style.marginLeft = '260px';
+            } else {
+                sidebarContainer.classList.add('collapsed');
+                mainContent.style.marginLeft = '0';
+            }
+        }
+        
+        // 切换任务列表页签
+        function switchTab(tabId) {
+            // 隐藏所有内容
+            document.querySelectorAll('.task-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // 移除所有页签的激活状态
+            document.querySelectorAll('.task-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的内容和激活对应的页签
+            document.getElementById(`${tabId}-tasks`).style.display = 'block';
+            event.target.classList.add('active');
+        }
+        
+        // 打开任务详情
+        function openTaskDetail(taskId) {
+            // 在实际应用中，这里会跳转到对应的任务详情页
+            console.log(`打开任务详情: ${taskId}`);
+            // 创建任务详情页面的URL
+            const taskDetailUrl = `/1.0/超级管理员/事中审核管理/我的任务/预审申诉复核.html?id=${taskId}`;
+            window.location.href = taskDetailUrl;
+        }
+        
+        // 查看历史详情
+        function viewHistoryDetail(historyId) {
+            // 在实际应用中，这里会跳转到对应的历史详情页
+            console.log(`查看历史详情: ${historyId}`);
+            // 创建历史详情页面的URL
+            const historyDetailUrl = `/1.0/超级管理员/事中审核管理/我的任务/历史裁决详情.html?id=${historyId}`;
+            window.location.href = historyDetailUrl;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的任务（医生） - 医保审核系统</title>
+    <link rel="stylesheet" href="/1.0/样式文件/通用样式.css">
+    <link rel="stylesheet" href="/1.0/样式文件/unified-sidebar.css">
+    <link rel="stylesheet" href="/1.0/样式文件/表单样式.css">
+    <style>
+        /* 任务列表页特有样式 */
+        .task-tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .task-tab {
+            flex: 1;
+            padding: 16px 24px;
+            text-align: center;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            position: relative;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .task-tab.active {
+            color: #1890ff;
+            border-bottom-color: #1890ff;
+            font-weight: 500;
+        }
+        
+        .task-tab .badge {
+            position: absolute;
+            top: 8px;
+            right: calc(50% - 30px);
+            background-color: #ff4d4f;
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 16px;
+            text-align: center;
+        }
+        
+        .task-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            gap: 16px;
+        }
+        
+        .task-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .task-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .task-card.urgent {
+            border-left: 4px solid #ff4d4f;
+        }
+        
+        .task-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        
+        .task-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .task-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .task-tag.medical-audit {
+            background-color: #e6f7ff;
+            color: #1890ff;
+        }
+        
+        .task-tag.collaboration {
+            background-color: #fff7e6;
+            color: #fa8c16;
+        }
+        
+        .task-tag.appeal-rejected {
+            background-color: #fff1f0;
+            color: #ff4d4f;
+        }
+        
+        .task-source,
+        .task-time {
+            font-size: 12px;
+            color: #8c8c8c;
+            display: flex;
+            align-items: center;
+        }
+        
+        .task-source:before,
+        .task-time:before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background-color: #d9d9d9;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .task-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .btn-primary {
+            background-color: #1890ff;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: #40a9ff;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8c8c8c;
+        }
+        
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .empty-state-text {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .empty-state-subtext {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .task-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .task-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .task-source:before,
+            .task-time:before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-navbar">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="icon-menu"></i>
+                </button>
+                <div class="breadcrumb">
+                    <a href="/1.0/超级管理员/事中审核管理/住院患者管理.html">事中审核管理</a>
+                    <span class="separator">></span>
+                    <span>我的任务（医生）</span>
+                </div>
+            </div>
+            
+            <div class="container">
+                <!-- 页面头部 -->
+                <div class="page-header">
+                    <h1>我的任务（医生）</h1>
+                </div>
+                
+                <!-- 页签切换 -->
+                <div class="task-tabs">
+                    <button class="task-tab active" onclick="switchTab('pending')">
+                        待我处理
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="task-tab" onclick="switchTab('processing')">处理中</button>
+                    <button class="task-tab" onclick="switchTab('completed')">已完成</button>
+                    <button class="task-tab" onclick="switchTab('sent')">我发出的</button>
+                </div>
+                
+                <!-- 任务卡片列表 -->
+                <div id="pending-tasks" class="task-content active">
+                    <div class="task-cards">
+                        <!-- 任务卡片1 - 紧急 -->
+                        <div class="task-card urgent">
+                            <div class="task-title">患者 张三 (01床) 的出院预审有2个问题项待处理</div>
+                            <div class="task-meta">
+                                <span class="task-tag medical-audit">医保预审</span>
+                                <span class="task-source">由 刘护士 发起</span>
+                                <span class="task-time">截止: 2025-08-14 18:00</span>
+                            </div>
+                            <div class="task-actions">
+                                <button class="btn-primary" onclick="openTaskDetail('task-001')">立即处理</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 任务卡片2 -->
+                        <div class="task-card">
+                            <div class="task-title">患者 李四 (15床) 的用药方案需要确认</div>
+                            <div class="task-meta">
+                                <span class="task-tag collaboration">协同请求</span>
+                                <span class="task-source">来自 王医生</span>
+                                <span class="task-time">收到: 2025-08-13 11:00</span>
+                            </div>
+                            <div class="task-actions">
+                                <button class="btn-primary" onclick="openTaskDetail('task-002')">立即处理</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 任务卡片3 -->
+                            <div class="task-card">
+                                <div class="task-title">患者 王五 (23床) 的检查项目需要审核</div>
+                                <div class="task-meta">
+                                    <span class="task-tag medical-audit">医保预审</span>
+                                    <span class="task-source">由 科室系统 发起</span>
+                                    <span class="task-time">收到: 2025-08-13 09:30</span>
+                                </div>
+                                <div class="task-actions">
+                                    <button class="btn-primary" onclick="openTaskDetail('task-003')">立即处理</button>
+                                </div>
+                            </div>
+                            
+                            <!-- 任务卡片4 - 申诉被驳回 -->
+                            <div class="task-card urgent">
+                                <div class="task-title">患者 钱七 (05床) 的用药方案申诉被驳回</div>
+                                <div class="task-meta">
+                                    <span class="task-tag appeal-rejected">申诉被驳回</span>
+                                    <span class="task-source">由 医保办 驳回</span>
+                                    <span class="task-time">收到: 2025-08-13 16:00</span>
+                                </div>
+                                <div class="task-actions">
+                                    <button class="btn-primary" onclick="openTaskDetail('task-005')">立即处理</button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                
+                <!-- 处理中任务 -->
+                <div id="processing-tasks" class="task-content" style="display: none;">
+                    <div class="task-cards">
+                        <!-- 处理中任务卡片 -->
+                        <div class="task-card">
+                            <div class="task-title">患者 赵六 (12床) 的治疗方案调整中</div>
+                            <div class="task-meta">
+                                <span class="task-tag collaboration">协同请求</span>
+                                <span class="task-source">来自 张医生</span>
+                                <span class="task-time">处理中: 2025-08-13 14:00</span>
+                            </div>
+                            <div class="task-actions">
+                                <button class="btn-primary" onclick="openTaskDetail('task-004')">继续处理</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 已完成任务 -->
+                <div id="completed-tasks" class="task-content" style="display: none;">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✓</div>
+                        <div class="empty-state-text">暂无已完成的任务</div>
+                        <div class="empty-state-subtext">您已完成所有待处理的任务</div>
+                    </div>
+                </div>
+                
+                <!-- 我发出的任务 -->
+                <div id="sent-tasks" class="task-content" style="display: none;">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📤</div>
+                        <div class="empty-state-text">暂无发出的任务</div>
+                        <div class="empty-state-subtext">您还没有向其他人发起过任务</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 加载统一菜单组件 -->
+    <script>
+        // 加载统一侧边栏
+        fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const sidebarContainer = document.getElementById('sidebar-container');
+                sidebarContainer.innerHTML = html;
+                // 手动执行插入的脚本
+                const scripts = sidebarContainer.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.head.appendChild(newScript);
+                    script.remove();
+                });
+                // 等待脚本执行后再初始化菜单
+                setTimeout(() => {
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    }
+                    // 设置当前页面的菜单项为激活状态
+                    if (typeof setActiveMenu === 'function') {
+                        setActiveMenu();
+                    }
+                }, 100);
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+        
+        // 切换侧边栏显示/隐藏
+        function toggleSidebar() {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            const mainContent = document.querySelector('.main-content');
+            
+            if (sidebarContainer.classList.contains('collapsed')) {
+                sidebarContainer.classList.remove('collapsed');
+                mainContent.style.marginLeft = '260px';
+            } else {
+                sidebarContainer.classList.add('collapsed');
+                mainContent.style.marginLeft = '0';
+            }
+        }
+        
+        // 切换任务列表页签
+        function switchTab(tabId) {
+            // 隐藏所有内容
+            document.querySelectorAll('.task-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // 移除所有页签的激活状态
+            document.querySelectorAll('.task-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的内容和激活对应的页签
+            document.getElementById(`${tabId}-tasks`).style.display = 'block';
+            event.target.classList.add('active');
+        }
+        
+        // 打开任务详情
+        function openTaskDetail(taskId) {
+            // 在实际应用中，这里会跳转到对应的任务详情页
+            console.log(`打开任务详情: ${taskId}`);
+            // 创建任务详情页面的URL
+            const taskDetailUrl = `/1.0/超级管理员/事中审核管理/我的任务/任务详情.html?id=${taskId}`;
+            window.location.href = taskDetailUrl;
+        }
+    </script>
+</body>
+</html>

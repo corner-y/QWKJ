@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>门诊审核详情 - 医保智能审核系统</title>
+    <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/审核结果样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    <style>
+        /* 审核详情页面样式 */
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr 400px;
+            gap: 20px;
+            margin-top: 24px;
+            height: calc(90vh - 90px);
+        }
+        
+        .patient-overview,
+        .medical-materials,
+        .audit-details {
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        .patient-overview,
+        .audit-details {
+            position: static;
+            top: auto;
+        }
+        
+        /* 风险级别样式 */
+        .audit-item.high-risk {
+            border-left-color: #ff4d4f;
+            background-color: #fff1f0;
+        }
+        
+        .audit-item.medium-risk {
+            border-left-color: #fa8c16;
+            background-color: #fff7e6;
+        }
+        
+        .audit-item.low-risk {
+            border-left-color: #faad14;
+            background-color: #fffbe6;
+        }
+        
+        /* 蓝色系低风险样式 */
+        .audit-item.new-low-risk {
+            border-left-color: #1890ff;
+            background-color: #e6f7ff;
+        }
+        
+        /* 合规项样式 */
+        .audit-item.compliant {
+            border-left-color: #52c41a;
+            background-color: #f6ffed;
+        }
+        
+        .audit-item {
+            margin-bottom: 16px;
+            padding: 16px;
+            border-radius: 6px;
+            border-left: 4px solid;
+        }
+        
+        .audit-item-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .audit-item-title {
+            display: flex;
+            align-items: center;
+        }
+        
+        .audit-status-icon {
+            margin-right: 8px;
+        }
+        
+        /* 政策查看链接样式 */
+        .policy-link {
+            background: none;
+            border: none;
+            color: #1890ff;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+        }
+        
+        .policy-link:hover {
+            color: #40a9ff;
+        }
+        
+        /* 警告操作按钮样式 */
+        .warning-actions {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e8e8e8;
+        }
+        
+        /* 左侧患者信息区域 */
+        .patient-overview {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        
+        .patient-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: white;
+            font-size: 32px;
+            font-weight: 500;
+        }
+        
+        .patient-main-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .patient-name-detail {
+            font-size: 20px;
+            font-weight: 500;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+        
+        .patient-id-info {
+            font-size: 14px;
+            color: #8c8c8c;
+            margin-bottom: 12px;
+        }
+        
+        .patient-basic-details {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 14px;
+            color: #8c8c8c;
+        }
+        
+        .patient-meta-info {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .meta-label {
+            color: #8c8c8c;
+        }
+        
+        .meta-value {
+            color: #262626;
+            font-weight: 500;
+        }
+        
+        /* 中间原始材料区域 */
+        .medical-materials {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .materials-tabs {
+            display: flex;
+            border-bottom: 1px solid #f0f0f0;
+            background: #fafafa;
+        }
+        
+        .material-tab {
+            padding: 16px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #8c8c8c;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .material-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background: white;
+            font-weight: 500;
+        }
+        
+        .material-tab:hover:not(.active) {
+            color: var(--primary-hover);
+        }
+        
+        .materials-content {
+            padding: 20px;
+            max-height: 480px;
+            overflow-y: auto;
+        }
+        
+        .material-section {
+            margin-bottom: 24px;
+        }
+        
+        .material-section-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #262626;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .medical-record-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        
+        .medical-record-item:last-child {
+            border-bottom: none;
+        }
+        
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .record-title {
+            font-weight: 500;
+            color: #262626;
+        }
+        
+        .record-date {
+            color: #8c8c8c;
+        }
+        
+        .record-content {
+            color: #595959;
+            line-height: 1.8;
+        }
+        
+        .order-item {
+            padding: 16px;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+        
+        .order-item.warning-highlight {
+            border-color: #ffd591;
+            background-color: #fff7e6;
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .order-name {
+            font-weight: 500;
+            color: #262626;
+        }
+        
+        .order-info {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #8c8c8c;
+            margin-bottom: 8px;
+        }
+        
+        .order-doctor {
+            font-size: 13px;
+            color: #8c8c8c;
+        }
+        
+        /* 右侧审核明细区域 */
+        .audit-details {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        
+        .audit-header {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            background: #fafafa;
+        }
+        
+        .audit-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #262626;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .audit-summary {
+            display: flex;
+            gap: 16px;
+            font-size: 14px;
+            margin-left: auto;
+        }
+        
+        .audit-summary-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .summary-count {
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+        
+        .summary-count.warning {
+            color: #faad14;
+        }
+        
+        .audit-filters {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            gap: 12px;
+        }
+        
+        .filter-btn {
+            padding: 6px 16px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            color: #8c8c8c;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .audit-items {
+            max-height: 410px;
+            overflow-y: auto;
+        }
+        
+        .audit-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.3s;
+        }
+        
+        .audit-item:hover {
+            background-color: #fafafa;
+        }
+        
+        .audit-item.my-responsibility {
+            background-color: #fffbe6;
+        }
+        
+        .audit-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .audit-item-title {
+            font-weight: 500;
+            color: #262626;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .audit-status-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+        }
+        
+        .audit-status-icon.compliant {
+            background-color: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+        
+        .audit-status-icon.warning {
+            background-color: #fff7e6;
+            color: #faad14;
+            border: 1px solid #ffd591;
+        }
+        
+        /* 低风险状态图标样式 - 蓝色 */
+        .audit-status-icon.low-risk {
+            background-color: #e6f7ff;
+            color: #1890ff;
+            border: 1px solid #91d5ff;
+        }
+        
+        .audit-responsibility {
+            font-size: 13px;
+            color: #faad14;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background-color: #fff7e6;
+            border: 1px solid #ffd591;
+        }
+        
+        .audit-item-info {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: #8c8c8c;
+            margin-bottom: 8px;
+        }
+        
+        .audit-item-content {
+            font-size: 14px;
+            color: #595959;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        
+        .audit-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 4px 12px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            color: #595959;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        
+        .action-btn.primary {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .action-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .action-btn.primary:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+        
+        /* 模态窗口样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #262626;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #8c8c8c;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            background-color: #f5f5f5;
+            color: #595959;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        .reason-textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            resize: none;
+            font-family: inherit;
+        }
+        
+        .reason-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+        
+        /* 知识库模态窗口 */
+        .knowledge-modal .modal {
+            width: 800px;
+            max-width: 95%;
+        }
+        
+        .knowledge-content {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .knowledge-section {
+            margin-bottom: 20px;
+        }
+        
+        .knowledge-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .knowledge-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+        
+        .knowledge-text {
+            font-size: 14px;
+            color: #595959;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-navbar">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="icon-menu"></i>
+                </button>
+                <div class="breadcrumb">
+                    <a href="事前审核结果.html">事前审核</a>
+                    <span class="separator">></span>
+                    <a href="事前审核结果.html">事前审核结果</a>
+                    <span class="separator">></span>
+                    <span>门诊审核详情</span>
+                </div>
+            </div>
+            
+            <div class="container">
+                <!-- 页面头部 -->
+                <div class="page-header">
+                    <h1>门诊审核详情</h1>
+                </div>
+                
+                <!-- 主布局 -->
+                <div class="detail-layout">
+                    <!-- 左侧患者信息 -->
+                    <div class="patient-overview">
+                        <div class="patient-avatar">王</div>
+                        <div class="patient-main-info">
+                            <div class="patient-name-detail">王五</div>
+                            <div class="patient-id-info">病历号：34567890</div>
+                            <div class="patient-basic-details">
+                                <span>58岁</span>
+                                <span>男</span>
+                                <span>骨科</span>
+                            </div>
+                        </div>
+                        
+                        <div class="patient-meta-info">
+                            <div class="meta-item">
+                                <span class="meta-label">门诊号</span>
+                                <span class="meta-value">MZ20250813001</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">就诊日期</span>
+                                <span class="meta-value">2025-08-13</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">接诊医生</span>
+                                <span class="meta-value">李医生</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">门诊诊断</span>
+                                <span class="meta-value">上呼吸道感染</span>
+                            </div>
+                        </div>
+                        
+                        <div class="patient-meta-info">
+                            <div class="meta-item">
+                                <span class="meta-label">审核日期</span>
+                                <span class="meta-value">2025-08-13</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">预警项数</span>
+                                <span class="meta-value">2 项</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 中间原始材料 -->
+                    <div class="medical-materials">
+                        <div class="materials-tabs">
+                            <button class="material-tab active" onclick="switchMaterialTab('medical-record')">门诊病历</button>
+                            <button class="material-tab" onclick="switchMaterialTab('doctor-advice')">电子处方/治疗单</button>
+                            <button class="material-tab" onclick="switchMaterialTab('examination')">检查检验</button>
+                            <button class="material-tab" onclick="switchMaterialTab('medical-image')">医学影像</button>
+                        </div>
+                        
+                        <div class="materials-content">
+                            <!-- 门诊病历内容 -->
+                            <div class="material-content" id="medical-record-content">
+                                <div class="material-section">
+                                    <div class="material-section-title">基本信息</div>
+                                    <div class="medical-record-item">
+                                        <div class="record-header">
+                                            <span class="record-title">患者信息</span>
+                                        </div>
+                                        <div class="record-content">
+                                            <p>姓名：王五</p>
+                                            <p>性别：男</p>
+                                            <p>年龄：58岁</p>
+                                            <p>身份证号：110101********1234</p>
+                                            <p>联系方式：138****5678</p>
+                                        </div>
+                                    </div>
+                                    <div class="medical-record-item">
+                                        <div class="record-header">
+                                            <span class="record-title">门诊号</span>
+                                        </div>
+                                        <div class="record-content">
+                                            <p>门诊号：MZ20250813001</p>
+                                            <p>就诊日期：2025-08-13 09:30</p>
+                                            <p>科室：内科</p>
+                                            <p>接诊医生：李医生</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="material-section">
+                                    <div class="material-section-title">门诊病历</div>
+                                    <div class="medical-record-item">
+                                        <div class="record-header">
+                                            <span class="record-title">主诉</span>
+                                            <span class="record-date">2025-08-13</span>
+                                        </div>
+                                        <div class="record-content">
+                                            <p>发热、咳嗽3天</p>
+                                        </div>
+                                    </div>
+                                    <div class="medical-record-item">
+                                        <div class="record-header">
+                                            <span class="record-title">现病史</span>
+                                        </div>
+                                        <div class="record-content">
+                                            <p>患者3天前受凉后出现发热，体温最高38.5℃，伴咳嗽，无痰，无咽痛、鼻塞、流涕，无胸闷、气短。自服"感冒灵颗粒"效果不佳，今日来我院就诊。</p>
+                                        </div>
+                                    </div>
+                                    <div class="medical-record-item">
+                                        <div class="record-header">
+                                            <span class="record-title">体格检查</span>
+                                        </div>
+                                        <div class="record-content">
+                                            <p>体温：38.2℃，脉搏：86次/分，呼吸：20次/分，血压：130/85mmHg。</p>
+                                            <p>咽红，双侧扁桃体不大。双肺呼吸音粗，未闻及干湿啰音。</p>
+                                        </div>
+                                    </div>
+                                    <div class="medical-record-item">
+                                        <div class="record-header">
+                                            <span class="record-title">诊断</span>
+                                        </div>
+                                        <div class="record-content">
+                                            <p>上呼吸道感染</p>
+                                        </div>
+                                    </div>
+                                    <div class="medical-record-item">
+                                        <div class="record-header">
+                                            <span class="record-title">处理意见</span>
+                                        </div>
+                                        <div class="record-content">
+                                            <p>1. 血常规检查</p>
+                                            <p>2. 胸部X光片（无明确指征，已预警）</p>
+                                            <p>3. 药物治疗：头孢曲松钠（用药选择不当，已预警）、布洛芬混悬液</p>
+                                            <p>4. 多饮水，注意休息，避免辛辣刺激性食物</p>
+                                            <p>5. 随诊</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 电子处方/治疗单内容 -->
+                            <div class="material-content" id="doctor-advice-content" style="display: none;">
+                                <div class="material-section">
+                                    <div class="material-section-title">电子处方/治疗单</div>
+                                    <div class="order-item">
+                                        <div class="order-header">
+                                            <span class="order-name">布洛芬混悬液 100ml:2g</span>
+                                        </div>
+                                        <div class="order-info">
+                                            <span>规格：100ml:2g</span>
+                                            <span>用量：10ml</span>
+                                            <span>频次：prn（必要时）</span>
+                                        </div>
+                                        <div class="order-doctor">
+                                            开立医生：李医生
+                                        </div>
+                                    </div>
+                                    <div class="order-item warning-highlight">
+                                        <div class="order-header">
+                                            <span class="order-name">头孢曲松钠 2g bid ivgtt</span>
+                                        </div>
+                                        <div class="order-info">
+                                            <span>规格：1g/支</span>
+                                            <span>用量：2g</span>
+                                            <span>频次：bid（每日两次）</span>
+                                        </div>
+                                        <div class="order-doctor">
+                                            开立医生：李医生
+                                        </div>
+                                    </div>
+                                    <div class="order-item">
+                                        <div class="order-header">
+                                            <span class="order-name">血常规检查</span>
+                                        </div>
+                                        <div class="order-info">
+                                            <span>检验项目：血常规全项</span>
+                                        </div>
+                                        <div class="order-doctor">
+                                            开立医生：李医生
+                                        </div>
+                                    </div>
+                                    <div class="order-item warning-highlight">
+                                        <div class="order-header">
+                                            <span class="order-name">胸部X光片</span>
+                                        </div>
+                                        <div class="order-info">
+                                            <span>检查部位：胸部正位</span>
+                                        </div>
+                                        <div class="order-doctor">
+                                            开立医生：张医生
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 检查检验内容 -->
+                            <div class="material-content" id="examination-content" style="display: none;">
+                                <div class="material-section">
+                                    <div class="material-section-title">检验报告</div>
+                                    <div class="medical-record-item">
+                                        <div class="record-header">
+                                            <span class="record-title">血常规（2023-08-10）</span>
+                                        </div>
+                                        <div class="record-content">
+                                            <p>白细胞计数：8.2×10^9/L（参考范围：3.5-9.5）</p>
+                                            <p>红细胞计数：4.5×10^12/L（参考范围：4.3-5.8）</p>
+                                            <p>血红蛋白：142g/L（参考范围：130-175）</p>
+                                            <p>血小板计数：235×10^9/L（参考范围：125-350）</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 医学影像内容 -->
+                            <div class="material-content" id="medical-image-content" style="display: none;">
+                                <div class="material-section">
+                                    <div class="material-section-title">影像学检查</div>
+                                    <div class="medical-record-item">
+                                        <div class="record-header">
+                                            <span class="record-title">右侧髋关节正侧位片（2023-08-10）</span>
+                                        </div>
+                                        <div class="record-content">
+                                            <p>检查所见：右侧股骨颈可见骨折线，断端移位明显，符合Garden IV型骨折表现。</p>
+                                            <p>诊断意见：右侧股骨颈骨折（Garden IV型）</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧审核明细 -->
+                    <div class="audit-details">
+                        <div class="audit-header">
+                            <div class="audit-title">
+                                审核明细
+                                <span class="audit-summary">
+                                    <span class="audit-summary-item">总项数：<span class="summary-count">5</span></span>
+                                    <span class="audit-summary-item">预警项：<span class="summary-count warning">2</span></span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="audit-filters">
+                            <button class="filter-btn active" onclick="toggleFilter('all')">全部</button>
+                            <button class="filter-btn" onclick="toggleFilter('warning')">只看预警</button>
+                        </div>
+                        
+                        <div class="audit-items">
+                            <!-- 合规项 -->
+                            <div class="audit-item compliant">
+                                <div class="audit-item-header">
+                                    <div class="audit-item-title">
+                                        ✅ 监测生命体征 q4h <span style="color:#8c8c8c; font-size:12px; margin-left:8px;">护理项目</span>
+                                    </div>
+                                </div>
+                                <!-- <div class="audit-item-info">
+                                    <span>李医生</span>
+                                    <span>2025-08-13</span>
+                                </div> -->
+                                <div class="audit-item-content">
+                                    符合医保规范：监测生命体征，频次合理。
+                                </div>
+                            </div>
+                            
+                            <!-- 合规项 -->
+                            <div class="audit-item compliant" data-time="2025-08-13 09:00">
+                                <div class="audit-item-header">
+                                    <div class="audit-item-title">
+                                       ✅  硝苯地平控释片 30mg qd <span style="color:#8c8c8c; font-size:12px; margin-left:8px;">处方审核</span>  
+                                    </div>
+                                </div>
+                                
+                                <div class="audit-item-content">
+                                    符合医保规范：高血压患者常规用药，剂量合理。
+                                </div>
+                            </div>
+                            
+                            <!-- 低风险预警项 -->
+                            <div class="audit-item new-low-risk" id="audit-item-1" data-time="2025-08-13 09:30">
+                                <div class="audit-item-header">
+                                    <div class="audit-item-title">
+                                         
+                                       ℹ️ 头孢曲松钠 2g bid ivgtt <span style="color:#8c8c8c; font-size:12px; margin-left:8px;">处方审核</span>
+                                    </div>
+                                </div>
+                                <div class="audit-item-info">
+                                    <span style="color:#faad14;">违规类型：合理用药—用药选择不规范</span>
+                                    <!-- <span>李医生</span>
+                                    <span>2025-08-13 09:30</span> -->
+                                </div>
+                                <div class="audit-item-content">
+                                    <span style="font-weight: bold; font-size: 16px;">低风险预警：</span>用药选择建议。根据《抗菌药物临床应用指导原则》，上呼吸道感染多为病毒性感染，不建议常规使用抗菌药物，如确需使用，首选青霉素类或第一代头孢菌素，如头孢唑林。
+                                </div>
+                                <div class="warning-actions">
+                                    <button class="policy-link">查看相关政策/指南</button>
+                                </div>
+                            </div>
+                            
+                            <!-- 合规项 -->
+                            <div class="audit-item compliant" data-time="2025-08-13 10:15">
+                                <div class="audit-item-header">
+                                    <div class="audit-item-title">
+                                       ✅ 血常规、凝血功能、肝肾功能、电解质 <span style="color:#8c8c8c; font-size:12px; margin-left:8px;">检查项目</span>
+                                    </div>
+                                </div>
+                                <!-- <div class="audit-item-info">
+                                  
+                                    <span>李医生</span>
+                                    <span>2025-08-13 10:15</span>
+                                </div> -->
+                                <div class="audit-item-content">
+                                     符合医保规范：上呼吸道感染患者进行血常规检查，项目合理。
+                                </div>
+                            </div>
+                            
+                            <!-- 中风险预警项 -->
+                            <div class="audit-item medium-risk" id="audit-item-2" data-time="2025-08-13 11:45">
+                                <div class="audit-item-header">
+                                    <div class="audit-item-title">
+                                       ⚠️ 胸部X光片 <span style="color:#8c8c8c; font-size:12px; margin-left:8px;">检查项目</span>  
+                                    </div>
+                                </div>
+                                <div class="audit-item-info">
+                                  <span style="color:#fa8c16;">违规类型：医保违规—检查项目与病情不相关</span>
+                                    <!-- <span>张医生</span>
+                                    <span>2025-08-13 11:45</span> -->
+                                </div>
+                                <div class="audit-item-content">
+                                    <span style="font-weight: bold; font-size: 16px;">中风险预警：</span>检查项目与病情不相关。患者因'急性上呼吸道感染'就诊，无呼吸系统症状或体征，胸部X光片检查无明确指征。
+                                </div>
+                                <div class="warning-actions">
+                                    <button class="policy-link">查看相关政策/指南</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 补充理由模态窗口 -->
+    <div class="modal-overlay" id="reason-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">补充临床理由</div>
+                <button class="modal-close" onclick="hideReasonModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <textarea class="reason-textarea" id="reason-text" placeholder="请输入补充的临床理由..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideReasonModal()">取消</button>
+                <button class="btn btn-primary" onclick="confirmReason()">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 知识库模态窗口 -->
+    <div class="modal-overlay knowledge-modal" id="knowledge-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">医保知识库</div>
+                <button class="modal-close" onclick="hideKnowledgeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="knowledge-content">
+                    <div class="knowledge-section">
+                        <div class="knowledge-title">抗菌药物临床应用指导原则（2015版）</div>
+                        <div class="knowledge-text">
+                            <p>骨科手术（包括用螺钉、钢板、金属关节置换）通常选择第一、二代头孢菌素，如头孢唑林、头孢呋辛。</p>
+                            <p>手术部位感染的预防用药应遵循以下原则：</p>
+                            <p>1. 根据手术切口类别、手术创伤程度、可能的污染细菌种类、手术持续时间、感染发生机会和后果严重程度、抗菌药物预防效果的循证医学证据、对细菌耐药性的影响和经济学评估等因素，综合考虑决定是否预防用抗菌药物。</p>
+                            <p>2. 清洁手术（Ⅰ类切口）：手术部位为人体无菌部位，局部无炎症、无损伤，也不涉及呼吸道、消化道、泌尿生殖道等人体与外界相通的器官。手术野无污染，通常不需预防用抗菌药物，仅在下列情况时可考虑预防用药：（1）手术范围大、手术时间长、污染机会增加；（2）手术涉及重要脏器，一旦发生感染将造成严重后果者，如头颅手术、心脏手术、眼内手术等；（3）异物植入手术，如人工心瓣膜植入、永久性心脏起搏器放置、人工关节置换等；（4）有感染高危因素如高龄、糖尿病、免疫功能低下（尤其是接受器官移植者）、营养不良等患者。</p>
+                        </div>
+                    </div>
+                    <div class="knowledge-section">
+                        <div class="knowledge-title">医保支付政策解读</div>
+                        <div class="knowledge-text">
+                            <p>对于无明确指征的检查项目，医保基金不予支付。医生应严格按照临床诊疗规范和患者病情需要开具检查项目。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="hideKnowledgeModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 政策指南模态窗口 -->
+    <div class="modal-overlay" id="policy-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">相关政策/指南</div>
+                <button class="modal-close" onclick="hidePolicyModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="policy-content" class="policy-content">
+                    <!-- 政策内容将通过JavaScript动态填充 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="hidePolicyModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 当前选中的患者ID和需要处理的审核项ID
+        let currentPatientId = '';
+        let currentAuditItemId = '';
+        
+        // 排序审核项函数
+        function sortAuditItems() {
+            const auditItemsContainer = document.querySelector('.audit-items');
+            if (!auditItemsContainer) return;
+            
+            const auditItems = Array.from(auditItemsContainer.children);
+            
+            // 按照审核项目类型分组
+            const groupedItems = {
+                '处方审核': [],
+                '检查项目': [],
+                '护理项目': [],
+                '其他': []
+            };
+            
+            auditItems.forEach(item => {
+                const typeText = item.querySelector('.audit-item-title span:last-child')?.textContent || '其他';
+                const typeKey = Object.keys(groupedItems).find(key => typeText.includes(key)) || '其他';
+                groupedItems[typeKey].push(item);
+            });
+            
+            // 对每组内的项目按风险等级排序：高风险 > 中风险 > 低风险 > 合规
+            const riskOrder = {
+                'high-risk': 1,
+                'medium-risk': 2,
+                'new-low-risk': 3,
+                'compliant': 4
+            };
+            
+            for (const key in groupedItems) {
+                groupedItems[key].sort((a, b) => {
+                    let aRisk = 4; // 默认合规
+                    let bRisk = 4;
+                    
+                    for (const [riskClass, order] of Object.entries(riskOrder)) {
+                        if (a.classList.contains(riskClass)) {
+                            aRisk = order;
+                        }
+                        if (b.classList.contains(riskClass)) {
+                            bRisk = order;
+                        }
+                    }
+                    
+                    return aRisk - bRisk;
+                });
+            }
+            
+            // 清空容器并按顺序添加排序后的项目
+            auditItemsContainer.innerHTML = '';
+            
+            // 按顺序添加分组
+            ['处方审核', '检查项目', '护理项目', '其他'].forEach(group => {
+                if (groupedItems[group].length > 0) {
+                    groupedItems[group].forEach(item => {
+                        auditItemsContainer.appendChild(item);
+                    });
+                }
+            });
+        }
+        
+        // 切换原始材料标签页
+        function switchMaterialTab(tabId) {
+            // 隐藏所有内容
+            document.querySelectorAll('.material-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // 移除所有活动状态
+            document.querySelectorAll('.material-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的内容和添加活动状态
+            document.getElementById(`${tabId}-content`).style.display = 'block';
+            document.querySelector(`.material-tab[onclick="switchMaterialTab('${tabId}')"]`).classList.add('active');
+        }
+        
+        // 页面加载完成后排序
+        window.addEventListener('load', sortAuditItems);
+        
+        // 切换审核明细筛选
+        function toggleFilter(filterType) {
+            // 移除所有活动状态
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 添加选中的活动状态
+            document.querySelector(`.filter-btn[onclick="toggleFilter('${filterType}')"]`).classList.add('active');
+            
+            // 模拟筛选逻辑
+            const auditItems = document.querySelectorAll('.audit-item');
+            
+            switch(filterType) {
+                case 'all':
+                    auditItems.forEach(item => {
+                        item.style.display = 'block';
+                    });
+                    break;
+                case 'warning':
+                    auditItems.forEach(item => {
+                        const icon = item.querySelector('.audit-status-icon');
+                        item.style.display = icon && icon.classList.contains('warning') ? 'block' : 'none';
+                    });
+                    break;
+            }
+        }
+        
+        // 模拟从列表页点击不同状态的记录
+        // 在实际应用中，这通常由路由参数或其他逻辑控制
+        function simulateListPageClick(status) {
+            // 存储状态参数到URL
+            const url = new URL(window.location.href);
+            url.searchParams.set('status', status);
+            window.location.href = url.href;
+        }
+        
+        // 去HIS修改
+        function goToHisModify(auditItemId) {
+            // 存储当前需要修改的审核项ID
+            localStorage.setItem('modifyAuditItemId', auditItemId);
+            // 跳转到事前智能预警模拟页面
+            window.location.href = '/1.0/超级管理员/事前智能预警模拟/智能预警模拟.html';
+        }
+        
+        // 显示补充理由模态窗口
+        function showReasonModal(auditItemId) {
+            currentAuditItemId = auditItemId;
+            document.getElementById('reason-modal').style.display = 'flex';
+            document.getElementById('reason-text').value = '';
+        }
+        
+        // 隐藏补充理由模态窗口
+        function hideReasonModal() {
+            document.getElementById('reason-modal').style.display = 'none';
+            currentAuditItemId = '';
+        }
+        
+        // 确认补充理由
+        function confirmReason() {
+            const reasonText = document.getElementById('reason-text').value;
+            if (reasonText.trim() === '') {
+                alert('请输入补充理由');
+                return;
+            }
+            
+            // 模拟更新状态
+            const auditItem = document.getElementById(currentAuditItemId);
+            if (auditItem) {
+                // 更改状态为已忽略
+                const statusIcon = auditItem.querySelector('.audit-status-icon');
+                if (statusIcon) {
+                    statusIcon.className = 'audit-status-icon compliant';
+                    statusIcon.innerHTML = '<i class="icon-check"></i>';
+                }
+                
+                // 添加已忽略标签
+                const header = auditItem.querySelector('.audit-item-header');
+                if (header) {
+                    const ignoredTag = document.createElement('span');
+                    ignoredTag.className = 'audit-responsibility';
+                    ignoredTag.textContent = '已忽略';
+                    header.appendChild(ignoredTag);
+                }
+                
+                // 更新内容
+                const content = auditItem.querySelector('.audit-item-content');
+                if (content) {
+                    content.textContent = '已补充临床理由：' + reasonText;
+                }
+                
+                // 移除操作按钮
+                const actions = auditItem.querySelector('.audit-item-actions');
+                if (actions) {
+                    actions.style.display = 'none';
+                }
+            }
+            
+            hideReasonModal();
+        }
+        
+        // 显示政策指南模态窗口
+        function showPolicyModal(auditItemId) {
+            const modal = document.getElementById('policy-modal');
+            const policyContent = document.getElementById('policy-content');
+            
+            // 根据不同的审核项显示不同的政策内容
+            if (auditItemId === 'audit-item-1') {
+                policyContent.innerHTML = `
+                    <h3>抗菌药物临床应用指导原则</h3>
+                    <div class="policy-content-section">
+                        <h4>上呼吸道感染抗菌药物使用规范</h4>
+                        <p>1. 上呼吸道感染（如普通感冒、急性鼻咽炎、急性鼻窦炎等）大多数为病毒性感染，不推荐常规使用抗菌药物。</p>
+                        <p>2. 只有在明确或高度怀疑细菌性感染时，才考虑使用抗菌药物。</p>
+                        <p>3. 对于需要使用抗菌药物的上呼吸道感染，首选青霉素类（如阿莫西林）或第一代头孢菌素（如头孢唑林、头孢拉定）。</p>
+                        <p>4. 头孢曲松钠属于第三代头孢菌素，对革兰阴性菌活性较强，但对上呼吸道常见的革兰阳性菌（如金黄色葡萄球菌）的活性不如第一代头孢菌素，且价格较高，不推荐作为上呼吸道感染的首选药物。</p>
+                    </div>
+                    <div class="policy-content-section">
+                        <h4>医保报销政策</h4>
+                        <p>1. 对于无明确医学指征的抗菌药物使用，医保不予报销。</p>
+                        <p>2. 医疗机构应当严格按照《抗菌药物临床应用指导原则》合理使用抗菌药物。</p>
+                        <p>3. 对于违规使用抗菌药物的情况，医保管理部门将根据相关规定进行处理。</p>
+                    </div>
+                `;
+            } else if (auditItemId === 'audit-item-2') {
+                policyContent.innerHTML = `
+                    <h3>医保医疗服务项目规范指南</h3>
+                    <div class="policy-content-section">
+                        <h4>门诊影像学检查规范</h4>
+                        <p>1. 各项影像学检查应当严格遵循"合理、必要"的原则，避免过度检查。</p>
+                        <p>2. 胸部X光片检查的适应症包括：</p>
+                        <ul>
+                            <li>呼吸系统症状（咳嗽、咳痰、呼吸困难、胸痛等）持续超过2周</li>
+                            <li>胸部外伤</li>
+                            <li>已知或可疑的胸部疾病（如肺炎、肺结核、肺癌等）</li>
+                            <li>长期吸烟者出现咳嗽性质改变</li>
+                        </ul>
+                        <p>3. 对于普通感冒或急性上呼吸道感染患者，如无呼吸系统症状或体征持续不缓解，胸部X光片检查无明确指征。</p>
+                        <p>4. 本例患者因"急性上呼吸道感染"就诊，病程仅3天，无明确需要进行胸部X光片检查的指征。</p>
+                    </div>
+                    <div class="policy-content-section">
+                        <h4>医保报销政策</h4>
+                        <p>1. 对于无明确医学指征的检查项目，医保不予报销。</p>
+                        <p>2. 医疗机构应当严格掌握各项检查的适应症，避免不必要的检查项目。</p>
+                        <p>3. 对于违规检查项目，医保管理部门将根据相关规定进行处理。</p>
+                    </div>
+                `;
+            }
+            
+            modal.style.display = 'flex';
+        }
+        
+        // 隐藏政策指南模态窗口
+        function hidePolicyModal() {
+            document.getElementById('policy-modal').style.display = 'none';
+        }
+        
+        // 返回列表
+        function backToList() {
+            window.location.href = '事前审核结果.html';
+        }
+        
+        // 切换侧边栏
+        function toggleSidebar() {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.classList.toggle('sidebar-collapsed');
+        }
+        
+        // 显示通知
+        function showNotifications() {
+            alert('通知功能已触发（Demo版）');
+        }
+        
+        // 刷新页面
+        function refreshPage() {
+            location.reload();
+        }
+        
+        // 加载侧边栏
+        function loadSidebar() {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '../../组件/_unified-sidebar.html', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    sidebarContainer.innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send();
+        }
+        
+        // 更新当前时间（现在已不需要，保留函数以避免错误）
+        function updateCurrentTime() {
+            const currentTimeElement = document.getElementById('currentTime');
+            if (currentTimeElement) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('zh-CN', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                currentTimeElement.textContent = timeString;
+            }
+        }
+        
+        // 模拟加载不同状态的详情页
+        function loadPatientDetailsByStatus() {
+            // 从URL获取状态参数（实际应用中可以从路由或参数中获取）
+            const urlParams = new URLSearchParams(window.location.search);
+            const patientStatus = urlParams.get('status') || 'warning'; // 默认显示有预警的详情
+            
+            const auditItems = document.querySelectorAll('.audit-items .audit-item');
+            const patientOverview = document.querySelector('.patient-overview');
+            
+            if (patientStatus === 'compliant') {
+                // 完全合规的详情页
+                auditItems.forEach(item => {
+                    // 移除所有风险样式，添加合规样式
+                    item.classList.remove('high-risk', 'medium-risk');
+                    item.classList.add('compliant');
+                    
+                    // 更新内容文本
+                    const content = item.querySelector('.audit-item-content');
+                    if (content) {
+                        content.textContent = '✅ 符合医保规范';
+                        content.style.color = '#52c41a';
+                    }
+                });
+                
+                // 更新患者状态信息
+                const statusElement = patientOverview.querySelector('.audit-status');
+                if (statusElement) {
+                    statusElement.className = 'audit-status compliant';
+                    statusElement.innerHTML = '<i class="icon-check-circle"></i>完全合规';
+                }
+                
+                // 更新预警项数
+                const warningCount = patientOverview.querySelector('.meta-value:nth-of-type(3)');
+                if (warningCount) {
+                    warningCount.textContent = '0 项';
+                }
+            } else {
+                // 有预警的详情页（保持原样）
+                // 这里可以根据需要进一步定制不同类型的预警详情
+            }
+        }
+        
+        // 按时间正序排列审核明细
+        function sortAuditItemsByTime() {
+            const auditItemsContainer = document.querySelector('.audit-items');
+            const auditItems = Array.from(auditItemsContainer.querySelectorAll('.audit-item'));
+            
+            // 按照data-time属性排序
+            auditItems.sort((a, b) => {
+                const timeA = new Date(a.getAttribute('data-time'));
+                const timeB = new Date(b.getAttribute('data-time'));
+                return timeA - timeB;
+            });
+            
+            // 重新添加排序后的审核项
+            auditItems.forEach(item => {
+                auditItemsContainer.appendChild(item);
+            });
+        }
+        
+        // 切换审核项筛选
+        function toggleFilter(filterType) {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const auditItems = document.querySelectorAll('.audit-items .audit-item');
+            
+            // 更新按钮状态
+            filterBtns.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 为当前点击的按钮添加active状态
+            if (filterType === 'all') {
+                filterBtns[0].classList.add('active');
+            } else if (filterType === 'warning') {
+                filterBtns[1].classList.add('active');
+            }
+            
+            // 根据筛选类型显示或隐藏审核项
+            auditItems.forEach(item => {
+                if (filterType === 'all') {
+                    // 显示所有审核项
+                    item.style.display = '';
+                } else if (filterType === 'warning') {
+                    // 只显示预警项（排除符合医保规范的项目）
+                    if (item.classList.contains('compliant')) {
+                        item.style.display = 'none';
+                    } else {
+                        item.style.display = '';
+                    }
+                }
+            });
+        }
+        
+        // 初始化
+        window.onload = function() {
+            // 获取当前患者ID
+            currentPatientId = localStorage.getItem('currentPatientId') || 'patient003';
+            
+            loadSidebar();
+            
+            // 加载不同状态的详情页
+            loadPatientDetailsByStatus();
+            
+            // 按时间正序排列审核明细
+            sortAuditItemsByTime();
+        };
+    </script>
+</body>
+</html>

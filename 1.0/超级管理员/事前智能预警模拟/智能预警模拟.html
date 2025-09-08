@@ -643,6 +643,7 @@
                 <div>
                     <button class="btn btn-primary" onclick="showModal('high-risk-modal'); return false;">保存处方</button>
                     <button class="btn btn-secondary" onclick="clearPrescription()">清空处方</button>
+                    <button class="btn btn-success" onclick="completeModification()">完成修改</button>
                 </div>
             </div>
         </div>
@@ -1381,6 +1382,13 @@
             alert('调用his处方保存接口，不再进行拦截');
             // 关闭弹窗
             closeModal('low-risk-modal');
+        }
+        
+        // 完成修改并返回审核详情页
+        function completeModification() {
+            alert('处方已修改完成，正在返回审核详情...');
+            // 跳转到审核详情页
+            window.location.href = '/1.0/超级管理员/审核管理/事前审核结果/审核详情.html';
         }
         
         // 点击空白处关闭弹窗

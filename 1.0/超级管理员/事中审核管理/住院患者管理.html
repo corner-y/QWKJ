@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>住院患者管理 - 事中审核管理</title>
+    <link rel="stylesheet" href="../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../样式文件/审核结果样式.css">
+    <link rel="stylesheet" href="../../样式文件/unified-sidebar.css">
+    <style>
+        /* 住院患者管理页面样式 */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 24px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .breadcrumb {
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #8c8c8c;
+        }
+        
+        .breadcrumb a {
+            color: #1890ff;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .breadcrumb-separator {
+            margin: 0 8px;
+            color: #d9d9d9;
+        }
+        
+        .page-header {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .page-title {
+            font-size: 24px;
+            font-weight: 500;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 14px;
+            color: #8c8c8c;
+            line-height: 1.6;
+        }
+        
+        /* 出院预审指挥面板样式 */
+        .command-center {
+            margin-bottom: 24px;
+        }
+        
+        .command-center-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #262626;
+            margin-bottom: 16px;
+        }
+        
+        .command-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        
+        .command-card {
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .command-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .command-card-danger {
+            background: linear-gradient(135deg, #fff2f0 0%, #fff7f5 100%);
+            border-left: 4px solid #ff4d4f;
+        }
+        
+        .command-card-processing {
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f9ff 100%);
+            border-left: 4px solid #1890ff;
+        }
+        
+        .command-card-completed {
+            background: linear-gradient(135deg, #f6ffed 0%, #f0f9e8 100%);
+            border-left: 4px solid #52c41a;
+        }
+        
+        .command-card-urgent {
+            background: linear-gradient(135deg, #fff7e6 0%, #fff9e8 100%);
+            border-left: 4px solid #fa8c16;
+        }
+        
+        .card-icon {
+            font-size: 28px;
+        }
+        
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .card-title {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .card-number {
+            font-size: 36px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+        
+        .card-danger .card-number, .card-danger .card-icon {
+            color: #ff4d4f;
+        }
+        
+        .card-processing .card-number, .card-processing .card-icon {
+            color: #1890ff;
+        }
+        
+        .card-completed .card-number, .card-completed .card-icon {
+            color: #52c41a;
+        }
+        
+        .card-urgent .card-number, .card-urgent .card-icon {
+            color: #fa8c16;
+        }
+        
+        .card-subtitle {
+            font-size: 12px;
+            color: #8c8c8c;
+            line-height: 1.3;
+        }
+        
+        .filter-section {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-size: 14px;
+            color: #595959;
+        }
+        
+        .filter-select,
+        .search-input {
+            padding: 6px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .filter-select:focus,
+        .search-input:focus {
+            outline: none;
+            border-color: #1890ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+        
+        .search-input {
+            width: 200px;
+        }
+        
+        /* 三种不同模态窗口样式 */
+        .modal-success .modal-icon {
+            color: #52c41a;
+            font-size: 32px;
+        }
+        
+        .modal-warning .modal-icon {
+            color: #fa8c16;
+            font-size: 32px;
+        }
+        
+        .modal-danger .modal-icon {
+            color: #ff4d4f;
+            font-size: 32px;
+        }
+        
+        .modal-text strong {
+            font-weight: 600;
+            color: #ff4d4f;
+        }
+        
+        .patient-table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border-collapse: collapse;
+        }
+        
+        .patient-table th,
+        .patient-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .patient-table th {
+            background-color: #fafafa;
+            font-weight: 500;
+            color: #262626;
+            font-size: 14px;
+        }
+        
+        .patient-table td {
+            font-size: 14px;
+            color: #595959;
+        }
+        
+        .patient-table tbody tr:hover {
+            background-color: #fafafa;
+        }
+        
+        .patient-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .patient-name {
+            font-weight: 500;
+            color: #262626;
+        }
+        
+        .patient-demographics {
+            font-size: 12px;
+            color: #8c8c8c;
+        }
+        
+        .risk-icon {
+            font-size: 16px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn {
+            padding: 4px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-warning {
+            background-color: #fa8c16;
+            color: white;
+            border-color: #fa8c16;
+        }
+        
+        .btn-warning:hover {
+            background-color: #ff7a45;
+            border-color: #ff7a45;
+        }
+        
+        .btn-primary {
+            background-color: #1890ff;
+            color: white;
+            border-color: #1890ff;
+        }
+        
+        .btn-primary:hover {
+            background-color: #40a9ff;
+            border-color: #40a9ff;
+        }
+        
+        .btn-primary:disabled {
+            background-color: #f5f5f5;
+            color: #bfbfbf;
+            border-color: #d9d9d9;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: #595959;
+            border-color: #d9d9d9;
+        }
+        
+        .btn-secondary:hover {
+            color: #1890ff;
+            border-color: #1890ff;
+        }
+        
+        .btn-success {
+            background-color: #52c41a;
+            color: white;
+            border-color: #52c41a;
+            cursor: not-allowed;
+        }
+        
+        /* 模态窗口样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+            overflow: auto;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 8px;
+            width: 325px; /* 宽度增加30% */
+            max-width: 90%;
+            height: 280px; /* 高度增加20% */
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            position: relative;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #262626;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #8c8c8c;
+            cursor: pointer;
+            padding: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            background-color: #f5f5f5;
+            color: #595959;
+        }
+        
+        .modal-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+            justify-content: center;
+        }
+        
+        .modal-icon {
+            font-size: 32px;
+            color: #1890ff;
+            text-align: center;
+        }
+        
+        .modal-text {
+            font-size: 12px;
+            color: #595959;
+            line-height: 1.6;
+            text-align: center;
+            word-wrap: break-word;
+        }
+        
+        .modal-text p {
+            margin: 6px 0;
+        }
+        
+        .modal-footer {
+            padding: 12px 15px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+        
+        /* 全局提示样式 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #52c41a;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1001;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        /* 加载中动画 */
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #40a9ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 加载中模态框样式 */
+        .loading-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-modal-overlay.active {
+            display: flex;
+        }
+        
+        .loading-modal {
+            background: white;
+            border-radius: 8px;
+            width: 400px;
+            max-width: 90%;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+        
+        .loading-modal-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #262626;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .loading-modal-content {
+            margin: 20px 0;
+        }
+        
+        .loading-modal-content p {
+            margin: 10px 0;
+            color: #595959;
+            line-height: 1.5;
+        }
+        
+        .loading-modal-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* 临床状态样式 */
+        .clinical-status {
+            color: #8c8c8c;
+            font-size: 14px;
+        }
+        
+        /* 预审状态标签样式 */
+        .audit-status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .audit-status.unreviewed {
+            background-color: #f5f5f5;
+            color: #8c8c8c;
+            border: 1px solid #d9d9d9;
+        }
+        
+        .audit-status.processing {
+            background-color: #e6f7ff;
+            color: #1890ff;
+            border: 1px solid #91d5ff;
+        }
+        
+        /* 旋转图标动画 */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .spin-icon {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+        
+        .audit-status.blocked {
+            background-color: #fff2f0;
+            color: #ff4d4f;
+            border: 1px solid #ffccc7;
+        }
+        
+        /* 几天前审核样式 - 黄色 */
+        .audit-status.days-ago {
+            background-color: #fff7e6;
+            color: #fa8c16;
+            border: 1px solid #ffd591;
+        }
+        
+        /* 已封账样式 - 绿色 */
+        .clinical-status.closed {
+            color: #52c41a;
+            font-weight: 500;
+        }
+        
+        /* 工具提示样式 */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 4px;
+            padding: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 侧边栏容器 -->
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <div class="container">
+                <!-- 面包屑导航 -->
+                <div class="breadcrumb">
+                    <a href="#">首页</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <a href="#">事中审核管理</a>
+                    <span class="breadcrumb-separator">/</span>
+                    <span>住院患者管理</span>
+                </div>
+                
+
+                
+                <!-- 出院预审指挥面板 -->
+                <div class="command-center">
+                    <div class="command-center-title">出院预审指挥面板</div>
+                    <div class="command-cards">
+                        <!-- 高危预警卡片 -->
+                        <div class="command-card command-card-danger card-danger" onclick="filterPatients('highRisk')">
+                            <div class="card-content">
+                                <div class="card-title"><span class="card-icon">❗</span> 出院在即，未预审 <span class="card-number">4</span></div>
+                                <div class="card-subtitle">统计所有已下达"出院医嘱"，但从未发起过"科室预审"的在院患者</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 预审处理中卡片 -->
+                        <div class="command-card command-card-processing card-processing" onclick="filterPatients('processing')">
+                            <div class="card-content">
+                                <div class="card-title"><span class="card-icon">🔄</span> 预审处理中 <span class="card-number">8</span></div>
+                                <div class="card-subtitle">统计所有已经发起"科室预审"，且任务尚未全部完成的患者</div>
+                            </div>
+                        </div>
+                        
+
+                        
+                        <!-- 封账审核待办卡片 -->
+                        <div class="command-card command-card-urgent card-urgent" onclick="filterPatients('finalAudit')">
+                            <div class="card-content">
+                                <div class="card-title"><span class="card-icon">📋</span> 封账审核待办 <span class="card-number">2</span></div>
+                                <div class="card-subtitle">统计所有由系统自动触发的、且仍有问题项待处理的强制性预审任务</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 筛选区域 -->
+                <div class="filter-section">
+                    <div class="filter-item">
+                        <label class="filter-label">按科室筛选：</label>
+                        <select class="filter-select">
+                            <option value="all">全部科室</option>
+                            <option value="internal">内科</option>
+                            <option value="surgery">外科</option>
+                            <option value="pediatrics">儿科</option>
+                            <option value="gynecology">妇科</option>
+                            <!-- 更多科室选项 -->
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label class="filter-label">预审状态：</label>
+                        <select class="filter-select" id="auditStatusFilter">
+                            <option value="all">全部状态</option>
+                            <option value="notStarted">未发起预审</option>
+                            <option value="processing">预审处理中</option>
+                            <option value="completed">预审已完成</option>
+                        </select>
+                    </div>
+                    <div class="filter-item" style="margin-left: auto;">
+                        <input type="text" class="search-input" id="searchInput" placeholder="搜索患者姓名/住院号">
+                        <button class="btn btn-primary" onclick="searchPatients()">检索</button>
+                    </div>
+                </div>
+                
+                <!-- 患者列表表格 -->
+                <table class="patient-table">
+                    <thead>
+                        <tr>
+                            <th>住院号</th>
+                            <th>患者信息</th>
+                            <th>临床状态</th>
+                            <th>预审状态</th>
+                            <th>入院天数</th>
+                            <th>主要诊断</th>
+                            <th>当前预警项数</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 示例数据行 - 待出院状态 -->
+                        <tr>
+                            <td>ZY20230810</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">张三</div>
+                                    <div class="patient-demographics">65岁 / 男</div>
+                                </div>
+                            </td>
+                            <td class="clinical-status">待出院</td>
+                            <td><span class="audit-status unreviewed">未审核</span></td>
+                            <td>5天</td>
+                            <td>肺炎</td>
+                            <td>--</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-secondary" onclick="viewPatientDetails('ZY20230810', '张三')">查看详情</button>
+                                    <button class="btn btn-primary" onclick="showConfirmModal('ZY20230810', '张三', this)">发起科室预审</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 新增示例数据行 - 待出院状态（未审核） -->
+                        <tr>
+                            <td>ZY20230817</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">郑十</div>
+                                    <div class="patient-demographics">48岁 / 女</div>
+                                </div>
+                            </td>
+                            <td class="clinical-status">待出院</td>
+                            <td><span class="audit-status unreviewed">未审核</span></td>
+                            <td>4天</td>
+                            <td>急性肠胃炎</td>
+                            <td>--</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-secondary" onclick="viewPatientDetails('ZY20230817', '郑十')">查看详情</button>
+                                    <button class="btn btn-primary" onclick="showConfirmModal('ZY20230817', '郑十', this)">发起科室预审</button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- 示例数据行 - 预审中状态 -->
+                        <tr>
+                            <td>ZY20230811</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">李四</div>
+                                    <div class="patient-demographics">52岁 / 男</div>
+                                </div>
+                            </td>
+                            <td class="clinical-status">住院中</td>
+                            <td><span class="audit-status processing">🔄 审核中</span></td>
+                            <td>8天</td>
+                            <td>冠心病</td>
+                            <td>--</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-secondary" onclick="viewPatientDetails('ZY20230811', '李四')">查看详情</button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- 示例数据行 - 已完成状态 -->
+                        <tr>
+                            <td>ZY20230812</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">王五</div>
+                                    <div class="patient-demographics">45岁 / 女</div>
+                                </div>
+                            </td>
+                            <td class="clinical-status">待封账</td>
+                            <td><span class="audit-status days-ago" data-days="1">1天前审核</span></td>
+                            <td>3天</td>
+                            <td>阑尾炎</td>
+                            <td>1</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-secondary" onclick="viewPatientDetails('ZY20230812', '王五')">查看详情</button>
+                                    <button class="btn btn-primary" onclick="showConfirmModal('ZY20230812', '王五', this)">再次发起预审</button>
+                                    <button class="btn btn-warning" onclick="goToTasks('ZY20230812', '王五')">去处理任务</button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- 示例数据行 - 封账拦截状态 -->
+                        <tr>
+                            <td>ZY20230813</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">赵六</div>
+                                    <div class="patient-demographics">38岁 / 男</div>
+                                </div>
+                            </td>
+                            <td class="clinical-status">待封账</td>
+                            <td><span class="audit-status blocked">🚫 封账拦截</span></td>
+                            <td>10天</td>
+                            <td>糖尿病</td>
+                            <td>5</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-secondary" onclick="viewPatientDetails('ZY20230813', '赵六')">查看详情</button>
+                                    <button class="btn btn-warning" onclick="goToTasks('ZY20230813', '赵六')">去处理任务</button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- 示例数据行 - 预算预警状态 -->
+                        <tr>
+                            <td>ZY20230814</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">孙七</div>
+                                    <div class="patient-demographics">42岁 / 男</div>
+                                </div>
+                            </td>
+                            <td class="clinical-status">住院中</td>
+                            <td><span class="audit-status unreviewed">未审核</span></td>
+                            <td>2天</td>
+                            <td>高血压</td>
+                            <td>--</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-secondary" onclick="viewPatientDetails('ZY20230814', '孙七')">查看详情</button>
+                                    <button class="btn btn-primary" onclick="showConfirmModal('ZY20230814', '孙七', this)">发起科室预审</button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- 示例数据行 - 审核通过（过时）状态 -->
+                        <tr>
+                            <td>ZY20230815</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">周八</div>
+                                    <div class="patient-demographics">58岁 / 男</div>
+                                </div>
+                            </td>
+                            <td class="clinical-status">已封账</td>
+                            <td><span class="audit-status days-ago" data-days="8">8天前审核</span></td>
+                            <td>15天</td>
+                            <td>胃溃疡</td>
+                            <td>0</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-secondary" onclick="viewPatientDetails('ZY20230815', '周八')">查看详情</button>
+                                    <button class="btn btn-primary" onclick="showConfirmModal('ZY20230815', '周八', this)">再次发起预审</button>
+                                    <button class="btn btn-warning" onclick="goToTasks('ZY20230815', '周八')">去处理任务</button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- 示例数据行 - 预审预警（过时）状态 -->
+                        <tr>
+                            <td>ZY20230816</td>
+                            <td>
+                                <div class="patient-info">
+                                    <div class="patient-name">吴九</div>
+                                    <div class="patient-demographics">62岁 / 女</div>
+                                </div>
+                            </td>
+                            <td class="clinical-status">已封账</td>
+                            <td><span class="audit-status completed" style="background-color: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f;">✓ 审核通过</span></td>
+                            <td>7天</td>
+                            <td>胆囊炎</td>
+                            <td>--</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn btn-secondary" onclick="viewPatientDetails('ZY20230816', '吴九')">查看详情</button>
+                                    <button class="btn btn-primary" onclick="showConfirmModal('ZY20230816', '吴九', this)">再次发起预审</button>
+                                    <button class="btn btn-warning" onclick="goToTasks('ZY20230816', '吴九')">去处理任务</button>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                        <!-- 可以添加更多示例数据行 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 发起预审核确认模态窗口 - 成熟度高 -->
+    <div class="modal-overlay" id="confirmModalHigh">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">发起出院前预审核</h2>
+                <button class="modal-close" onclick="hideConfirmModal('confirmModalHigh')">×</button>
+            </div>
+            <!-- <div class="modal-body modal-success"> -->
+                <div class="modal-icon">✅</div>
+                <div class="modal-text">
+                    <p>患者【<span id="modalPatientNameHigh"></span>】诊疗数据完整度较高，已达到最佳预审时机。</p>
+                    <p>您确定要发起审核吗？</p>
+                </div>
+            <!-- </div> -->
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="hideConfirmModal('confirmModalHigh')">取消</button>
+                <button class="btn btn-primary" onclick="confirmAudit('confirmModalHigh', event)">确定发起</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 发起预审核确认模态窗口 - 成熟度中等 -->
+    <div class="modal-overlay" id="confirmModalMedium">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">确认提前发起审核吗？</h2>
+                <button class="modal-close" onclick="hideConfirmModal('confirmModalMedium')">×</button>
+            </div>
+            <div class="modal-body modal-warning">
+                <div class="modal-icon">⚠️</div>
+                <div class="modal-text">
+                    <p><strong>当前预审成熟度较低！</strong></p>
+                    <p>患者【<span id="modalPatientNameMedium"></span>】仍有[关键检查未完成]、[核心文书未签署]。</p>
+                    <p>现在发起，可能会产生较多临时性预警。建议在诊疗更完善后再进行。</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="confirmAudit('confirmModalMedium', event)">我已知晓，仍要发起</button>
+                <button class="btn btn-primary" onclick="hideConfirmModal('confirmModalMedium')">稍后在说</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 发起预审核确认模态窗口 - 成熟度低 -->
+    <div class="modal-overlay" id="confirmModalLow">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">不建议此时发起审核</h2>
+                <button class="modal-close" onclick="hideConfirmModal('confirmModalLow')">×</button>
+            </div>
+            <div class="modal-body modal-danger">
+                <div class="modal-icon">❌</div>
+                <div class="modal-text">
+                    <p><strong>当前预审成熟度很低！</strong></p>
+                    <p>患者【<span id="modalPatientNameLow"></span>】诊疗信息严重不完整，关键检查、诊断和治疗方案均未完善。</p>
+                    <p>此时发起审核将导致大量无效预警，严重影响审核效率。强烈建议完善诊疗后再进行审核。</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="confirmAudit('confirmModalLow', event)">坚持发起</button>
+                <button class="btn btn-primary" onclick="hideConfirmModal('confirmModalLow')">稍后在说</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 全局成功提示 -->
+    <div class="toast" id="successToast">预审核已成功发起！</div>
+    
+    <!-- 加载中模态框 -->
+    <div class="loading-modal-overlay" id="loadingModal">
+        <div class="loading-modal">
+            <div class="loading-modal-title">预审核任务已成功发起</div>
+            <div class="loading-modal-content">
+                <div class="loader"></div>
+                <p>AI正在深度分析患者【<span id="loadingPatientName"></span>】的全量病案资料...</p>
+                <p>预计需要 3-5 分钟，请您耐心等待。</p>
+                <p>完成后，相关待办任务将自动派发至【我的任务】。</p>
+            </div>
+            <div class="loading-modal-footer">
+                <button class="btn btn-primary" onclick="hideLoadingModal()">知道了，关闭弹窗</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 处理动态审核天数显示
+        function updateAuditDays() {
+            const daysAgoAudits = document.querySelectorAll('.audit-status.days-ago[data-days]');
+            daysAgoAudits.forEach(element => {
+                // 获取存储的天数
+                const days = element.getAttribute('data-days');
+                if (days) {
+                    element.textContent = `${days}天前审核`;
+                }
+            });
+        }
+        
+        // 加载统一菜单组件
+        fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('sidebar-container').innerHTML = html;
+                // 设置当前页面菜单高亮
+                const currentMenuItem = document.querySelector('[data-menu="in-patient-management"]');
+                if (currentMenuItem) {
+                    currentMenuItem.classList.add('active');
+                    // 展开父级菜单组
+                    let parent = currentMenuItem.closest('.nav-group, .nav-subgroup');
+                    while (parent) {
+                        parent.classList.add('expanded');
+                        const submenu = parent.querySelector('.nav-submenu');
+                        if (submenu) {
+                            submenu.style.display = 'block';
+                        }
+                        parent = parent.parentElement.closest('.nav-group, .nav-subgroup');
+                    }
+                }
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+        
+        // 当前选中的患者信息
+        let currentPatient = {
+            id: '',
+            name: '',
+            button: null
+        };
+        
+        // 计算预审核成熟度评分（模拟）
+        function calculateAuditMaturity(patientId) {
+            // 为演示目的，根据患者ID模拟不同的成熟度评分
+            // 在实际应用中，这里应该调用API获取真实的成熟度评分
+            const patientScores = {
+                'ZY20230810': 85, // 张三 - 高成熟度
+                'ZY20230814': 60, // 孙七 - 中成熟度
+                'ZY20230817': 60  // 郑十 - 中成熟度（第二个发起科室预审按钮）
+            };
+            
+            // 如果没有特定患者的评分，返回随机值
+            return patientScores[patientId] || Math.floor(Math.random() * 100);
+        }
+        
+        // 显示确认模态窗口
+        function showConfirmModal(patientId, patientName, button) {
+            currentPatient.id = patientId;
+            currentPatient.name = patientName;
+            currentPatient.button = button;
+            
+            // 计算患者的预审核成熟度评分
+            const maturityScore = calculateAuditMaturity(patientId);
+            
+            // 隐藏所有模态窗口
+            hideAllModals();
+            
+            // 根据评分显示不同的模态窗口
+            if (maturityScore > 80) {
+                // 成熟度高
+                document.getElementById('modalPatientNameHigh').textContent = patientName;
+                document.getElementById('confirmModalHigh').classList.add('active');
+            } else if (maturityScore >= 40) {
+                // 成熟度中等
+                document.getElementById('modalPatientNameMedium').textContent = patientName;
+                document.getElementById('confirmModalMedium').classList.add('active');
+            } else {
+                // 成熟度低
+                document.getElementById('modalPatientNameLow').textContent = patientName;
+                document.getElementById('confirmModalLow').classList.add('active');
+            }
+        }
+        
+        // 隐藏确认模态窗口
+        function hideConfirmModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+        
+        // 隐藏所有模态窗口
+        function hideAllModals() {
+            document.getElementById('confirmModalHigh').classList.remove('active');
+            document.getElementById('confirmModalMedium').classList.remove('active');
+            document.getElementById('confirmModalLow').classList.remove('active');
+        }
+        
+        // 显示加载中模态框
+        function showLoadingModal() {
+            // 设置患者名称
+            document.getElementById('loadingPatientName').textContent = currentPatient.name;
+            // 显示模态框
+            document.getElementById('loadingModal').classList.add('active');
+        }
+        
+        // 隐藏加载中模态框
+        function hideLoadingModal() {
+            document.getElementById('loadingModal').classList.remove('active');
+        }
+        
+        // 确认发起审核
+        function confirmAudit(modalId, e) {
+            // 阻止默认事件，防止页面刷新
+            if (e) e.preventDefault();
+                    // 隐藏当前模态窗口
+                    hideConfirmModal(modalId);
+                    
+                    // 获取当前行
+                    const row = currentPatient.button.closest('tr');
+                    if (row) {
+                        // 更新患者状态标签
+                        const statusCell = row.children[3]; // 预审状态列是第4列（索引3）
+                        statusCell.innerHTML = '<span class="audit-status processing"><span class="spin-icon">🔄</span> 审核中</span>';
+                        
+                        // 更新预警个数为--
+                        const riskCountCell = row.children[6]; // 预警个数列是第7列（索引6）
+                        riskCountCell.textContent = '--';
+                        
+                        // 更新操作按钮
+                        const actionButtons = row.querySelector('.action-buttons');
+                        if (actionButtons) {
+                            actionButtons.innerHTML = `
+                                <button class="btn btn-secondary" onclick="viewPatientDetails('${currentPatient.id}', '${currentPatient.name}')">查看详情</button>
+                            `;
+                        }
+                    }
+                    
+                    // 更新卡片数字
+                    updateCardNumbers('startAudit');
+                    
+                    // 显示加载中模态框
+                    showLoadingModal();
+                    
+                    // 在实际应用中，这里应该发送请求到服务器
+                    console.log(`为患者${currentPatient.name}(${currentPatient.id})发起了预审核`);
+                }
+        
+        // 去处理任务
+        function goToTasks(patientId, patientName) {
+            // 在实际应用中，这里应该跳转到我的任务页面，并带上患者ID参数
+            console.log(`跳转到我的任务页面，筛选患者${patientName}(${patientId})的待办任务`);
+            alert(`将跳转到【我的任务】页面，并自动筛选患者${patientName}(${patientId})的待办任务`);
+        }
+        
+        // 更新卡片数字
+        function updateCardNumbers(action) {
+            // 获取卡片数字元素
+            const highRiskCard = document.querySelector('.command-card-danger .card-title .card-number');
+            const processingCard = document.querySelector('.command-card-processing .card-title .card-number');
+            const finalAuditCard = document.querySelector('.command-card-urgent .card-title .card-number');
+            
+            if (!highRiskCard || !processingCard || !finalAuditCard) {
+                return;
+            }
+            
+            // 解析当前数字
+            let highRiskCount = parseInt(highRiskCard.textContent);
+            let processingCount = parseInt(processingCard.textContent);
+            let finalAuditCount = parseInt(finalAuditCard.textContent);
+            
+            // 根据操作更新数字
+            switch(action) {
+                case 'startAudit':
+                    // 开始审核：高危预警-1，处理中+1
+                    if (highRiskCount > 0) {
+                        highRiskCard.textContent = highRiskCount - 1;
+                    }
+                    processingCard.textContent = processingCount + 1;
+                    break;
+                case 'blockAccount':
+                    // 封账拦截：高危预警-1，终审待办+1
+                    if (highRiskCount > 0) {
+                        highRiskCard.textContent = highRiskCount - 1;
+                    }
+                    finalAuditCard.textContent = finalAuditCount + 1;
+                    break;
+            }
+        }
+        
+        // 初始化预审状态筛选器事件和动态天数更新
+        document.addEventListener('DOMContentLoaded', function() {
+            // 调用动态审核天数更新函数
+            updateAuditDays();
+            
+            const statusFilter = document.getElementById('auditStatusFilter');
+            if (statusFilter) {
+                statusFilter.addEventListener('change', function() {
+                    filterByStatus(this.value);
+                });
+            }
+        });
+        
+        // 根据预审状态筛选患者
+        function filterByStatus(status) {
+            const rows = document.querySelectorAll('.patient-table tbody tr');
+            
+            switch(status) {
+                case 'all':
+                    // 显示所有患者
+                            rows.forEach(row => {
+                                row.style.display = '';
+                            });
+                            break;
+                        case 'notStarted':
+                            // 筛选未发起预审的患者
+                rows.forEach(row => {
+                    row.style.display = '';
+                });
+                break;
+            case 'notStarted':
+                // 筛选未发起预审的患者
+                rows.forEach(row => {
+                    const statusCell = row.children[3]; // 预审状态列是第4列（索引3）
+                    if (statusCell.querySelector('.audit-status.unreviewed')) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                break;
+            case 'processing':
+                // 筛选预审处理中的患者
+                rows.forEach(row => {
+                    const statusCell = row.children[3];
+                    if (statusCell.querySelector('.audit-status.processing')) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                break;
+            case 'completed':
+                // 筛选已完成的患者
+                rows.forEach(row => {
+                    const statusCell = row.children[3];
+                    if (statusCell.querySelector('.audit-status.completed')) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                break;
+        }
+    }
+        
+        // 增强filterPatients函数，添加与筛选器的联动
+        const originalFilterPatients = filterPatients;
+        window.filterPatients = function(filterType) {
+            // 调用原始的筛选函数
+            originalFilterPatients(filterType);
+            
+            // 联动更新预审状态筛选器
+            const statusFilter = document.getElementById('auditStatusFilter');
+            if (statusFilter) {
+                switch(filterType) {
+                    case 'highRisk':
+                        statusFilter.value = 'notStarted';
+                        break;
+                    case 'processing':
+                        statusFilter.value = 'processing';
+                        break;
+                    case 'completed':
+                        statusFilter.value = 'completed';
+                        break;
+                }
+            }
+        };
+        
+        // 搜索患者功能
+        function searchPatients() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            const rows = document.querySelectorAll('.patient-table tbody tr');
+            
+            rows.forEach(row => {
+                const patientId = row.children[0].textContent.toLowerCase();
+                const patientName = row.querySelector('.patient-name').textContent.toLowerCase();
+                
+                if (patientId.includes(searchTerm) || patientName.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        // 添加回车键搜索支持
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchPatients();
+            }
+        });
+        
+        // 查看患者详情
+        function viewPatientDetails(patientId, patientName) {
+            // 在实际应用中，这里应该跳转到患者详情页面
+            console.log(`查看患者${patientName}(${patientId})的详情`);
+            alert(`将跳转到患者${patientName}(${patientId})的详情页面`);
+        }
+        
+        // 筛选患者列表
+        function filterPatients(filterType) {
+                    const rows = document.querySelectorAll('.patient-table tbody tr');
+                    
+                    // 为演示目的，我们根据状态标签来筛选患者
+                    switch(filterType) {
+                        case 'highRisk':
+                            // 筛选高危预警患者：待预审状态的患者
+                            rows.forEach(row => {
+                                const statusCell = row.children[3]; // 预审状态列是第4列（索引3）
+                                if (statusCell.querySelector('.audit-status.unreviewed')) {
+                                    row.style.display = '';
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            });
+                            break;
+                        case 'processing':
+                            // 筛选处理中患者
+                            rows.forEach(row => {
+                                const statusCell = row.children[3];
+                                if (statusCell.querySelector('.audit-status.processing')) {
+                                    row.style.display = '';
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            });
+                            break;
+                        case 'completed':
+                            // 筛选已完成患者
+                            rows.forEach(row => {
+                                const statusCell = row.children[3];
+                                if (statusCell.querySelector('.audit-status.completed')) {
+                                    row.style.display = '';
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            });
+                            break;
+                        case 'finalAudit':
+                            // 筛选出院终审待办患者
+                            rows.forEach(row => {
+                                const statusCell = row.children[2];
+                                if (statusCell.innerHTML.includes('封账拦截')) {
+                                    row.style.display = '';
+                                } else {
+                                    row.style.display = 'none';
+                                }
+                            });
+                            break;
+                    }
+                    
+                    // 在实际应用中，这里应该根据筛选结果更新统计信息
+                    console.log(`筛选患者列表：${filterType}`);
+                }
+        
+        // 为三个不同的模态窗口添加点击外部关闭的事件监听器
+        function addModalOutsideCloseListener(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        hideConfirmModal(modalId);
+                    }
+                });
+            }
+        }
+        
+        // 在DOMContentLoaded后添加事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            addModalOutsideCloseListener('confirmModalHigh');
+            addModalOutsideCloseListener('confirmModalMedium');
+            addModalOutsideCloseListener('confirmModalLow');
+        });
+    </script>
+</body>
+</html>

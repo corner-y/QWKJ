@@ -5,7 +5,7 @@ const path = require('path');
 const url = require('url');
 
 // 设置端口
-const PORT = 8080;
+const PORT = 8082;
 
 // 创建服务器
 const server = http.createServer((req, res) => {

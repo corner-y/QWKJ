@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务详情处理 - 医保审核系统</title>
+    <link rel="stylesheet" href="/1.0/样式文件/通用样式.css">
+    <link rel="stylesheet" href="/1.0/样式文件/unified-sidebar.css">
+    <link rel="stylesheet" href="/1.0/样式文件/表单样式.css">
+    <style>
+        /* 任务详情页特有样式 */
+        .task-detail-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr 450px;
+            gap: 20px;
+            height: calc(100vh - 150px);
+        }
+        
+        /* 左侧患者信息 */
+        .patient-info {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        .patient-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 16px;
+        }
+        
+        .patient-meta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        
+        .patient-meta-label {
+            color: #8c8c8c;
+        }
+        
+        .patient-meta-value {
+            color: #262626;
+            font-weight: 500;
+        }
+        
+        /* 中间原始材料 */
+        .medical-materials {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .materials-tabs {
+            display: flex;
+            border-bottom: 1px solid #f0f0f0;
+            padding: 0 20px;
+        }
+        
+        .material-tab {
+            padding: 16px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .material-tab.active {
+            color: #1890ff;
+            border-bottom-color: #1890ff;
+            font-weight: 500;
+        }
+        
+        .materials-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .material-content {
+            display: none;
+        }
+        
+        .material-content.active {
+            display: block;
+        }
+        
+        .material-section {
+            margin-bottom: 24px;
+        }
+        
+        .material-section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        /* 右侧修改清单 */
+        .my-tasks-list {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tasks-list-header {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .tasks-list-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+        }
+        
+        .tasks-list-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .task-item {
+            padding: 16px;
+            border: 1px solid #f0f0f0;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+        
+        .task-item.completed {
+            background-color: #f6ffed;
+            border-color: #b7eb8f;
+        }
+        
+        .task-item.processing {
+            background-color: #fff7e6;
+            border-color: #ffd591;
+        }
+        
+        .task-item-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .task-status {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .task-status.pending:after {
+            content: '';
+        }
+        
+        .task-status.fixed:after {
+            content: '✅';
+            font-size: 14px;
+        }
+        
+        .task-status.explained:after {
+            content: '⚪️';
+            font-size: 14px;
+        }
+        
+        .task-status.transferred:after {
+            content: '🔄';
+            font-size: 14px;
+        }
+        
+        .task-content {
+            flex: 1;
+        }
+        
+        .task-risk {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .risk-icon {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+        
+        .risk-high .risk-icon:before {
+            content: '🚫';
+        }
+        
+        .risk-medium .risk-icon:before {
+            content: '🟠';
+        }
+        
+        .risk-low .risk-icon:before {
+            content: '🟡';
+        }
+        
+        .task-description {
+            font-size: 13px;
+            color: #595959;
+            line-height: 1.5;
+        }
+        
+        .task-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .task-action-btn {
+            padding: 6px 12px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .task-action-btn:hover {
+            color: #1890ff;
+            border-color: #1890ff;
+        }
+        
+        .task-result {
+            margin-top: 12px;
+            padding: 8px 12px;
+            background-color: #f0f0f0;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #595959;
+        }
+        
+        /* 底部控制按钮 */
+        .task-footer {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            left: 260px;
+            background: white;
+            border-top: 1px solid #f0f0f0;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: flex-end;
+            z-index: 100;
+        }
+        
+        .btn-submit {
+            background-color: #d9d9d9;
+            color: #8c8c8c;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: not-allowed;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit.active {
+            background-color: #1890ff;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .btn-submit.active:hover {
+            background-color: #40a9ff;
+        }
+        
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            margin-bottom: 16px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #262626;
+        }
+        
+        .modal-body {
+            margin-bottom: 24px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        
+        .btn-secondary {
+            padding: 8px 20px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .task-detail-layout {
+                grid-template-columns: 250px 1fr 400px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .task-detail-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .patient-info,
+            .medical-materials,
+            .my-tasks-list {
+                height: auto;
+                margin-bottom: 20px;
+            }
+            
+            .task-footer {
+                left: 0;
+                position: relative;
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-navbar">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="icon-menu"></i>
+                </button>
+                <div class="breadcrumb">
+                    <a href="/1.0/超级管理员/事中审核管理/我的任务/任务列表.html">我的任务（医生）</a>
+                    <span class="separator">></span>
+                    <span>任务详情</span>
+                </div>
+            </div>
+            
+            <div class="container">
+                <!-- 页面头部 -->
+                <div class="page-header">
+
+                    <h1>患者【张三】(住院号: ZY20230810) - 预审问题处理</h1>
+                    <div class="task-overview">
+                        由 <span class="highlight">刘护士</span> 发起 • 收到时间：2025-08-13 10:30 • 截止时间：2025-08-14 18:00
+                    </div>
+                </div>
+                
+                <!-- 主布局 -->
+                <div class="task-detail-layout">
+                    <!-- 左侧患者信息 -->
+                    <div class="patient-info">
+                        <div class="patient-name">张三</div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">住院号</span>
+                            <span class="patient-meta-value">ZY20230810</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">床号</span>
+                            <span class="patient-meta-value">01床</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">年龄</span>
+                            <span class="patient-meta-value">65岁</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">性别</span>
+                            <span class="patient-meta-value">男</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">入院时间</span>
+                            <span class="patient-meta-value">2025-08-10</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">科室</span>
+                            <span class="patient-meta-value">心内科</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">主治医生</span>
+                            <span class="patient-meta-value">王医生</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">主要诊断</span>
+                            <span class="patient-meta-value">冠心病</span>
+                        </div>
+                        <div class="patient-meta-item">
+                            <span class="patient-meta-label">医保类型</span>
+                            <span class="patient-meta-value">城镇职工</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 中间原始材料 -->
+                    <div class="medical-materials">
+                        <div class="materials-tabs">
+                            <button class="material-tab active" onclick="switchMaterialTab('medical-record')">病案首页</button>
+                            <button class="material-tab" onclick="switchMaterialTab('doctor-advice')">医嘱列表</button>
+                            <button class="material-tab" onclick="switchMaterialTab('examination')">检查检验</button>
+                            <button class="material-tab" onclick="switchMaterialTab('treatment')">治疗记录</button>
+                        </div>
+                        
+                        <div class="materials-content">
+                            <!-- 病案首页内容 -->
+                            <div class="material-content active" id="medical-record-content">
+                                <div class="material-section">
+                                    <div class="material-section-title">基本信息</div>
+                                    <div class="medical-record-item">
+                                        <div class="record-header">
+                                            <span class="record-title">患者信息</span>
+                                        </div>
+                                        <div class="record-content">
+                                            <p>姓名：张三</p>
+                                            <p>性别：男</p>
+                                            <p>年龄：65岁</p>
+                                            <p>身份证号：110101********1234</p>
+                                            <p>联系方式：138****5678</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="material-section">
+                                    <div class="material-section-title">入院信息</div>
+                                    <div class="medical-record-item">
+                                        <div class="record-content">
+                                            <p>入院日期：2025-08-10</p>
+                                            <p>入院科室：心内科</p>
+                                            <p>主治医生：王医生</p>
+                                            <p>住院号：ZY20230810</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="material-section">
+                                    <div class="material-section-title">诊断信息</div>
+                                    <div class="medical-record-item">
+                                        <div class="record-content">
+                                            <p>主要诊断：冠心病</p>
+                                            <p>其他诊断：高血压2级</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 医嘱列表内容 -->
+                            <div class="material-content" id="doctor-advice-content">
+                                <div class="material-section">
+                                    <div class="material-section-title">长期医嘱</div>
+                                    <div class="doctor-advice-item">
+                                        <div class="advice-content">
+                                            <p>阿司匹林肠溶片 100mg qd</p>
+                                            <p>氯吡格雷片 75mg qd</p>
+                                            <p>辛伐他汀片 20mg qn</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="material-section">
+                                    <div class="material-section-title">临时医嘱</div>
+                                    <div class="doctor-advice-item">
+                                        <div class="advice-content">
+                                            <p>心电图检查</p>
+                                            <p>血常规检查</p>
+                                            <p>心肌酶谱检查</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 检查检验内容 -->
+                            <div class="material-content" id="examination-content">
+                                <div class="material-section">
+                                    <div class="material-section-title">检查项目</div>
+                                    <div class="examination-item">
+                                        <div class="examination-content">
+                                            <p>心电图：大致正常</p>
+                                            <p>血常规：WBC 6.5×10^9/L, RBC 4.8×10^12/L, PLT 230×10^9/L</p>
+                                            <p>心肌酶谱：CK 120U/L, CK-MB 18U/L, cTnI 0.02ng/ml</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 治疗记录内容 -->
+                            <div class="material-content" id="treatment-content">
+                                <div class="material-section">
+                                    <div class="material-section-title">治疗过程</div>
+                                    <div class="treatment-item">
+                                        <div class="treatment-content">
+                                            <p>2025-08-10：患者因"胸痛3天"入院，给予冠心病二级预防治疗</p>
+                                            <p>2025-08-11：患者胸痛缓解，继续当前治疗方案</p>
+                                            <p>2025-08-12：患者一般情况可，计划近日出院</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 右侧修改清单 -->
+                    <div class="my-tasks-list">
+                        <div class="tasks-list-header">
+                            <div class="tasks-list-title">我的修改清单 (共2项)</div>
+                        </div>
+                        
+                        <div id="loading-indicator" class="tasks-list-content" style="display: none;">
+                            <div style="text-align: center; padding: 40px 20px; color: #8c8c8c;">
+                                <div style="font-size: 48px; margin-bottom: 16px;">⏳</div>
+                                <div style="font-size: 14px;">正在基于患者最新数据，重新校验问题项...</div>
+                            </div>
+                        </div>
+                        
+                        <div id="change-alert" class="tasks-list-content" style="display: none; padding: 10px 20px 0;"></div>
+                        
+                        <div id="tasks-container" class="tasks-list-content">
+                            <!-- 问题项1 - 待处理 -->
+                            <div class="task-item" id="task-item-1">
+                                <div class="task-item-header">
+                                    <div class="task-status pending"></div>
+                                    <div class="task-content">
+                                        <div class="task-risk risk-high">
+                                            <span class="risk-icon"></span>
+                                            <span>高风险：住院天数超出医保限制</span>
+                                        </div>
+                                        <div class="task-description">
+                                            患者本次住院已达7天，根据医保政策，冠心病患者单次住院一般不超过7天，请确认是否有延长住院的必要。
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="task-actions">
+                                    <button class="task-action-btn" onclick="goToHisModify('task-item-1')">去HIS修改</button>
+                                    <button class="task-action-btn" onclick="addReason('task-item-1')">补充理由</button>
+                                    <button class="task-action-btn" onclick="transferTask('task-item-1')">转交处理...</button>
+                                    <button class="task-action-btn" onclick="remindNurse('task-item-1')">提醒护士补充...</button>
+                                </div>
+                            </div>
+                            
+                            <!-- 问题项2 - 待处理 -->
+                            <div class="task-item" id="task-item-2">
+                                <div class="task-item-header">
+                                    <div class="task-status pending"></div>
+                                    <div class="task-content">
+                                        <div class="task-risk risk-medium">
+                                            <span class="risk-icon"></span>
+                                            <span>中风险：用药合理性待确认</span>
+                                        </div>
+                                        <div class="task-description">
+                                            患者同时使用阿司匹林和氯吡格雷超过7天，需确认是否有必要继续联合抗血小板治疗。
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="task-actions">
+                                    <button class="task-action-btn" onclick="goToHisModify('task-item-2')">去HIS修改</button>
+                                    <button class="task-action-btn" onclick="addReason('task-item-2')">补充理由</button>
+                                    <button class="task-action-btn" onclick="transferTask('task-item-2')">转交处理...</button>
+                                    <button class="task-action-btn" onclick="remindNurse('task-item-2')">提醒护士补充...</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 沟通区域（仅协同请求任务显示） -->
+                <div id="communication-area" class="task-footer" style="display: none; padding-top: 20px; padding-bottom: 20px;">
+                    <div style="margin-bottom: 16px;">
+                        <div style="font-size: 14px; font-weight: 500; color: #262626; margin-bottom: 8px;">简易沟通</div>
+                        <button class="btn-secondary" onclick="openCommunicationModal()" style="margin-right: 8px;">回复请求人</button>
+                    </div>
+                    <div id="communication-history" style="background-color: #f5f5f5; border-radius: 6px; padding: 16px; max-height: 200px; overflow-y: auto;">
+                        <!-- 沟通历史会动态添加到这里 -->
+                    </div>
+                </div>
+                
+                <!-- 底部流程控制按钮 -->
+                <div class="task-footer">
+                    <button class="btn-submit" id="submit-btn" disabled>全部处理完毕，提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 补充理由弹窗 -->
+    <div class="modal" id="reason-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">补充理由</div>
+            </div>
+            <div class="modal-body">
+                <textarea id="reason-text" rows="5" style="width: 100%; padding: 12px; border-radius: 4px; border: 1px solid #d9d9d9; resize: vertical;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeReasonModal()">取消</button>
+                <button class="btn-primary" onclick="saveReason()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 转交处理弹窗 -->
+    <div class="modal" id="transfer-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">转交处理</div>
+            </div>
+            <div class="modal-body">
+                <select id="transfer-to" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #d9d9d9;">
+                    <option value="">请选择转交对象</option>
+                    <option value="wang-doctor">王医生（心内科）</option>
+                    <option value="li-doctor">李医生（心内科）</option>
+                    <option value="zhang-nurse">张护士（心内科）</option>
+                </select>
+                <textarea id="transfer-reason" rows="3" style="width: 100%; margin-top: 12px; padding: 12px; border-radius: 4px; border: 1px solid #d9d9d9; resize: vertical;"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeTransferModal()">取消</button>
+                <button class="btn-primary" onclick="confirmTransfer()">确认转交</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 提交确认弹窗 -->
+    <div class="modal" id="confirm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">确认提交</div>
+            </div>
+            <div class="modal-body">
+                <p>您确定要提交所有处理结果吗？提交后，任务将进入"已完成"状态。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeConfirmModal()">取消</button>
+                <button class="btn-primary" onclick="finalSubmit()">确认提交</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 模拟HIS系统弹窗 -->
+    <div class="modal" id="his-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">HIS系统（模拟）</div>
+            </div>
+            <div class="modal-body">
+                <p>您已进入HIS系统修改界面（模拟）</p>
+                <p>在实际应用中，这里会跳转到真实的HIS系统。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" onclick="completeHisModify()">已完成修改</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 加载统一菜单组件 -->
+    <script>
+        // 加载统一侧边栏
+        fetch('/1.0/超级管理员/组件/_unified-sidebar.html')
+            .then(response => response.text())
+            .then(html => {
+                const sidebarContainer = document.getElementById('sidebar-container');
+                sidebarContainer.innerHTML = html;
+                // 手动执行插入的脚本
+                const scripts = sidebarContainer.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.head.appendChild(newScript);
+                    script.remove();
+                });
+                // 等待脚本执行后再初始化菜单
+                setTimeout(() => {
+                    if (typeof initSidebar === 'function') {
+                        initSidebar();
+                    }
+                    // 设置当前页面的菜单项为激活状态
+                    if (typeof setActiveMenu === 'function') {
+                        setActiveMenu();
+                    }
+                }, 100);
+            })
+            .catch(error => console.error('Error loading sidebar:', error));
+        
+        // 切换侧边栏显示/隐藏
+        function toggleSidebar() {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            const mainContent = document.querySelector('.main-content');
+            
+            if (sidebarContainer.classList.contains('collapsed')) {
+                sidebarContainer.classList.remove('collapsed');
+                mainContent.style.marginLeft = '260px';
+            } else {
+                sidebarContainer.classList.add('collapsed');
+                mainContent.style.marginLeft = '0';
+            }
+        }
+        
+        // 切换原始材料选项卡
+        function switchMaterialTab(tabId) {
+            // 隐藏所有内容
+            document.querySelectorAll('.material-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // 移除所有选项卡的激活状态
+            document.querySelectorAll('.material-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 显示选中的内容和激活对应的选项卡
+            document.getElementById(`${tabId}-content`).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // 去HIS修改
+        function goToHisModify(taskItemId) {
+            currentTaskItemId = taskItemId;
+            document.getElementById('his-modal').style.display = 'flex';
+        }
+        
+        // 完成HIS修改
+        function completeHisModify() {
+            document.getElementById('his-modal').style.display = 'none';
+            updateTaskStatus(currentTaskItemId, 'fixed', '已修正医嘱，患者住院天数符合要求');
+        }
+        
+        // 补充理由
+        function addReason(taskItemId) {
+            currentTaskItemId = taskItemId;
+            document.getElementById('reason-modal').style.display = 'flex';
+        }
+        
+        // 关闭补充理由弹窗
+        function closeReasonModal() {
+            document.getElementById('reason-modal').style.display = 'none';
+            document.getElementById('reason-text').value = '';
+        }
+        
+        // 保存理由
+        function saveReason() {
+            const reason = document.getElementById('reason-text').value;
+            if (reason.trim()) {
+                updateTaskStatus(currentTaskItemId, 'pending-review', `已补充理由：${reason}`);
+                closeReasonModal();
+            } else {
+                alert('请输入补充理由');
+            }
+        }
+        
+        // 转交处理
+        function transferTask(taskItemId) {
+            currentTaskItemId = taskItemId;
+            document.getElementById('transfer-modal').style.display = 'flex';
+        }
+        
+        // 关闭转交处理弹窗
+        function closeTransferModal() {
+            document.getElementById('transfer-modal').style.display = 'none';
+            document.getElementById('transfer-to').value = '';
+            document.getElementById('transfer-reason').value = '';
+        }
+        
+        // 确认转交
+        function confirmTransfer() {
+            const transferTo = document.getElementById('transfer-to').value;
+            const transferReason = document.getElementById('transfer-reason').value;
+            
+            if (transferTo && transferReason.trim()) {
+                const transferName = document.getElementById('transfer-to').options[document.getElementById('transfer-to').selectedIndex].text;
+                updateTaskStatus(currentTaskItemId, 'transferred', `已转交至${transferName}`);
+                closeTransferModal();
+            } else {
+                alert('请选择转交对象并输入转交理由');
+            }
+        }
+        
+        // 提醒护士补充
+        function remindNurse(taskItemId) {
+            alert('已发送提醒给相关护士');
+            updateTaskStatus(taskItemId, 'processing', '已提醒护士补充材料');
+        }
+        
+        // 更新任务状态
+        function updateTaskStatus(taskItemId, status, message) {
+            const taskItem = document.getElementById(taskItemId);
+            const taskStatus = taskItem.querySelector('.task-status');
+            const taskActions = taskItem.querySelector('.task-actions');
+            
+            // 移除所有状态类
+            taskStatus.className = 'task-status';
+            taskItem.className = 'task-item';
+            
+            // 添加新状态类
+            taskStatus.classList.add(status);
+            
+            // 根据状态添加样式
+            if (status === 'fixed' || status === 'transferred' || status === 'pending-review') {
+                taskItem.classList.add('completed');
+            } else if (status === 'processing') {
+                taskItem.classList.add('processing');
+            }
+            
+            // 移除操作按钮，添加处理结果
+            if (taskActions) {
+                taskActions.remove();
+                const resultElement = document.createElement('div');
+                resultElement.className = 'task-result';
+                
+                // 如果是待人工复核状态，添加tooltip
+                if (status === 'pending-review') {
+                    resultElement.innerHTML = `
+                        <div style="position: relative; display: inline-block;">
+                            <span>[待人工复核] 📝</span>
+                            <span style="display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 8px; padding: 4px 8px; background-color: #333; color: white; font-size: 12px; border-radius: 4px; white-space: nowrap;">您补充的理由已提交，将由医保办进行人工审核。</span>
+                        </div>
+                        <div style="margin-top: 4px;">${message}</div>
+                    `;
+                    
+                    // 添加tooltip显示逻辑
+                    const tooltipParent = resultElement.querySelector('div[style="position: relative; display: inline-block;"]');
+                    const tooltip = tooltipParent.querySelector('span[style*="display: none"]');
+                    
+                    tooltipParent.addEventListener('mouseenter', function() {
+                        tooltip.style.display = 'block';
+                    });
+                    
+                    tooltipParent.addEventListener('mouseleave', function() {
+                        tooltip.style.display = 'none';
+                    });
+                } else {
+                    resultElement.textContent = message;
+                }
+                
+                taskItem.appendChild(resultElement);
+            }
+            
+            // 检查是否所有任务都已处理
+            checkAllTasksCompleted();
+        }
+        
+        // 检查是否所有任务都已处理
+        function checkAllTasksCompleted() {
+            const taskItems = document.querySelectorAll('.task-item');
+            let allCompleted = true;
+            
+            taskItems.forEach(item => {
+                if (!item.classList.contains('completed') && !item.classList.contains('processing')) {
+                    allCompleted = false;
+                }
+            });
+            
+            // 更新提交按钮状态
+            const submitBtn = document.getElementById('submit-btn');
+            if (allCompleted) {
+                submitBtn.classList.add('active');
+                submitBtn.disabled = false;
+                submitBtn.onclick = openConfirmModal;
+            } else {
+                submitBtn.classList.remove('active');
+                submitBtn.disabled = true;
+                submitBtn.onclick = null;
+            }
+        }
+        
+        // 打开确认弹窗
+        function openConfirmModal() {
+            document.getElementById('confirm-modal').style.display = 'flex';
+        }
+        
+        // 关闭确认弹窗
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').style.display = 'none';
+        }
+        
+        // 最终提交
+        function finalSubmit() {
+            document.getElementById('confirm-modal').style.display = 'none';
+            
+            // 检查是否有待人工复核的项
+            const hasPendingReview = document.querySelectorAll('.task-item.completed .task-status.pending-review').length > 0;
+            
+            if (hasPendingReview) {
+                // 如果有至少一条待人工复核的项，显示提示并跳转
+                alert('您的任务已提交，包含待人工复核的项目。医保办将进行审核。');
+                // 在实际应用中，这里应该向服务器发送请求，创建新的预审申诉复核任务
+                window.location.href = '/1.0/超级管理员/事中审核管理/我的任务/任务列表.html';
+            } else {
+                // 如果所有项都是已修正或已转交，流程结束
+                alert('任务已成功提交！所有项目已处理完毕。');
+                window.location.href = '/1.0/超级管理员/事中审核管理/我的任务/任务列表.html';
+            }
+        }
+        
+        // 全局变量，用于跟踪当前操作的任务项
+        let currentTaskItemId = '';
+        let taskType = 'medical-audit'; // 默认任务类型为医保预审
+        
+        // 页面加载时执行进入即刷新机制
+        document.addEventListener('DOMContentLoaded', function() {
+            // 模拟URL参数，在实际应用中应该从URL中获取
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('id') || 'task-001';
+            
+            // 根据任务ID判断任务类型
+            // 在实际应用中，这里应该从服务器获取任务类型
+            if (taskId === 'task-002' || taskId === 'task-004') {
+                taskType = 'collaboration';
+            }
+            
+            // 显示加载指示器
+            document.getElementById('tasks-container').style.display = 'none';
+            document.getElementById('loading-indicator').style.display = 'block';
+            
+            // 模拟加载过程
+            setTimeout(function() {
+                // 隐藏加载指示器
+                document.getElementById('loading-indicator').style.display = 'none';
+                document.getElementById('tasks-container').style.display = 'block';
+                
+                // 显示变更提示栏
+                const changeAlert = document.getElementById('change-alert');
+                
+                // 随机生成一种变更类型用于演示
+                const changeTypes = ['green', 'orange', 'blue'];
+                const randomType = changeTypes[Math.floor(Math.random() * changeTypes.length)];
+                
+                let alertHTML = '';
+                
+                if (randomType === 'green') {
+                    alertHTML = `
+                        <div style="background-color: #f6ffed; border: 1px solid #b7eb8f; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="font-size: 16px; margin-right: 8px;">✅</div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 500; color: #389e0d;">校验完成</div>
+                                    <div style="font-size: 12px; color: #52c41a;">所有问题项与患者最新数据一致，无需调整</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else if (randomType === 'orange') {
+                    alertHTML = `
+                        <div style="background-color: #fff7e6; border: 1px solid #ffd591; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="font-size: 16px; margin-right: 8px;">⚠️</div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 500; color: #d46b08;">数据有更新</div>
+                                    <div style="font-size: 12px; color: #fa8c16;">我们根据患者最新数据，更新了1个问题项的风险等级</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    alertHTML = `
+                        <div style="background-color: #e6f7ff; border: 1px solid #91d5ff; border-radius: 6px; padding: 12px; margin-bottom: 16px;">
+                            <div style="display: flex; align-items: center;">
+                                <div style="font-size: 16px; margin-right: 8px;">ℹ️</div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 500; color: #096dd9;">信息提示</div>
+                                    <div style="font-size: 12px; color: #1890ff;">请确认是否需要根据最新检验结果调整用药方案</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                changeAlert.innerHTML = alertHTML;
+                changeAlert.style.display = 'block';
+                
+                // 如果是协同请求任务，显示请求详情
+                if (taskType === 'collaboration') {
+                    showCollaborationRequestDetails();
+                }
+            }, 2000);
+        });
+        
+        // 显示协同请求详情
+        function showCollaborationRequestDetails() {
+            // 在实际应用中，这里应该从服务器获取请求详情
+            const requestDetailsHTML = `
+                <div style="background-color: #f5f5f5; border-left: 4px solid #fa8c16; border-radius: 6px; padding: 20px; margin-bottom: 20px;">
+                    <div style="font-size: 16px; font-weight: 600; color: #262626; margin-bottom: 12px;">来自 王医生 的协同处理请求</div>
+                    <div style="font-size: 12px; color: #8c8c8c; margin-bottom: 12px;">请求时间：2025-08-13 11:00</div>
+                    <div style="font-size: 14px; color: #595959; line-height: 1.5;">
+                        "李医生，这个患者的'头孢'用药预警，需要您在您的会诊记录中，补充一下'存在明确感染指征'的描述，否则无法通过，麻烦了！"
+                    </div>
+                </div>
+            `;
+            
+            const pageHeader = document.querySelector('.page-header');
+            const requestDetailsContainer = document.createElement('div');
+            requestDetailsContainer.innerHTML = requestDetailsHTML;
+            
+            // 在页面标题后插入请求详情
+            const h1 = pageHeader.querySelector('h1');
+            pageHeader.insertBefore(requestDetailsContainer, h1.nextSibling);
+            
+            // 显示沟通区域
+            document.getElementById('communication-area').style.display = 'block';
+            
+            // 加载沟通历史（模拟数据）
+            loadCommunicationHistory();
+        }
+        
+        // 加载沟通历史
+        function loadCommunicationHistory() {
+            // 在实际应用中，这里应该从服务器获取沟通历史
+            const historyHTML = `
+                <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e8e8e8;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <div style="font-size: 12px; color: #8c8c8c;">王医生</div>
+                        <div style="font-size: 11px; color: #bfbfbf;">2025-08-13 11:00</div>
+                    </div>
+                    <div style="font-size: 13px; color: #262626; line-height: 1.4;">
+                        李医生，这个患者的'头孢'用药预警，需要您在您的会诊记录中，补充一下'存在明确感染指征'的描述，否则无法通过，麻烦了！
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('communication-history').innerHTML = historyHTML;
+        }
+        
+        // 打开沟通弹窗
+        function openCommunicationModal() {
+            // 创建沟通弹窗
+            const modalHTML = `
+                <div id="communication-modal" class="modal" style="display: flex;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="modal-title">回复请求人</div>
+                        </div>
+                        <div class="modal-body">
+                            <textarea id="communication-message" rows="5" style="width: 100%; padding: 12px; border-radius: 4px; border: 1px solid #d9d9d9; resize: vertical;"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn-secondary" onclick="closeCommunicationModal()">取消</button>
+                            <button class="btn-primary" onclick="sendCommunicationMessage()">发送</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 将弹窗添加到页面
+            const modalContainer = document.createElement('div');
+            modalContainer.innerHTML = modalHTML;
+            document.body.appendChild(modalContainer.firstElementChild);
+        }
+        
+        // 关闭沟通弹窗
+        function closeCommunicationModal() {
+            const modal = document.getElementById('communication-modal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        // 发送沟通消息
+        function sendCommunicationMessage() {
+            const message = document.getElementById('communication-message').value;
+            
+            if (!message.trim()) {
+                alert('请输入消息内容');
+                return;
+            }
+            
+            // 在实际应用中，这里应该向服务器发送消息
+            console.log('发送沟通消息:', message);
+            
+            // 添加消息到沟通历史
+            const now = new Date();
+            const timeString = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            
+            const messageHTML = `
+                <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e8e8e8;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <div style="font-size: 12px; color: #8c8c8c;">我</div>
+                        <div style="font-size: 11px; color: #bfbfbf;">${timeString}</div>
+                    </div>
+                    <div style="font-size: 13px; color: #262626; line-height: 1.4;">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            
+            const historyContainer = document.getElementById('communication-history');
+            historyContainer.insertAdjacentHTML('beforeend', messageHTML);
+            
+            // 关闭弹窗
+            closeCommunicationModal();
+            
+            // 滚动到最新消息
+            historyContainer.scrollTop = historyContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>

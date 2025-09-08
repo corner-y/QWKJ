@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事前审核结果 - 医保智能审核系统</title>
+    <link rel="stylesheet" href="../../../样式文件/通用样式.css">
+    <link rel="stylesheet" href="../../../样式文件/unified-sidebar.css">
+    <link rel="stylesheet" href="../../../样式文件/审核结果样式.css">
+    <!-- 引入Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+            /* 医生专属事前审核结果页面样式 */
+            .prescreen-tabs {
+                display: flex;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                margin-bottom: 24px;
+                overflow: hidden;
+            }
+            
+            .prescreen-tab {
+                flex: 1;
+                padding: 16px 24px;
+                text-align: center;
+                cursor: pointer;
+                border: none;
+                background: none;
+                font-size: 16px;
+                color: #8c8c8c;
+                transition: all 0.3s;
+                border-bottom: 2px solid transparent;
+            }
+            
+            .prescreen-tab.active {
+                color: var(--primary-color);
+                border-bottom-color: var(--primary-color);
+                font-weight: 500;
+            }
+            
+            .prescreen-tab:hover:not(.active) {
+                background-color: #f5f5f5;
+            }
+            
+            /* 子标签页样式 */
+            .tab-group {
+                position: relative;
+            }
+            
+            .sub-tabs {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                display: flex;
+                background-color: #fff;
+                border: 1px solid #d9d9d9;
+                border-top: none;
+                border-radius: 0 0 4px 4px;
+                z-index: 10;
+                display: none;
+            }
+            
+            .sub-tab-btn {
+                padding: 8px 16px;
+                background-color: #fff;
+                border: none;
+                cursor: pointer;
+                font-size: 12px;
+                color: #666;
+                transition: all 0.3s;
+            }
+            
+            .sub-tab-btn:hover {
+                color: #1890ff;
+                background-color: #f0f0f0;
+            }
+            
+            .sub-tab-btn.active {
+                color: #1890ff;
+                background-color: #e6f7ff;
+            }
+            
+            .prescreen-table-container {
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+            }
+            
+            .prescreen-table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            
+            .prescreen-table th {
+                background-color: #fafafa;
+                padding: 16px;
+                text-align: left;
+                font-weight: 500;
+                color: #262626;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 14px;
+            }
+            
+            .prescreen-table td {
+                padding: 16px;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 14px;
+                color: #595959;
+            }
+            
+            .prescreen-table tbody tr {
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            
+            .prescreen-table tbody tr:hover {
+                background-color: #fafafa;
+            }
+            
+            .prescreen-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+            
+            /* 风险级别样式 */
+            .risk-level {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 4px 12px;
+                border-radius: 16px;
+                font-size: 14px;
+                font-weight: 500;
+            }
+            
+            .risk-level.high {
+                background-color: #fff1f0;
+                color: #ff4d4f;
+                border: 1px solid #ffccc7;
+            }
+            
+            .risk-level.medium {
+                background-color: #fff7e6;
+                color: #faad14;
+                border: 1px solid #ffd591;
+            }
+            
+            .risk-level.low {
+                background-color: #fffbe6;
+                color: #faad14;
+                border: 1px solid #ffe58f;
+            }
+            
+            .risk-level.compliant {
+                background-color: #f6ffed;
+                color: #52c41a;
+                border: 1px solid #b7eb8f;
+            }
+            
+            /* 审核状态样式 */
+            .audit-status {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 4px 12px;
+                border-radius: 16px;
+                font-size: 14px;
+                font-weight: 500;
+            }
+            
+            .audit-status.compliant {
+                background-color: #f6ffed;
+                color: #52c41a;
+                border: 1px solid #b7eb8f;
+            }
+            
+            .audit-status.warning {
+                background-color: #fff7e6;
+                color: #fa8c16;
+                border: 1px solid #ffd591;
+            }
+            
+            .audit-status.high-risk {
+                background-color: #fff1f0;
+                color: #f5222d;
+                border: 1px solid #ffccc7;
+            }
+            
+            /* 个人合规性统计模块样式 */
+            .statistics-section {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 24px;
+                margin-bottom: 24px;
+            }
+            
+            /* 个人合规性统计模块样式 */
+            .compliance-statistics {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+                margin-bottom: 24px;
+            }
+            
+            .stat-card {
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+            
+            .stat-card-title {
+                font-size: 16px;
+                font-weight: 500;
+                color: #262626;
+                margin-bottom: 16px;
+                /* 允许标题折行 */
+                white-space: normal;
+            }
+            
+            .stat-title {
+                font-size: 14px;
+                color: #666;
+                margin-bottom: 10px;
+            }
+            
+            .stat-value {
+                font-size: 24px;
+                font-weight: 500;
+                color: #333;
+                margin-bottom: 8px;
+            }
+            
+            .stat-trend {
+                font-size: 12px;
+                color: #52c41a;
+            }
+            
+            .stat-detail {
+                font-size: 12px;
+                color: #999;
+            }
+            
+            /* 趋势图容器样式 */
+            .trend-chart-container {
+                position: relative;
+            }
+            
+            /* 趋势图右上角时间选择器容器 */
+            .trend-time-filter {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                z-index: 10;
+            }
+            
+            .chart-wrapper {
+                position: relative;
+                height: 200px;
+            }
+            
+            /* 子标签内容样式 */
+            .sub-tab-content {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+            
+            /* 患者行样式 */
+            .patient-row {
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+            
+            .patient-row:hover {
+                background-color: #f5f5f5;
+            }
+            
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 8px;
+                padding: 20px;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                margin-top: 20px;
+            }
+            
+            .pagination-btn {
+                padding: 6px 12px;
+                border: 1px solid #d9d9d9;
+                background: white;
+                color: #8c8c8c;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.3s;
+            }
+            
+            .pagination-btn:disabled {
+                cursor: not-allowed;
+                opacity: 0.5;
+            }
+            
+            .pagination-btn.active {
+                background: var(--primary-color);
+                color: white;
+                border-color: var(--primary-color);
+            }
+        </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div id="sidebar-container"></div>
+        
+        <!-- 主内容区域 -->
+        <div class="main-content">
+            <!-- 顶部导航栏 -->
+            <div class="top-navbar">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <i class="icon-menu"></i>
+                </button>
+                <div class="breadcrumb">
+                    <span>事前审核</span>
+                    <span class="separator">></span>
+                    <span>事前审核结果</span>
+                </div>
+                <!-- <div class="navbar-actions">
+                    <button class="btn btn-icon" onclick="showNotifications()">
+                        <i class="icon-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="btn btn-icon" onclick="refreshPage()">
+                        <i class="icon-refresh"></i>
+                    </button>
+                    <div class="current-time" id="currentTime"></div>
+                </div> -->
+            </div>
+            
+            <div class="container">
+                <!-- 页面头部 -->
+                <div class="page-header">
+                    <!-- 页面标题 - 移除了操作按钮区域 -->
+                </div>
+
+                <!-- 场景化视图切换 -->
+                <div class="prescreen-tabs">
+                    <button class="prescreen-tab active" onclick="switchTab('inpatient')">住院</button>
+                    <button class="prescreen-tab" onclick="switchTab('outpatient')">门诊</button>
+                    <button class="prescreen-tab" onclick="switchTab('chronic')">慢病续方</button>
+                </div>
+
+                <!-- 搜索与筛选区 -->
+                <div class="filter-section" id="filterSection">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>审核状态：</label>
+                            <select class="filter-select" id="auditStatusFilter">
+                                <option value="">全部记录</option>
+                                <option value="warning">仅看预警记录</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>时间范围：</label>
+                            <input type="date" class="filter-input" id="startDate">
+                            <span style="margin: 0 8px;">~</span>
+                            <input type="date" class="filter-input" id="endDate">
+                        </div>
+                        
+                        <div class="filter-group" id="diseaseTypeFilterGroup" style="display: none;">
+                            <label>病种类型：</label>
+                            <select class="filter-select" id="diseaseTypeFilter">
+                                <option value="">全部病种</option>
+                                <option value="hypertension">高血压</option>
+                                <option value="diabetes">糖尿病</option>
+                                <option value="coronary">冠心病</option>
+                                <option value="stroke">脑卒中</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group" id="quotaStatusFilterGroup" style="display: none;">
+                            <label>额度状态：</label>
+                            <select class="filter-select" id="quotaStatusFilter">
+                                <option value="">全部状态</option>
+                                <option value="normal">正常</option>
+                                <option value="warning">即将用尽</option>
+                                <option value="exhausted">已用尽</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group search-group">
+                            <input type="text" class="search-input" placeholder="搜索患者姓名、病历号..." id="searchInput">
+                            <button class="btn btn-primary" onclick="applyFilters()">
+                                <i class="icon-search"></i>
+                                搜索
+                            </button>
+                            <button class="btn btn-secondary" onclick="resetFilters()">
+                                <i class="icon-reset"></i>
+                                重置
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 个人合规性统计 -->
+                <div class="statistics-section" id="statisticsSection" style="display: none;">
+                    <!-- 风险项总览 (环形图) -->
+                    <div class="stat-card">
+                        <div class="stat-card-title">风险项统计</div>
+                        <div class="chart-wrapper">
+                            <canvas id="riskDistributionChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- 高频风险类型 (水平条形图) -->
+                    <div class="stat-card">
+                        <div class="stat-card-title">我的高频风险Top 3</div>
+                        <div class="chart-wrapper">
+                            <canvas id="highFrequencyRiskChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- 合规率趋势 (折线图) -->
+                    <div class="stat-card trend-chart-container">
+                        <!-- 右上角时间选择器 -->
+                        <div class="trend-time-filter">
+                            <select class="filter-select" id="trendTimeRangeFilter" style="width: 120px;">
+                                <option value="week">近一周</option>
+                                <option value="month" selected>近一月</option>
+                                <option value="quarter">近一季度</option>
+                                <option value="halfYear">近半年</option>
+                                <option value="year">近一年</option>
+                            </select>
+                        </div>
+                        
+                        <!-- 标题区域 -->
+                        <div style="margin-bottom: 16px;">
+                            <div class="stat-card-title">我的门诊合规率趋势</div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="complianceTrendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 历史记录列表 -->
+                <div class="prescreen-table-container">
+                    <!-- 住院记录 -->
+                    <div class="tab-content" id="inpatient-content">
+                        <table class="prescreen-table">
+                            <thead>
+                                <tr>
+                                    <th>患者信息</th>
+                                    <th>病历号</th>
+                                    <th>住院号</th>
+                                    <th>风险等级</th>
+                                    <th>预警项数</th>
+                                    <th>审核日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 合规记录 1 -->
+                                <tr onclick="viewPatientDetails('patient001')">
+                                    <td>
+                                        <div>张三</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">65岁/男/心内科</div>
+                                    </td>
+                                    <td>12345678</td>
+                                    <td>
+                                        <div>ZY987654</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">2023-08-15</div>
+                                    </td>
+                                    <td>
+                                        <span class="audit-status compliant">
+                                            <i class="icon-check-circle"></i>合规
+                                        </span>
+                                    </td>
+                                    <td>0</td>
+                                    <td>2023-08-15 10:23</td>
+                                </tr>
+                                
+                                <!-- 合规记录 2 -->
+                                <tr onclick="viewPatientDetails('patient002')">
+                                    <td>
+                                        <div>李四</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">42岁/女/神经内科</div>
+                                    </td>
+                                    <td>23456789</td>
+                                    <td>
+                                        <div>ZY876543</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">2023-08-12</div>
+                                    </td>
+                                    <td>
+                                        <span class="audit-status compliant">
+                                            <i class="icon-check-circle"></i>合规
+                                        </span>
+                                    </td>
+                                    <td>0</td>
+                                    <td>2023-08-12 14:45</td>
+                                </tr>
+                                
+                                <!-- 预警记录 (Demo主角) -->
+                                <tr onclick="viewPatientDetails('patient003', 'hospital')">
+                                    <td>
+                                        <div>王五</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">58岁/男/骨科</div>
+                                    </td>
+                                    <td>34567890</td>
+                                    <td>
+                                        <div>ZY765432</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">2023-08-10</div>
+                                    </td>
+                                    <td>
+                                        <span class="audit-status warning">
+                                            <i class="icon-exclamation-circle"></i>中风险
+                                        </span>
+                                    </td>
+                                    <td>2</td>
+                                    <td>2023-08-10 09:18</td>
+                                </tr>
+                                
+                                <!-- 预警记录 2 -->
+                                <tr onclick="viewPatientDetails('patient004', 'hospital')">
+                                    <td>
+                                        <div>赵六</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">72岁/女/呼吸科</div>
+                                    </td>
+                                    <td>45678901</td>
+                                    <td>
+                                        <div>ZY654321</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">2023-08-08</div>
+                                    </td>
+                                    <td>
+                                        <span class="audit-status warning">
+                                            <i class="icon-exclamation-circle"></i>中风险
+                                        </span>
+                                    </td>
+                                    <td>1</td>
+                                    <td>2023-08-08 16:32</td>
+                                </tr>
+                                
+
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 门诊记录 (默认隐藏) -->
+                    <div class="tab-content" id="outpatient-content" style="display: none;">
+                        <table class="prescreen-table">
+                            <thead>
+                                <tr>
+                                    <th>患者信息</th>
+                                    <th>病历号</th>
+                                    <th>门诊号</th>
+                                    <th>风险级别</th>
+                                    <th>预警项数</th>
+                                    <th>审核日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 合规记录 -->
+                                <tr onclick="viewPatientDetails('patient006', 'outpatient')">
+                                    <td>
+                                        <div>周八</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">36岁/男/皮肤科</div>
+                                    </td>
+                                    <td>67890123</td>
+                                    <td>
+                                        <div>MZ123456</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">2023-08-14</div>
+                                    </td>
+                                    <td>
+                                        <span class="risk-level compliant">
+                                            <i class="icon-check-circle"></i>合规
+                                        </span>
+                                    </td>
+                                    <td>0</td>
+                                    <td>2023-08-14 15:20</td>
+                                </tr>
+                                
+                                <!-- 低风险记录 -->
+                                <tr onclick="viewPatientDetails('patient008', 'outpatient')">
+                                    <td>
+                                        <div>钱十</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">45岁/女/内分泌科</div>
+                                    </td>
+                                    <td>89012345</td>
+                                    <td>
+                                        <div>MZ234567</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">2023-08-13</div>
+                                    </td>
+                                    <td>
+                                        <span class="risk-level low">
+                                            <i class="icon-exclamation-circle"></i>低风险
+                                        </span>
+                                    </td>
+                                    <td>1</td>
+                                    <td>2023-08-13 10:15</td>
+                                </tr>
+                                
+                                <!-- 中风险记录 -->
+                                <tr onclick="viewPatientDetails('patient009', 'outpatient')">
+                                    <td>
+                                        <div>郑十一</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">52岁/男/心内科</div>
+                                    </td>
+                                    <td>90123456</td>
+                                    <td>
+                                        <div>MZ345678</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">2023-08-12</div>
+                                    </td>
+                                    <td>
+                                        <span class="risk-level medium">
+                                            <i class="icon-exclamation-circle"></i>中风险
+                                        </span>
+                                    </td>
+                                    <td>2</td>
+                                    <td>2023-08-12 16:40</td>
+                                </tr>
+                                
+
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 慢病续方记录 (默认隐藏) -->
+                    <div class="tab-content" id="chronic-content" style="display: none;">
+                        <table class="prescreen-table">
+                            <thead>
+                                <tr>
+                                    <th>患者信息</th>
+                                    <th>病历号</th>
+                                    <th>门诊号</th>
+                                    <th>风险级别</th>
+                                    <th>剩余额度</th>
+                                    <th>可用次数</th>
+                                    <th>预警项数</th>
+                                    <th>审核日期</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 慢病记录内容 -->
+                                <tr onclick="viewPatientDetails('patient007', 'chronic')">
+                                    <td>
+                                        <div>吴九</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">68岁/男/高血压</div>
+                                    </td>
+                                    <td>78901234</td>
+                                    <td>
+                                        <div>CF987654</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">2023-08-13</div>
+                                    </td>
+                                    <td>
+                                        <span class="risk-level low">
+                                            <i class="icon-exclamation-circle"></i>低风险
+                                        </span>
+                                    </td>
+                                    <td>¥1,200</td>
+                                    <td>2次</td>
+                                    <td>1</td>
+                                    <td>2023-08-13 10:45</td>
+                                </tr>
+                                
+                                <!-- 慢病记录 2 -->
+                                <tr onclick="viewPatientDetails('patient010', 'chronic')">
+                                    <td>
+                                        <div>郑十</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">56岁/女/糖尿病</div>
+                                    </td>
+                                    <td>67890123</td>
+                                    <td>
+                                        <div>CF876543</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">2023-08-12</div>
+                                    </td>
+                                    <td>
+                                        <span class="risk-level compliant">
+                                            <i class="icon-check-circle"></i>合规
+                                        </span>
+                                    </td>
+                                    <td>¥3,500</td>
+                                    <td>5次</td>
+                                    <td>0</td>
+                                    <td>2023-08-12 14:30</td>
+                                </tr>
+                                
+                                <!-- 慢病记录 3 -->
+                                <tr onclick="viewPatientDetails('patient011', 'chronic')">
+                                    <td>
+                                        <div>王十一</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">72岁/男/冠心病</div>
+                                    </td>
+                                    <td>56789012</td>
+                                    <td>
+                                        <div>CF765432</div>
+                                        <div style="font-size: 12px; color: #8c8c8c;">2023-08-11</div>
+                                    </td>
+                                    <td>
+                                        <span class="risk-level medium">
+                                            <i class="icon-exclamation-circle"></i>中风险
+                                        </span>
+                                    </td>
+                                    <td>¥800</td>
+                                    <td>1次</td>
+                                    <td>2</td>
+                                    <td>2023-08-11 09:15</td>
+                                </tr>
+                                
+                                <!-- 更多慢病记录... -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 分页组件 -->
+                <div class="pagination">
+                    <button class="pagination-btn" disabled>&lt;</button>
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn">2</button>
+                    <button class="pagination-btn">3</button>
+                    <span>...</span>
+                    <button class="pagination-btn">10</button>
+                    <button class="pagination-btn">&gt;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 切换标签页
+        function switchTab(tabId) {
+            try {
+                // 隐藏所有内容
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                // 移除所有活动状态
+                document.querySelectorAll('.prescreen-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                
+                // 显示选中的内容和添加活动状态
+                const contentElement = document.getElementById(`${tabId}-content`);
+                if (contentElement) {
+                    contentElement.style.display = 'block';
+                }
+                
+                const tabElement = document.querySelector(`.prescreen-tab[onclick="switchTab('${tabId}')"]`);
+                if (tabElement) {
+                    tabElement.classList.add('active');
+                }
+                
+                // 显示/隐藏特定的筛选条件
+                const diseaseTypeFilterGroup = document.getElementById('diseaseTypeFilterGroup');
+                const quotaStatusFilterGroup = document.getElementById('quotaStatusFilterGroup');
+                
+                if (diseaseTypeFilterGroup) diseaseTypeFilterGroup.style.display = 'none';
+                if (quotaStatusFilterGroup) quotaStatusFilterGroup.style.display = 'none';
+                
+                // 根据不同的tabId调整UI
+                const headerActionsElement = document.getElementById('headerActions');
+                const statisticsSectionElement = document.getElementById('statisticsSection');
+                
+                if (tabId === 'outpatient') {
+                    // 门诊tab：移除操作按钮，显示统计模块
+                    if (headerActionsElement) {
+                        headerActionsElement.style.display = 'none';
+                    }
+                    
+                    if (statisticsSectionElement) {
+                        statisticsSectionElement.style.display = 'grid';
+                        // 加载统计图表
+                        loadStatisticsCharts(tabId);
+                    }
+                } else if (tabId === 'chronic') {
+                    // 慢病续方tab：移除操作按钮，显示统计模块和专用筛选条件
+                    if (headerActionsElement) {
+                        headerActionsElement.style.display = 'none';
+                    }
+                    
+                    if (statisticsSectionElement) {
+                        statisticsSectionElement.style.display = 'grid';
+                        // 加载统计图表
+                        loadStatisticsCharts(tabId);
+                    }
+                    
+                    // 显示慢病专用筛选条件
+                    if (diseaseTypeFilterGroup) diseaseTypeFilterGroup.style.display = 'block';
+                    if (quotaStatusFilterGroup) quotaStatusFilterGroup.style.display = 'block';
+                } else {
+                    // 其他tab：显示操作按钮，隐藏统计模块
+                    if (headerActionsElement) {
+                        headerActionsElement.style.display = 'flex';
+                    }
+                    
+                    if (statisticsSectionElement) {
+                        statisticsSectionElement.style.display = 'none';
+                    }
+                }
+            } catch (error) {
+                console.error('Error in switchTab function:', error);
+            }
+        }
+        
+        // 获取当前日期，格式为YYYY-MM-DD
+        function getCurrentDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        // 设置日期范围默认值为当天
+        function setDefaultDateRange() {
+            const today = getCurrentDate();
+            document.getElementById('startDate').value = today;
+            document.getElementById('endDate').value = today;
+        }
+        
+        // 根据时间范围获取慢病图表数据
+        function getChronicChartDataForDateRange(startDate, endDate) {
+            // 这里模拟根据日期范围获取不同的慢病数据
+            // 在实际应用中，这里应该是从服务器获取数据
+            
+            // 简单的日期比较，决定返回哪个数据集
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays <= 7) {
+                // 近一周数据
+                return {
+                    riskData: {
+                        labels: ['中风险', '低风险'],
+                        data: [4, 2],
+                        colors: ['#fa8c16', '#ffec3d']
+                    },
+                    highFreqData: {
+                        labels: ['超说明书用药', '未按指南用药', '联合用药不当'],
+                        data: [3, 2, 1]
+                    }
+                };
+            } else if (diffDays <= 30) {
+                // 近一月数据（默认）
+                return {
+                    riskData: {
+                        labels: ['中风险', '低风险'],
+                        data: [10, 6],
+                        colors: ['#fa8c16', '#ffec3d']
+                    },
+                    highFreqData: {
+                        labels: ['超说明书用药', '未按指南用药', '联合用药不当'],
+                        data: [7, 5, 3]
+                    }
+                };
+            } else if (diffDays <= 90) {
+                // 近三月数据
+                return {
+                    riskData: {
+                        labels: ['中风险', '低风险'],
+                        data: [25, 15],
+                        colors: ['#fa8c16', '#ffec3d']
+                    },
+                    highFreqData: {
+                        labels: ['超说明书用药', '未按指南用药', '联合用药不当'],
+                        data: [18, 12, 10]
+                    }
+                };
+            } else {
+                // 更长时间范围数据
+                return {
+                    riskData: {
+                        labels: ['中风险', '低风险'],
+                        data: [40, 30],
+                        colors: ['#fa8c16', '#ffec3d']
+                    },
+                    highFreqData: {
+                        labels: ['超说明书用药', '未按指南用药', '联合用药不当'],
+                        data: [30, 20, 15]
+                    }
+                };
+            }
+        }
+        
+        // 根据时间范围获取图表数据
+        function getChartDataForDateRange(startDate, endDate) {
+            // 这里模拟根据日期范围获取不同的数据
+            // 在实际应用中，这里应该是从服务器获取数据
+            
+            // 简单的日期比较，决定返回哪个数据集
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            if (diffDays <= 7) {
+                // 近一周数据
+                return {
+                    riskData: {
+                        labels: ['中风险', '低风险'],
+                        data: [8, 5]
+                    },
+                    highFreqData: {
+                        labels: ['超说明书用药', '疑似剂量偏高', '重复检查'],
+                        data: [4, 2, 1]
+                    }
+                };
+            } else if (diffDays <= 30) {
+                // 近一月数据（默认）
+                return {
+                    riskData: {
+                        labels: ['中风险', '低风险'],
+                        data: [15, 15]
+                    },
+                    highFreqData: {
+                        labels: ['超说明书用药', '疑似剂量偏高', '重复检查'],
+                        data: [8, 5, 2]
+                    }
+                };
+            } else if (diffDays <= 90) {
+                // 近三月数据
+                return {
+                    riskData: {
+                        labels: ['中风险', '低风险'],
+                        data: [35, 40]
+                    },
+                    highFreqData: {
+                        labels: ['超说明书用药', '疑似剂量偏高', '重复检查'],
+                        data: [18, 12, 7]
+                    }
+                };
+            } else {
+                // 更长时间范围数据
+                return {
+                    riskData: {
+                        labels: ['中风险', '低风险'],
+                        data: [50, 60]
+                    },
+                    highFreqData: {
+                        labels: ['超说明书用药', '疑似剂量偏高', '重复检查'],
+                        data: [25, 18, 10]
+                    }
+                };
+            }
+        }
+        
+        // 根据时间范围获取慢病开方合规率趋势数据
+        function getChronicComplianceTrendData(timeRange) {
+            // 慢病开方合规率数据，相比普通门诊略低，更符合慢病管理的实际情况
+            switch (timeRange) {
+                case 'week':
+                    return {
+                        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                        data: [85, 83, 87, 84, 89, 86, 88]
+                    };
+                case 'month':
+                    return {
+                        labels: ['第1周', '第2周', '第3周', '第4周'],
+                        data: [82, 83, 85, 86]
+                    };
+                case 'quarter':
+                    return {
+                        labels: ['1月', '2月', '3月'],
+                        data: [79, 82, 86]
+                    };
+                case 'halfYear':
+                    return {
+                        labels: ['3月', '4月', '5月', '6月', '7月', '8月'],
+                        data: [76, 78, 80, 83, 85, 87]
+                    };
+                case 'year':
+                    return {
+                        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                        data: [73, 74, 76, 78, 80, 81, 83, 84, 85, 86, 87, 88]
+                    };
+                default:
+                    return {
+                        labels: ['第1周', '第2周', '第3周', '第4周'],
+                        data: [82, 83, 85, 86]
+                    };
+            }
+        }
+        
+        // 根据时间范围获取合规率趋势数据
+        function getComplianceTrendData(timeRange) {
+            switch (timeRange) {
+                case 'week':
+                    return {
+                        labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                        data: [88, 86, 90, 87, 92, 89, 91]
+                    };
+                case 'month':
+                    return {
+                        labels: ['第1周', '第2周', '第3周', '第4周'],
+                        data: [85, 86, 88, 89]
+                    };
+                case 'quarter':
+                    return {
+                        labels: ['1月', '2月', '3月'],
+                        data: [82, 85, 89]
+                    };
+                case 'halfYear':
+                    return {
+                        labels: ['3月', '4月', '5月', '6月', '7月', '8月'],
+                        data: [78, 80, 82, 85, 87, 89]
+                    };
+                case 'year':
+                    return {
+                        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+                        data: [75, 76, 78, 80, 82, 83, 85, 86, 87, 88, 89, 90]
+                    };
+                default:
+                    return {
+                        labels: ['第1周', '第2周', '第3周', '第4周'],
+                        data: [85, 86, 88, 89]
+                    };
+            }
+        }
+        
+        // 全局变量保存图表实例
+        let riskChart = null;
+        let highFreqChart = null;
+        let complianceChart = null;
+        
+        // 加载统计图表
+        function loadStatisticsCharts(tabId = 'outpatient') {
+            try {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                let chartData;
+                
+                // 根据不同的标签页获取不同的图表数据
+                if (tabId === 'chronic') {
+                    // 慢病续方标签页：获取慢病相关的统计数据
+                    chartData = getChronicChartDataForDateRange(startDate, endDate);
+                    
+                    // 更新统计卡片标题
+                    const statCardTitles = document.querySelectorAll('.stat-card-title');
+                    if (statCardTitles.length >= 3) {
+                        statCardTitles[0].textContent = '我的慢病开方行为统计';
+                        statCardTitles[1].textContent = '慢病高频风险Top 3';
+                        statCardTitles[2].textContent = '我的慢病开方合规率趋势';
+                    }
+                } else {
+                    // 其他标签页：使用原有的图表数据
+                    chartData = getChartDataForDateRange(startDate, endDate);
+                    
+                    // 恢复统计卡片标题
+                    const statCardTitles = document.querySelectorAll('.stat-card-title');
+                    if (statCardTitles.length >= 3) {
+                        statCardTitles[0].textContent = '风险项统计';
+                        statCardTitles[1].textContent = '我的高频风险Top 3';
+                        statCardTitles[2].textContent = '我的门诊合规率趋势';
+                    }
+                }
+                
+                // 风险分布环形图
+                const riskChartElement = document.getElementById('riskDistributionChart');
+                if (riskChartElement) {
+                    const riskCtx = riskChartElement.getContext('2d');
+                    
+                    if (riskChart) {
+                        riskChart.destroy();
+                    }
+                    
+                    riskChart = new Chart(riskCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: chartData.riskData.labels,
+                            datasets: [{
+                                data: chartData.riskData.data,
+                                backgroundColor: chartData.riskData.colors || ['#faad14', '#ffec3d'],
+                                borderColor: ['#ffffff', '#ffffff'],
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.label || '';
+                                            const value = context.parsed || 0;
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const percentage = Math.round((value / total) * 100);
+                                            return `${label}: ${value}项 (${percentage}%)`;
+                                        }
+                                    }
+                                }
+                            },
+                            cutout: '70%'
+                        }
+                    });
+                }
+                
+                // 高频风险类型条形图
+                const highFreqChartElement = document.getElementById('highFrequencyRiskChart');
+                if (highFreqChartElement) {
+                    const highFreqCtx = highFreqChartElement.getContext('2d');
+                    
+                    if (highFreqChart) {
+                        highFreqChart.destroy();
+                    }
+                    
+                    highFreqChart = new Chart(highFreqCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: chartData.highFreqData.labels,
+                            datasets: [{
+                                label: '触发次数',
+                                data: chartData.highFreqData.data,
+                                backgroundColor: '#1890ff',
+                                borderRadius: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            indexAxis: 'y',
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1,
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                y: {
+                                    ticks: {
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                // 合规率趋势折线图
+                loadComplianceTrendChart(tabId);
+                
+                // 添加趋势图时间范围变化监听
+                const trendTimeRangeFilterElement = document.getElementById('trendTimeRangeFilter');
+                if (trendTimeRangeFilterElement) {
+                    // 先移除可能存在的事件监听器，避免重复添加
+                    const newElement = trendTimeRangeFilterElement.cloneNode(true);
+                    trendTimeRangeFilterElement.parentNode.replaceChild(newElement, trendTimeRangeFilterElement);
+                    newElement.addEventListener('change', function() {
+                        // 获取当前激活的标签页
+                        const activeTab = document.querySelector('.prescreen-tab.active');
+                        const currentTabId = activeTab ? activeTab.getAttribute('onclick').match(/'([^']+)'/)?.[1] || 'outpatient' : 'outpatient';
+                        loadComplianceTrendChart(currentTabId);
+                    });
+                }
+            } catch (error) {
+                console.error('Error in loadStatisticsCharts function:', error);
+            }
+        }
+        
+        // 加载合规率趋势图
+        function loadComplianceTrendChart(tabId = 'outpatient') {
+            try {
+                const trendTimeRangeFilterElement = document.getElementById('trendTimeRangeFilter');
+                if (!trendTimeRangeFilterElement) {
+                    return;
+                }
+                
+                const timeRange = trendTimeRangeFilterElement.value;
+                let trendData, labelText;
+                
+                if (tabId === 'chronic') {
+                    // 慢病续方标签页：获取慢病开方合规率数据
+                    trendData = getChronicComplianceTrendData(timeRange);
+                    labelText = '慢病开方合规率';
+                } else {
+                    // 其他标签页：获取普通合规率数据
+                    trendData = getComplianceTrendData(timeRange);
+                    labelText = '门诊合规率';
+                }
+                
+                const complianceChartElement = document.getElementById('complianceTrendChart');
+                if (complianceChartElement) {
+                    const complianceCtx = complianceChartElement.getContext('2d');
+                    
+                    if (complianceChart) {
+                        complianceChart.destroy();
+                    }
+                    
+                    complianceChart = new Chart(complianceCtx, {
+                        type: 'line',
+                        data: {
+                            labels: trendData.labels,
+                            datasets: [{
+                                label: labelText,
+                                data: trendData.data,
+                                borderColor: '#52c41a',
+                                backgroundColor: 'rgba(82, 196, 26, 0.1)',
+                                tension: 0.3,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return `合规率: ${context.parsed.y}%`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value + '%';
+                                        },
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                },
+                                x: {
+                                    ticks: {
+                                        font: {
+                                            size: 11
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error in loadComplianceTrendChart function:', error);
+            }
+        }
+        
+        // 应用筛选并更新图表数据
+        function applyFilters() {
+            try {
+                // 获取选中的日期范围
+                const startDateElement = document.getElementById('startDate');
+                const endDateElement = document.getElementById('endDate');
+                
+                if (!startDateElement || !endDateElement) {
+                    console.error('Date elements not found');
+                    return;
+                }
+                
+                const startDate = startDateElement.value;
+                const endDate = endDateElement.value;
+                
+                // 验证日期格式
+                if (!startDate || !endDate) {
+                    alert('请选择完整的日期范围');
+                    return;
+                }
+                
+                // 获取当前激活的标签页
+                const activeTab = document.querySelector('.prescreen-tab.active');
+                const currentTabId = activeTab ? activeTab.getAttribute('onclick').match(/'([^']+)'/)?.[1] || 'outpatient' : 'outpatient';
+                
+                // 如果是慢病续方标签页，获取病种类型和额度状态筛选条件
+                let diseaseType = '';
+                let quotaStatus = '';
+                
+                if (currentTabId === 'chronic') {
+                    const diseaseTypeFilterElement = document.getElementById('diseaseTypeFilter');
+                    const quotaStatusFilterElement = document.getElementById('quotaStatusFilter');
+                    
+                    if (diseaseTypeFilterElement) {
+                        diseaseType = diseaseTypeFilterElement.value;
+                    }
+                    
+                    if (quotaStatusFilterElement) {
+                        quotaStatus = quotaStatusFilterElement.value;
+                    }
+                }
+                
+                // 更新图表数据
+                const statisticsSectionElement = document.getElementById('statisticsSection');
+                if (statisticsSectionElement && statisticsSectionElement.style.display !== 'none') {
+                    loadStatisticsCharts(currentTabId);
+                }
+                
+                // 实际应用中，这里应该根据筛选条件调用API获取数据并更新表格
+                // 这里仅做演示，不实现具体的数据筛选逻辑
+            } catch (error) {
+                console.error('Error in applyFilters function:', error);
+            }
+        }
+        
+        // 重置筛选条件
+        function resetFilters() {
+            try {
+                // 重置所有筛选条件
+                const auditStatusFilterElement = document.getElementById('auditStatusFilter');
+                if (auditStatusFilterElement) {
+                    auditStatusFilterElement.value = '';
+                }
+                
+                // 重置病种类型和额度状态筛选条件
+                const diseaseTypeFilterElement = document.getElementById('diseaseTypeFilter');
+                if (diseaseTypeFilterElement) {
+                    diseaseTypeFilterElement.value = '';
+                }
+                
+                const quotaStatusFilterElement = document.getElementById('quotaStatusFilter');
+                if (quotaStatusFilterElement) {
+                    quotaStatusFilterElement.value = '';
+                }
+                
+                setDefaultDateRange();
+                
+                const searchInputElement = document.getElementById('searchInput');
+                if (searchInputElement) {
+                    searchInputElement.value = '';
+                }
+                
+                // 获取当前激活的标签页
+                const activeTab = document.querySelector('.prescreen-tab.active');
+                const currentTabId = activeTab ? activeTab.getAttribute('onclick').match(/'([^']+)'/)?.[1] || 'outpatient' : 'outpatient';
+                
+                // 更新图表数据
+                const statisticsSectionElement = document.getElementById('statisticsSection');
+                if (statisticsSectionElement && statisticsSectionElement.style.display !== 'none') {
+                    loadStatisticsCharts(currentTabId);
+                }
+            } catch (error) {
+                console.error('Error in resetFilters function:', error);
+            }
+        }
+        
+        // 查看患者详情
+        function viewPatientDetails(patientId, patientType) {
+            // 存储当前患者ID到本地存储，以便在详情页使用
+            localStorage.setItem('currentPatientId', patientId);
+            // 根据患者类型和ID跳转到不同的详情页
+            if (patientType === 'outpatient') {
+                window.location.href = '门诊审核详情.html';
+            } else if (patientType === 'chronic') {
+                // 根据患者ID判断是否为合格慢病患者
+                if (patientId === 'patient010') {
+                    // 跳转到合格慢病详情页
+                    window.location.href = '合格慢病详情.html';
+                } else {
+                    // 跳转到普通慢病详情页
+                    window.location.href = '慢病详情.html';
+                }
+            } else {
+                // 默认跳转到住院详情页
+                window.location.href = '审核详情.html';
+            }
+        }
+        
+        // 导出结果
+        function exportResults() {
+            alert('导出功能已触发（Demo版）');
+        }
+        
+        // 刷新数据
+        function refreshResults() {
+            alert('数据刷新功能已触发（Demo版）');
+        }
+        
+        // 导出结果
+        function exportResults() {
+            alert('导出功能已触发（Demo版）');
+        }
+        
+        // 刷新数据
+        function refreshResults() {
+            alert('数据刷新功能已触发（Demo版）');
+        }
+        
+        // 切换侧边栏
+        function toggleSidebar() {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            sidebarContainer.classList.toggle('sidebar-collapsed');
+        }
+        
+        // 显示通知
+        function showNotifications() {
+            alert('通知功能已触发（Demo版）');
+        }
+        
+        // 刷新页面
+        function refreshPage() {
+            location.reload();
+        }
+        
+        // 加载侧边栏
+        function loadSidebar() {
+            const sidebarContainer = document.getElementById('sidebar-container');
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', '../../组件/_unified-sidebar.html', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    sidebarContainer.innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send();
+        }
+        
+        // 更新当前时间
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            // 检查元素是否存在，避免空指针错误
+            const currentTimeElement = document.getElementById('currentTime');
+            if (currentTimeElement) {
+                currentTimeElement.textContent = timeString;
+            }
+        }
+        
+        // 初始化
+        window.onload = function() {
+            loadSidebar();
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+            
+            // 设置默认日期范围为当天
+            setDefaultDateRange();
+            
+            // 添加日期变化监听
+            document.getElementById('startDate').addEventListener('change', function() {
+                // 确保开始日期不晚于结束日期
+                const endDate = document.getElementById('endDate').value;
+                if (this.value > endDate) {
+                    document.getElementById('endDate').value = this.value;
+                }
+            });
+            
+            document.getElementById('endDate').addEventListener('change', function() {
+                // 确保结束日期不早于开始日期
+                const startDate = document.getElementById('startDate').value;
+                if (this.value < startDate) {
+                    document.getElementById('startDate').value = this.value;
+                }
+            });
+        };
+    </script>
+</body>
+</html>
