@@ -9,86 +9,250 @@
     <link rel="stylesheet" href="/1.0/样式文件/表单样式.css">
     <style>
         /* 任务列表页特有样式 */
-        .task-tabs {
-            display: flex;
-            background-color: white;
-            border-radius: 8px;
+        
+        /* 紧急处理警报区样式 */
+        .urgent-alert-banner {
+            background-color: #fff1f0;
+            border-left: 4px solid #ff4d4f;
+            padding: 16px 20px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-        }
-        
-        .task-tab {
-            flex: 1;
-            padding: 16px 24px;
-            text-align: center;
-            border: none;
-            background: none;
-            cursor: pointer;
-            font-size: 14px;
-            color: #666;
-            position: relative;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        
-        .task-tab.active {
-            color: #1890ff;
-            border-bottom-color: #1890ff;
-            font-weight: 500;
-        }
-        
-        .task-tab .badge {
-            position: absolute;
-            top: 8px;
-            right: calc(50% - 30px);
-            background-color: #ff4d4f;
-            color: white;
-            font-size: 12px;
-            padding: 2px 6px;
-            border-radius: 10px;
-            min-width: 16px;
-            text-align: center;
-        }
-        
-        .task-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
             gap: 16px;
         }
         
-        .task-card {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        .urgent-alert-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .urgent-alert-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ff4d4f;
+            margin: 0;
+        }
+        
+        .urgent-alert-title .fire-icon {
+            font-size: 20px;
+        }
+        
+        .urgent-alert-title .badge {
+            background-color: #ff4d4f;
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+            min-width: 20px;
+            text-align: center;
+            display: inline-block;
+        }
+        
+        .urgent-tasks-container {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .urgent-task-tag {
+            background-color: #fff;
+            border: 1px solid #ffccc7;
+            color: #ff4d4f;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            cursor: pointer;
             transition: all 0.3s;
-            position: relative;
+            white-space: nowrap;
         }
         
-        .task-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transform: translateY(-2px);
+        .urgent-task-tag:hover {
+            background-color: #ff4d4f;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(255, 77, 79, 0.3);
         }
         
-        .task-card.urgent {
-            border-left: 4px solid #ff4d4f;
-        }
-        
-        .task-title {
+        .collapse-button {
+            background: none;
+            border: none;
+            color: #ff4d4f;
             font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .collapse-button:hover {
+            background-color: rgba(255, 77, 79, 0.1);
+        }
+        
+        .urgent-alert-banner.collapsed {
+            padding: 8px 20px;
+        }
+        
+        .urgent-alert-banner.collapsed .urgent-tasks-container {
+            display: none;
+        }
+        
+        /* 无紧急任务状态 */
+        .no-urgent-tasks {
+            background-color: #f6ffed;
+            border-left: 4px solid #52c41a;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .no-urgent-text {
+            font-size: 16px;
+            color: #52c41a;
+            font-weight: 500;
+        }
+        
+        /* 主容器布局 */
+        .task-layout {
+            display: flex;
+            gap: 20px;
+        }
+        
+        /* 左侧常规任务区域 */
+        .regular-tasks-section {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        /* 常规任务标题 */
+        .regular-tasks-title {
+            font-size: 20px;
             font-weight: 600;
             color: #262626;
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-        
-        .task-meta {
+            margin-bottom: 20px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 16px;
+            align-items: center;
         }
         
+        .regular-tasks-title .badge {
+            background-color: #bfbfbf;
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        /* 筛选区域 */
+        .task-filters {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #262626;
+            background: white;
+            min-width: 120px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-select:hover {
+            border-color: #40a9ff;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: #1890ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #262626;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #1890ff;
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+        
+        /* 常规任务表格样式 */
+        .task-table {
+            width: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border-collapse: collapse;
+            overflow: hidden;
+        }
+        
+        .task-table th,
+        .task-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .task-table th {
+            background-color: #fafafa;
+            font-weight: 500;
+            color: #262626;
+            font-size: 14px;
+        }
+        
+        .task-table tr:hover {
+            background-color: #fafafa;
+        }
+        
+        .task-table tr.task-row.highlight {
+            border-left: 3px solid #1890ff;
+            background-color: #e6f7ff;
+        }
+        
+        /* 患者信息列样式 */
+        .patient-info {
+            line-height: 1.5;
+        }
+        
+        .patient-name {
+            font-weight: 600;
+            color: #262626;
+            display: block;
+        }
+        
+        .patient-bed {
+            font-size: 12px;
+            color: #8c8c8c;
+            display: block;
+        }
+        
+        /* 任务类型标签样式 */
         .task-tag {
             display: inline-block;
             padding: 4px 12px;
@@ -112,37 +276,100 @@
             color: #ff4d4f;
         }
         
-        .task-source,
+        /* 来源/时间列样式 */
+        .source-time {
+            line-height: 1.5;
+        }
+        
+        .task-source {
+            display: block;
+            font-size: 13px;
+            color: #595959;
+        }
+        
         .task-time {
+            display: block;
             font-size: 12px;
-            color: #8c8c8c;
-            display: flex;
-            align-items: center;
         }
         
-        .task-source:before,
-        .task-time:before {
-            content: '';
-            display: inline-block;
-            width: 4px;
+        .task-time.deadline {
+            color: #ff4d4f;
+            font-weight: 500;
+        }
+        
+        /* 成熟度显示 */
+        .maturity-display {
+            position: relative;
+        }
+        
+        .maturity-bar {
             height: 4px;
-            background-color: #d9d9d9;
-            border-radius: 50%;
-            margin-right: 6px;
+            background-color: #f0f0f0;
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
         }
         
-        .task-actions {
-            display: flex;
-            justify-content: flex-end;
+        .maturity-bar:hover .maturity-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
         
+        .maturity-progress {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        
+        /* 根据成熟度调整颜色：<60% 橙色，>=60% 绿色 */
+        .maturity-progress.low,
+        .maturity-progress.medium {
+            background-color: #faad14;
+        }
+        
+        .maturity-progress.high {
+            background-color: #52c41a;
+        }
+        
+        .maturity-tooltip {
+            position: absolute;
+            right: -30px;
+            top: -32px;
+            background-color: rgba(0, 0, 0, 0.75);
+            color: white;
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(4px);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        
+        .maturity-tooltip:after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            right: 15px;
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid rgba(0, 0, 0, 0.75);
+        }
+        
+        /* 按钮样式 */
         .btn-primary {
             background-color: #1890ff;
             color: white;
             border: none;
-            padding: 8px 20px;
+            padding: 6px 16px;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
             transition: all 0.3s;
         }
@@ -174,9 +401,19 @@
             opacity: 0.8;
         }
         
+        @media (max-width: 1024px) {
+            .task-layout {
+                flex-direction: column;
+            }
+        }
+        
         @media (max-width: 768px) {
-            .task-cards {
-                grid-template-columns: 1fr;
+            .task-filters {
+                flex-direction: column;
+            }
+            
+            .filter-select {
+                width: 100%;
             }
             
             .task-meta {
@@ -187,6 +424,15 @@
             .task-source:before,
             .task-time:before {
                 display: none;
+            }
+            
+            .urgent-alert-banner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .urgent-tasks-container {
+                min-width: 100%;
             }
         }
     </style>
@@ -215,107 +461,243 @@
                     <h1>我的任务（医生）</h1>
                 </div>
                 
-                <!-- 页签切换 -->
-                <div class="task-tabs">
-                    <button class="task-tab active" onclick="switchTab('pending')">
-                        待我处理
-                        <span class="badge">3</span>
+                <!-- 紧急处理警报区 -->
+                <div class="urgent-alert-banner" id="urgentAlertBanner">
+                    <div class="urgent-alert-left">
+                        <h3 class="urgent-alert-title">
+                            <span class="fire-icon">🔥</span>
+                            紧急处理
+                            <span class="badge">2</span>
+                        </h3>
+                    </div>
+                    
+                    <div class="urgent-tasks-container">
+                        <!-- 紧急任务1 -->
+                        <div class="urgent-task-tag" data-task-id="task-001">
+                            张三 - 封账拦截待办
+                        </div>
+                        
+                        <!-- 紧急任务2 -->
+                        <div class="urgent-task-tag" data-task-id="task-005">
+                            钱七 - 待出院预审
+                        </div>
+                    </div>
+                    
+                    <button class="collapse-button" onclick="toggleUrgentAlert()">
+                        ⌃
                     </button>
-                    <button class="task-tab" onclick="switchTab('processing')">处理中</button>
-                    <button class="task-tab" onclick="switchTab('completed')">已完成</button>
-                    <button class="task-tab" onclick="switchTab('sent')">我发出的</button>
                 </div>
                 
-                <!-- 任务卡片列表 -->
-                <div id="pending-tasks" class="task-content active">
-                    <div class="task-cards">
-                        <!-- 任务卡片1 - 紧急 -->
-                        <div class="task-card urgent">
-                            <div class="task-title">患者 张三 (01床) 的出院预审有2个问题项待处理</div>
-                            <div class="task-meta">
-                                <span class="task-tag medical-audit">医保预审</span>
-                                <span class="task-source">由 刘护士 发起</span>
-                                <span class="task-time">截止: 2025-08-14 18:00</span>
-                            </div>
-                            <div class="task-actions">
-                                <button class="btn-primary" onclick="openTaskDetail('task-001')">立即处理</button>
-                            </div>
+                <!-- 任务列表布局 -->
+                <div class="task-layout">
+                    <!-- 左侧常规任务区域 -->
+                    <div class="regular-tasks-section">
+                        <!-- 常规任务标题 -->
+                        <div class="regular-tasks-title">
+                            常规任务
+                            <span class="badge">4</span>
                         </div>
                         
-                        <!-- 任务卡片2 -->
-                        <div class="task-card">
-                            <div class="task-title">患者 李四 (15床) 的用药方案需要确认</div>
-                            <div class="task-meta">
-                                <span class="task-tag collaboration">协同请求</span>
-                                <span class="task-source">来自 王医生</span>
-                                <span class="task-time">收到: 2025-08-13 11:00</span>
-                            </div>
-                            <div class="task-actions">
-                                <button class="btn-primary" onclick="openTaskDetail('task-002')">立即处理</button>
-                            </div>
-                        </div>
-                        
-                        <!-- 任务卡片3 -->
-                            <div class="task-card">
-                                <div class="task-title">患者 王五 (23床) 的检查项目需要审核</div>
-                                <div class="task-meta">
-                                    <span class="task-tag medical-audit">医保预审</span>
-                                    <span class="task-source">由 科室系统 发起</span>
-                                    <span class="task-time">收到: 2025-08-13 09:30</span>
-                                </div>
-                                <div class="task-actions">
-                                    <button class="btn-primary" onclick="openTaskDetail('task-003')">立即处理</button>
-                                </div>
-                            </div>
+                        <!-- 筛选区域 -->
+                        <div class="task-filters">
+                            <select id="task-status-filter" class="filter-select" onchange="filterTasks()">
+                                <option value="pending">待我处理</option>
+                                <option value="processing">处理中</option>
+                                <option value="completed">已完成</option>
+                                <option value="sent">我发出的</option>
+                            </select>
                             
-                            <!-- 任务卡片4 - 申诉被驳回 -->
-                            <div class="task-card urgent">
-                                <div class="task-title">患者 钱七 (05床) 的用药方案申诉被驳回</div>
-                                <div class="task-meta">
-                                    <span class="task-tag appeal-rejected">申诉被驳回</span>
-                                    <span class="task-source">由 医保办 驳回</span>
-                                    <span class="task-time">收到: 2025-08-13 16:00</span>
-                                </div>
-                                <div class="task-actions">
-                                    <button class="btn-primary" onclick="openTaskDetail('task-005')">立即处理</button>
-                                </div>
-                            </div>
+                            <select id="task-type-filter" class="filter-select" onchange="filterTasks()">
+                                <option value="all">全部类型</option>
+                                <option value="medical-audit">医保预审</option>
+                                <option value="collaboration">协同请求</option>
+                                <option value="appeal-rejected">申诉被驳回</option>
+                            </select>
+                            
+                            <input 
+                                type="text" 
+                                id="patient-search" 
+                                class="search-input" 
+                                placeholder="按患者姓名/住院号搜索" 
+                                oninput="filterTasks()"
+                            >
                         </div>
-                </div>
-                
-                <!-- 处理中任务 -->
-                <div id="processing-tasks" class="task-content" style="display: none;">
-                    <div class="task-cards">
-                        <!-- 处理中任务卡片 -->
-                        <div class="task-card">
-                            <div class="task-title">患者 赵六 (12床) 的治疗方案调整中</div>
-                            <div class="task-meta">
-                                <span class="task-tag collaboration">协同请求</span>
-                                <span class="task-source">来自 张医生</span>
-                                <span class="task-time">处理中: 2025-08-13 14:00</span>
-                            </div>
-                            <div class="task-actions">
-                                <button class="btn-primary" onclick="openTaskDetail('task-004')">继续处理</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- 已完成任务 -->
-                <div id="completed-tasks" class="task-content" style="display: none;">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">✓</div>
-                        <div class="empty-state-text">暂无已完成的任务</div>
-                        <div class="empty-state-subtext">您已完成所有待处理的任务</div>
-                    </div>
-                </div>
-                
-                <!-- 我发出的任务 -->
-                <div id="sent-tasks" class="task-content" style="display: none;">
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📤</div>
-                        <div class="empty-state-text">暂无发出的任务</div>
-                        <div class="empty-state-subtext">您还没有向其他人发起过任务</div>
+                        
+                        <!-- 常规任务表格 -->
+                        <table id="regular-task-list" class="task-table">
+                            <thead>
+                                <tr>
+                                    <th>患者信息</th>
+                                    <th>任务标题</th>
+                                    <th>任务类型</th>
+                                    <th>来源/时间</th>
+                                    <th>[任务发起时] 成熟度</th>
+                                    <th>当前状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 任务1 -->
+                                <tr class="task-row" data-task-id="task-001" data-status="pending" data-type="medical-audit" data-patient="张三">
+                                    <td>
+                                        <div class="patient-info">
+                                            <span class="patient-name">张三</span>
+                                            <span class="patient-bed">01床</span>
+                                        </div>
+                                    </td>
+                                    <td>的出院预审有2个问题项待处理</td>
+                                    <td>
+                                        <span class="task-tag medical-audit">医保预审</span>
+                                    </td>
+                                    <td>
+                                        <div class="source-time">
+                                            <span class="task-source">由 刘护士 发起</span>
+                                            <span class="task-time deadline">截止: 2025-08-14 18:00</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="maturity-display">
+                                            <div class="maturity-bar">
+                                                <div class="maturity-progress medium" style="width: 65%;"></div>
+                                                <div class="maturity-tooltip">65%</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>待处理</td>
+                                    <td>
+                                        <button class="btn-primary" onclick="openTaskDetail('task-001')">立即处理</button>
+                                    </td>
+                                </tr>
+                                
+                                <!-- 任务2 -->
+                                <tr class="task-row" data-task-id="task-002" data-status="pending" data-type="collaboration" data-patient="李四">
+                                    <td>
+                                        <div class="patient-info">
+                                            <span class="patient-name">李四</span>
+                                            <span class="patient-bed">15床</span>
+                                        </div>
+                                    </td>
+                                    <td>的用药方案需要确认</td>
+                                    <td>
+                                        <span class="task-tag collaboration">协同请求</span>
+                                    </td>
+                                    <td>
+                                        <div class="source-time">
+                                            <span class="task-source">来自 王医生</span>
+                                            <span class="task-time">收到: 2025-08-13 11:00</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="maturity-display">
+                                            <div class="maturity-bar">
+                                                <div class="maturity-progress high" style="width: 85%;"></div>
+                                                <div class="maturity-tooltip">85%</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>待处理</td>
+                                    <td>
+                                        <button class="btn-primary" onclick="openTaskDetail('task-002')">立即处理</button>
+                                    </td>
+                                </tr>
+                                
+                                <!-- 任务3 -->
+                                <tr class="task-row" data-task-id="task-003" data-status="pending" data-type="medical-audit" data-patient="王五">
+                                    <td>
+                                        <div class="patient-info">
+                                            <span class="patient-name">王五</span>
+                                            <span class="patient-bed">23床</span>
+                                        </div>
+                                    </td>
+                                    <td>的检查项目需要审核</td>
+                                    <td>
+                                        <span class="task-tag medical-audit">医保预审</span>
+                                    </td>
+                                    <td>
+                                        <div class="source-time">
+                                            <span class="task-source">由 科室系统 发起</span>
+                                            <span class="task-time">收到: 2025-08-13 09:30</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="maturity-display">
+                                            <div class="maturity-bar">
+                                                <div class="maturity-progress high" style="width: 90%;"></div>
+                                                <div class="maturity-tooltip">90%</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>待处理</td>
+                                    <td>
+                                        <button class="btn-primary" onclick="openTaskDetail('task-003')">立即处理</button>
+                                    </td>
+                                </tr>
+                                
+                                <!-- 任务4 -->
+                                <tr class="task-row" data-task-id="task-004" data-status="processing" data-type="collaboration" data-patient="赵六">
+                                    <td>
+                                        <div class="patient-info">
+                                            <span class="patient-name">赵六</span>
+                                            <span class="patient-bed">12床</span>
+                                        </div>
+                                    </td>
+                                    <td>的治疗方案调整中</td>
+                                    <td>
+                                        <span class="task-tag collaboration">协同请求</span>
+                                    </td>
+                                    <td>
+                                        <div class="source-time">
+                                            <span class="task-source">来自 张医生</span>
+                                            <span class="task-time">处理中: 2025-08-13 14:00</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="maturity-display">
+                                            <div class="maturity-bar">
+                                                <div class="maturity-progress high" style="width: 70%;"></div>
+                                                <div class="maturity-tooltip">70%</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>处理中</td>
+                                    <td>
+                                        <button class="btn-primary" onclick="openTaskDetail('task-004')">继续处理</button>
+                                    </td>
+                                </tr>
+                                
+                                <!-- 任务5 -->
+                                <tr class="task-row" data-task-id="task-005" data-status="pending" data-type="appeal-rejected" data-patient="钱七">
+                                    <td>
+                                        <div class="patient-info">
+                                            <span class="patient-name">钱七</span>
+                                            <span class="patient-bed">05床</span>
+                                        </div>
+                                    </td>
+                                    <td>的用药方案申诉被驳回</td>
+                                    <td>
+                                        <span class="task-tag appeal-rejected">申诉被驳回</span>
+                                    </td>
+                                    <td>
+                                        <div class="source-time">
+                                            <span class="task-source">由 医保办 驳回</span>
+                                            <span class="task-time">收到: 2025-08-13 16:00</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="maturity-display">
+                                            <div class="maturity-bar">
+                                                <div class="maturity-progress medium" style="width: 30%;"></div>
+                                                <div class="maturity-tooltip">30%</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>待处理</td>
+                                    <td>
+                                        <button class="btn-primary" onclick="openTaskDetail('task-005')">立即处理</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -369,31 +751,138 @@
             }
         }
         
-        // 切换任务列表页签
-        function switchTab(tabId) {
-            // 隐藏所有内容
-            document.querySelectorAll('.task-content').forEach(content => {
-                content.style.display = 'none';
+        // 筛选任务
+        function filterTasks() {
+            const statusFilter = document.getElementById('task-status-filter').value;
+            const typeFilter = document.getElementById('task-type-filter').value;
+            const searchTerm = document.getElementById('patient-search').value.toLowerCase();
+            
+            let visibleCount = 0;
+            
+            // 筛选每个任务行
+            document.querySelectorAll('.task-row').forEach(row => {
+                const status = row.getAttribute('data-status');
+                const type = row.getAttribute('data-type');
+                const patientName = row.getAttribute('data-patient').toLowerCase();
+                
+                // 检查状态是否匹配
+                const statusMatch = statusFilter === 'pending' || status === statusFilter;
+                
+                // 检查类型是否匹配
+                const typeMatch = typeFilter === 'all' || type === typeFilter;
+                
+                // 检查搜索是否匹配
+                const searchMatch = patientName.includes(searchTerm) || searchTerm === '';
+                
+                // 显示或隐藏任务行
+                if (statusMatch && typeMatch && searchMatch) {
+                    row.style.display = 'table-row';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
             });
             
-            // 移除所有页签的激活状态
-            document.querySelectorAll('.task-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // 显示选中的内容和激活对应的页签
-            document.getElementById(`${tabId}-tasks`).style.display = 'block';
-            event.target.classList.add('active');
+            // 更新任务数量
+            document.querySelector('.regular-tasks-title .badge').textContent = visibleCount;
         }
         
         // 打开任务详情
         function openTaskDetail(taskId) {
             // 在实际应用中，这里会跳转到对应的任务详情页
             console.log(`打开任务详情: ${taskId}`);
-            // 创建任务详情页面的URL
-            const taskDetailUrl = `/1.0/超级管理员/事中审核管理/我的任务/任务详情.html?id=${taskId}`;
-            window.location.href = taskDetailUrl;
+            
+            // 特殊处理协同请求任务（患者李四的用药方案需要确认）
+            if (taskId === 'task-002') {
+                // 跳转到协同请求详情页面
+                window.location.href = '协同请求详情.html';
+            } else {
+                // 创建任务详情页面的URL
+                const taskDetailUrl = `任务详情.html?id=${taskId}`;
+                window.location.href = taskDetailUrl;
+            }
         }
+        
+        // 初始化任务行点击事件
+document.querySelectorAll('.task-row').forEach(row => {
+    row.addEventListener('click', function(e) {
+        // 如果点击的是按钮，不执行行的点击事件
+        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+            return;
+        }
+        
+        const taskId = this.getAttribute('data-task-id');
+        openTaskDetail(taskId);
+    });
+});
+        
+        // 收起/展开紧急警报区
+        function toggleUrgentAlert() {
+            const alertBanner = document.getElementById('urgentAlertBanner');
+            const collapseButton = alertBanner.querySelector('.collapse-button');
+            
+            alertBanner.classList.toggle('collapsed');
+            
+            if (alertBanner.classList.contains('collapsed')) {
+                collapseButton.textContent = '⌄';
+            } else {
+                collapseButton.textContent = '⌃';
+            }
+        }
+        
+        // 紧急任务标签点击事件
+document.addEventListener('DOMContentLoaded', function() {
+    const urgentTags = document.querySelectorAll('.urgent-task-tag');
+    urgentTags.forEach(tag => {
+        tag.addEventListener('click', function() {
+            const taskId = this.getAttribute('data-task-id');
+            highlightAndScrollToTask(taskId);
+        });
+    });
+});
+        
+        // 点击紧急任务标签时，高亮并滚动到对应的常规任务行
+        function highlightAndScrollToTask(taskId) {
+            // 移除所有行的高亮状态
+            document.querySelectorAll('.task-row').forEach(row => {
+                row.classList.remove('highlight');
+            });
+            
+            // 找到对应的常规任务行
+            const targetRow = document.querySelector(`.task-row[data-task-id="${taskId}"]`);
+            
+            if (targetRow) {
+                // 添加高亮状态
+                targetRow.classList.add('highlight');
+                
+                // 滚动到该行
+                targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // 3秒后移除高亮状态
+                setTimeout(() => {
+                    targetRow.classList.remove('highlight');
+                }, 3000);
+            } else {
+                // 如果常规列表中没有该任务，则直接跳转到详情页
+                openTaskDetail(taskId);
+            }
+        }
+        
+        // 添加任务行高亮动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            .task-row.highlight {
+                background-color: #fff2e8 !important;
+                box-shadow: 0 0 0 2px #ff7a45 !important;
+                animation: highlightPulse 1.5s ease-in-out;
+            }
+            
+            @keyframes highlightPulse {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.8; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
